@@ -17,7 +17,7 @@ import javax.swing.JMenu;
 import javax.swing.JFrame;
 import javax.swing.JDialog;
 
-public class TestApp {
+public class TestSwingApp {
 
 	private JFrame jFrame = null;
 	private JPanel jContentPane = null;
@@ -34,19 +34,6 @@ public class TestApp {
 	private JDialog aboutDialog = null;
 	private JPanel aboutContentPane = null;
 	private JLabel aboutVersionLabel = null;
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				TestApp application = new TestApp();
-				application.getJFrame().setVisible(true);
-			}
-		});
-	}
 
 	/**
 	 * This method initializes jFrame
@@ -242,7 +229,6 @@ public class TestApp {
 	 * @return javax.swing.JMenuItem	
 	 */
 	private JMenuItem getCopyMenuItem() {
-		
 		if (copyMenuItem == null) {
 			copyMenuItem = new JMenuItem();
 			copyMenuItem.setText("Copy");
@@ -280,6 +266,18 @@ public class TestApp {
 					Event.CTRL_MASK, true));
 		}
 		return saveMenuItem;
+	}
+
+	/**
+	 * Launches this application
+	 */
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				TestSwingApp application = new TestSwingApp();
+				application.getJFrame().setVisible(true);
+			}
+		});
 	}
 
 }
