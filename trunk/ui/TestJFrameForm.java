@@ -6,6 +6,21 @@
 
 package ui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Event;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 /**
@@ -16,7 +31,7 @@ public class TestJFrameForm extends javax.swing.JFrame {
     
     /** Creates new form TestJFrameForm */
     public TestJFrameForm() {
-        initComponents();
+    initComponents();
     }
     
     /** This method is called from within the constructor to
@@ -34,21 +49,24 @@ public class TestJFrameForm extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        jDesktopPane1 = new javax.swing.JDesktopPane();
+        CircuitPanel = new CircuitPanel();
+        jTabbedPane2 = new javax.swing.JTabbedPane();
+        jPanel2 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
-        jLabel1.setText(bundle.getString("TestJFrameForm.jLabel1.text")); // NOI18N
+        jLabel1.setText(bundle.getString("TestJFrameForm.jLabel1.text_1")); // NOI18N
 
-        jLabel2.setText(bundle.getString("TestJFrameForm.jLabel2.text")); // NOI18N
+        jLabel2.setText(bundle.getString("TestJFrameForm.jLabel2.text_1")); // NOI18N
 
         jToolBar1.setRollover(true);
 
-        jButton1.setText(bundle.getString("TestJFrameForm.jButton1.text")); // NOI18N
+        jButton1.setText(bundle.getString("TestJFrameForm.jButton1.text_1")); // NOI18N
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -59,24 +77,56 @@ public class TestJFrameForm extends javax.swing.JFrame {
         });
         jToolBar1.add(jButton1);
 
+        org.jdesktop.layout.GroupLayout CircuitPanelLayout = new org.jdesktop.layout.GroupLayout(CircuitPanel);
+        CircuitPanel.setLayout(CircuitPanelLayout);
+        CircuitPanelLayout.setHorizontalGroup(
+            CircuitPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 628, Short.MAX_VALUE)
+        );
+        CircuitPanelLayout.setVerticalGroup(
+            CircuitPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 460, Short.MAX_VALUE)
+        );
+
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 648, Short.MAX_VALUE)
+            .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(jPanel1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .add(CircuitPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 484, Short.MAX_VALUE)
+            .add(0, 482, Short.MAX_VALUE)
+            .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(jPanel1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .add(CircuitPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
 
-        jTabbedPane1.addTab(bundle.getString("TestJFrameForm.jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
+        jTabbedPane1.addTab("tab1", jPanel1);
 
-        jMenu1.setText(bundle.getString("TestJFrameForm.jMenu1.text")); // NOI18N
-        jMenuBar1.add(jMenu1);
+        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.LINE_AXIS));
 
-        jMenu2.setText(bundle.getString("TestJFrameForm.jMenu2.text")); // NOI18N
-        jMenuBar1.add(jMenu2);
+        jButton2.setText(bundle.getString("TestJFrameForm.jButton2.text")); // NOI18N
+        jPanel2.add(jButton2);
+
+        jButton3.setText(bundle.getString("TestJFrameForm.jButton3.text")); // NOI18N
+        jPanel2.add(jButton3);
+
+        jButton4.setText(bundle.getString("TestJFrameForm.jButton4.text")); // NOI18N
+        jPanel2.add(jButton4);
+
+        jTabbedPane2.addTab(bundle.getString("TestJFrameForm.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N
+
+        jMenuBar1.add(getFileMenu());
+        jMenuBar1.add(getEditMenu());
+        jMenuBar1.add(getHelpMenu());
 
         setJMenuBar(jMenuBar1);
 
@@ -92,7 +142,7 @@ public class TestJFrameForm extends javax.swing.JFrame {
                 .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 351, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .add(layout.createSequentialGroup()
-                .add(jDesktopPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 131, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jTabbedPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 131, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE))
         );
@@ -102,8 +152,8 @@ public class TestJFrameForm extends javax.swing.JFrame {
                 .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jDesktopPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
-                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE))
+                    .add(jTabbedPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
+                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel1)
@@ -113,6 +163,196 @@ public class TestJFrameForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    
+        /**
+	 * This method initializes jMenu	
+	 * 	
+	 * @return javax.swing.JMenu	
+	 */
+	private JMenu getFileMenu() {
+		if (fileMenu == null) {
+			fileMenu = new JMenu();
+			fileMenu.setText("File");
+			fileMenu.add(getSaveMenuItem());
+			fileMenu.add(getExitMenuItem());
+		}
+		return fileMenu;
+	}
+
+	/**
+	 * This method initializes jMenu	
+	 * 	
+	 * @return javax.swing.JMenu	
+	 */
+	private JMenu getEditMenu() {
+		if (editMenu == null) {
+			editMenu = new JMenu();
+			editMenu.setText("Edit");
+			editMenu.add(getCutMenuItem());
+			editMenu.add(getCopyMenuItem());
+			editMenu.add(getPasteMenuItem());
+		}
+		return editMenu;
+	}
+
+	/**
+	 * This method initializes jMenu	
+	 * 	
+	 * @return javax.swing.JMenu	
+	 */
+	private JMenu getHelpMenu() {
+		if (helpMenu == null) {
+			helpMenu = new JMenu();
+			helpMenu.setText("Help");
+			helpMenu.add(getAboutMenuItem());
+		}
+		return helpMenu;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getExitMenuItem() {
+		if (exitMenuItem == null) {
+			exitMenuItem = new JMenuItem();
+			exitMenuItem.setText("Exit");
+			exitMenuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.exit(0);
+				}
+			});
+		}
+		return exitMenuItem;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getAboutMenuItem() {
+		if (aboutMenuItem == null) {
+			aboutMenuItem = new JMenuItem();
+			aboutMenuItem.setText("About");
+			aboutMenuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					JDialog aboutDialog = getAboutDialog();
+					aboutDialog.pack();
+					Point loc = CircuitPanel.getLocation();
+					loc.translate(20, 20);
+					aboutDialog.setLocation(loc);
+					aboutDialog.setVisible(true);
+				}
+			});
+		}
+		return aboutMenuItem;
+	}
+
+	/**
+	 * This method initializes aboutDialog	
+	 * 	
+	 * @return javax.swing.JDialog
+	 */
+	private JDialog getAboutDialog() {
+		if (aboutDialog == null) {
+			aboutDialog = new JDialog(this, true);
+			aboutDialog.setTitle("About");
+			aboutDialog.setContentPane(getAboutContentPane());
+		}
+		return aboutDialog;
+	}
+
+	/**
+	 * This method initializes aboutContentPane
+	 * 
+	 * @return javax.swing.JPanel
+	 */
+	private JPanel getAboutContentPane() {
+		if (aboutContentPane == null) {
+			aboutContentPane = new JPanel();
+			aboutContentPane.setLayout(new BorderLayout());
+			aboutContentPane.add(getAboutVersionLabel(), BorderLayout.CENTER);
+		}
+		return aboutContentPane;
+	}
+
+	/**
+	 * This method initializes aboutVersionLabel	
+	 * 	
+	 * @return javax.swing.JLabel	
+	 */
+	private JLabel getAboutVersionLabel() {
+		if (aboutVersionLabel == null) {
+			aboutVersionLabel = new JLabel();
+			aboutVersionLabel.setText("Version 1.0");
+			aboutVersionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return aboutVersionLabel;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCutMenuItem() {
+		if (cutMenuItem == null) {
+			cutMenuItem = new JMenuItem();
+			cutMenuItem.setText("Cut");
+			cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
+					Event.CTRL_MASK, true));
+		}
+		return cutMenuItem;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getCopyMenuItem() {
+		if (copyMenuItem == null) {
+			copyMenuItem = new JMenuItem();
+			copyMenuItem.setText("Copy");
+			copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
+					Event.CTRL_MASK, true));
+		}
+		return copyMenuItem;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getPasteMenuItem() {
+		if (pasteMenuItem == null) {
+			pasteMenuItem = new JMenuItem();
+			pasteMenuItem.setText("Paste");
+			pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
+					Event.CTRL_MASK, true));
+		}
+		return pasteMenuItem;
+	}
+
+	/**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getSaveMenuItem() {
+		if (saveMenuItem == null) {
+			saveMenuItem = new JMenuItem();
+			saveMenuItem.setText("Save");
+			saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+					Event.CTRL_MASK, true));
+		}
+		return saveMenuItem;
+	}
+    
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 // TODO add your handling code here:
 }//GEN-LAST:event_jButton1ActionPerformed
@@ -136,16 +376,30 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel CircuitPanel;
     private javax.swing.JButton jButton1;
-    private javax.swing.JDesktopPane jDesktopPane1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
-    
+    private javax.swing.JMenu fileMenu = null;
+    private javax.swing.JMenu editMenu = null;
+    private javax.swing.JMenu helpMenu = null;
+    private javax.swing.JMenuItem exitMenuItem = null;
+    private javax.swing.JMenuItem aboutMenuItem = null;
+    private javax.swing.JMenuItem cutMenuItem = null;
+    private javax.swing.JMenuItem copyMenuItem = null;
+    private javax.swing.JMenuItem pasteMenuItem = null;
+    private javax.swing.JMenuItem saveMenuItem = null;
+    private javax.swing.JDialog aboutDialog = null;
+    private javax.swing.JPanel aboutContentPane = null;
+    private javax.swing.JLabel aboutVersionLabel = null;
 }
