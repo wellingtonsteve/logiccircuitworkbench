@@ -7,13 +7,14 @@
 package ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Event;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -43,31 +44,37 @@ public class TestJFrameForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
         jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        CircuitPanel = new CircuitPanel();
-        jTabbedPane2 = new javax.swing.JTabbedPane();
-        jPanel2 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jMenuBar1 = new javax.swing.JMenuBar();
+        DesktopPane = new javax.swing.JDesktopPane();
+        jInternalFrame4 = new javax.swing.JInternalFrame();
+        jPanel4 = new javax.swing.JPanel();
+        Selection = new javax.swing.JButton();
+        AndGate = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        circuitFrame = new javax.swing.JInternalFrame();
+        circuitPanel = new CircuitPanel();
+        jMenuBar2 = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
-        jLabel1.setText(bundle.getString("TestJFrameForm.jLabel1.text_1")); // NOI18N
+        jMenuBar1.add(getFileMenu());
+        jMenuBar1.add(getEditMenu());
+        jMenuBar1.add(getHelpMenu());
 
-        jLabel2.setText(bundle.getString("TestJFrameForm.jLabel2.text_1")); // NOI18N
+        getContentPane().add(jMenuBar1);
 
         jToolBar1.setRollover(true);
 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
         jButton1.setText(bundle.getString("TestJFrameForm.jButton1.text_1")); // NOI18N
         jButton1.setFocusable(false);
+        jButton1.setHideActionText(true);
+        jButton1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -77,88 +84,123 @@ public class TestJFrameForm extends javax.swing.JFrame {
         });
         jToolBar1.add(jButton1);
 
-        org.jdesktop.layout.GroupLayout CircuitPanelLayout = new org.jdesktop.layout.GroupLayout(CircuitPanel);
-        CircuitPanel.setLayout(CircuitPanelLayout);
-        CircuitPanelLayout.setHorizontalGroup(
-            CircuitPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 628, Short.MAX_VALUE)
+        getContentPane().add(jToolBar1);
+
+        jPanel1.setAutoscrolls(true);
+        jPanel1.setMinimumSize(new java.awt.Dimension(750, 500));
+        jPanel1.setPreferredSize(new java.awt.Dimension(750, 500));
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
+
+        DesktopPane.setAutoscrolls(true);
+        DesktopPane.setMinimumSize(new java.awt.Dimension(600, 400));
+
+        jInternalFrame4.setIconifiable(true);
+        jInternalFrame4.setResizable(true);
+        jInternalFrame4.setTitle(bundle.getString("TestJFrameForm.jInternalFrame4.title")); // NOI18N
+        jInternalFrame4.setVisible(true);
+
+        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.LINE_AXIS));
+
+        Selection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/components/originals/sml_select.png"))); // NOI18N
+        Selection.setText(bundle.getString("TestJFrameForm.Selection.text")); // NOI18N
+        Selection.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        Selection.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                SelectionMouseClicked(evt);
+            }
+        });
+        jPanel4.add(Selection);
+
+        AndGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/components/originals/sml_andgate.png"))); // NOI18N
+        AndGate.setText(bundle.getString("TestJFrameForm.AndGate.text")); // NOI18N
+        AndGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        AndGate.setOpaque(false);
+        AndGate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                AndGateMouseClicked(evt);
+            }
+        });
+        jPanel4.add(AndGate);
+
+        jButton7.setText(bundle.getString("TestJFrameForm.jButton7.text")); // NOI18N
+        jButton7.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jButton7.setOpaque(false);
+        jButton7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton7MouseClicked(evt);
+            }
+        });
+        jPanel4.add(jButton7);
+
+        org.jdesktop.layout.GroupLayout jInternalFrame4Layout = new org.jdesktop.layout.GroupLayout(jInternalFrame4.getContentPane());
+        jInternalFrame4.getContentPane().setLayout(jInternalFrame4Layout);
+        jInternalFrame4Layout.setHorizontalGroup(
+            jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 120, Short.MAX_VALUE)
+            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(jInternalFrame4Layout.createSequentialGroup()
+                    .add(0, 3, Short.MAX_VALUE)
+                    .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(0, 4, Short.MAX_VALUE)))
+            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 120, Short.MAX_VALUE))
+            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 120, Short.MAX_VALUE))
+            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 120, Short.MAX_VALUE))
         );
-        CircuitPanelLayout.setVerticalGroup(
-            CircuitPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 460, Short.MAX_VALUE)
+        jInternalFrame4Layout.setVerticalGroup(
+            jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 115, Short.MAX_VALUE)
+            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(jInternalFrame4Layout.createSequentialGroup()
+                    .add(0, 37, Short.MAX_VALUE)
+                    .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(0, 37, Short.MAX_VALUE)))
+            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 115, Short.MAX_VALUE))
+            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 115, Short.MAX_VALUE))
+            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 115, Short.MAX_VALUE))
         );
 
-        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 648, Short.MAX_VALUE)
-            .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel1Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .add(CircuitPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
+        jInternalFrame4.setBounds(0, 0, 130, 150);
+        DesktopPane.add(jInternalFrame4, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        circuitFrame.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        circuitFrame.setIconifiable(true);
+        circuitFrame.setMaximizable(true);
+        circuitFrame.setResizable(true);
+        circuitFrame.setTitle("Breadboard");
+        circuitFrame.setVisible(true);
+        circuitFrame.getContentPane().setLayout(new java.awt.GridLayout(1, 0));
+
+        org.jdesktop.layout.GroupLayout circuitPanelLayout = new org.jdesktop.layout.GroupLayout(circuitPanel);
+        circuitPanel.setLayout(circuitPanelLayout);
+        circuitPanelLayout.setHorizontalGroup(
+            circuitPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 530, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 482, Short.MAX_VALUE)
-            .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel1Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .add(CircuitPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
+        circuitPanelLayout.setVerticalGroup(
+            circuitPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 425, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("tab1", jPanel1);
+        circuitFrame.getContentPane().add(circuitPanel);
 
-        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.LINE_AXIS));
+        circuitFrame.setBounds(130, 0, 540, 460);
+        DesktopPane.add(circuitFrame, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
-        jButton2.setText(bundle.getString("TestJFrameForm.jButton2.text")); // NOI18N
-        jPanel2.add(jButton2);
+        jPanel1.add(DesktopPane);
 
-        jButton3.setText(bundle.getString("TestJFrameForm.jButton3.text")); // NOI18N
-        jPanel2.add(jButton3);
-
-        jButton4.setText(bundle.getString("TestJFrameForm.jButton4.text")); // NOI18N
-        jPanel2.add(jButton4);
-
-        jTabbedPane2.addTab(bundle.getString("TestJFrameForm.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N
+        getContentPane().add(jPanel1);
 
         jMenuBar1.add(getFileMenu());
         jMenuBar1.add(getEditMenu());
         jMenuBar1.add(getHelpMenu());
 
-        setJMenuBar(jMenuBar1);
-
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 707, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
-                .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE))
-            .add(layout.createSequentialGroup()
-                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 351, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .add(layout.createSequentialGroup()
-                .add(jTabbedPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 131, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jTabbedPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
-                    .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel1)
-                    .add(jLabel2)))
-        );
+        setJMenuBar(jMenuBar2);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -241,7 +283,7 @@ public class TestJFrameForm extends javax.swing.JFrame {
 				public void actionPerformed(ActionEvent e) {
 					JDialog aboutDialog = getAboutDialog();
 					aboutDialog.pack();
-					Point loc = CircuitPanel.getLocation();
+					Point loc = jMenuBar1.getLocation();
 					loc.translate(20, 20);
 					aboutDialog.setLocation(loc);
 					aboutDialog.setVisible(true);
@@ -356,7 +398,35 @@ public class TestJFrameForm extends javax.swing.JFrame {
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 // TODO add your handling code here:
 }//GEN-LAST:event_jButton1ActionPerformed
+
+private void SelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SelectionMouseClicked
+    circuitFrame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    selectToolboxButton(Selection);
+    ((CircuitPanel) circuitPanel).selectComponent("Select");
+}//GEN-LAST:event_SelectionMouseClicked
+
+private void AndGateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AndGateMouseClicked
+    circuitFrame.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+    ((CircuitPanel) circuitPanel).selectComponent("AndGate");
+    selectToolboxButton(AndGate);
+}//GEN-LAST:event_AndGateMouseClicked
+
+private void jButton7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton7MouseClicked
+    circuitFrame.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+}//GEN-LAST:event_jButton7MouseClicked
     
+private void selectToolboxButton(JButton b){
+    // Reset Selections
+    Selection.setSelected(false);
+    AndGate.setSelected(false);
+    
+    // Select this button
+    b.setSelected(true);
+    
+    // Draw the selected piece in the circuit diagram
+}
+
+
     /**
      * @param args the command line arguments
      */
@@ -376,18 +446,18 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel CircuitPanel;
+    private javax.swing.JButton AndGate;
+    private javax.swing.JDesktopPane DesktopPane;
+    private javax.swing.JButton Selection;
+    private javax.swing.JInternalFrame circuitFrame;
+    private javax.swing.JPanel circuitPanel;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JInternalFrame jInternalFrame4;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
     private javax.swing.JMenu fileMenu = null;
@@ -402,4 +472,6 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JDialog aboutDialog = null;
     private javax.swing.JPanel aboutContentPane = null;
     private javax.swing.JLabel aboutVersionLabel = null;
+    
+    private Graphics windowGraphics = this.getGraphics();
 }
