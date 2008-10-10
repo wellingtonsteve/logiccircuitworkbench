@@ -18,5 +18,7 @@ public class UIConstants {
     public static final int GRID_DOT_SPACING = 10;
     
     public static final boolean SNAP_TO_GRID = true;
+    
+    public static final int SELECTION_MARKER_WIDTH = 4;
 
 }

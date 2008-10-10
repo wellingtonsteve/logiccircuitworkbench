@@ -5,19 +5,18 @@
 
 package ui;
 
+import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.MediaTracker;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Stack;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
@@ -28,22 +27,150 @@ import javax.swing.JPanel;
  */
 class CircuitPanel extends JPanel {
     
-    private int circuitX, circuitY, frameX, frameY;
+    private int circuitX, circuitY, frameOriginX, frameOriginY;
     private BufferedImage bi;
     private Map<String,String> componentImageLoc = new HashMap<String,String>();
+    private Stack<SelectableComponent> drawnComponents = new Stack<SelectableComponent>();
+    private String currentDrawingComponent = "Select";
+    private SelectableComponent selectedComponent;
+    private boolean nowDraging = false;
     
     public CircuitPanel(){
-        frameX = this.getX();
-        frameY = this.getY();        
+        frameOriginX = this.getX();
+        frameOriginY = this.getY();               
         
         addMouseMotionListener(new MouseMotionAdapter(){
+            
+            
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                
+                circuitX = e.getX()-frameOriginX;                    
+                circuitY = e.getY()-frameOriginY;
+
+                if(UIConstants.SNAP_TO_GRID){
+                  circuitX = (circuitX / UIConstants.GRID_DOT_SPACING) * UIConstants.GRID_DOT_SPACING;
+                  circuitY = (circuitY / UIConstants.GRID_DOT_SPACING) * UIConstants.GRID_DOT_SPACING;
+                }
+                
+                if(bi!=null && !currentDrawingComponent.equals("Select")){
+                   
+                    repaint();
+                    
+                } else if (bi!=null && currentDrawingComponent.equals("Select")){
+                                        
+                    if(!nowDraging){
+                        selectedComponent = null;
+                        for(SelectableComponent sc: drawnComponents){
+                        
+                            if(!sc.getSelectionType().equals(SelectionType.ACTIVE)){
+                                sc.setSelectionType(SelectionType.DEFAULT);
+                            }
+
+                            if(sc.getArea().contains(circuitX, circuitY)){
+                                selectedComponent = sc;
+                            }
+                        }       
+                    
+                        if(selectedComponent != null && !selectedComponent.getSelectionType().equals(SelectionType.ACTIVE)){
+
+                            selectedComponent.setSelectionType(SelectionType.SELECTED);
+                        }                        
+                    }
+                   
+                    repaint();
+                                       
+                } 
+            }                   
+            
             @Override
             public void mouseDragged(MouseEvent e) {
-              circuitX = e.getX()-frameX;
-              circuitY = e.getY()-frameY;
-              repaint();
+                
+                circuitX = e.getX()-frameOriginX;                    
+                circuitY = e.getY()-frameOriginY;
+
+                if(UIConstants.SNAP_TO_GRID){
+                  circuitX = (circuitX / UIConstants.GRID_DOT_SPACING) * UIConstants.GRID_DOT_SPACING;
+                  circuitY = (circuitY / UIConstants.GRID_DOT_SPACING) * UIConstants.GRID_DOT_SPACING;
+                }           
+                
+                if(bi!=null && !currentDrawingComponent.equals("Select")){
+                    
+                    repaint();
+                    
+                } else if(currentDrawingComponent.equals("Select") && selectedComponent != null){
+
+                    if(!nowDraging){
+                        drawnComponents.remove(selectedComponent);
+                        nowDraging = true;
+                    }                   
+                    
+                    repaint();
+                }    
+                         
             }
         });
+        
+        addMouseListener(new MouseListener(){
+
+            public void mouseClicked(MouseEvent e) {
+               
+            }
+
+            public void mousePressed(MouseEvent e) {
+                if(selectedComponent != null){
+                   if(selectedComponent.getSelectionType().equals(SelectionType.ACTIVE)){
+                       selectedComponent.setSelectionType(SelectionType.SELECTED);
+                   } else {
+                       
+                       for(SelectableComponent sc: drawnComponents){
+                            if(sc.getSelectionType().equals(SelectionType.ACTIVE)){
+                                sc.setSelectionType(SelectionType.DEFAULT);
+                            }
+                        }  
+                       
+                       selectedComponent.setSelectionType(SelectionType.ACTIVE);       
+                       
+                       System.out.println(selectedComponent.getArea().toString());
+                   }
+               }
+               repaint();
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                circuitX = e.getX()-frameOriginX;
+                circuitY = e.getY()-frameOriginY;
+
+                if(UIConstants.SNAP_TO_GRID){
+                  circuitX = (circuitX / UIConstants.GRID_DOT_SPACING) * UIConstants.GRID_DOT_SPACING;
+                  circuitY = (circuitY / UIConstants.GRID_DOT_SPACING) * UIConstants.GRID_DOT_SPACING;
+                }
+                
+                // TODO: Replace null here with actual component object
+                if(!currentDrawingComponent.equals("Select")){
+                    if(!nowDraging){
+                        drawnComponents.push(new SelectableComponent(null, circuitX-(bi.getWidth()/2), circuitY-(bi.getHeight()/2), bi));
+                    }                         
+                } else if(nowDraging){
+                    drawnComponents.push(selectedComponent);
+                    selectedComponent.setPos(circuitX-(selectedComponent.getWidth()/2),circuitY-(selectedComponent.getHeight()/2));
+                    selectedComponent.setSelectionType(SelectionType.ACTIVE);
+                    nowDraging = false;
+                }
+                
+                repaint();
+            }
+
+            public void mouseEntered(MouseEvent e) {
+                
+            }
+
+            public void mouseExited(MouseEvent e) {
+                
+            }
+            
+        });
+        
         
         registerComponents();
         
@@ -65,15 +192,45 @@ class CircuitPanel extends JPanel {
                 g.fillRect(i, j, 1, 1);
             }
         }
-        
-        g.translate(-40, -30);
-        
-        if(UIConstants.SNAP_TO_GRID){
-            g.drawImage(bi, (circuitX / 10)*10, (circuitY / 10)*10, this);
+         
+        int w = UIConstants.SELECTION_MARKER_WIDTH;
+                
+        // Draw previous components
+        for(SelectableComponent sc: drawnComponents){
+            g.drawImage(sc.getBufferedImage(), sc.getX(),  sc.getY(), this);
             
-        } else {
-            g.drawImage(bi, circuitX, circuitY, this);
+            // Highlighted component? 
+             if(sc.getSelectionType().equals(SelectionType.ACTIVE)){    
+                g.setColor(Color.BLUE);
+             } if (sc.getSelectionType().equals(SelectionType.SELECTED)){    
+                g.setColor(Color.RED);
+             }             
+             if (!sc.getSelectionType().equals(SelectionType.DEFAULT)){
+
+                // Draw Highlight 
+                g.drawRect(sc.getX(), sc.getY(), sc.getWidth(), sc.getHeight());
+                g.fillRect((int) sc.getArea().getMinX()-(w/2), (int) sc.getArea().getMinY()-(w/2), w, w);
+                g.fillRect((int) sc.getArea().getMaxX()-(w/2), (int) sc.getArea().getMinY()-(w/2), w, w);
+                g.fillRect((int) sc.getArea().getMinX()-(w/2), (int) sc.getArea().getMaxY()-(w/2), w, w);
+                g.fillRect((int) sc.getArea().getMaxX()-(w/2), (int) sc.getArea().getMaxY()-(w/2), w, w); 
+                
+            }
         }
+        
+        // Draw current temp component      
+        if(bi!=null && !currentDrawingComponent.equals("Select")){
+        
+            g.translate(-bi.getWidth()/2, -bi.getHeight()/2);            
+            g.drawImage(bi, circuitX , circuitY , this);            
+            g.translate(bi.getWidth()/2, bi.getHeight()/2); 
+            
+        } else if (nowDraging){
+            g.translate(-selectedComponent.getWidth()/2, -selectedComponent.getHeight()/2);          
+            g.drawImage(selectedComponent.getBufferedImage(), circuitX , circuitY , this);  
+            g.translate(-selectedComponent.getWidth()/2, -selectedComponent.getHeight()/2);          
+        }
+        
+                
     }
     
     public void addComponent(String name, String loc){
@@ -87,6 +244,7 @@ class CircuitPanel extends JPanel {
     }
     
     public void selectComponent(String name){
+        this.currentDrawingComponent = name;
         String loc = componentImageLoc.get(name); 
         if(loc!=null){
             try {

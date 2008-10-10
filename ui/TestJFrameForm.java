@@ -9,7 +9,6 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Event;
-import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,7 +43,6 @@ public class TestJFrameForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenuBar1 = new javax.swing.JMenuBar();
         jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
@@ -56,17 +54,12 @@ public class TestJFrameForm extends javax.swing.JFrame {
         jButton7 = new javax.swing.JButton();
         circuitFrame = new javax.swing.JInternalFrame();
         circuitPanel = new CircuitPanel();
-        jMenuBar2 = new javax.swing.JMenuBar();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
-
-        jMenuBar1.add(getFileMenu());
-        jMenuBar1.add(getEditMenu());
-        jMenuBar1.add(getHelpMenu());
-
-        getContentPane().add(jMenuBar1);
 
         jToolBar1.setRollover(true);
 
@@ -101,7 +94,7 @@ public class TestJFrameForm extends javax.swing.JFrame {
 
         jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.LINE_AXIS));
 
-        Selection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/components/originals/sml_select.png"))); // NOI18N
+        Selection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_select.png"))); // NOI18N
         Selection.setText(bundle.getString("TestJFrameForm.Selection.text")); // NOI18N
         Selection.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Selection.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -111,7 +104,7 @@ public class TestJFrameForm extends javax.swing.JFrame {
         });
         jPanel4.add(Selection);
 
-        AndGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/components/originals/sml_andgate.png"))); // NOI18N
+        AndGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_andgate.png"))); // NOI18N
         AndGate.setText(bundle.getString("TestJFrameForm.AndGate.text")); // NOI18N
         AndGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
         AndGate.setOpaque(false);
@@ -196,11 +189,14 @@ public class TestJFrameForm extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1);
 
+        jMenu1.setText(bundle.getString("TestJFrameForm.jMenu1.text_1")); // NOI18N
+        jMenuBar1.add(jMenu1);
+
         jMenuBar1.add(getFileMenu());
         jMenuBar1.add(getEditMenu());
         jMenuBar1.add(getHelpMenu());
 
-        setJMenuBar(jMenuBar2);
+        setJMenuBar(jMenuBar1);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -454,8 +450,8 @@ private void selectToolboxButton(JButton b){
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton7;
     private javax.swing.JInternalFrame jInternalFrame4;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JToolBar jToolBar1;
@@ -473,5 +469,4 @@ private void selectToolboxButton(JButton b){
     private javax.swing.JPanel aboutContentPane = null;
     private javax.swing.JLabel aboutVersionLabel = null;
     
-    private Graphics windowGraphics = this.getGraphics();
 }
