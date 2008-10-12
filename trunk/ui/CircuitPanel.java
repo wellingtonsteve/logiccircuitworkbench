@@ -5,6 +5,7 @@
 
 package ui;
 
+import java.awt.Point;
 import ui.tools.SelectionType;
 import ui.tools.SelectableComponent;
 import ui.tools.UITool;
@@ -21,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import ui.tools.Wire;
 
 
 /**
@@ -35,13 +37,15 @@ class CircuitPanel extends JPanel {
     private UITool currentTool = UITool.Select;
     private SelectableComponent selectedComponent;
     private boolean nowDraging = false;
+    private boolean drawingWire;
+    private Point wireStart;
+    private Point wireEnd;
     
     public CircuitPanel(){
         frameOriginX = this.getX();
         frameOriginY = this.getY();               
         
-        addMouseMotionListener(new MouseMotionAdapter(){
-            
+        addMouseMotionListener(new MouseMotionAdapter(){  
             
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -92,7 +96,7 @@ class CircuitPanel extends JPanel {
             
             @Override
             public void mouseDragged(MouseEvent e) {
-                
+                // TODO: Use Point instead of individual co-ordinates
                 circuitX = e.getX()-frameOriginX;                    
                 circuitY = e.getY()-frameOriginY;
 
@@ -113,7 +117,12 @@ class CircuitPanel extends JPanel {
                     }                   
                     
                     repaint();
-                }    
+                } else if(getCurrentTool().equals(UITool.Wire)){
+                    drawingWire = true;       
+                    wireEnd = snapPointToGrid(e.getPoint());
+                    
+                    repaint();
+                }
                          
             }
         });
@@ -168,10 +177,15 @@ class CircuitPanel extends JPanel {
 
                        selectedComponent.setSelectionType(SelectionType.ACTIVE);       
                    }
-
+                
+                   repaint();
+                }
+                
+                if(currentTool.equals(UITool.Wire)){
+                    wireStart = snapPointToGrid(e.getPoint());
                 }
 
-                repaint();
+                
                
             }
 
@@ -186,6 +200,10 @@ class CircuitPanel extends JPanel {
                 
                 if(!currentTool.equals(UITool.Select) && !nowDraging){
                     switch(currentTool){
+                        case Wire:
+                            drawnComponents.push(
+                                    new Wire(null, wireStart, wireEnd));    
+                            break;
                         case AndGate2Input:
                             drawnComponents.push(
                                     new AndGate2Input(null, circuitX-(bi.getWidth()/2), circuitY-(bi.getHeight()/2)));    
@@ -200,6 +218,8 @@ class CircuitPanel extends JPanel {
                     selectedComponent.setSelectionType(SelectionType.ACTIVE);
                     nowDraging = false;
                 }
+                
+                drawingWire = false;
                 
                 repaint();
             }
@@ -256,6 +276,13 @@ class CircuitPanel extends JPanel {
             g.translate(-selectedComponent.getWidth()/2, -selectedComponent.getHeight()/2); 
             
         }
+        
+        // Draw temporary wire
+        if(drawingWire){
+            g.setColor(UIConstants.WIRE_COLOUR);
+            g.drawLine(wireStart.x, wireStart.y, wireStart.x, wireEnd.y);
+            g.drawLine(wireStart.x, wireEnd.y, wireEnd.x, wireEnd.y);
+        }
                         
     }
             
@@ -263,7 +290,7 @@ class CircuitPanel extends JPanel {
         try {
             switch(tool){
                 case Wire:
-                   bi = ImageIO.read(new File("build/classes/ui/images/components/transparent.png"));
+                    bi = null;
                     break;
                 case AndGate2Input:
                     bi = ImageIO.read(new File("build/classes/ui/images/components/default_andgate.png"));
@@ -324,5 +351,13 @@ class CircuitPanel extends JPanel {
         return "Circuit cleared.";
     }
     
+    private Point snapPointToGrid(Point old){
+        if(UIConstants.SNAP_TO_GRID){
+            return new Point((int) (old.x / UIConstants.GRID_DOT_SPACING)*UIConstants.GRID_DOT_SPACING,
+                    (int) (old.y / UIConstants.GRID_DOT_SPACING)*UIConstants.GRID_DOT_SPACING);
+        } else {
+            return old;
+        }                
+    }
 
 }
