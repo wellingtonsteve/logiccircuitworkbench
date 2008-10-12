@@ -115,11 +115,6 @@ public class FrameMain extends javax.swing.JFrame {
                 SelectionMouseClicked(evt);
             }
         });
-        Selection.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SelectionActionPerformed(evt);
-            }
-        });
         jPanel4.add(Selection);
 
         Wire.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
@@ -513,10 +508,6 @@ private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
         infoLabel.setText(((CircuitPanel) circuitPanel).resetCircuit());
     }
 }//GEN-LAST:event_jButton2MouseClicked
-
-private void SelectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectionActionPerformed
-// TODO add your handling code here:
-}//GEN-LAST:event_SelectionActionPerformed
     
 private void toggleToolboxButton(JButton b){
     // Reset Selections
