@@ -5,6 +5,7 @@
 
 package ui.tools;
 
+import java.awt.Point;
 import ui.*;
 import java.io.File;
 import java.io.IOException;
@@ -17,10 +18,10 @@ import sim.Component;
  *
  * @author Matt
  */
-public class AndGate2Input extends SelectableComponent{
+public class AndGate2Input extends ImageSelectableComponent{
 
-    public AndGate2Input(Component component, int x, int y) {
-        super(component, x, y);
+    public AndGate2Input(Component component, Point point) {
+        super(component, point);
     }
 
     @Override
@@ -50,9 +51,10 @@ public class AndGate2Input extends SelectableComponent{
         }
     }
     
-     @Override
-     public String getName(){
-         return "And Gate (2 Input)";
-     }
+    @Override
+    public String getName(){
+        //return getComponent().getType();
+        return "And Gate (2 Input)";
+    }
 
 }

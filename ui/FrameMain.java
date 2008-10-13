@@ -526,7 +526,9 @@ private void toggleToolboxButton(JButton b){
     public static void main(String args[]) {
        // TODO case analysis for non-windows environments
         try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         } 
         catch (Exception e) {
            e.printStackTrace();

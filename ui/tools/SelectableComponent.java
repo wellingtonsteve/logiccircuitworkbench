@@ -5,8 +5,13 @@
 
 package ui.tools;
 
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
 import ui.*;
 import java.awt.Rectangle;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import sim.Component;
 
@@ -14,26 +19,23 @@ import sim.Component;
  *
  * @author Matt
  */
-public abstract class SelectableComponent {
+public abstract class SelectableComponent implements MouseMotionListener, MouseListener {
     
-    private Component component;
-    private int x;
-    private int y;
-    private SelectionType selectionType = SelectionType.DEFAULT;
+    protected Component component;
+    //protected int x;
+    //protected int y;
+    protected SelectionType selectionType = SelectionType.DEFAULT;
     protected BufferedImage defaultBi;
     protected BufferedImage selectedBi;
     protected BufferedImage activeBi;
-    private Rectangle area = null;
+    protected Rectangle boundingBox = null;
+    private boolean fixed = false;
+    private Point point;
 
-    public SelectableComponent(Component component, int x, int y){
+    public SelectableComponent(Component component,Point point){
         this.component = component;
-        this.x = x;
-        this.y = y;
-        setDefaultImage();
-        setSelectedImage();
-        setActiveImage();
-        this.area = new Rectangle(x,y,getDefaultImage().getWidth(),getDefaultImage().getHeight());
-    }    
+        this.point = point;
+    }
     
     public SelectionType getSelectionType() {
         return selectionType;
@@ -47,60 +49,49 @@ public abstract class SelectableComponent {
         return component;
     }
 
-    public int getX() {
-        return x;
+    public Point getOrigin(){
+        return point;
     }
-
-    public int getY() {
-        return y;
+    
+    public abstract int getWidth();
+    
+    public abstract int getHeight();
+    
+    //TODO: Implement translation
+    public void translate(Point point, boolean fixed) {
+        this.point = point;
+        this.fixed = fixed;    
+        setBoundingBox();
     }
-        
-    public void setPos(int x, int y) {
-        this.x = x;
-        this.y = y;
-        this.area = new Rectangle(x,y,getDefaultImage().getWidth(),getDefaultImage().getHeight());
+    
+    public boolean isFixed(){
+        return fixed;
     }
     
     public String getName(){
         return component.getType();
     }
     
-    public Rectangle getArea(){
-        return area;
+    public Rectangle getBoundingBox(){
+        if(boundingBox == null){
+            setBoundingBox();
+        }
+        return boundingBox;
     }
     
-    public int getWidth(){
-        return getDefaultImage().getWidth();
-    };
-    
-    public int getHeight(){
-        return getDefaultImage().getHeight();
-    }
-
-    public BufferedImage getActiveImage(){
-        return activeBi;
-    }
-
-    public BufferedImage getSelectedImage(){
-        return selectedBi;
+    protected void setBoundingBox(){
+        this.boundingBox = new Rectangle((int)point.getX(),(int)point.getY(),getWidth(),getHeight());
     }
     
-    public BufferedImage getDefaultImage(){
-        return defaultBi;   
-    }
+    public abstract boolean containsPoint(Point point);
+       
+    public abstract void mouseDragged(MouseEvent arg0);
+    public abstract void mouseMoved(MouseEvent arg0);
+    public abstract void mouseClicked(MouseEvent arg0);
+    public abstract void mouseEntered(MouseEvent arg0);
+    public abstract void mouseExited(MouseEvent arg0);
+    public abstract void mousePressed(MouseEvent arg0);
+    public abstract void mouseReleased(MouseEvent arg0);
     
-    public BufferedImage getCurrentImage(){
-        switch(getSelectionType()){
-            case ACTIVE:
-                return getActiveImage();
-            case SELECTED:
-                return getSelectedImage();            
-            default:
-                return getDefaultImage();            
-        }    
-    }
-
-    protected abstract void setDefaultImage();
-    protected abstract void setSelectedImage();
-    protected abstract void setActiveImage();
+    public abstract void draw(Graphics g, javax.swing.JComponent parent);
 }
