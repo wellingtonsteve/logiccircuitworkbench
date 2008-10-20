@@ -9,7 +9,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -20,36 +19,36 @@ import ui.ConnectionPoint;
  *
  * @author Matt
  */
-public class AndGate2Input extends ImageSelectableComponent{
+public class NorGate2Input extends ImageSelectableComponent{
 
-    public AndGate2Input(Component component, Point point) {
+    public NorGate2Input(Component component, Point point) {
         super(component, point);
     }
 
     @Override
     protected void setDefaultImage() {
          try {
-            defaultBi = ImageIO.read(new File("build/classes/ui/images/components/default_2in_and.png"));
+            defaultBi = ImageIO.read(new File("build/classes/ui/images/components/default_2in_nor.png"));
         } catch (IOException ex) {
-            Logger.getLogger(AndGate2Input.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NorGate2Input.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
     protected void setSelectedImage() {
          try {
-            selectedBi = ImageIO.read(new File("build/classes/ui/images/components/selected_2in_and.png"));
+            selectedBi = ImageIO.read(new File("build/classes/ui/images/components/selected_2in_nor.png"));
         } catch (IOException ex) {
-            Logger.getLogger(AndGate2Input.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NorGate2Input.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
     protected void setActiveImage() {
          try {
-            activeBi = ImageIO.read(new File("build/classes/ui/images/components/active_2in_and.png"));
+            activeBi = ImageIO.read(new File("build/classes/ui/images/components/active_2in_nor.png"));
         } catch (IOException ex) {
-            Logger.getLogger(AndGate2Input.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NorGate2Input.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -69,7 +68,7 @@ public class AndGate2Input extends ImageSelectableComponent{
     public Point getCentre(){
         return new Point(30,30);
     }
-
+    
     @Override
     public void setConnectionPoints() {
         ConnectionPoint in1 = new ConnectionPoint(this, 10, 20);
@@ -81,7 +80,4 @@ public class AndGate2Input extends ImageSelectableComponent{
         connectionPoints.add(out1);
         
     }
-
-
-    
 }

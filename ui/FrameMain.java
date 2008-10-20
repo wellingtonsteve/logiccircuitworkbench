@@ -44,6 +44,7 @@ public class FrameMain extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jSeparator2 = new javax.swing.JSeparator();
         jToolBar1 = new javax.swing.JToolBar();
@@ -55,14 +56,17 @@ public class FrameMain extends javax.swing.JFrame {
         Selection = new javax.swing.JButton();
         Wire = new javax.swing.JButton();
         AndGate = new javax.swing.JButton();
+        jToggleButton1 = new javax.swing.JToggleButton();
+        jToggleButton2 = new javax.swing.JToggleButton();
+        jToggleButton3 = new javax.swing.JToggleButton();
         circuitFrame = new javax.swing.JInternalFrame();
         circuitToolbar = new javax.swing.JToolBar();
         jButton2 = new javax.swing.JButton();
         delete_selected = new javax.swing.JButton();
-        circuitPanel = new CircuitPanel();
-        jSeparator1 = new javax.swing.JSeparator();
         statusPanel = new javax.swing.JPanel();
         infoLabel = new javax.swing.JLabel();
+        circuitPanel = new CircuitPanel();
+        jSeparator1 = new javax.swing.JSeparator();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
 
@@ -105,7 +109,7 @@ public class FrameMain extends javax.swing.JFrame {
         jInternalFrame4.setTitle(bundle.getString("TestJFrameForm.jInternalFrame4.title")); // NOI18N
         jInternalFrame4.setVisible(true);
 
-        jPanel4.setLayout(new java.awt.GridLayout(1, 3));
+        jPanel4.setLayout(new java.awt.GridBagLayout());
 
         Selection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_select.png"))); // NOI18N
         Selection.setText(bundle.getString("TestJFrameForm.Selection.text")); // NOI18N
@@ -115,62 +119,90 @@ public class FrameMain extends javax.swing.JFrame {
                 SelectionMouseClicked(evt);
             }
         });
-        jPanel4.add(Selection);
+        jPanel4.add(Selection, new java.awt.GridBagConstraints());
 
         Wire.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
         Wire.setText(bundle.getString("TestJFrameForm.Wire.text")); // NOI18N
         Wire.setToolTipText(bundle.getString("TestJFrameForm.Wire.toolTipText")); // NOI18N
         Wire.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Wire.setOpaque(false);
         Wire.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 WireMouseClicked(evt);
             }
         });
-        jPanel4.add(Wire);
+        jPanel4.add(Wire, new java.awt.GridBagConstraints());
 
         AndGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_andgate.png"))); // NOI18N
         AndGate.setText(bundle.getString("TestJFrameForm.AndGate.text")); // NOI18N
         AndGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        AndGate.setOpaque(false);
         AndGate.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 AndGateMouseClicked(evt);
             }
         });
-        jPanel4.add(AndGate);
+        jPanel4.add(AndGate, new java.awt.GridBagConstraints());
+
+        jToggleButton1.setText(bundle.getString("FrameMain.jToggleButton1.text")); // NOI18N
+        jToggleButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jToggleButton1MouseClicked(evt);
+            }
+        });
+
+        jToggleButton2.setText(bundle.getString("FrameMain.jToggleButton2.text")); // NOI18N
+        jToggleButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jToggleButton2MouseClicked(evt);
+            }
+        });
+
+        jToggleButton3.setText(bundle.getString("FrameMain.jToggleButton3.text")); // NOI18N
+        jToggleButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jToggleButton3MouseClicked(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout jInternalFrame4Layout = new org.jdesktop.layout.GroupLayout(jInternalFrame4.getContentPane());
         jInternalFrame4.getContentPane().setLayout(jInternalFrame4Layout);
         jInternalFrame4Layout.setHorizontalGroup(
             jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 120, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jInternalFrame4Layout.createSequentialGroup()
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(jToggleButton3)
+                    .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                        .add(jInternalFrame4Layout.createSequentialGroup()
+                            .add(jToggleButton1)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(jToggleButton2))
+                        .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .add(148, 148, 148))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jInternalFrame4Layout.createSequentialGroup()
-                    .add(0, 0, Short.MAX_VALUE)
-                    .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(0, 0, Short.MAX_VALUE)))
+                .add(0, 273, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 120, Short.MAX_VALUE))
+                .add(0, 273, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 120, Short.MAX_VALUE))
-            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 120, Short.MAX_VALUE))
+                .add(0, 273, Short.MAX_VALUE))
         );
         jInternalFrame4Layout.setVerticalGroup(
             jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 115, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jInternalFrame4Layout.createSequentialGroup()
+                .addContainerGap(81, Short.MAX_VALUE)
+                .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jToggleButton1)
+                    .add(jToggleButton2))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jToggleButton3)
+                .add(49, 49, 49))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jInternalFrame4Layout.createSequentialGroup()
-                    .add(0, 37, Short.MAX_VALUE)
-                    .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(0, 37, Short.MAX_VALUE)))
+                .add(0, 229, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 115, Short.MAX_VALUE))
+                .add(0, 229, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 115, Short.MAX_VALUE))
-            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 115, Short.MAX_VALUE))
+                .add(0, 229, Short.MAX_VALUE))
         );
 
         jInternalFrame4.setBounds(0, 0, 130, 150);
@@ -187,6 +219,7 @@ public class FrameMain extends javax.swing.JFrame {
         circuitFrame.getContentPane().setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
         circuitToolbar.setRollover(true);
+        circuitToolbar.setPreferredSize(new java.awt.Dimension(250, 31));
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/circuit_toolbar/clear_circuit.png"))); // NOI18N
         jButton2.setText(bundle.getString("TestJFrameForm.jButton2.text")); // NOI18N
@@ -218,7 +251,26 @@ public class FrameMain extends javax.swing.JFrame {
 
         circuitFrame.getContentPane().add(circuitToolbar);
 
+        infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        infoLabel.setText(bundle.getString("TestJFrameForm.infoLabel.text_1")); // NOI18N
+
+        org.jdesktop.layout.GroupLayout statusPanelLayout = new org.jdesktop.layout.GroupLayout(statusPanel);
+        statusPanel.setLayout(statusPanelLayout);
+        statusPanelLayout.setHorizontalGroup(
+            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(infoLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+        );
+        statusPanelLayout.setVerticalGroup(
+            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(infoLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+        );
+
+        circuitFrame.getContentPane().add(statusPanel);
+
         circuitPanel.setPreferredSize(new java.awt.Dimension(700, 400));
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, circuitFrame, org.jdesktop.beansbinding.ELProperty.create("${focusable}"), circuitPanel, org.jdesktop.beansbinding.BeanProperty.create("focusable"));
+        bindingGroup.addBinding(binding);
 
         org.jdesktop.layout.GroupLayout circuitPanelLayout = new org.jdesktop.layout.GroupLayout(circuitPanel);
         circuitPanel.setLayout(circuitPanelLayout);
@@ -236,25 +288,6 @@ public class FrameMain extends javax.swing.JFrame {
         jSeparator1.setPreferredSize(new java.awt.Dimension(750, 2));
         circuitFrame.getContentPane().add(jSeparator1);
 
-        infoLabel.setText(bundle.getString("TestJFrameForm.infoLabel.text_1")); // NOI18N
-
-        org.jdesktop.layout.GroupLayout statusPanelLayout = new org.jdesktop.layout.GroupLayout(statusPanel);
-        statusPanel.setLayout(statusPanelLayout);
-        statusPanelLayout.setHorizontalGroup(
-            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(statusPanelLayout.createSequentialGroup()
-                .add(infoLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 268, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        statusPanelLayout.setVerticalGroup(
-            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(statusPanelLayout.createSequentialGroup()
-                .add(infoLabel)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        circuitFrame.getContentPane().add(statusPanel);
-
         circuitFrame.setBounds(130, 0, 540, 460);
         DesktopPane.add(circuitFrame, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
@@ -270,6 +303,8 @@ public class FrameMain extends javax.swing.JFrame {
         jMenuBar1.add(getHelpMenu());
 
         setJMenuBar(jMenuBar1);
+
+        bindingGroup.bind();
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -469,19 +504,16 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_jButton1ActionPerformed
 
 private void SelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SelectionMouseClicked
-    circuitFrame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     toggleToolboxButton(Selection);
     ((CircuitPanel) circuitPanel).selectTool(UITool.Select);
 }//GEN-LAST:event_SelectionMouseClicked
 
 private void AndGateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AndGateMouseClicked
-    circuitFrame.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
     ((CircuitPanel) circuitPanel).selectTool(UITool.AndGate2Input);
     toggleToolboxButton(AndGate);
 }//GEN-LAST:event_AndGateMouseClicked
 
 private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WireMouseClicked
-    circuitFrame.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
     ((CircuitPanel) circuitPanel).selectTool(UITool.Wire);
     toggleToolboxButton(Wire);
 }//GEN-LAST:event_WireMouseClicked
@@ -493,7 +525,7 @@ private void delete_selectedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-F
                 "Are you sure that you want to delete the selected component?");
     
         if(ans == JOptionPane.YES_OPTION){
-            infoLabel.setText(((CircuitPanel) circuitPanel).deleteActiveComponent());
+            infoLabel.setText(((CircuitPanel) circuitPanel).deleteActiveComponents());
         }
     } 
         
@@ -508,6 +540,18 @@ private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:ev
         infoLabel.setText(((CircuitPanel) circuitPanel).resetCircuit());
     }
 }//GEN-LAST:event_jButton2MouseClicked
+
+private void jToggleButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton1MouseClicked
+((CircuitPanel) circuitPanel).selectTool(UITool.NandGate2Input);
+}//GEN-LAST:event_jToggleButton1MouseClicked
+
+private void jToggleButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton2MouseClicked
+((CircuitPanel) circuitPanel).selectTool(UITool.OrGate2Input);
+}//GEN-LAST:event_jToggleButton2MouseClicked
+
+private void jToggleButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton3MouseClicked
+((CircuitPanel) circuitPanel).selectTool(UITool.NorGate2Input);
+}//GEN-LAST:event_jToggleButton3MouseClicked
     
 private void toggleToolboxButton(JButton b){
     // Reset Selections
@@ -559,8 +603,12 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JPanel jPanel4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JToggleButton jToggleButton2;
+    private javax.swing.JToggleButton jToggleButton3;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel statusPanel;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
     private javax.swing.JMenu fileMenu = null;
     private javax.swing.JMenu editMenu = null;

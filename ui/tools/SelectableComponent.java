@@ -7,13 +7,15 @@ package ui.tools;
 
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
-import ui.*;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
+import java.util.List;
 import sim.Component;
+import ui.ConnectionPoint;
 
 /**
  *
@@ -22,27 +24,36 @@ import sim.Component;
 public abstract class SelectableComponent implements MouseMotionListener, MouseListener {
     
     protected Component component;
-    //protected int x;
-    //protected int y;
-    protected SelectionType selectionType = SelectionType.DEFAULT;
+    protected SelectionState selectionState = SelectionState.DEFAULT, preHoverState;
     protected BufferedImage defaultBi;
     protected BufferedImage selectedBi;
     protected BufferedImage activeBi;
     protected Rectangle boundingBox = null;
     private boolean fixed = false;
     private Point point;
+    protected List<ConnectionPoint> connectionPoints = new LinkedList<ConnectionPoint>();
 
     public SelectableComponent(Component component,Point point){
         this.component = component;
-        this.point = point;
+        if(point == null){
+            this.point = new Point(0,0);
+        } else {
+            this.point = point;
+        }
+        
+        setConnectionPoints();
     }
     
-    public SelectionType getSelectionType() {
-        return selectionType;
+    public SelectionState getSelectionState() {
+        return selectionState;
     }
 
-    public void setSelectionType(SelectionType selectiontype) {
-        this.selectionType = selectiontype;
+    protected void setSelectionState(SelectionState selectiontype) {
+        this.selectionState = selectiontype;
+    }
+    
+    public void resetDefaultState(){
+        this.selectionState = selectionState.DEFAULT;
     }
 
     public Component getComponent() {
@@ -57,15 +68,24 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     public abstract int getHeight();
     
-    //TODO: Implement translation
-    public void translate(Point point, boolean fixed) {
-        this.point = point;
+    public void translate(int dx, int dy, boolean fixed) {
+        this.point.translate(dx, dy);
         this.fixed = fixed;    
+        setBoundingBox();
+    }
+    
+    public void moveTo(Point point, boolean fixed){
+        this.point = point;
+        this.fixed = fixed;
         setBoundingBox();
     }
     
     public boolean isFixed(){
         return fixed;
+    }
+    
+    public void setFixed(){
+        this.fixed = true;
     }
     
     public String getName(){
@@ -78,20 +98,52 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         }
         return boundingBox;
     }
+
+    public void hover(){
+        if(selectionState != null && !this.selectionState.equals(SelectionState.ACTIVE)){
+            this.preHoverState = this.selectionState;
+            setSelectionState(SelectionState.HOVER);
+        }
+        
+    }
+    
+    public void unHover() {
+        if(selectionState!= null && this.selectionState.equals(SelectionState.HOVER)){
+            if(this.preHoverState == null){
+                this.preHoverState = selectionState.DEFAULT;
+            }
+            setSelectionState(this.preHoverState);
+        }
+    }
     
     protected void setBoundingBox(){
-        this.boundingBox = new Rectangle((int)point.getX(),(int)point.getY(),getWidth(),getHeight());
+        this.boundingBox = new Rectangle(getOrigin().x,getOrigin().y,getWidth(),getHeight());
+    }
+    
+    public Point getCentre(){
+        return new Point(getWidth()/2, getHeight()/2);
     }
     
     public abstract boolean containsPoint(Point point);
        
-    public abstract void mouseDragged(MouseEvent arg0);
-    public abstract void mouseMoved(MouseEvent arg0);
-    public abstract void mouseClicked(MouseEvent arg0);
-    public abstract void mouseEntered(MouseEvent arg0);
-    public abstract void mouseExited(MouseEvent arg0);
-    public abstract void mousePressed(MouseEvent arg0);
-    public abstract void mouseReleased(MouseEvent arg0);
+    public abstract void mouseDragged(MouseEvent e);
+    public abstract void mouseMoved(MouseEvent e);
+    public abstract void mouseClicked(MouseEvent e);
+    public abstract void mouseEntered(MouseEvent e);
+    public abstract void mouseExited(MouseEvent e);
+    public abstract void mousePressed(MouseEvent e);
+    public abstract void mouseReleased(MouseEvent e);
+    public abstract void mouseDraggedDropped(MouseEvent e);
     
     public abstract void draw(Graphics g, javax.swing.JComponent parent);
+    
+    public  List<ConnectionPoint> getConnectionPoints(){
+        return connectionPoints;
+    }
+    
+    public abstract void setConnectionPoints();
+    
+    public boolean containedIn(Rectangle selBox) {
+        return selBox.contains(getBoundingBox());
+    }
 }

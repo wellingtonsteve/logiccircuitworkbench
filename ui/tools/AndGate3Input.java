@@ -9,7 +9,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -20,16 +19,16 @@ import ui.ConnectionPoint;
  *
  * @author Matt
  */
-public class AndGate2Input extends ImageSelectableComponent{
+public class AndGate3Input extends ImageSelectableComponent{
 
-    public AndGate2Input(Component component, Point point) {
+    public AndGate3Input(Component component, Point point) {
         super(component, point);
     }
 
-    @Override
+  @Override
     protected void setDefaultImage() {
          try {
-            defaultBi = ImageIO.read(new File("build/classes/ui/images/components/default_2in_and.png"));
+            defaultBi = ImageIO.read(new File("build/classes/ui/images/components/default_3in_and.png"));
         } catch (IOException ex) {
             Logger.getLogger(AndGate2Input.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -38,7 +37,7 @@ public class AndGate2Input extends ImageSelectableComponent{
     @Override
     protected void setSelectedImage() {
          try {
-            selectedBi = ImageIO.read(new File("build/classes/ui/images/components/selected_2in_and.png"));
+            selectedBi = ImageIO.read(new File("build/classes/ui/images/components/selected_3in_and.png"));
         } catch (IOException ex) {
             Logger.getLogger(AndGate2Input.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -47,7 +46,7 @@ public class AndGate2Input extends ImageSelectableComponent{
     @Override
     protected void setActiveImage() {
          try {
-            activeBi = ImageIO.read(new File("build/classes/ui/images/components/active_2in_and.png"));
+            activeBi = ImageIO.read(new File("build/classes/ui/images/components/active_3in_and.png"));
         } catch (IOException ex) {
             Logger.getLogger(AndGate2Input.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -69,19 +68,19 @@ public class AndGate2Input extends ImageSelectableComponent{
     public Point getCentre(){
         return new Point(30,30);
     }
-
+    
     @Override
     public void setConnectionPoints() {
         ConnectionPoint in1 = new ConnectionPoint(this, 10, 20);
-        ConnectionPoint in2 = new ConnectionPoint(this, 10, 40);
+        ConnectionPoint in2 = new ConnectionPoint(this, 10, 30);
+        ConnectionPoint in3 = new ConnectionPoint(this, 10, 40);
         ConnectionPoint out1 = new ConnectionPoint(this, 60, 30);
                 
         connectionPoints.add(in1);
         connectionPoints.add(in2);
+        connectionPoints.add(in3);
         connectionPoints.add(out1);
         
     }
-
-
     
 }
