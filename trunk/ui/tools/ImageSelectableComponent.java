@@ -7,7 +7,6 @@ package ui.tools;
 
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import sim.Component;
@@ -26,6 +25,8 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
         setActiveImage();
         
         setBoundingBox();
+        
+        setSelectionState(SelectionState.DEFAULT);
     }    
     
     public int getWidth(){
@@ -49,10 +50,10 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     }
     
     protected BufferedImage getCurrentImage(){
-        switch(getSelectionType()){
+        switch(getSelectionState()){            
             case ACTIVE:
                 return getActiveImage();
-            case SELECTED:
+            case HOVER:
                 return getSelectedImage();            
             default:
                 return getDefaultImage();            
@@ -64,55 +65,58 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     protected abstract void setActiveImage();
     
     @Override
-    public void mouseDragged(MouseEvent arg0) {
-        setSelectionType(SelectionType.ACTIVE);
+    public void mouseDragged(MouseEvent e) {
+        setSelectionState(SelectionState.ACTIVE);
     }
 
-    @Override
-    public void mouseMoved(MouseEvent arg0) {
-        if(!getSelectionType().equals(SelectionType.ACTIVE)){
-             setSelectionType(SelectionType.SELECTED);
-        }
+    public void mouseDraggedDropped(MouseEvent e) {
+        setSelectionState(selectionState.ACTIVE);
     }
-
+    
     @Override
-    public void mouseClicked(MouseEvent arg0) {
-        
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent arg0) {
-        if(!getSelectionType().equals(SelectionType.ACTIVE)){
-             setSelectionType(SelectionType.SELECTED);
-        }
-    }
-
-    @Override
-    public void mouseExited(MouseEvent arg0) {
-        if(!getSelectionType().equals(SelectionType.SELECTED)){
-             setSelectionType(SelectionType.DEFAULT);
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent arg0) {
-        if(getSelectionType().equals(SelectionType.ACTIVE)){
-             setSelectionType(SelectionType.SELECTED);
-        } else {
-             setSelectionType(SelectionType.ACTIVE);
+    public void mouseMoved(MouseEvent e) {
+        if(!isFixed() && !getSelectionState().equals(SelectionState.ACTIVE)){
+             setSelectionState(SelectionState.DEFAULT);
         } 
     }
 
     @Override
-    public void mouseReleased(MouseEvent arg0) {
-           
+    public void mouseClicked(MouseEvent e) {
+        if(isFixed()){
+            if(getSelectionState().equals(SelectionState.ACTIVE)){
+                 setSelectionState(SelectionState.HOVER);
+                 
+            } else {
+                 setSelectionState(SelectionState.ACTIVE);
+            } 
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");  
+    }
+        
+    @Override
+    public void mouseExited(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        setSelectionState(SelectionState.ACTIVE);
     }
 
     @Override
     public void draw(Graphics g, javax.swing.JComponent parent) {
         g.drawImage(getCurrentImage(), (int)getOrigin().getX(), (int)getOrigin().getY(), parent);
     }
-    
+            
     @Override
     public boolean containsPoint(Point point) {
         return this.getBoundingBox().contains(point);

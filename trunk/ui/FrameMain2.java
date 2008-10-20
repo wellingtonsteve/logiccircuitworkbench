@@ -498,7 +498,7 @@ private void delete_selectedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-F
                 "Are you sure that you want to delete the selected component?");
     
         if(ans == JOptionPane.YES_OPTION){
-            infoLabel.setText(((CircuitPanel) circuitPanel).deleteActiveComponent());
+            infoLabel.setText(((CircuitPanel) circuitPanel).deleteActiveComponents());
         }
     } 
         

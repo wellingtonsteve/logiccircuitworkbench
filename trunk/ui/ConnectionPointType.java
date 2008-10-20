@@ -3,12 +3,14 @@
  * and open the template in the editor.
  */
 
-package ui.tools;
+package ui;
 
 /**
  *
  * @author Matt
  */
-public enum SelectionType {
-    SELECTED, DEFAULT, ACTIVE;
+public enum ConnectionPointType {
+    Wire,
+    InputPin,
+    OutputPin;
 }
