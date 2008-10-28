@@ -18,10 +18,10 @@ public class UIConstants {
     public static final Color CIRCUIT_BACKGROUND_COLOUR = Color.WHITE;
     public static final Color GRID_DOT_COLOUR = Color.GRAY;
     public static final Color DEFAULT_WIRE_COLOUR = Color.BLACK;
-    public static final Color ACTIVE_WIRE_COLOUR = Color.ORANGE;
-    public static final Color HOVER_WIRE_COLOUR = Color.YELLOW;
+    public static final Color ACTIVE_WIRE_COLOUR = Color.BLUE;
+    public static final Color HOVER_WIRE_COLOUR = Color.RED;
     
-    public static final int GRID_DOT_SPACING = 10;
+    public static final int GRID_DOT_SPACING = 10; // Changing this value will require the substantial changes to the component images and classes
     public static final boolean SNAP_TO_GRID = true;
 
     public static Color SELECTION_BOX_COLOUR = Color.BLACK;

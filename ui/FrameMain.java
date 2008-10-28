@@ -114,6 +114,9 @@ public class FrameMain extends javax.swing.JFrame {
         Selection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_select.png"))); // NOI18N
         Selection.setText(bundle.getString("TestJFrameForm.Selection.text")); // NOI18N
         Selection.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        Selection.setMaximumSize(new java.awt.Dimension(41, 41));
+        Selection.setMinimumSize(new java.awt.Dimension(41, 41));
+        Selection.setPreferredSize(new java.awt.Dimension(41, 41));
         Selection.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 SelectionMouseClicked(evt);
@@ -135,6 +138,9 @@ public class FrameMain extends javax.swing.JFrame {
         AndGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_andgate.png"))); // NOI18N
         AndGate.setText(bundle.getString("TestJFrameForm.AndGate.text")); // NOI18N
         AndGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        AndGate.setMaximumSize(new java.awt.Dimension(41, 41));
+        AndGate.setMinimumSize(new java.awt.Dimension(41, 41));
+        AndGate.setPreferredSize(new java.awt.Dimension(41, 41));
         AndGate.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 AndGateMouseClicked(evt);
@@ -188,7 +194,7 @@ public class FrameMain extends javax.swing.JFrame {
         jInternalFrame4Layout.setVerticalGroup(
             jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jInternalFrame4Layout.createSequentialGroup()
-                .addContainerGap(81, Short.MAX_VALUE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
@@ -205,7 +211,7 @@ public class FrameMain extends javax.swing.JFrame {
                 .add(0, 229, Short.MAX_VALUE))
         );
 
-        jInternalFrame4.setBounds(0, 0, 130, 150);
+        jInternalFrame4.setBounds(0, 0, 160, 150);
         DesktopPane.add(jInternalFrame4, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         circuitFrame.setClosable(true);
@@ -288,7 +294,7 @@ public class FrameMain extends javax.swing.JFrame {
         jSeparator1.setPreferredSize(new java.awt.Dimension(750, 2));
         circuitFrame.getContentPane().add(jSeparator1);
 
-        circuitFrame.setBounds(130, 0, 540, 460);
+        circuitFrame.setBounds(160, 0, 540, 460);
         DesktopPane.add(circuitFrame, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         jPanel1.add(DesktopPane);

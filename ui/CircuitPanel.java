@@ -47,7 +47,7 @@ class CircuitPanel extends JPanel {
     private int selY;
     private int selWidth;
     private int selHeight;
-    private HashMap<Point,LinkedList<ConnectionPoint>> zBuffer = new HashMap<Point, LinkedList<ConnectionPoint>>(); 
+    public static HashMap<Point,LinkedList<ConnectionPoint>> zBuffer = new HashMap<Point, LinkedList<ConnectionPoint>>(); 
 
     public CircuitPanel(){
         frameOriginX = this.getX();
@@ -68,12 +68,13 @@ class CircuitPanel extends JPanel {
                         drawnComponents.peek().moveTo(endPoint, false);
                         drawnComponents.peek().mouseMoved(e);
                         
+                        // Select the connection point for which to attach objects
                         for(ConnectionPoint cp: drawnComponents.peek().getConnectionPoints()){
                             if(zBuffer.get(cp.getLocation()) != null){
                                 zBuffer.get(cp.getLocation()).get(0).setIsActive(true);
                             }
                         }
-
+                        
 
                     // Hover highlights    
                     } else if (getCurrentTool().equals(UITool.Select)){
@@ -96,14 +97,15 @@ class CircuitPanel extends JPanel {
                         }
 
                     } 
+                    repaint();
                 } else if(currentTool.equals(UITool.Wire) && drawnComponents.peek() instanceof Wire){
                     endPoint = snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
                     
                     Wire w = (Wire) drawnComponents.peek();
                     w.setEndPoint(endPoint);
-
+                    repaint();
                 }
-                repaint();
+                
             }                   
             
             @Override
@@ -176,12 +178,7 @@ class CircuitPanel extends JPanel {
 
             public void mouseClicked(MouseEvent e) {
                 
-                 if (currentTool.equals(UITool.Wire)){
-                   
-                    drawnComponents.push(new Wire());
-                    ((Wire) drawnComponents.peek()).setStartPoint(endPoint);
-                    
-                } else {
+                 if (!currentTool.equals(UITool.Wire)){
                      
                     // Area we clicking empty space?
                     boolean clickingEmptySpace = true;
@@ -225,9 +222,10 @@ class CircuitPanel extends JPanel {
                         activeComponents.add(temporaryComponent);
 
                     } 
+                    repaint();
                 }     
                  
-                repaint();
+                
             }
             public void mouseEntered(MouseEvent e) {}
             public void mouseExited(MouseEvent e) {}
@@ -274,20 +272,34 @@ class CircuitPanel extends JPanel {
                     multipleSelection = false;
 
                 } else if (currentTool.equals(UITool.Wire)){
-                    if(!drawnComponents.peek().getOrigin().equals(new Point(0,0))){
+                    // Has the current wire been fixed?
+                    Wire w = (Wire) drawnComponents.peek();
+                    
+                    if(w.getOrigin().equals(endPoint)){
+                        // The start point is the same as the end point, 
+                        // We don't want this line
+                        drawnComponents.pop();
+                        drawnComponents.push(new Wire());
                         
-                        drawnComponents.peek().setFixed();
+                    } else if(!w.getOrigin().equals(new Point(0,0))){
+                       
+                        w.setFixed();
+                                                 
+                        // Should we continue to draw the wire?
+                        //      Only if we have not released on a connection point
+                        drawnComponents.push(new Wire());
+                        if(zBuffer.get(endPoint)==null){                            
+                            ((Wire) drawnComponents.peek()).setStartPoint(endPoint);
+                        }        
                         
                         // Add connection points to grid dots
-                        for(ConnectionPoint cp: drawnComponents.peek().getConnectionPoints()){
+                        for(ConnectionPoint cp: w.getConnectionPoints()){
                             if(zBuffer.get(cp.getLocation())==null){
                                 zBuffer.put(cp.getLocation(), new LinkedList<ConnectionPoint>());
                             }
                             zBuffer.get(cp.getLocation()).add(cp);
-                        }               
-                        
-                        drawnComponents.push(new Wire());
-                        ((Wire) drawnComponents.peek()).setStartPoint(endPoint);
+                        }                                                            
+                                        
                     }
                     
                 }               
