@@ -51,10 +51,17 @@ public class Wire extends SelectableComponent {
         return ((point.x >= x1 && point.x <= x2) && 
                 (point.y >= y1 && point.y <= y2)) ||
                 ((point.x >= x2 && point.x <= x3) && 
-                (point.y >= y2 && point.y <= y3));
+                (point.y >= y2 && point.y <= y3)) ||
+                ((point.x <= x1 && point.x >= x2) && 
+                (point.y <= y1 && point.y >= y2)) ||
+                ((point.x <= x2 && point.x >= x3) && 
+                (point.y <= y2 && point.y >= y3));
     }
     
     @Override
+    /**
+     * Origin = Start point for a wire
+     */
     public Point getOrigin() {
         return startPoint;
     }
