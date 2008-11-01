@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import sim.Component;
-import ui.ConnectionPoint;
+import ui.grid.ConnectionPoint;
 
 /**
  *
@@ -70,14 +70,14 @@ public class NorGate2Input extends ImageSelectableComponent{
     }
     
     @Override
-    public void setConnectionPoints() {
-        ConnectionPoint in1 = new ConnectionPoint(this, 10, 20);
-        ConnectionPoint in2 = new ConnectionPoint(this, 10, 40);
-        ConnectionPoint out1 = new ConnectionPoint(this, 60, 30);
-                
-        connectionPoints.add(in1);
-        connectionPoints.add(in2);
-        connectionPoints.add(out1);
+    public void setLocalPins() {
+        Point in1 = new Point(10, 20);
+        Point in2 = new Point(10, 40);
+        Point out1 = new Point(60, 30);
+        
+        localPins.add(in1);
+        localPins.add(in2);
+        localPins.add(out1);
         
     }
 }

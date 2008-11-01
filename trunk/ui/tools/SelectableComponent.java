@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ui.tools;
 
 import java.awt.Graphics;
@@ -15,7 +10,8 @@ import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 import sim.Component;
-import ui.ConnectionPoint;
+import ui.grid.Grid;
+import ui.grid.Pin;
 
 /**
  *
@@ -29,9 +25,10 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     protected BufferedImage selectedBi;
     protected BufferedImage activeBi;
     protected Rectangle boundingBox = null;
-    private boolean fixed = false;
+    protected boolean fixed = false;
     private Point point;
-    protected List<ConnectionPoint> connectionPoints = new LinkedList<ConnectionPoint>();
+    protected List<Point> localPins = new LinkedList<Point>();
+    protected List<Pin> globalPins = new LinkedList<Pin>();
 
     public SelectableComponent(Component component,Point point){
         this.component = component;
@@ -41,7 +38,8 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
             this.point = point;
         }
         
-        setConnectionPoints();
+        setLocalPins();
+
     }
     
     public SelectionState getSelectionState() {
@@ -69,23 +67,20 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     public abstract int getHeight();
     
     public void translate(int dx, int dy, boolean fixed) {
+        Grid.removeComponent(this);
         this.point.translate(dx, dy);
         this.fixed = fixed;    
         setBoundingBox();
+        setGlobalPins();
+        if(fixed){ Grid.addComponent(this); }
     }
     
     public void moveTo(Point point, boolean fixed){
-        this.point = point;
-        this.fixed = fixed;
-        setBoundingBox();
+        translate(point.x-this.point.x, point.y-this.point.y, fixed);
     }
     
     public boolean isFixed(){
         return fixed;
-    }
-    
-    public void setFixed(){
-        this.fixed = true;
     }
     
     public String getName(){
@@ -137,11 +132,22 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     public abstract void draw(Graphics g, javax.swing.JComponent parent);
     
-    public  List<ConnectionPoint> getConnectionPoints(){
-        return connectionPoints;
+    public  List<Pin> getGlobalPins(){
+        return globalPins;
     }
     
-    public abstract void setConnectionPoints();
+    protected void setGlobalPins(){
+        globalPins.clear();
+        for(Point p: getLocalPins()){
+            globalPins.add(new Pin(this, p.x + getOrigin().x - getCentre().x,p.y + getOrigin().y - getCentre().y));
+        }
+    }
+    
+    protected  List<Point> getLocalPins(){
+        return localPins;
+    }
+    
+    protected abstract void setLocalPins();
     
     public boolean containedIn(Rectangle selBox) {
         return selBox.contains(getBoundingBox());

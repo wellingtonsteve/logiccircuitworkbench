@@ -11,9 +11,8 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.geom.GeneralPath;
 import javax.swing.JComponent;
-import sim.Component;
-import ui.ConnectionPoint;
 import ui.UIConstants;
+import ui.grid.Grid;
 
 /**
  *
@@ -68,10 +67,14 @@ public class Wire extends SelectableComponent {
     
     @Override
     public void translate(int dx, int dy, boolean fixed) {
+        Grid.removeComponent(this);
         this.startPoint.translate(dx, dy);
         this.endPoint.translate(dx, dy);
-        if(fixed){setFixed();}
+        this.fixed = fixed;    
         setBoundingBox();
+        setLocalPins();
+        setGlobalPins();
+        if(fixed){ Grid.addComponent(this); }
     }
 
     @Override
@@ -236,35 +239,30 @@ public class Wire extends SelectableComponent {
     }
 
     @Override
-    public void setConnectionPoints() {
-        if(isFixed()){
-            if(x2-x1 > 0){
-                for(int x = 0; x<=x2-x1; x+=UIConstants.GRID_DOT_SPACING){
-                    connectionPoints.add(new ConnectionPoint(this, x, 0));
-                }
-            } else {
-                for(int x = 0; x<=x1-x2; x+=UIConstants.GRID_DOT_SPACING){
-                    connectionPoints.add(new ConnectionPoint(this, -x, 0));
-                }
+    public void setLocalPins() {
+        localPins.clear();
+
+        if(x2-x1 > 0){
+            for(int x = 0; x<=x2-x1; x+=UIConstants.GRID_DOT_SPACING){
+                localPins.add(new Point(x, 0));
             }
-            if(y3-y2 > 0){  
-                for(int y = 0; y<=y3-y2; y+=UIConstants.GRID_DOT_SPACING){
-                    connectionPoints.add(new ConnectionPoint(this, x2-x1, y));
-                }
-            } else {
-               for(int y = 0; y<=y2-y3; y+=UIConstants.GRID_DOT_SPACING){
-                    connectionPoints.add(new ConnectionPoint(this, x2-x1, -y));
-                } 
+        } else {
+            for(int x = 0; x<=x1-x2; x+=UIConstants.GRID_DOT_SPACING){
+                localPins.add(new Point(-x, 0));
             }
         }
+        if(y3-y2 > 0){  
+            for(int y = 0; y<=y3-y2; y+=UIConstants.GRID_DOT_SPACING){
+                localPins.add(new Point(x2-x1, y));
+            }
+        } else {
+           for(int y = 0; y<=y2-y3; y+=UIConstants.GRID_DOT_SPACING){
+                localPins.add(new Point(x2-x1, -y));
+            } 
+        }
+        
     }
-    
-    @Override
-    public void setFixed(){
-        super.setFixed();
-        setConnectionPoints();
-    }
-    
+        
     @Override
     public boolean containedIn(Rectangle selBox) {
         return selBox.contains(x1, y1) &&

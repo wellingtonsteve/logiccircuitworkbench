@@ -9,15 +9,15 @@ import java.awt.Point;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import javax.swing.JPanel;
+import ui.grid.Pin;
+import ui.grid.Grid;
 import ui.tools.AndGate2Input;
 import ui.tools.AndGate3Input;
 import ui.tools.NandGate2Input;
@@ -47,7 +47,7 @@ class CircuitPanel extends JPanel {
     private int selY;
     private int selWidth;
     private int selHeight;
-    public static HashMap<Point,LinkedList<ConnectionPoint>> zBuffer = new HashMap<Point, LinkedList<ConnectionPoint>>(); 
+
 
     public CircuitPanel(){
         frameOriginX = this.getX();
@@ -56,22 +56,23 @@ class CircuitPanel extends JPanel {
         addMouseMotionListener(new MouseMotionAdapter(){  
             
             @Override
+            @SuppressWarnings("static-access")
             public void mouseMoved(MouseEvent e) {
                 
                 if(!nowDraging && !currentTool.equals(UITool.Wire)){                
                     
                     // Find the location in the circuit
-                    endPoint = snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
+                    endPoint = Grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
                     
                     // Moving a new non-fixed component around
                     if(!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed() && !nowDraging){
                         drawnComponents.peek().moveTo(endPoint, false);
                         drawnComponents.peek().mouseMoved(e);
                         
-                        // Select the connection point for which to attach objects
-                        for(ConnectionPoint cp: drawnComponents.peek().getConnectionPoints()){
-                            if(zBuffer.get(cp.getLocation()) != null){
-                                zBuffer.get(cp.getLocation()).get(0).setIsActive(true);
+                        // Activate any connection points that overlap pins on the current non-fixed component
+                        for(Pin p: drawnComponents.peek().getGlobalPins()){
+                            if(Grid.isConnectionPoint(p)){
+                                Grid.setActivePoint(p,true);
                             }
                         }
                         
@@ -98,11 +99,16 @@ class CircuitPanel extends JPanel {
 
                     } 
                     repaint();
+                    
                 } else if(currentTool.equals(UITool.Wire) && drawnComponents.peek() instanceof Wire){
-                    endPoint = snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
+                    endPoint = Grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
                     
                     Wire w = (Wire) drawnComponents.peek();
                     w.setEndPoint(endPoint);
+                    if(Grid.isConnectionPoint(endPoint)){
+                        Grid.setActivePoint(endPoint, true);
+                    }
+                    
                     repaint();
                 }
                 
@@ -112,7 +118,7 @@ class CircuitPanel extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 
                 // Find the location in the circuit
-                endPoint = snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
+                endPoint = Grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
                 
                 if(getCurrentTool().equals(UITool.Select)){
                         
@@ -165,11 +171,13 @@ class CircuitPanel extends JPanel {
                     Wire w = (Wire) drawnComponents.peek();
                     w.setStartPoint(startPoint);                    
                     w.setEndPoint(endPoint);
-
+                    if(Grid.isConnectionPoint(endPoint)){
+                        Grid.setActivePoint(endPoint, true);
+                    }
                     repaint();
                 }
 
-                currentPoint = snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
+                currentPoint = Grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
                         
             }
         });
@@ -202,16 +210,15 @@ class CircuitPanel extends JPanel {
 
                         // Fix floating selection
                         if(!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed()){
-                            drawnComponents.peek().moveTo(endPoint, true);
-                            
-                            // Add connectionpoints to grid dots
-                            for(ConnectionPoint cp: drawnComponents.peek().getConnectionPoints()){
-                                if(zBuffer.get(cp.getLocation())==null){
-                                    zBuffer.put(cp.getLocation(), new LinkedList<ConnectionPoint>());
-                                }
-                                zBuffer.get(cp.getLocation()).add(cp);
-                            }
-                            
+                           
+                                                       
+                             // Add connection points to grid dots
+                            Point d = new Point(endPoint.x - drawnComponents.peek().getOrigin().x,
+                                    endPoint.y - drawnComponents.peek().getOrigin().y);                            
+                            if(Grid.canMoveComponent(drawnComponents.peek(), d)){
+                                drawnComponents.peek().moveTo(endPoint, true);                          
+                            } 
+                                
                             selectTool(currentTool);
                         }                               
 
@@ -226,27 +233,29 @@ class CircuitPanel extends JPanel {
                 }     
                  
                 
-            }
+            };
             public void mouseEntered(MouseEvent e) {}
             public void mouseExited(MouseEvent e) {}
 
             public void mousePressed(MouseEvent e) {                                                
 
-                startPoint = snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));  
-                currentPoint = snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
+                startPoint = Grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));  
+                currentPoint = Grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
 
             }
 
             public void mouseReleased(MouseEvent e) {
                 
                 // Find the location in the circuit
-                endPoint = snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));  
+                endPoint = Grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));  
 
                 // Drop draged components
                 if(nowDraging){
-                    for(SelectableComponent sc: activeComponents){                
-                        sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, true);
-                        sc.mouseDraggedDropped(e);
+                    for(SelectableComponent sc: activeComponents){    
+                        if(Grid.canMoveComponent(sc, new Point(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y))){
+                            sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, true);
+                            sc.mouseDraggedDropped(e);                         
+                        }
                     }
                     multipleSelection = false;                
                     nowDraging = false;
@@ -281,25 +290,16 @@ class CircuitPanel extends JPanel {
                         drawnComponents.pop();
                         drawnComponents.push(new Wire());
                         
-                    } else if(!w.getOrigin().equals(new Point(0,0))){
-                       
-                        w.setFixed();
-                                                 
+                    } else if(!w.getOrigin().equals(new Point(0,0))){                    
+                                                
                         // Should we continue to draw the wire?
                         //      Only if we have not released on a connection point
                         drawnComponents.push(new Wire());
-                        if(zBuffer.get(endPoint)==null){                            
+                        if(!Grid.isConnectionPoint(endPoint)){
                             ((Wire) drawnComponents.peek()).setStartPoint(endPoint);
-                        }        
-                        
-                        // Add connection points to grid dots
-                        for(ConnectionPoint cp: w.getConnectionPoints()){
-                            if(zBuffer.get(cp.getLocation())==null){
-                                zBuffer.put(cp.getLocation(), new LinkedList<ConnectionPoint>());
-                            }
-                            zBuffer.get(cp.getLocation()).add(cp);
-                        }                                                            
-                                        
+                        } 
+                           
+                        w.translate(0, 0, true);
                     }
                     
                 }               
@@ -372,28 +372,7 @@ class CircuitPanel extends JPanel {
         }
         
         // Draw Connection Points 
-        g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
-        for(Point p: zBuffer.keySet()){
-            if(p.equals(endPoint) && (currentTool.equals(UITool.Select) || currentTool.equals(UITool.Wire))){
-                Stroke def = g2.getStroke();
-                g2.setStroke(UIConstants.CONNECTED_POINT_STROKE);
-                g2.drawRect(p.x-3, p.y-3, 7, 7); 
-                g2.setStroke(def);
-            }
-            for(ConnectionPoint cp: zBuffer.get(p)){
-                if(cp.isActive()){
-                    Stroke def = g2.getStroke();
-                    g2.setStroke(UIConstants.CONNECTED_POINT_STROKE);
-                    g2.drawRect(p.x-3, p.y-3, 7, 7); 
-                    g2.setStroke(def);
-                    cp.setIsActive(false);
-                }
-                if(UIConstants.SHOW_CONNECTION_POINTS){
-                    g2.drawOval(cp.getLocation().x-1, cp.getLocation().y-1, 3, 3);
-                    g2.fillOval(cp.getLocation().x-1, cp.getLocation().y-1, 3, 3);
-                }
-            }
-        }               
+        Grid.draw(g2);
                                 
     }
             
@@ -462,6 +441,10 @@ class CircuitPanel extends JPanel {
 
         int size = activeComponents.size();
 
+        for(SelectableComponent sc: activeComponents){
+            Grid.removeComponent(sc);
+        }
+        
         drawnComponents.removeAll(activeComponents);        
         activeComponents.clear();
 
@@ -477,38 +460,11 @@ class CircuitPanel extends JPanel {
         temporaryComponent = null;
         nowDraging = false;
         multipleSelection = false;
-        zBuffer.clear();
+        Grid.clear();
         
         repaint();
         
         return "Circuit cleared.";
-    }
+    }    
     
-    private Point snapPointToGrid(Point old){
-        if(UIConstants.SNAP_TO_GRID){
-            //return new Point((int) (old.x / UIConstants.GRID_DOT_SPACING)*UIConstants.GRID_DOT_SPACING,
-            //        (int) (old.y / UIConstants.GRID_DOT_SPACING)*UIConstants.GRID_DOT_SPACING);
-            
-            int d = UIConstants.GRID_DOT_SPACING;
-            
-            int xDivD = (int) old.x / d;
-            int yDivD = (int) old.y / d;
-            
-            int newX = xDivD * d;
-            int newY = yDivD * d;
-            
-            if((old.x + (d/2)) >= (xDivD + 1) * d){
-                newX += d;
-            }
-            if((old.y + (d/2)) >=  (yDivD + 1) * d){
-                newY += d;
-            }
-            
-            return new Point(newX, newY);
-            
-        } else {
-            return old;
-        }                
-    }
-
 }
