@@ -52,13 +52,19 @@ public class FrameMain extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         DesktopPane = new javax.swing.JDesktopPane();
         jInternalFrame4 = new javax.swing.JInternalFrame();
+        jSplitPane1 = new javax.swing.JSplitPane();
         jPanel4 = new javax.swing.JPanel();
         Selection = new javax.swing.JButton();
         Wire = new javax.swing.JButton();
         AndGate = new javax.swing.JButton();
-        jToggleButton1 = new javax.swing.JToggleButton();
         jToggleButton2 = new javax.swing.JToggleButton();
         jToggleButton3 = new javax.swing.JToggleButton();
+        jToggleButton1 = new javax.swing.JToggleButton();
+        jPanel2 = new javax.swing.JPanel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
         circuitFrame = new javax.swing.JInternalFrame();
         circuitToolbar = new javax.swing.JToolBar();
         jButton2 = new javax.swing.JButton();
@@ -109,7 +115,9 @@ public class FrameMain extends javax.swing.JFrame {
         jInternalFrame4.setTitle(bundle.getString("TestJFrameForm.jInternalFrame4.title")); // NOI18N
         jInternalFrame4.setVisible(true);
 
-        jPanel4.setLayout(new java.awt.GridBagLayout());
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        jPanel4.setLayout(new java.awt.GridLayout(2, 3));
 
         Selection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_select.png"))); // NOI18N
         Selection.setText(bundle.getString("TestJFrameForm.Selection.text")); // NOI18N
@@ -122,7 +130,7 @@ public class FrameMain extends javax.swing.JFrame {
                 SelectionMouseClicked(evt);
             }
         });
-        jPanel4.add(Selection, new java.awt.GridBagConstraints());
+        jPanel4.add(Selection);
 
         Wire.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
         Wire.setText(bundle.getString("TestJFrameForm.Wire.text")); // NOI18N
@@ -133,7 +141,7 @@ public class FrameMain extends javax.swing.JFrame {
                 WireMouseClicked(evt);
             }
         });
-        jPanel4.add(Wire, new java.awt.GridBagConstraints());
+        jPanel4.add(Wire);
 
         AndGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_andgate.png"))); // NOI18N
         AndGate.setText(bundle.getString("TestJFrameForm.AndGate.text")); // NOI18N
@@ -146,14 +154,7 @@ public class FrameMain extends javax.swing.JFrame {
                 AndGateMouseClicked(evt);
             }
         });
-        jPanel4.add(AndGate, new java.awt.GridBagConstraints());
-
-        jToggleButton1.setText(bundle.getString("FrameMain.jToggleButton1.text")); // NOI18N
-        jToggleButton1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jToggleButton1MouseClicked(evt);
-            }
-        });
+        jPanel4.add(AndGate);
 
         jToggleButton2.setText(bundle.getString("FrameMain.jToggleButton2.text")); // NOI18N
         jToggleButton2.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -161,6 +162,7 @@ public class FrameMain extends javax.swing.JFrame {
                 jToggleButton2MouseClicked(evt);
             }
         });
+        jPanel4.add(jToggleButton2);
 
         jToggleButton3.setText(bundle.getString("FrameMain.jToggleButton3.text")); // NOI18N
         jToggleButton3.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -168,22 +170,65 @@ public class FrameMain extends javax.swing.JFrame {
                 jToggleButton3MouseClicked(evt);
             }
         });
+        jPanel4.add(jToggleButton3);
+
+        jToggleButton1.setText(bundle.getString("FrameMain.jToggleButton1.text")); // NOI18N
+        jToggleButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jToggleButton1MouseClicked(evt);
+            }
+        });
+        jPanel4.add(jToggleButton1);
+
+        jSplitPane1.setLeftComponent(jPanel4);
+
+        jTextField1.setText(bundle.getString("FrameMain.jTextField1.text")); // NOI18N
+
+        jLabel1.setText(bundle.getString("FrameMain.jLabel1.text")); // NOI18N
+
+        jLabel2.setText(bundle.getString("FrameMain.jLabel2.text")); // NOI18N
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(jLabel2)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(jLabel1)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel2Layout.createSequentialGroup()
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel1)
+                    .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel2))
+                .addContainerGap(134, Short.MAX_VALUE))
+        );
+
+        jSplitPane1.setRightComponent(jPanel2);
 
         org.jdesktop.layout.GroupLayout jInternalFrame4Layout = new org.jdesktop.layout.GroupLayout(jInternalFrame4.getContentPane());
         jInternalFrame4.getContentPane().setLayout(jInternalFrame4Layout);
         jInternalFrame4Layout.setHorizontalGroup(
             jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jInternalFrame4Layout.createSequentialGroup()
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jToggleButton3)
-                    .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                        .add(jInternalFrame4Layout.createSequentialGroup()
-                            .add(jToggleButton1)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(jToggleButton2))
-                        .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .add(148, 148, 148))
+            .add(jInternalFrame4Layout.createSequentialGroup()
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 148, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(0, 273, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -193,16 +238,9 @@ public class FrameMain extends javax.swing.JFrame {
         );
         jInternalFrame4Layout.setVerticalGroup(
             jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jInternalFrame4Layout.createSequentialGroup()
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jToggleButton1)
-                    .add(jToggleButton2))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jToggleButton3)
-                .add(49, 49, 49))
+            .add(jInternalFrame4Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(0, 229, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -211,7 +249,7 @@ public class FrameMain extends javax.swing.JFrame {
                 .add(0, 229, Short.MAX_VALUE))
         );
 
-        jInternalFrame4.setBounds(0, 0, 160, 150);
+        jInternalFrame4.setBounds(0, 0, 160, 310);
         DesktopPane.add(jInternalFrame4, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         circuitFrame.setClosable(true);
@@ -602,13 +640,19 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JLabel infoLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JInternalFrame jInternalFrame4;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JToggleButton jToggleButton3;
