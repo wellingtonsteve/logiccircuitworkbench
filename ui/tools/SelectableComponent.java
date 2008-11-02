@@ -7,8 +7,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 import sim.Component;
 import ui.grid.Grid;
 import ui.grid.Pin;
@@ -27,8 +27,8 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     protected Rectangle boundingBox = null;
     protected boolean fixed = false;
     private Point point;
-    protected List<Point> localPins = new LinkedList<Point>();
-    protected List<Pin> globalPins = new LinkedList<Pin>();
+    protected Collection<Point> localPins = new HashSet<Point>();
+    protected Collection<Pin> globalPins = new HashSet<Pin>();
 
     public SelectableComponent(Component component,Point point){
         this.component = component;
@@ -132,7 +132,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     public abstract void draw(Graphics g, javax.swing.JComponent parent);
     
-    public  List<Pin> getGlobalPins(){
+    public  Collection<Pin> getGlobalPins(){
         return globalPins;
     }
     
@@ -143,7 +143,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         }
     }
     
-    protected  List<Point> getLocalPins(){
+    protected  Collection<Point> getLocalPins(){
         return localPins;
     }
     

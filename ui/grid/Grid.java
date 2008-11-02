@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ui.grid;
 
 import java.awt.Graphics2D;
@@ -83,11 +78,20 @@ public class Grid {
         }
         
         if(go instanceof ConnectionPoint){
-            if(p.getParent() instanceof Wire 
-                    //&& !((ConnectionPoint) go).hasConnection(p)
-                    && ((ConnectionPoint) go).isWire()){
-                grid.remove(p);
+            // Is a crossover point needed?
+            if(p.getParent() instanceof Wire                                // The current pin belongs to a wire
+                    && ((ConnectionPoint) go).isWire()                      // Current point is a wire
+                    && !((ConnectionPoint) go).isSameWire(p.getParent())    // Not the same wire
+                    && !((Wire) p.getParent()).getEndPoint().equals(p)      // Not the end point of a wire
+                    && !((Wire) p.getParent()).getOrigin().equals(p)){      // Not the start point of a wire
                 grid.put(p, new WireCrossover(p, p.getParent()));
+            // Is a join point needed?
+            } else if(p.getParent() instanceof Wire                         // The current pin belongs to a wire
+                    && ((ConnectionPoint) go).isWire()                      // Current point is a wire
+                    && !((ConnectionPoint) go).isSameWire(p.getParent())    // Not the same wire
+                    && (((Wire) p.getParent()).getEndPoint().equals(p)      // Is the end point of a wire
+                       || ((Wire) p.getParent()).getOrigin().equals(p))){   // Is the start point of a wire
+                grid.put(p, new WireJoin(p));
             } else {
                 ((ConnectionPoint) go).addConnection(p);
             }

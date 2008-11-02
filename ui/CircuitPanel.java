@@ -100,7 +100,9 @@ class CircuitPanel extends JPanel {
                     } 
                     repaint();
                     
-                } else if(currentTool.equals(UITool.Wire) && drawnComponents.peek() instanceof Wire){
+                } else if(currentTool.equals(UITool.Wire) 
+                        && !drawnComponents.isEmpty()
+                        && drawnComponents.peek() instanceof Wire){
                     endPoint = Grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
                     
                     Wire w = (Wire) drawnComponents.peek();
@@ -166,7 +168,8 @@ class CircuitPanel extends JPanel {
                     }
             
                     repaint();
-                } else if(currentTool.equals(UITool.Wire)){
+                } else if(currentTool.equals(UITool.Wire) 
+                        && !drawnComponents.isEmpty()){
                    
                     Wire w = (Wire) drawnComponents.peek();
                     w.setStartPoint(startPoint);                    
@@ -280,7 +283,8 @@ class CircuitPanel extends JPanel {
                     
                     multipleSelection = false;
 
-                } else if (currentTool.equals(UITool.Wire)){
+                } else if (currentTool.equals(UITool.Wire) 
+                        && !drawnComponents.isEmpty()){
                     // Has the current wire been fixed?
                     Wire w = (Wire) drawnComponents.peek();
                     
@@ -293,13 +297,16 @@ class CircuitPanel extends JPanel {
                     } else if(!w.getOrigin().equals(new Point(0,0))){                    
                                                 
                         // Should we continue to draw the wire?
-                        //      Only if we have not released on a connection point
-                        drawnComponents.push(new Wire());
+                        //      Only if we have not released on a connection point                        
                         if(!Grid.isConnectionPoint(endPoint)){
-                            ((Wire) drawnComponents.peek()).setStartPoint(endPoint);
-                        } 
+                            w.addWaypoint(endPoint);
+                        } else {
+                            w.setEndPoint(endPoint);
+                            w.translate(0, 0, true);
+                            drawnComponents.push(new Wire());
+                        }
                            
-                        w.translate(0, 0, true);
+                        
                     }
                     
                 }               

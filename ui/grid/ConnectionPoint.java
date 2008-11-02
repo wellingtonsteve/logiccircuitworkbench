@@ -10,6 +10,7 @@ import java.awt.Point;
 import java.awt.Stroke;
 import java.util.LinkedList;
 import ui.UIConstants;
+import ui.tools.SelectableComponent;
 import ui.tools.Wire;
 
 /**
@@ -40,6 +41,16 @@ public class ConnectionPoint extends GridObject {
         return !connections.isEmpty();
     }
     
+    public boolean isSameWire(SelectableComponent sc){
+        for(Pin p: connections){
+            if(p.getParent() instanceof Wire 
+                    && p.getParent().equals(sc)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public boolean isWire(){
         for(Pin p: connections){
             if(p.getParent() instanceof Wire){
@@ -62,12 +73,13 @@ public class ConnectionPoint extends GridObject {
         if(isActive){
             Stroke def = g2.getStroke();
             g2.setStroke(UIConstants.CONNECTED_POINT_STROKE);
+            g2.setColor(UIConstants.ACTIVE_WIRE_COLOUR);
             g2.drawRect(x-3, y-3, 7, 7); 
             g2.setStroke(def);
             isActive = false;
         }
         
-        if(UIConstants.SHOW_CONNECTION_POINTS){
+        if(UIConstants.SHOW_CONNECTION_POINTS){                
                 g2.drawOval(x-1, y-1, 3, 3);
                 g2.fillOval(x-1, y-1, 3, 3);
         }
