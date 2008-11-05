@@ -126,7 +126,7 @@ class CircuitPanel extends JPanel {
                         
                     if(nowDraging){
                         for(SelectableComponent sc: activeComponents){
-                            sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, false);
+                            sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, true); // HERE
                             sc.mouseDragged(e);
                         }
                     }  else {
@@ -160,7 +160,7 @@ class CircuitPanel extends JPanel {
                             
                             
                             for(SelectableComponent sc: activeComponents){                
-                                sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, false);
+                                sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, true);// HERE
                                 sc.mouseDragged(e);
                             }
 
@@ -214,7 +214,9 @@ class CircuitPanel extends JPanel {
                         // Fix floating selection
                         if(!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed()){
                            
-                                                       
+                           
+                            
+                            // TODO: move canMove... check inside moveTo and translate methods
                              // Add connection points to grid dots
                             Point d = new Point(endPoint.x - drawnComponents.peek().getOrigin().x,
                                     endPoint.y - drawnComponents.peek().getOrigin().y);                            
@@ -255,10 +257,10 @@ class CircuitPanel extends JPanel {
                 // Drop draged components
                 if(nowDraging){
                     for(SelectableComponent sc: activeComponents){    
-                        if(Grid.canMoveComponent(sc, new Point(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y))){
+                        //if(Grid.canMoveComponent(sc, new Point(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y))){
                             sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, true);
                             sc.mouseDraggedDropped(e);                         
-                        }
+                        //}
                     }
                     multipleSelection = false;                
                     nowDraging = false;
@@ -326,6 +328,13 @@ class CircuitPanel extends JPanel {
         }
         activeComponents.clear();
     }
+    public void selectAllComponents() {
+        activeComponents.clear();
+        for (SelectableComponent sc : drawnComponents) {
+            sc.mouseClicked(null);
+            activeComponents.add(sc);
+        }
+    }
     
     private void setSelectionBox() {
         selX = startPoint.x;
@@ -368,9 +377,7 @@ class CircuitPanel extends JPanel {
             g2.translate(sc.getCentre().x, sc.getCentre().y);           
         }
         
-        if(nowDraging){
-           
-        } else if(multipleSelection){
+        if(multipleSelection){
                         
             g2.setColor(UIConstants.SELECTION_BOX_COLOUR);
             g2.setStroke(UIConstants.SELECTION_BOX_STROKE);

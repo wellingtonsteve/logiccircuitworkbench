@@ -22,6 +22,7 @@ public class Pin extends Point {
     }
     
     public SelectableComponent getParent(){
-        return parent;
+        return parent;        
     }
+        
 }
