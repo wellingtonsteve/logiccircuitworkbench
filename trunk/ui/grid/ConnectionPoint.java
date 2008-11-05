@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ui.grid;
 
 import java.awt.Graphics2D;
@@ -31,27 +26,43 @@ public class ConnectionPoint extends GridObject {
     
     public boolean removeConnection(Pin p){
         return connections.remove(p);
-    }
+    }           
      
     public boolean hasConnection(Pin p){
         return connections.contains(p);
+    }
+    
+    public Pin moveWireEnds(Point oldPoint, Point newPoint){
+        for(Pin pin: connections){
+            if(pin.getParent() instanceof Wire){
+                Wire w = (Wire) pin.getParent();
+                if(w.getEndPoint().equals(this)){
+                    w.moveEndPoint(newPoint);
+                    return pin;
+                } else if(w.getOrigin().equals(this)){
+                    w.moveStartPoint(newPoint);
+                    return pin;
+                }
+                
+            }
+        } return null;
     }
     
     public boolean isConnected(){
         return !connections.isEmpty();
     }
     
-    public boolean isSameWire(SelectableComponent sc){
+    public boolean isNotSameWire(SelectableComponent sc){
         for(Pin p: connections){
             if(p.getParent() instanceof Wire 
-                    && p.getParent().equals(sc)){
+                    && !p.getParent().equals(sc)){
                 return true;
             }
         }
         return false;
     }
     
-    public boolean isWire(){
+    public boolean isWire(){       
         for(Pin p: connections){
             if(p.getParent() instanceof Wire){
                 return true;
@@ -73,16 +84,17 @@ public class ConnectionPoint extends GridObject {
         if(isActive){
             Stroke def = g2.getStroke();
             g2.setStroke(UIConstants.CONNECTED_POINT_STROKE);
-            g2.setColor(UIConstants.ACTIVE_WIRE_COLOUR);
+            g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
             g2.drawRect(x-3, y-3, 7, 7); 
             g2.setStroke(def);
             isActive = false;
         }
         
         if(UIConstants.SHOW_CONNECTION_POINTS){                
+                g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
                 g2.drawOval(x-1, y-1, 3, 3);
                 g2.fillOval(x-1, y-1, 3, 3);
         }
     }
-    
+        
 }

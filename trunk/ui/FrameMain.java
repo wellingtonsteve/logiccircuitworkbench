@@ -67,8 +67,9 @@ public class FrameMain extends javax.swing.JFrame {
         jComboBox1 = new javax.swing.JComboBox();
         circuitFrame = new javax.swing.JInternalFrame();
         circuitToolbar = new javax.swing.JToolBar();
-        jButton2 = new javax.swing.JButton();
+        clear_circuit = new javax.swing.JButton();
         delete_selected = new javax.swing.JButton();
+        select_all = new javax.swing.JButton();
         statusPanel = new javax.swing.JPanel();
         infoLabel = new javax.swing.JLabel();
         circuitPanel = new CircuitPanel();
@@ -77,6 +78,8 @@ public class FrameMain extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
+        setTitle(bundle.getString("FrameMain.title")); // NOI18N
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setMinimumSize(new java.awt.Dimension(750, 510));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
@@ -86,7 +89,6 @@ public class FrameMain extends javax.swing.JFrame {
         jToolBar1.setMinimumSize(new java.awt.Dimension(750, 23));
         jToolBar1.setPreferredSize(new java.awt.Dimension(750, 23));
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
         jButton1.setText(bundle.getString("TestJFrameForm.jButton1.text_1")); // NOI18N
         jButton1.setFocusable(false);
         jButton1.setHideActionText(true);
@@ -265,18 +267,18 @@ public class FrameMain extends javax.swing.JFrame {
         circuitToolbar.setRollover(true);
         circuitToolbar.setPreferredSize(new java.awt.Dimension(250, 31));
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/circuit_toolbar/clear_circuit.png"))); // NOI18N
-        jButton2.setText(bundle.getString("TestJFrameForm.jButton2.text")); // NOI18N
-        jButton2.setToolTipText(bundle.getString("TestJFrameForm.jButton2.toolTipText")); // NOI18N
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+        clear_circuit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/circuit_toolbar/clear_circuit.png"))); // NOI18N
+        clear_circuit.setText(bundle.getString("TestJFrameForm.jButton2.text")); // NOI18N
+        clear_circuit.setToolTipText(bundle.getString("TestJFrameForm.jButton2.toolTipText")); // NOI18N
+        clear_circuit.setFocusable(false);
+        clear_circuit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        clear_circuit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        clear_circuit.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton2MouseClicked(evt);
+                clear_circuitMouseClicked(evt);
             }
         });
-        circuitToolbar.add(jButton2);
+        circuitToolbar.add(clear_circuit);
 
         delete_selected.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/circuit_toolbar/delete_selected.png"))); // NOI18N
         delete_selected.setText(bundle.getString("TestJFrameForm.delete_selected.text")); // NOI18N
@@ -292,6 +294,17 @@ public class FrameMain extends javax.swing.JFrame {
             }
         });
         circuitToolbar.add(delete_selected);
+
+        select_all.setText(bundle.getString("FrameMain.select_all.text")); // NOI18N
+        select_all.setFocusable(false);
+        select_all.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        select_all.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        select_all.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                select_allMouseClicked(evt);
+            }
+        });
+        circuitToolbar.add(select_all);
 
         circuitFrame.getContentPane().add(circuitToolbar);
 
@@ -576,14 +589,14 @@ private void delete_selectedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-F
         
 }//GEN-LAST:event_delete_selectedMouseClicked
 
-private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+private void clear_circuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clear_circuitMouseClicked
     int ans = JOptionPane.showConfirmDialog(this, 
         "Are you sure that you want to clear this circuit?");
     
     if(ans == JOptionPane.YES_OPTION){
         infoLabel.setText(((CircuitPanel) circuitPanel).resetCircuit());
     }
-}//GEN-LAST:event_jButton2MouseClicked
+}//GEN-LAST:event_clear_circuitMouseClicked
 
 private void jToggleButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton1MouseClicked
 ((CircuitPanel) circuitPanel).selectTool(UITool.NandGate2Input);
@@ -596,6 +609,10 @@ private void jToggleButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FI
 private void jToggleButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton3MouseClicked
 ((CircuitPanel) circuitPanel).selectTool(UITool.NorGate2Input);
 }//GEN-LAST:event_jToggleButton3MouseClicked
+
+private void select_allMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_select_allMouseClicked
+    ((CircuitPanel) circuitPanel).selectAllComponents();
+}//GEN-LAST:event_select_allMouseClicked
     
 private void toggleToolboxButton(JButton b){
     // Reset Selections
@@ -636,10 +653,10 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JInternalFrame circuitFrame;
     private javax.swing.JPanel circuitPanel;
     private javax.swing.JToolBar circuitToolbar;
+    private javax.swing.JButton clear_circuit;
     private javax.swing.JButton delete_selected;
     private javax.swing.JLabel infoLabel;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JInternalFrame jInternalFrame4;
     private javax.swing.JLabel jLabel1;
@@ -657,6 +674,7 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JToggleButton jToggleButton3;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JButton select_all;
     private javax.swing.JPanel statusPanel;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables

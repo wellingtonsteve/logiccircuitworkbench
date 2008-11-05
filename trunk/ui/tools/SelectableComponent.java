@@ -67,12 +67,29 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     public abstract int getHeight();
     
     public void translate(int dx, int dy, boolean fixed) {
-        Grid.removeComponent(this);
+        //Grid.removeComponent(this);
+        
+        // TODO: add check that translation is valid
+        
         this.point.translate(dx, dy);
-        this.fixed = fixed;    
-        setBoundingBox();
+        
+        
         setGlobalPins();
-        if(fixed){ Grid.addComponent(this); }
+                
+        // Adding this component to the grid for the first time
+        if(this.fixed == false && fixed == true){ 
+            Grid.addComponent(this); 
+        // Trying to "unfix" this component
+        } else if (this.fixed == true && fixed == false){
+            throw new Error("Cannot remove this component from the Connection Point Grid");
+        // Just moving around 
+        } else {
+            Grid.translateComponent(dx,dy,this);
+        }
+        
+        setBoundingBox();
+        this.fixed = fixed;  
+        
     }
     
     public void moveTo(Point point, boolean fixed){
@@ -137,9 +154,16 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     protected void setGlobalPins(){
+        for(Pin p: globalPins){
+            Grid.removePin(p);
+        }
+        
         globalPins.clear();
+        
         for(Point p: getLocalPins()){
-            globalPins.add(new Pin(this, p.x + getOrigin().x - getCentre().x,p.y + getOrigin().y - getCentre().y));
+            Pin pin = new Pin(this, p.x + getOrigin().x - getCentre().x,p.y + getOrigin().y - getCentre().y);
+            globalPins.add(pin);
+            Grid.addPin(pin);
         }
     }
     
