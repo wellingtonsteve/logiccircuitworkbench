@@ -126,7 +126,7 @@ class CircuitPanel extends JPanel {
                         
                     if(nowDraging){
                         for(SelectableComponent sc: activeComponents){
-                            sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, true); // HERE
+                            sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, false); 
                             sc.mouseDragged(e);
                         }
                     }  else {
@@ -160,7 +160,7 @@ class CircuitPanel extends JPanel {
                             
                             
                             for(SelectableComponent sc: activeComponents){                
-                                sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, true);// HERE
+                                sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, false);
                                 sc.mouseDragged(e);
                             }
 
