@@ -87,21 +87,19 @@ public class Wire extends SelectableComponent {
             p.translate(dx, dy);
         }
         setBoundingBox();
+        this.fixed = fixed; 
         setLocalPins();
         setGlobalPins();
         
         // Adding this component to the grid for the first time
         if(this.fixed == false && fixed == true){ 
             Grid.addComponent(this); 
-        // Trying to "unfix" this component
-        } else if (this.fixed == true && fixed == false){
-            throw new Error("Cannot remove this component from the Connection Point Grid");
         // Just moving around 
         } else {
             Grid.translateComponent(dx,dy,this);
         }
         
-        this.fixed = fixed; 
+        
     }
 
     @Override
@@ -160,16 +158,17 @@ public class Wire extends SelectableComponent {
     }
 
     public void setEndPoint(Point endPoint) {
-        this.endPoint = endPoint;
-        
+        this.endPoint = endPoint;        
     }
     
     public void moveEndPoint(Point p) {        
        
         setEndPoint(p);
-        addWaypoint(endPoint);
-        setLocalPins();
-        setGlobalPins();
+        //addWaypoint(endPoint);
+        if(isFixed()){
+            setLocalPins();
+            setGlobalPins(); 
+        }
         
     }
 
@@ -180,18 +179,22 @@ public class Wire extends SelectableComponent {
     public void moveStartPoint(Point p) {
 
         setStartPoint(p);
-        if(!waypoints.isEmpty() && !waypoints.getFirst().equals(startPoint)){
-            waypoints.addFirst(startPoint);
+//        if(!waypoints.isEmpty() && !waypoints.getFirst().equals(startPoint)){
+//            //waypoints.addFirst(startPoint);
+//        }
+        if(isFixed()){
+            setLocalPins();
+            setGlobalPins(); 
         }
-        setLocalPins();
-        setGlobalPins();   
+          
     }
 
     public void addWaypoint(Point wp) {
      
-        if(!waypoints.isEmpty() && !waypoints.getLast().equals(wp)){
+        //if(!waypoints.isEmpty() && !waypoints.getLast().equals(wp)){
             waypoints.add(wp);
-        }
+        //    System.out.println(wp);
+        //}
         
     }
 
