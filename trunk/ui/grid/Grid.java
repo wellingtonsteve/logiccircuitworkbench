@@ -27,16 +27,13 @@ public class Grid {
     }
     
     public static boolean markInvalidAreas(SelectableComponent sc){
-//        for(Pin p: sc.getGlobalPins()){ 
-//            if(!addPin(p)){ return false; }
-//        }        
         if(!(sc instanceof ui.tools.Wire)){
             Rectangle bb = sc.getBoundingBox();
             for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
                 for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
                     Point p = snapPointToGrid(new Point(i, j));
                     if(bb.contains(p)){
-                        grid.put(p, new InvalidPoint(p, sc));
+                        grid.put(new Point(p.x, p.y), new InvalidPoint(p, sc));
                     }
                 }
             }
@@ -44,10 +41,7 @@ public class Grid {
         return true;
     }
 
-    public static void translateComponent(int dx, int dy, SelectableComponent sc) {
-        
-        //if(sc.isFixed()){
-            
+    public static void translateComponent(int dx, int dy, SelectableComponent sc) {            
             if(!(sc instanceof ui.tools.Wire)){
                 Rectangle bb = sc.getBoundingBox();
                 for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
@@ -56,40 +50,32 @@ public class Grid {
                         if(bb.contains(p)
                                 && getGridObjectAt(p) instanceof InvalidPoint 
                                 && ((InvalidPoint) getGridObjectAt(p)).getParent().equals(sc)){
-                            grid.remove(p);
+                            grid.remove(new Point(p.x, p.y));
                         }
                     }
                 }
+                
+                for(Pin p: sc.getGlobalPins()){ 
+                    Pin oldPin = new Pin(p.getParent(), p.x-dx, p.y-dy);
+                    if(getGridObjectAt(oldPin) instanceof ConnectionPoint){
+                        ((ConnectionPoint) getGridObjectAt(oldPin)).moveWireEnds(new Point(p.x, p.y));                
+
+                    } 
+                }   
             }
             
-            for(Pin p: sc.getGlobalPins()){ 
-                Pin oldPin = new Pin(p.getParent(), p.x-dx, p.y-dy);
-                if(getGridObjectAt(oldPin) instanceof ConnectionPoint){
-                    if(((ConnectionPoint) getGridObjectAt(oldPin)).isActive()){
-                        System.out.println("yes");
-                    }
-                    ((ConnectionPoint) getGridObjectAt(oldPin)).moveWireEnds(p);                
-
-                } 
-            }   
             
-            //refreshGridObjects(); Crossovers, Joins etc..
-        //}
 
     }
     
     public static void removeComponent(SelectableComponent sc){
-        if(sc.isFixed()){
             for(Pin p: sc.getGlobalPins()){ 
                 if(getGridObjectAt(p) instanceof ConnectionPoint){
-                    //((ConnectionPoint) getGridObjectAt(p)).moveWireEnds(p);
                     ((ConnectionPoint) getGridObjectAt(p)).removeConnection(p);
                     if(!((ConnectionPoint)getGridObjectAt(p)).isConnected()){
-                        grid.remove(p);
+                        grid.remove(new Point(p.x, p.y));
                     }
-                } else if (getGridObjectAt(p) instanceof WireCrossover){
-                    grid.put(p, ((WireCrossover) getGridObjectAt(p)).previousState());            
-                }
+                } 
             }        
             if(!(sc instanceof ui.tools.Wire)){
                 Rectangle bb = sc.getBoundingBox();
@@ -103,8 +89,7 @@ public class Grid {
                         }
                     }
                 }
-            }
-        }
+            } 
 
     }
     
@@ -115,28 +100,8 @@ public class Grid {
             go = getGridObjectAt(p);
         }
         
-        if(go instanceof ConnectionPoint){
-//            GridObject north = grid.get(new Point(p.x, p.y-UIConstants.GRID_DOT_SPACING));
-//            GridObject south = grid.get(new Point(p.x, p.y+UIConstants.GRID_DOT_SPACING));
-//            GridObject west = grid.get(new Point(p.x-UIConstants.GRID_DOT_SPACING, p.y));
-//            GridObject east = grid.get(new Point(p.x+UIConstants.GRID_DOT_SPACING, p.y));           
-            
-            // Is a join point needed?6
-            if(p.getParent() instanceof Wire                                // The current pin belongs to a wire
-                    && ((ConnectionPoint) go).isNotSameWire(p.getParent())  // Not the same wire
-                    && (((Wire) p.getParent()).getEndPoint().equals(p)      // Is the end point of a wire
-                       || ((Wire) p.getParent()).getOrigin().equals(p))){   // Is the start point of a wire
-                grid.put(p, new WireJoin(p));
-            // Is a crossover point needed?
-            } else if(p.getParent() instanceof Wire                         // The current pin belongs to a wire
-                    && ((ConnectionPoint) go).isNotSameWire(p.getParent())  // Not the same wire               
-                    && !((Wire) p.getParent()).getEndPoint().equals(p)      // Not the end point of a wire
-                    && !((Wire) p.getParent()).getOrigin().equals(p)){      // Not the start point of a wire
-
-                grid.put(p, new WireCrossover(p, p.getParent(),go));
-            } else {
-                ((ConnectionPoint) go).addConnection(p);
-            }
+        if(go instanceof ConnectionPoint){       
+            ((ConnectionPoint) go).addConnection(p);
             return true;
         } else {
             return false;
@@ -181,7 +146,7 @@ public class Grid {
 
     public static void removePin(Pin p){
         GridObject go = getGridObjectAt(p);
-                
+
         if(go instanceof ConnectionPoint){
             ((ConnectionPoint) go).removeConnection(p);
             if(!((ConnectionPoint) go).isConnected()){
