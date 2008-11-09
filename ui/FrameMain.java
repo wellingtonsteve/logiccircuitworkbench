@@ -57,9 +57,9 @@ public class FrameMain extends javax.swing.JFrame {
         Selection = new javax.swing.JButton();
         Wire = new javax.swing.JButton();
         AndGate = new javax.swing.JButton();
-        jToggleButton2 = new javax.swing.JToggleButton();
-        jToggleButton3 = new javax.swing.JToggleButton();
-        jToggleButton1 = new javax.swing.JToggleButton();
+        OrGate = new javax.swing.JButton();
+        NandGate = new javax.swing.JButton();
+        NorGate = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -119,14 +119,14 @@ public class FrameMain extends javax.swing.JFrame {
 
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
-        jPanel4.setLayout(new java.awt.GridLayout(2, 3));
+        jPanel4.setLayout(new java.awt.GridLayout(2, 4));
 
         Selection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_select.png"))); // NOI18N
         Selection.setText(bundle.getString("TestJFrameForm.Selection.text")); // NOI18N
         Selection.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Selection.setMaximumSize(new java.awt.Dimension(41, 41));
-        Selection.setMinimumSize(new java.awt.Dimension(41, 41));
-        Selection.setPreferredSize(new java.awt.Dimension(41, 41));
+        Selection.setMaximumSize(new java.awt.Dimension(26, 28));
+        Selection.setMinimumSize(new java.awt.Dimension(26, 28));
+        Selection.setPreferredSize(new java.awt.Dimension(26, 28));
         Selection.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 SelectionMouseClicked(evt);
@@ -138,6 +138,9 @@ public class FrameMain extends javax.swing.JFrame {
         Wire.setText(bundle.getString("TestJFrameForm.Wire.text")); // NOI18N
         Wire.setToolTipText(bundle.getString("TestJFrameForm.Wire.toolTipText")); // NOI18N
         Wire.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        Wire.setMaximumSize(new java.awt.Dimension(26, 28));
+        Wire.setMinimumSize(new java.awt.Dimension(26, 28));
+        Wire.setPreferredSize(new java.awt.Dimension(26, 28));
         Wire.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 WireMouseClicked(evt);
@@ -148,9 +151,9 @@ public class FrameMain extends javax.swing.JFrame {
         AndGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_andgate.png"))); // NOI18N
         AndGate.setText(bundle.getString("TestJFrameForm.AndGate.text")); // NOI18N
         AndGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        AndGate.setMaximumSize(new java.awt.Dimension(41, 41));
-        AndGate.setMinimumSize(new java.awt.Dimension(41, 41));
-        AndGate.setPreferredSize(new java.awt.Dimension(41, 41));
+        AndGate.setMaximumSize(new java.awt.Dimension(26, 28));
+        AndGate.setMinimumSize(new java.awt.Dimension(26, 28));
+        AndGate.setPreferredSize(new java.awt.Dimension(26, 28));
         AndGate.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 AndGateMouseClicked(evt);
@@ -158,29 +161,46 @@ public class FrameMain extends javax.swing.JFrame {
         });
         jPanel4.add(AndGate);
 
-        jToggleButton2.setText(bundle.getString("FrameMain.jToggleButton2.text")); // NOI18N
-        jToggleButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+        OrGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_orgate.png"))); // NOI18N
+        OrGate.setText(bundle.getString("FrameMain.OrGate.text")); // NOI18N
+        OrGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        OrGate.setMaximumSize(new java.awt.Dimension(26, 28));
+        OrGate.setMinimumSize(new java.awt.Dimension(26, 28));
+        OrGate.setPreferredSize(new java.awt.Dimension(26, 26));
+        OrGate.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jToggleButton2MouseClicked(evt);
+                OrGateMouseClicked(evt);
             }
         });
-        jPanel4.add(jToggleButton2);
+        jPanel4.add(OrGate);
+        OrGate.getAccessibleContext().setAccessibleName(bundle.getString("FrameMain.AndGate1.AccessibleContext.accessibleName")); // NOI18N
 
-        jToggleButton3.setText(bundle.getString("FrameMain.jToggleButton3.text")); // NOI18N
-        jToggleButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+        NandGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_nandgate.png"))); // NOI18N
+        NandGate.setText(bundle.getString("FrameMain.NandGate.text")); // NOI18N
+        NandGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        NandGate.setMaximumSize(new java.awt.Dimension(26, 28));
+        NandGate.setMinimumSize(new java.awt.Dimension(26, 28));
+        NandGate.setPreferredSize(new java.awt.Dimension(26, 26));
+        NandGate.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jToggleButton3MouseClicked(evt);
+                NandGateMouseClicked(evt);
             }
         });
-        jPanel4.add(jToggleButton3);
+        jPanel4.add(NandGate);
+        NandGate.getAccessibleContext().setAccessibleName(bundle.getString("FrameMain.AndGate2.AccessibleContext.accessibleName")); // NOI18N
 
-        jToggleButton1.setText(bundle.getString("FrameMain.jToggleButton1.text")); // NOI18N
-        jToggleButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        NorGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_norgate.png"))); // NOI18N
+        NorGate.setText(bundle.getString("FrameMain.NorGate.text")); // NOI18N
+        NorGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        NorGate.setMaximumSize(new java.awt.Dimension(26, 28));
+        NorGate.setMinimumSize(new java.awt.Dimension(26, 28));
+        NorGate.setPreferredSize(new java.awt.Dimension(26, 26));
+        NorGate.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jToggleButton1MouseClicked(evt);
+                NorGateMouseClicked(evt);
             }
         });
-        jPanel4.add(jToggleButton1);
+        jPanel4.add(NorGate);
 
         jSplitPane1.setLeftComponent(jPanel4);
 
@@ -219,7 +239,7 @@ public class FrameMain extends javax.swing.JFrame {
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel2))
-                .addContainerGap(134, Short.MAX_VALUE))
+                .addContainerGap(160, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -232,11 +252,11 @@ public class FrameMain extends javax.swing.JFrame {
                 .add(jSplitPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 148, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 273, Short.MAX_VALUE))
+                .add(0, 150, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 273, Short.MAX_VALUE))
+                .add(0, 150, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 273, Short.MAX_VALUE))
+                .add(0, 150, Short.MAX_VALUE))
         );
         jInternalFrame4Layout.setVerticalGroup(
             jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -244,11 +264,11 @@ public class FrameMain extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 229, Short.MAX_VALUE))
+                .add(0, 284, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 229, Short.MAX_VALUE))
+                .add(0, 284, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 229, Short.MAX_VALUE))
+                .add(0, 284, Short.MAX_VALUE))
         );
 
         jInternalFrame4.setBounds(0, 0, 160, 310);
@@ -598,27 +618,33 @@ private void clear_circuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIR
     }
 }//GEN-LAST:event_clear_circuitMouseClicked
 
-private void jToggleButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton1MouseClicked
-((CircuitPanel) circuitPanel).selectTool(UITool.NandGate2Input);
-}//GEN-LAST:event_jToggleButton1MouseClicked
-
-private void jToggleButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton2MouseClicked
-((CircuitPanel) circuitPanel).selectTool(UITool.OrGate2Input);
-}//GEN-LAST:event_jToggleButton2MouseClicked
-
-private void jToggleButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton3MouseClicked
-((CircuitPanel) circuitPanel).selectTool(UITool.NorGate2Input);
-}//GEN-LAST:event_jToggleButton3MouseClicked
-
 private void select_allMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_select_allMouseClicked
     ((CircuitPanel) circuitPanel).selectAllComponents();
 }//GEN-LAST:event_select_allMouseClicked
+
+private void OrGateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_OrGateMouseClicked
+    ((CircuitPanel) circuitPanel).selectTool(UITool.OrGate2Input);
+    toggleToolboxButton(OrGate);
+}//GEN-LAST:event_OrGateMouseClicked
+
+private void NandGateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NandGateMouseClicked
+((CircuitPanel) circuitPanel).selectTool(UITool.NandGate2Input);
+toggleToolboxButton(NandGate);
+}//GEN-LAST:event_NandGateMouseClicked
+
+private void NorGateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NorGateMouseClicked
+((CircuitPanel) circuitPanel).selectTool(UITool.NorGate2Input);
+        toggleToolboxButton(NorGate);
+}//GEN-LAST:event_NorGateMouseClicked
     
 private void toggleToolboxButton(JButton b){
     // Reset Selections
     Selection.setSelected(false);
     Wire.setSelected(false);
-    AndGate.setSelected(false);    
+    AndGate.setSelected(false);   
+    NandGate.setSelected(false);
+    OrGate.setSelected(false);
+    NorGate.setSelected(false);
     
     // Select this button
     b.setSelected(true);
@@ -648,6 +674,9 @@ private void toggleToolboxButton(JButton b){
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AndGate;
     private javax.swing.JDesktopPane DesktopPane;
+    private javax.swing.JButton NandGate;
+    private javax.swing.JButton NorGate;
+    private javax.swing.JButton OrGate;
     private javax.swing.JButton Selection;
     private javax.swing.JButton Wire;
     private javax.swing.JInternalFrame circuitFrame;
@@ -670,9 +699,6 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JToggleButton jToggleButton2;
-    private javax.swing.JToggleButton jToggleButton3;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JButton select_all;
     private javax.swing.JPanel statusPanel;

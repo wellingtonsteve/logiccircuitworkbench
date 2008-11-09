@@ -61,7 +61,7 @@ public class NandGate2Input extends ImageSelectableComponent{
     @Override
     protected void setBoundingBox(){
         //Tight fitting box so that pins are not selected
-        this.boundingBox = new Rectangle((int)getOrigin().getX()-getCentre().x+20,(int)getOrigin().getY()+15-getCentre().y,30,30);
+        this.boundingBox = new Rectangle((int)getOrigin().getX()-getCentre().x+20,(int)getOrigin().getY()+15-getCentre().y,32,30);
     }
     
     @Override
