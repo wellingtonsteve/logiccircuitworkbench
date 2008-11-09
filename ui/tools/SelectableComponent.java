@@ -25,7 +25,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     protected BufferedImage selectedBi;
     protected BufferedImage activeBi;
     protected Rectangle boundingBox = null;
-    protected boolean fixed = false;
+    protected boolean fixed = false, wasFixed = false;
     private Point point;
     protected Collection<Point> localPins = new HashSet<Point>();
     protected Collection<Pin> globalPins = new HashSet<Pin>();
@@ -68,25 +68,31 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     public void translate(int dx, int dy, boolean fixed) {       
         // TODO: add check that translation is valid
-        
-        
-        this.point.translate(dx, dy);        
-         
-        setGlobalPins();
+                //System.out.println(this.fixed + " " + fixed);
+        this.point.translate(dx, dy); 
                
         // Adding this component to the grid for the first time
-        if(this.fixed == false && fixed == true){ 
-            Grid.addComponent(this); 
+        if(!wasFixed && fixed){ 
+            this.fixed = fixed;
+            this.wasFixed = true;
+            Grid.markInvalidAreas(this);
+            setGlobalPins();
+        // About to refix the component
+        } else if (!this.fixed && fixed){
+            this.fixed = fixed;
+            setGlobalPins();            
+            Grid.translateComponent(dx,dy,this);
+            Grid.markInvalidAreas(this);
         // Just moving around 
         } else {
+            setGlobalPins();
+            this.fixed = fixed;
             Grid.translateComponent(dx,dy,this);
         }
         
+        
         setBoundingBox();
-        
-        this.fixed = fixed;
-        
-        
+               
     }
     
     public void moveTo(Point point, boolean fixed){

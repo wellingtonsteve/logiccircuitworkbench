@@ -32,7 +32,7 @@ public class ConnectionPoint extends GridObject {
         return connections.contains(p);
     }
     
-    public Pin moveWireEnds(Point oldPoint, Point newPoint){
+    public Pin moveWireEnds(Point newPoint){
         for(Pin pin: connections){
             if(pin.getParent() instanceof Wire){
                 Wire w = (Wire) pin.getParent();
@@ -95,6 +95,16 @@ public class ConnectionPoint extends GridObject {
                 g2.drawOval(x-1, y-1, 3, 3);
                 g2.fillOval(x-1, y-1, 3, 3);
         }
+    }
+    
+    @Override
+    public boolean equals(Object obj){
+        return super.equals(obj);        
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
         
 }

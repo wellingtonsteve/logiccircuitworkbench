@@ -24,5 +24,30 @@ public class Pin extends Point {
     public SelectableComponent getParent(){
         return parent;        
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Pin other = (Pin) obj;
+        if (this.parent != other.parent && (this.parent == null || !this.parent.equals(other.parent))) {
+            return false;
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = super.hashCode();
+        hash = 59 * hash + (this.parent != null ? this.parent.hashCode() : 0);
+        return hash;
+    }
         
+
+    
 }
+

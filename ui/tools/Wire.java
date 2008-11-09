@@ -79,8 +79,8 @@ public class Wire extends SelectableComponent {
     }
 
     @Override
-    public void translate(int dx, int dy, boolean fixed) {
-        //Grid.removeComponent(this);
+    public void translate(int dx, int dy, boolean fixed) {        
+        
         this.startPoint.translate(dx, dy);
         this.endPoint.translate(dx, dy);
         for (Point p : waypoints) {
@@ -88,16 +88,21 @@ public class Wire extends SelectableComponent {
         }
         setBoundingBox();
         this.fixed = fixed; 
+        if(fixed){
+            wasFixed = true;
+        }
         setLocalPins();
         setGlobalPins();
         
-        // Adding this component to the grid for the first time
-        if(this.fixed == false && fixed == true){ 
-            Grid.addComponent(this); 
-        // Just moving around 
-        } else {
-            Grid.translateComponent(dx,dy,this);
-        }
+//        // Adding this component to the grid for the first time
+//        if(this.fixed == false && fixed == true){ 
+//            this.fixed = fixed; 
+//            Grid.addComponent(this); 
+//        // Just moving around 
+//        } else {
+//            this.fixed = fixed; 
+//            Grid.translateComponent(dx,dy,this);
+//        }
         
         
     }
@@ -162,13 +167,13 @@ public class Wire extends SelectableComponent {
     }
     
     public void moveEndPoint(Point p) {        
-       
+        
         setEndPoint(p);
         //addWaypoint(endPoint);
-        if(isFixed()){
+        //if(isFixed()){
             setLocalPins();
             setGlobalPins(); 
-        }
+        //}
         
     }
 
@@ -182,10 +187,10 @@ public class Wire extends SelectableComponent {
 //        if(!waypoints.isEmpty() && !waypoints.getFirst().equals(startPoint)){
 //            //waypoints.addFirst(startPoint);
 //        }
-        if(isFixed()){
+        //if(isFixed()){
             setLocalPins();
             setGlobalPins(); 
-        }
+        //}
           
     }
 
