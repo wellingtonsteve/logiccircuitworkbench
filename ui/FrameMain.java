@@ -60,11 +60,14 @@ public class FrameMain extends javax.swing.JFrame {
         OrGate = new javax.swing.JButton();
         NandGate = new javax.swing.JButton();
         NorGate = new javax.swing.JButton();
+        Input = new javax.swing.JButton();
+        LED = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         circuitFrame = new javax.swing.JInternalFrame();
         circuitToolbar = new javax.swing.JToolBar();
         clear_circuit = new javax.swing.JButton();
@@ -202,44 +205,72 @@ public class FrameMain extends javax.swing.JFrame {
         });
         jPanel4.add(NorGate);
 
+        Input.setText(bundle.getString("FrameMain.Input.text")); // NOI18N
+        Input.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        Input.setMaximumSize(new java.awt.Dimension(26, 28));
+        Input.setMinimumSize(new java.awt.Dimension(26, 28));
+        Input.setPreferredSize(new java.awt.Dimension(26, 26));
+        Input.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                InputMouseClicked(evt);
+            }
+        });
+        jPanel4.add(Input);
+
+        LED.setText(bundle.getString("FrameMain.LED.text")); // NOI18N
+        LED.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        LED.setMaximumSize(new java.awt.Dimension(26, 28));
+        LED.setMinimumSize(new java.awt.Dimension(26, 28));
+        LED.setPreferredSize(new java.awt.Dimension(26, 26));
+        LED.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                LEDMouseClicked(evt);
+            }
+        });
+        jPanel4.add(LED);
+
         jSplitPane1.setLeftComponent(jPanel4);
 
         jTextField1.setText(bundle.getString("FrameMain.jTextField1.text")); // NOI18N
 
         jLabel1.setText(bundle.getString("FrameMain.jLabel1.text")); // NOI18N
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0ᵒ", "90ᵒ", "180ᵒ", "270ᵒ" }));
+
         jLabel2.setText(bundle.getString("FrameMain.jLabel2.text")); // NOI18N
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jLabel3.setForeground(new java.awt.Color(108, 108, 108));
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText(bundle.getString("FrameMain.jLabel3.text")); // NOI18N
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel2Layout.createSequentialGroup()
-                        .add(jLabel2)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jPanel2Layout.createSequentialGroup()
-                        .add(jLabel1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                    .add(jLabel1)
+                    .add(jLabel2))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+            .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
+                .add(jLabel3)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel1)
                     .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel2))
-                .addContainerGap(160, Short.MAX_VALUE))
+                    .add(jLabel2)
+                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -262,7 +293,8 @@ public class FrameMain extends javax.swing.JFrame {
             jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jInternalFrame4Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE))
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .add(114, 114, 114))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(0, 284, Short.MAX_VALUE))
             .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -636,6 +668,16 @@ private void NorGateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
 ((CircuitPanel) circuitPanel).selectTool(UITool.NorGate2Input);
         toggleToolboxButton(NorGate);
 }//GEN-LAST:event_NorGateMouseClicked
+
+private void InputMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InputMouseClicked
+((CircuitPanel) circuitPanel).selectTool(UITool.Input);
+        toggleToolboxButton(Input);
+}//GEN-LAST:event_InputMouseClicked
+
+private void LEDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LEDMouseClicked
+((CircuitPanel) circuitPanel).selectTool(UITool.LED);
+        toggleToolboxButton(LED);
+}//GEN-LAST:event_LEDMouseClicked
     
 private void toggleToolboxButton(JButton b){
     // Reset Selections
@@ -674,6 +716,8 @@ private void toggleToolboxButton(JButton b){
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AndGate;
     private javax.swing.JDesktopPane DesktopPane;
+    private javax.swing.JButton Input;
+    private javax.swing.JButton LED;
     private javax.swing.JButton NandGate;
     private javax.swing.JButton NorGate;
     private javax.swing.JButton OrGate;
@@ -690,6 +734,7 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JInternalFrame jInternalFrame4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;

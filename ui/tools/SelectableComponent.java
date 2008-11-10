@@ -1,6 +1,7 @@
 package ui.tools;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
@@ -29,6 +30,8 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     private Point point;
     protected Collection<Point> localPins = new HashSet<Point>();
     protected Collection<Pin> globalPins = new HashSet<Pin>();
+    protected double rotation = 0; // Rotation in degrees, with 0 being with inputs on left, output on right of standard and-gate
+    protected double cosTheta, sinTheta;
 
     public SelectableComponent(Component component,Point point){
         this.component = component;
@@ -37,7 +40,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         } else {
             this.point = point;
         }
-        
+                
         setLocalPins();
 
     }
@@ -132,7 +135,8 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     protected void setBoundingBox(){
-        this.boundingBox = new Rectangle(getOrigin().x,getOrigin().y,getWidth(),getHeight());
+        Point rotOrigin = rotate(getOrigin());
+        this.boundingBox = new Rectangle(rotOrigin.x,rotOrigin.y,getWidth(),getHeight());
     }
     
     public Point getCentre(){
@@ -150,23 +154,25 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     public abstract void mouseReleased(MouseEvent e);
     public abstract void mouseDraggedDropped(MouseEvent e);
     
-    public abstract void draw(Graphics g, javax.swing.JComponent parent);
+    public abstract void draw(Graphics2D g, javax.swing.JComponent parent);
     
     public  Collection<Pin> getGlobalPins(){
         return globalPins;
     }
     
     protected void setGlobalPins(){
-        //if(isFixed()){
-            for(Pin p: globalPins){
-                Grid.removePin(p);
-            }
-        //}           
+        for(Pin p: globalPins){
+            Grid.removePin(p);
+        }         
         
         globalPins.clear();
         
+        cosTheta = Math.cos(rotation);
+        sinTheta = Math.sin(rotation);
+        
         for(Point p: getLocalPins()){
-            Pin pin = new Pin(this, p.x + getOrigin().x - getCentre().x,p.y + getOrigin().y - getCentre().y);
+            Point rotP = rotate(p); 
+            Pin pin = new Pin(this, rotP.x +getOrigin().x-getCentre().x,rotP.y +getOrigin().y-getCentre().x);
             globalPins.add(pin);
             if(isFixed()){ 
                 Grid.addPin(pin);
@@ -182,5 +188,11 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     public boolean containedIn(Rectangle selBox) {
         return selBox.contains(getBoundingBox());
+    }
+
+    private Point rotate(Point p) {
+        Point transP = new Point(p.x - getCentre().x, p.y - getCentre().y);
+        Point rotP = Grid.snapPointToGrid(new Point((int) ((transP.x * cosTheta) - (transP.y * sinTheta)), (int) ((transP.y * cosTheta) + (transP.x * sinTheta))));
+        return new Point(rotP.x + getCentre().x, rotP.y + getCentre().y);
     }
 }

@@ -20,6 +20,8 @@ import ui.grid.Pin;
 import ui.grid.Grid;
 import ui.tools.AndGate2Input;
 import ui.tools.AndGate3Input;
+import ui.tools.Input;
+import ui.tools.LED;
 import ui.tools.NandGate2Input;
 import ui.tools.NorGate2Input;
 import ui.tools.OrGate2Input;
@@ -418,6 +420,12 @@ class CircuitPanel extends JPanel {
             case NorGate2Input:
                 drawnComponents.push(new NorGate2Input(null, endPoint));
                 break;    
+            case Input:
+                drawnComponents.push(new Input(null, endPoint));
+                break;  
+            case LED:
+                drawnComponents.push(new LED(null, endPoint));
+                break;  
             default:
                 break;
         }

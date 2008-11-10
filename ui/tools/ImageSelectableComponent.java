@@ -1,11 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ui.tools;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -16,9 +11,11 @@ import sim.Component;
  * @author matt
  */
 public abstract class ImageSelectableComponent extends SelectableComponent {
-
+    
     public ImageSelectableComponent(Component component, Point point){
         super(component,point);
+        
+        rotation = Math.PI * 0;
         
         setDefaultImage();
         setSelectedImage();
@@ -113,8 +110,10 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     }
 
     @Override
-    public void draw(Graphics g, javax.swing.JComponent parent) {
+    public void draw(Graphics2D g, javax.swing.JComponent parent) {
+        g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
         g.drawImage(getCurrentImage(), (int)getOrigin().getX(), (int)getOrigin().getY(), parent);
+        g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
     }
             
     @Override
