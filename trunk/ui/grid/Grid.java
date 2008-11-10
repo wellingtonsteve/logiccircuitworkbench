@@ -6,7 +6,6 @@ import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.LinkedList;
 import ui.UIConstants;
-import ui.tools.Wire;
 import ui.tools.SelectableComponent;
 
 /**

@@ -5,6 +5,7 @@
 package ui.tools;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
@@ -92,23 +93,12 @@ public class Wire extends SelectableComponent {
             wasFixed = true;
         }
         setLocalPins();
-        setGlobalPins();
-        
-//        // Adding this component to the grid for the first time
-//        if(this.fixed == false && fixed == true){ 
-//            this.fixed = fixed; 
-//            Grid.addComponent(this); 
-//        // Just moving around 
-//        } else {
-//            this.fixed = fixed; 
-//            Grid.translateComponent(dx,dy,this);
-//        }
-        
+        setGlobalPins();       
         
     }
 
     @Override
-    public void draw(Graphics g, JComponent parent) {
+    public void draw(Graphics2D g, JComponent parent) {
         
         // Find duplicates and remove waypoints between them
         int i = 0, j = 0;
@@ -116,8 +106,6 @@ public class Wire extends SelectableComponent {
             i = waypoints.indexOf(ptA);
             j = waypoints.lastIndexOf(ptA)-1;
             if(i < j){
-                System.out.println("TWO WAYPOINTS FOUND: "  + i + "  " + j);
-
                 break dups;
             }
   
@@ -127,7 +115,6 @@ public class Wire extends SelectableComponent {
             for(int m = 0; m < waypoints.size(); m++){
                 if(m > i && m <= j ){
                     waypoints.remove(m);
-                    System.out.println("-");
                 }
             }
         }
@@ -143,8 +130,6 @@ public class Wire extends SelectableComponent {
                     break;
                 default:
                     g.setColor(UIConstants.DEFAULT_WIRE_COLOUR);
-
-
             }
 
             Point current = startPoint, next = startPoint;
@@ -169,11 +154,8 @@ public class Wire extends SelectableComponent {
     public void moveEndPoint(Point p) {        
         
         setEndPoint(p);
-        //addWaypoint(endPoint);
-        //if(isFixed()){
-            setLocalPins();
-            setGlobalPins(); 
-        //}
+        setLocalPins();
+        setGlobalPins(); 
         
     }
 
@@ -184,23 +166,13 @@ public class Wire extends SelectableComponent {
     public void moveStartPoint(Point p) {
 
         setStartPoint(p);
-//        if(!waypoints.isEmpty() && !waypoints.getFirst().equals(startPoint)){
-//            //waypoints.addFirst(startPoint);
-//        }
-        //if(isFixed()){
-            setLocalPins();
-            setGlobalPins(); 
-        //}
+        setLocalPins();
+        setGlobalPins(); 
           
     }
 
     public void addWaypoint(Point wp) {
-     
-        //if(!waypoints.isEmpty() && !waypoints.getLast().equals(wp)){
             waypoints.add(wp);
-        //    System.out.println(wp);
-        //}
-        
     }
 
     private void createLeg(Point from, Point to) {

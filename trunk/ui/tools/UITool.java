@@ -16,6 +16,8 @@ public enum UITool {
     AndGate3Input,
     NandGate2Input,
     OrGate2Input,
-    NorGate2Input;
+    NorGate2Input,
+    Input,
+    LED;
    
 }
