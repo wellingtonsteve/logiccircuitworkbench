@@ -71,6 +71,8 @@ public class FrameMain extends javax.swing.JFrame {
         circuitFrame = new javax.swing.JInternalFrame();
         circuitToolbar = new javax.swing.JToolBar();
         clear_circuit = new javax.swing.JButton();
+        delete_selected1 = new javax.swing.JButton();
+        delete_selected2 = new javax.swing.JButton();
         delete_selected = new javax.swing.JButton();
         select_all = new javax.swing.JButton();
         statusPanel = new javax.swing.JPanel();
@@ -331,6 +333,38 @@ public class FrameMain extends javax.swing.JFrame {
             }
         });
         circuitToolbar.add(clear_circuit);
+
+        delete_selected1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/circuit_toolbar/cut.png"))); // NOI18N
+        delete_selected1.setText(bundle.getString("FrameMain.delete_selected1.text")); // NOI18N
+        delete_selected1.setToolTipText(bundle.getString("FrameMain.delete_selected1.toolTipText")); // NOI18N
+        delete_selected1.setFocusable(false);
+        delete_selected1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        delete_selected1.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        delete_selected1.setMaximumSize(new java.awt.Dimension(24, 24));
+        delete_selected1.setMinimumSize(new java.awt.Dimension(24, 24));
+        delete_selected1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        delete_selected1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                delete_selected1MouseClicked(evt);
+            }
+        });
+        circuitToolbar.add(delete_selected1);
+
+        delete_selected2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/circuit_toolbar/copy.png"))); // NOI18N
+        delete_selected2.setText(bundle.getString("FrameMain.delete_selected2.text")); // NOI18N
+        delete_selected2.setToolTipText(bundle.getString("FrameMain.delete_selected2.toolTipText")); // NOI18N
+        delete_selected2.setFocusable(false);
+        delete_selected2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        delete_selected2.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        delete_selected2.setMaximumSize(new java.awt.Dimension(24, 24));
+        delete_selected2.setMinimumSize(new java.awt.Dimension(24, 24));
+        delete_selected2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        delete_selected2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                delete_selected2MouseClicked(evt);
+            }
+        });
+        circuitToolbar.add(delete_selected2);
 
         delete_selected.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/circuit_toolbar/delete_selected.png"))); // NOI18N
         delete_selected.setText(bundle.getString("TestJFrameForm.delete_selected.text")); // NOI18N
@@ -678,6 +712,14 @@ private void LEDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L
 ((CircuitPanel) circuitPanel).selectTool(UITool.LED);
         toggleToolboxButton(LED);
 }//GEN-LAST:event_LEDMouseClicked
+
+private void delete_selected1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_delete_selected1MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_delete_selected1MouseClicked
+
+private void delete_selected2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_delete_selected2MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_delete_selected2MouseClicked
     
 private void toggleToolboxButton(JButton b){
     // Reset Selections
@@ -728,6 +770,8 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JToolBar circuitToolbar;
     private javax.swing.JButton clear_circuit;
     private javax.swing.JButton delete_selected;
+    private javax.swing.JButton delete_selected1;
+    private javax.swing.JButton delete_selected2;
     private javax.swing.JLabel infoLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JComboBox jComboBox1;
