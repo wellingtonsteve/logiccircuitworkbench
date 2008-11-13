@@ -26,19 +26,19 @@ public abstract class Component {
 		this.decription = decription;
 	}
 
-	List<Pin> getInputPins(){
+	public List<Pin> getInputPins(){
 		return inputPins;
 	}
 	
-	int getNoOfInputPins(){
+	public int getNoOfInputPins(){
 		return inputPins.size();
 	}
 	
-	List<Pin> getOutputPins(){
+	public List<Pin> getOutputPins(){
 		return outputPins;
 	}
 	
-	int getNoOfOutputPins(){
+	public int getNoOfOutputPins(){
 		return outputPins.size();
 	}
 }
