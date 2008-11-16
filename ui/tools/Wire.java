@@ -4,6 +4,7 @@
  */
 package ui.tools;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -24,6 +25,8 @@ public class Wire extends SelectableComponent {
     private Point startPoint = new Point(0, 0);
     private LinkedList<Point> waypoints = new LinkedList<Point>(); // NOTE: Waypoints are specified in Global (World) Co-ordinates
     private int x1 = 0,  y1 = 0,  x2 = 0,  y2 = 0,  x3 = 0,  y3 = 0;
+    private Point hoverWaypoint;
+    private Point hoverMousePoint;
 
     public Wire() {
         super(null, null);
@@ -41,13 +44,13 @@ public class Wire extends SelectableComponent {
 
     @Override
     public boolean containsPoint(Point point) {
-        boolean retval = false;
+        boolean retval = false; //hoverWaypoint = null;
         Point current = startPoint, next = startPoint;
         for (Point waypoint : waypoints) {
             next = waypoint;
 
             createLeg(current, next);
-            retval = retval || ((point.x >= x1 && point.x <= x2) &&
+            retval = ((point.x >= x1 && point.x <= x2) &&
                     (point.y >= y1 && point.y <= y2)) ||
                     ((point.x >= x2 && point.x <= x3) &&
                     (point.y >= y2 && point.y <= y3)) ||
@@ -56,10 +59,18 @@ public class Wire extends SelectableComponent {
                     ((point.x <= x2 && point.x >= x3) &&
                     (point.y <= y2 && point.y >= y3));
 
-            current = waypoint;
+            current = next;
+            if(retval){
+                break;
+            }
         }
+        if(retval){
+            hoverWaypoint = current;
+            return retval;
+        }
+        
         createLeg(next, endPoint);
-        retval = retval || ((point.x >= x1 && point.x <= x2) &&
+        retval = ((point.x >= x1 && point.x <= x2) &&
                 (point.y >= y1 && point.y <= y2)) ||
                 ((point.x >= x2 && point.x <= x3) &&
                 (point.y >= y2 && point.y <= y3)) ||
@@ -68,6 +79,12 @@ public class Wire extends SelectableComponent {
                 ((point.x <= x2 && point.x >= x3) &&
                 (point.y <= y2 && point.y >= y3));
 
+        if(retval){
+            hoverWaypoint = endPoint;
+        } else {
+            hoverWaypoint = null;
+        }
+        
         return retval;
     }
 
@@ -100,7 +117,7 @@ public class Wire extends SelectableComponent {
     @Override
     public void draw(Graphics2D g, JComponent parent) {
         
-        // Find duplicates and remove waypoints between them
+        // Find duplicates waypoints
         int i = 0, j = 0;
         dups: for(Point ptA: waypoints){             
             i = waypoints.indexOf(ptA);
@@ -111,6 +128,7 @@ public class Wire extends SelectableComponent {
   
         }
        
+        // Remove waypoints duplicate
         if(i != waypoints.size()-1){
             for(int m = 0; m < waypoints.size(); m++){
                 if(m > i && m <= j ){
@@ -119,26 +137,26 @@ public class Wire extends SelectableComponent {
             }
         }
 
-
+        // If not default values
         if (!startPoint.equals(new Point(0, 0)) && !endPoint.equals(new Point(0, 0))) {
-            switch (getSelectionState()) {
-                case ACTIVE:
-                    g.setColor(UIConstants.ACTIVE_WIRE_COLOUR);
-                    break;
-                case HOVER:
-                    g.setColor(UIConstants.HOVER_WIRE_COLOUR);
-                    break;
-                default:
-                    g.setColor(UIConstants.DEFAULT_WIRE_COLOUR);
-            }
-
+            
+            // Draw each leg along waypoints         
             Point current = startPoint, next = startPoint;
             for (Point waypoint : waypoints) {
                 next = waypoint;
                 drawLeg(g, current, next);
                 current = waypoint;
             }
-            drawLeg(g, next, endPoint);
+           drawLeg(g, next, endPoint);
+            
+        }
+        
+        // Debuging
+        if(UIConstants.SHOW_WIRE_WAYPOINTS){
+            for(Point p: waypoints){
+                g.setColor(UIConstants.WIRE_WAYPOINT_COLOUR);
+                g.drawOval(p.x-1, p.y-1, 3, 3);
+            }           
         }
 
     }
@@ -148,7 +166,19 @@ public class Wire extends SelectableComponent {
     }
 
     public void setEndPoint(Point endPoint) {
-        this.endPoint = endPoint;        
+        this.endPoint = endPoint;      
+        
+        // Detect and resolve wire overlaps
+        int len = waypoints.size();
+        Point start = null;
+        if(len == 1){
+            start = startPoint;
+        } else if (len > 1){
+            start =  waypoints.get(len - 2);
+        }
+        if(start != null){
+            detectResolveWireOverlap(start, waypoints.getLast(), endPoint, isFixed());
+        }  
     }
     
     public void moveEndPoint(Point p) {        
@@ -161,6 +191,19 @@ public class Wire extends SelectableComponent {
 
     public void setStartPoint(Point startPoint) {
         this.startPoint = startPoint;
+        
+        // Detect and resolve wire overlaps
+        int len = waypoints.size();
+        Point last = null;
+        if(len == 1 && isFixed()){
+            last = endPoint;
+        } else if (len > 1){
+            last = waypoints.get(1);
+        }
+        if(last != null){
+            detectResolveWireOverlap(startPoint, waypoints.get(0), last, true);
+        }  
+        
     }
     
     public void moveStartPoint(Point p) {
@@ -172,7 +215,20 @@ public class Wire extends SelectableComponent {
     }
 
     public void addWaypoint(Point wp) {
-            waypoints.add(wp);
+               
+        // Detect and resolve wire overlaps
+        int len = waypoints.size();
+        Point start = null;
+        if(len == 1){
+            start = startPoint;
+        } else if (len > 1){
+            start = waypoints.get(len - 2);
+        }
+        if(start != null){ 
+            detectResolveWireOverlap(start, waypoints.getLast(), wp, true);
+        }  
+        waypoints.add(wp);
+        
     }
 
     private void createLeg(Point from, Point to) {
@@ -190,38 +246,80 @@ public class Wire extends SelectableComponent {
     private void drawLeg(Graphics g, Point from, Point to) {
 
         createLeg(from, to);
-
-        g.drawLine(x1, y1, x2, y2);
+        
+        Color leg1colour = UIConstants.DEFAULT_WIRE_COLOUR;
+        Color leg2colour = UIConstants.DEFAULT_WIRE_COLOUR;
+        
+        if(to.equals(hoverWaypoint)){
+            
+            if (((x1 <= hoverMousePoint.x && x2 >= hoverMousePoint.x)
+                    ||(x1 >= hoverMousePoint.x && x2 <= hoverMousePoint.x))
+               && ((y1-UIConstants.WIRE_HOVER_THICKNESS <= hoverMousePoint.y && y2+UIConstants.WIRE_HOVER_THICKNESS >= hoverMousePoint.y)
+                    ||(y1+UIConstants.WIRE_HOVER_THICKNESS >= hoverMousePoint.y && y2-UIConstants.WIRE_HOVER_THICKNESS <= hoverMousePoint.y))){
+                switch (getSelectionState()) {
+                    case ACTIVE:
+                        leg1colour = UIConstants.ACTIVE_WIRE_COLOUR;
+                        break;
+                    case HOVER:
+                        leg1colour = UIConstants.HOVER_WIRE_COLOUR;
+                        break;
+                    default:
+                }   
+            } else if (((y2 <= hoverMousePoint.y && y3 >= hoverMousePoint.y)
+                    ||(y2 >= hoverMousePoint.y && y3 <= hoverMousePoint.y))
+               && ((x2-UIConstants.WIRE_HOVER_THICKNESS <= hoverMousePoint.x && x3+UIConstants.WIRE_HOVER_THICKNESS >= hoverMousePoint.x)
+                    ||(x2+UIConstants.WIRE_HOVER_THICKNESS >= hoverMousePoint.x && x3-UIConstants.WIRE_HOVER_THICKNESS <= hoverMousePoint.x))){
+                switch (getSelectionState()) {
+                    case ACTIVE:
+                        leg2colour = UIConstants.ACTIVE_WIRE_COLOUR;
+                        break;
+                    case HOVER:
+                        leg2colour = UIConstants.HOVER_WIRE_COLOUR;
+                        break;
+                    default:
+                }   
+            }
+            
+            
+        }
+        g.setColor(leg1colour);
+        g.drawLine(x1, y1, x2, y2); 
+        g.setColor(leg2colour);
         g.drawLine(x2, y2, x3, y3);
 
     }
 
     /*
-     * This method actually sets the localPins, in thier correct object co-ordinates 
+     * sets the localPins, in thier correct object co-ordinates 
      */
     private void setPinsOnLeg(Point from, Point to) {
 
         int dx = from.x - startPoint.x;
         int dy = from.y - startPoint.y;
-
+        Point p;
+        
         createLeg(from, to);
 
         if (x2 - x1 > 0) {
             for (int x = 0; x <= x2 - x1; x += UIConstants.GRID_DOT_SPACING) {
-                localPins.add(new Point(x + dx, dy));
+                p = new Point(x + dx, dy);
+                localPins.add(p);               
             }
         } else {
             for (int x = 0; x <= x1 - x2; x += UIConstants.GRID_DOT_SPACING) {
-                localPins.add(new Point(-x + dx, dy));
+                p = new Point(-x + dx, dy);
+                localPins.add(p);
             }
         }
         if (y3 - y2 > 0) {
             for (int y = 0; y <= y3 - y2; y += UIConstants.GRID_DOT_SPACING) {
-                localPins.add(new Point(x2 - x1 + dx, y + dy));
+                p = new Point(x2 - x1 + dx, y + dy);
+                localPins.add(p);
             }
         } else {
             for (int y = 0; y <= y2 - y3; y += UIConstants.GRID_DOT_SPACING) {
-                localPins.add(new Point(x2 - x1 + dx, -y + dy));
+                p = new Point(x2 - x1 + dx, -y + dy);
+                localPins.add(p);
             }
         }
 
@@ -235,6 +333,12 @@ public class Wire extends SelectableComponent {
     @Override
     public void mouseDragged(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);
+        if(!hoverWaypoint.equals(endPoint)){
+            Point p = Grid.snapPointToGrid(e.getPoint());
+            hoverWaypoint.x = p.x;
+            hoverWaypoint.y = p.y;
+        }
+        
     }
 
     public void mouseDraggedDropped(MouseEvent e) {
@@ -246,6 +350,7 @@ public class Wire extends SelectableComponent {
         if (!isFixed() && !getSelectionState().equals(SelectionState.ACTIVE)) {
             setSelectionState(SelectionState.DEFAULT);
         }
+        hoverMousePoint = e.getPoint();
     }
 
     @Override
@@ -353,5 +458,26 @@ public class Wire extends SelectableComponent {
                 selBox.contains(x3, y3));
 
         return retval;
+    }
+
+    private boolean detectResolveWireOverlap(Point last, Point current, Point next, Boolean newWaypoint) {
+       
+        createLeg(last, current);
+        
+        int l_x2 = x2;
+        int l_y2 = y2;
+
+        createLeg(current, next);
+        
+        if((x2 == l_x2 || y2 == l_y2)){
+            if(newWaypoint && (current.x == next.x || current.y == next.y)){
+                waypoints.remove(current);   
+            } else {
+                current.x = x2; current.y = y2;
+            }            
+            return true;
+        }
+        
+        return false;
     }
 }

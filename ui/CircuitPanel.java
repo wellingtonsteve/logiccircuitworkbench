@@ -128,7 +128,7 @@ class CircuitPanel extends JPanel {
                         
                     if(nowDraging){
                         for(SelectableComponent sc: activeComponents){
-                            sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, false); 
+                            if(!(sc instanceof Wire)){ sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, false); }
                             sc.mouseDragged(e);
                         }
                     }  else {
@@ -162,7 +162,7 @@ class CircuitPanel extends JPanel {
                             
                             
                             for(SelectableComponent sc: activeComponents){                
-                                sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, false);
+                                if(!(sc instanceof Wire)){ sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, false); }
                                 sc.mouseDragged(e);
                             }
 
@@ -375,7 +375,9 @@ class CircuitPanel extends JPanel {
         // Draw previous components
         for(SelectableComponent sc: drawnComponents){
             g2.translate(-sc.getCentre().x, -sc.getCentre().y);
-            sc.draw(g2, this);
+            if(sc.isFixed() || (endPoint != null && contains(endPoint))){ // Don't draw the temp component, when mouse is outside viewable area.
+                sc.draw(g2, this);
+            }
             g2.translate(sc.getCentre().x, sc.getCentre().y);           
         }
         
@@ -489,4 +491,7 @@ class CircuitPanel extends JPanel {
         return "Circuit cleared.";
     }    
     
+    public void mouseExited(MouseEvent e){
+        endPoint = e.getPoint();
+    }
 }
