@@ -316,6 +316,11 @@ public class FrameMain extends javax.swing.JFrame {
         circuitFrame.setTitle("Breadboard");
         circuitFrame.setPreferredSize(new java.awt.Dimension(600, 450));
         circuitFrame.setVisible(true);
+        circuitFrame.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                circuitFrameMouseExited(evt);
+            }
+        });
         circuitFrame.getContentPane().setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
         circuitToolbar.setRollover(true);
@@ -414,6 +419,12 @@ public class FrameMain extends javax.swing.JFrame {
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, circuitFrame, org.jdesktop.beansbinding.ELProperty.create("${focusable}"), circuitPanel, org.jdesktop.beansbinding.BeanProperty.create("focusable"));
         bindingGroup.addBinding(binding);
+
+        circuitPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                circuitPanelMouseExited(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout circuitPanelLayout = new org.jdesktop.layout.GroupLayout(circuitPanel);
         circuitPanel.setLayout(circuitPanelLayout);
@@ -720,6 +731,14 @@ private void delete_selected1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-
 private void delete_selected2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_delete_selected2MouseClicked
 // TODO add your handling code here:
 }//GEN-LAST:event_delete_selected2MouseClicked
+
+private void circuitPanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_circuitPanelMouseExited
+    
+}//GEN-LAST:event_circuitPanelMouseExited
+
+private void circuitFrameMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_circuitFrameMouseExited
+    ((CircuitPanel)circuitPanel).mouseExited(evt);
+}//GEN-LAST:event_circuitFrameMouseExited
     
 private void toggleToolboxButton(JButton b){
     // Reset Selections

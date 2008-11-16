@@ -12,9 +12,6 @@ public class UIConstants {
     
     public static final Color CIRCUIT_BACKGROUND_COLOUR = Color.WHITE;
     public static final Color GRID_DOT_COLOUR = Color.GRAY;
-    public static final Color DEFAULT_WIRE_COLOUR = Color.BLACK;
-    public static final Color ACTIVE_WIRE_COLOUR = Color.BLUE;
-    public static final Color HOVER_WIRE_COLOUR = Color.RED;
     
     public static final int GRID_DOT_SPACING = 10; // Changing this value will require the substantial changes to the component images and classes
     public static final boolean SNAP_TO_GRID = true;
@@ -34,6 +31,13 @@ public class UIConstants {
     public static void beep(){
         java.awt.Toolkit.getDefaultToolkit ().beep();
     }
+    
+    public static boolean SHOW_WIRE_WAYPOINTS = true;
+    public static Color WIRE_WAYPOINT_COLOUR = Color.GREEN;
+    public static int WIRE_HOVER_THICKNESS = 2;
+    public static final Color DEFAULT_WIRE_COLOUR = Color.BLACK;
+    public static final Color ACTIVE_WIRE_COLOUR = Color.BLUE;
+    public static final Color HOVER_WIRE_COLOUR = Color.RED;
     
     
 
