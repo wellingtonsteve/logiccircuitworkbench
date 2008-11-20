@@ -184,6 +184,44 @@ public class Wire extends SelectableComponent {
     public void moveEndPoint(Point p) {        
         
         setEndPoint(p);
+        if(!waypoints.isEmpty()){
+            
+            if(waypoints.getLast().x == endPoint.x && waypoints.getLast().y == endPoint.y){
+                Point last = waypoints.removeLast();
+                System.out.println("removed");
+                Point lastButOne;
+                if(waypoints.size()==0){
+                    lastButOne = startPoint;
+                } else {
+                    lastButOne = waypoints.getLast();
+                } 
+                createLeg(lastButOne, last);
+                //waypoints.add(new Point(x2, y2));
+                addWaypoint(new Point(x2,x2));
+                                
+            } 
+            
+        }
+        
+        // Find duplicates and remove waypoints between them
+        int i = 0, j = 0;
+        dups: for(Point ptA: waypoints){             
+            i = waypoints.indexOf(ptA);
+            j = waypoints.lastIndexOf(ptA)-1;
+            if(i < j){
+                break dups;
+            }
+  
+        }
+       
+        if(i != waypoints.size()-1){
+            for(int m = 0; m < waypoints.size(); m++){
+                if(m > i && m <= j ){
+                    waypoints.remove(m);
+                }
+            }
+        }
+        
         setLocalPins();
         setGlobalPins(); 
         
@@ -396,6 +434,7 @@ public class Wire extends SelectableComponent {
                 next = waypoint;
                 setPinsOnLeg(current, next);
                 current = waypoint;
+                
             }
 
             setPinsOnLeg(next, last);

@@ -15,7 +15,7 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     public ImageSelectableComponent(Component component, Point point){
         super(component,point);
         
-        rotation = Math.PI * 0;
+        rotation = Math.PI * 0 / 2;
         
         setDefaultImage();
         setSelectedImage();

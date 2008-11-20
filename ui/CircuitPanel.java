@@ -215,16 +215,13 @@ class CircuitPanel extends JPanel {
 
                         // Fix floating selection
                         if(!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed()){
-                           
-                           
-                            
-                            // TODO: move canMove... check inside moveTo and translate methods
+      
                              // Add connection points to grid dots
                             Point d = new Point(endPoint.x - drawnComponents.peek().getOrigin().x,
                                     endPoint.y - drawnComponents.peek().getOrigin().y);                            
-                            if(Grid.canMoveComponent(drawnComponents.peek(), d)){
+                            //if(Grid.canMoveComponent(drawnComponents.peek(), d)){
                                 drawnComponents.peek().moveTo(endPoint, true);                          
-                            } 
+                            //} 
                                 
                             selectTool(currentTool);
                         }                               
