@@ -69,31 +69,34 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     public abstract int getHeight();
     
     public void translate(int dx, int dy, boolean fixed) {       
-        // TODO: add check that translation is valid
-                //System.out.println(this.fixed + " " + fixed);
-        this.point.translate(dx, dy); 
+
+        if(Grid.canMoveComponent(this, dx, dy)){
+            this.point.translate(dx, dy);
+            
+            // Adding this component to the grid for the first time
+            if(!wasFixed && fixed){ 
+                this.fixed = fixed;
+                this.wasFixed = true;
+                Grid.markInvalidAreas(this);
+                setGlobalPins();
+            // About to refix the component
+            } else if (!this.fixed && fixed){
+                this.fixed = fixed;
+                setGlobalPins();            
+                Grid.translateComponent(dx,dy,this);
+                Grid.markInvalidAreas(this);
+            // Just moving around 
+            } else {
+                setGlobalPins();
+                this.fixed = fixed;
+                Grid.translateComponent(dx,dy,this);
+            }
+
+
+            setBoundingBox();
+        } 
                
-        // Adding this component to the grid for the first time
-        if(!wasFixed && fixed){ 
-            this.fixed = fixed;
-            this.wasFixed = true;
-            Grid.markInvalidAreas(this);
-            setGlobalPins();
-        // About to refix the component
-        } else if (!this.fixed && fixed){
-            this.fixed = fixed;
-            setGlobalPins();            
-            Grid.translateComponent(dx,dy,this);
-            Grid.markInvalidAreas(this);
-        // Just moving around 
-        } else {
-            setGlobalPins();
-            this.fixed = fixed;
-            Grid.translateComponent(dx,dy,this);
-        }
         
-        
-        setBoundingBox();
                
     }
     
@@ -177,6 +180,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
                 Grid.addPin(pin);
             }
         }
+        
     }
     
     protected  Collection<Point> getLocalPins(){

@@ -40,7 +40,8 @@ public class Grid {
         return true;
     }
 
-    public static void translateComponent(int dx, int dy, SelectableComponent sc) {            
+    public static boolean translateComponent(int dx, int dy, SelectableComponent sc) {    
+        if(canMoveComponent(sc, dx, dy)){
             if(!(sc instanceof ui.tools.Wire)){
                 Rectangle bb = sc.getBoundingBox();
                 for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
@@ -62,8 +63,9 @@ public class Grid {
                     } 
                 }   
             }
-            
-            
+            return true;
+        }    
+        return false;    
 
     }
     
@@ -107,19 +109,24 @@ public class Grid {
         }
     }
     
+    public static boolean canMoveComponent(SelectableComponent sc, int dx, int dy){
+        return canMoveComponent(sc, new Point(dx, dy));
+    }
+    
     public static boolean canMoveComponent(SelectableComponent sc, Point d){
         LinkedList<Point> tempPins = new LinkedList<Point>();
         Point temp;
         
         for(Pin p: sc.getGlobalPins()){
-            removePin(p);
+            //removePin(p);
             
             temp = new Point(p.x + d.x, p.y + d.y);
             tempPins.add(temp);
         }       
                 
         for(Point p: tempPins){
-            if(getGridObjectAt(p) instanceof InvalidPoint){
+            if(getGridObjectAt(p) instanceof InvalidPoint 
+                    && !((InvalidPoint)getGridObjectAt(p)).getParent().equals(sc)){
                 if(UIConstants.DO_SYSTEM_BEEP){UIConstants.beep();}
                 return false;
             }           
@@ -129,7 +136,8 @@ public class Grid {
         for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
             for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
                 Point p = snapPointToGrid(new Point(i, j));
-                if(bb.contains(p) && getGridObjectAt(p) instanceof InvalidPoint){
+                if(bb.contains(p) && getGridObjectAt(p) instanceof InvalidPoint
+                        && !((InvalidPoint)getGridObjectAt(p)).getParent().equals(sc)){
                     if(UIConstants.DO_SYSTEM_BEEP){UIConstants.beep();}
                     return false;
                 }
