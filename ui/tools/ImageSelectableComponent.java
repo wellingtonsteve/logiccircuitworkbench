@@ -4,6 +4,11 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.transform.sax.TransformerHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 import sim.Component;
 
 /**
@@ -120,4 +125,20 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     public boolean containsPoint(Point point) {
         return this.getBoundingBox().contains(point);
     }
+    
+    public void createXML(TransformerHandler hd) {
+        try {
+            AttributesImpl atts = new AttributesImpl();
+            atts.addAttribute("", "", "type", "CDATA", this.getClass().getSimpleName());
+            atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
+            atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
+            atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
+            
+            hd.startElement("", "", "component", atts);
+            hd.endElement("", "", "component");
+        } catch (SAXException ex) {
+            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
 }

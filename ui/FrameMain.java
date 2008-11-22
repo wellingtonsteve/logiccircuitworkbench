@@ -10,12 +10,15 @@ import ui.tools.UITool;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Event;
+import java.awt.FileDialog;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -24,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileFilter;
 
 /**
  *
@@ -81,6 +85,7 @@ public class FrameMain extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
@@ -450,6 +455,11 @@ public class FrameMain extends javax.swing.JFrame {
         getContentPane().add(jPanel1);
 
         jMenu1.setText(bundle.getString("TestJFrameForm.jMenu1.text_1")); // NOI18N
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem1.setText(bundle.getString("FrameMain.jMenuItem1.text")); // NOI18N
+        jMenu1.add(jMenuItem1);
+
         jMenuBar1.add(jMenu1);
 
         jMenuBar1.add(getFileMenu());
@@ -474,7 +484,7 @@ public class FrameMain extends javax.swing.JFrame {
 		if (fileMenu == null) {
 			fileMenu = new JMenu();
 			fileMenu.setText("File");
-			fileMenu.add(getSaveMenuItem());
+			fileMenu.add(getSaveAsMenuItem());
 			fileMenu.add(getExitMenuItem());
 		}
 		return fileMenu;
@@ -643,14 +653,52 @@ public class FrameMain extends javax.swing.JFrame {
 	 * 	
 	 * @return javax.swing.JMenuItem	
 	 */
-	private JMenuItem getSaveMenuItem() {
-		if (saveMenuItem == null) {
-			saveMenuItem = new JMenuItem();
-			saveMenuItem.setText("Save");
-			saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+	private JMenuItem getSaveAsMenuItem() {
+		if (saveAsMenuItem == null) {
+			saveAsMenuItem = new JMenuItem();
+			saveAsMenuItem.setText("Save As..");
+			saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 					Event.CTRL_MASK, true));
+                        saveAsMenuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+                                    String filename;                                    
+                                    JFileChooser c = new JFileChooser();
+                                    FileFilter xmlFilter = new FileFilter(){
+
+                                        public boolean accept(File pathname) {
+                                            String ext = getExtension(pathname);
+                                            return ext.equals("xml");
+                                        }         
+                                        
+                                        private String getExtension(File f) {
+                                            String ext = null;
+                                            String s = f.getName();
+                                            int i = s.lastIndexOf('.');
+
+                                            if (i > 0 &&  i < s.length() - 1) {
+                                                ext = s.substring(i+1).toLowerCase();
+                                            }
+                                            return ext;
+                                        }
+
+                                        @Override
+                                        public String getDescription() {
+                                            return "XML Files";
+                                        }
+
+                                    };
+                                    //c.addChoosableFileFilter(xmlFilter);
+                                    c.setDialogType(JFileChooser.SAVE_DIALOG);
+                                    int rVal = c.showSaveDialog(FrameMain.this);
+                                    if (rVal == JFileChooser.APPROVE_OPTION) {
+                                        filename = c.getSelectedFile().getAbsolutePath();
+                                        ((CircuitPanel)circuitPanel).saveAs(filename);
+                                    }
+    
+                               }
+			});
 		}
-		return saveMenuItem;
+		return saveAsMenuItem;
 	}
     
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -800,6 +848,7 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
@@ -820,7 +869,7 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JMenuItem cutMenuItem = null;
     private javax.swing.JMenuItem copyMenuItem = null;
     private javax.swing.JMenuItem pasteMenuItem = null;
-    private javax.swing.JMenuItem saveMenuItem = null;
+    private javax.swing.JMenuItem saveAsMenuItem = null;
     private javax.swing.JDialog aboutDialog = null;
     private javax.swing.JPanel aboutContentPane = null;
     private javax.swing.JLabel aboutVersionLabel = null;

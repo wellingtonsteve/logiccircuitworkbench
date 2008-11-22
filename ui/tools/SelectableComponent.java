@@ -9,7 +9,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.HashSet;
+import javax.xml.transform.sax.TransformerHandler;
 import sim.Component;
+import ui.UIConstants;
 import ui.grid.Grid;
 import ui.grid.Pin;
 
@@ -43,7 +45,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         setLocalPins();
 
     }
-    
+
     public SelectionState getSelectionState() {
         return selectionState;
     }
@@ -94,7 +96,9 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
 
 
             setBoundingBox();
-        } 
+        } else if(!this.fixed && fixed && UIConstants.DO_SYSTEM_BEEP){
+            UIConstants.beep();
+        }
                
         
                
@@ -198,4 +202,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         Point rotP = Grid.snapPointToGrid(new Point((int) ((transP.x * cosTheta) - (transP.y * sinTheta)), (int) ((transP.y * cosTheta) + (transP.x * sinTheta))));
         return new Point(rotP.x + getCentre().x, rotP.y + getCentre().y);
     }
+
+    public abstract void createXML(TransformerHandler hd);
+    
 }

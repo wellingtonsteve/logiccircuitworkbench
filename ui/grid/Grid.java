@@ -118,8 +118,6 @@ public class Grid {
         Point temp;
         
         for(Pin p: sc.getGlobalPins()){
-            //removePin(p);
-            
             temp = new Point(p.x + d.x, p.y + d.y);
             tempPins.add(temp);
         }       
@@ -127,7 +125,6 @@ public class Grid {
         for(Point p: tempPins){
             if(getGridObjectAt(p) instanceof InvalidPoint 
                     && !((InvalidPoint)getGridObjectAt(p)).getParent().equals(sc)){
-                if(UIConstants.DO_SYSTEM_BEEP){UIConstants.beep();}
                 return false;
             }           
         }
@@ -135,11 +132,10 @@ public class Grid {
         Rectangle bb = sc.getBoundingBox();
         for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
             for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
-                Point p = snapPointToGrid(new Point(i, j));
+                Point p = snapPointToGrid(new Point(i+d.x, j+d.y));
                 if(bb.contains(p) && getGridObjectAt(p) instanceof InvalidPoint
                         && !((InvalidPoint)getGridObjectAt(p)).getParent().equals(sc)){
-                    if(UIConstants.DO_SYSTEM_BEEP){UIConstants.beep();}
-                    return false;
+                    return false;                   
                 }
             }
         }

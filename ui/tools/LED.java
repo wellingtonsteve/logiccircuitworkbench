@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.xml.transform.sax.TransformerHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 import sim.Component;
 import ui.UIConstants;
 
@@ -24,6 +27,7 @@ import ui.UIConstants;
  */
 public class LED extends ImageSelectableComponent{
     private boolean isOn;
+    private String colour = "Yellow";
 
     public LED(Component component, Point point) {
         super(component, point);
@@ -50,7 +54,14 @@ public class LED extends ImageSelectableComponent{
     @Override
     protected void setActiveImage() {
          try {
-            activeBi = ImageIO.read(new File("build/classes/ui/images/components/default_led_on_yellow.png"));
+            if(colour.equals("Red")){
+                activeBi = ImageIO.read(new File("build/classes/ui/images/components/default_led_on_red.png"));
+            } else if(colour.equals("Green")){
+                activeBi = ImageIO.read(new File("build/classes/ui/images/components/default_led_on_green.png"));
+            } else {
+                activeBi = ImageIO.read(new File("build/classes/ui/images/components/default_led_on_yellow.png"));
+            }
+                    
         } catch (IOException ex) {
             Logger.getLogger(Input.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -115,6 +126,29 @@ public class LED extends ImageSelectableComponent{
         } else {
             return getDefaultImage();            
         }    
+    }
+    
+    @Override
+    public void createXML(TransformerHandler hd) {
+        try {
+            AttributesImpl atts = new AttributesImpl();
+            atts.addAttribute("", "", "type", "CDATA", this.getClass().getSimpleName());
+            atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
+            atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
+            atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
+            
+            hd.startElement("", "", "component", atts);
+
+                atts.clear();
+                atts.addAttribute("", "", "name", "CDATA", "colour");
+                atts.addAttribute("", "", "value", "CDATA", colour);
+                hd.startElement("", "", "attr", atts);
+                hd.endElement("", "", "attr");
+
+            hd.endElement("", "", "component");
+        } catch (SAXException ex) {
+            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }

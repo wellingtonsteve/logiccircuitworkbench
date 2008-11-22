@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import javax.swing.JPanel;
+import ui.file.FileCreator;
 import ui.grid.Pin;
 import ui.grid.Grid;
 import ui.tools.AndGate2Input;
@@ -215,14 +216,7 @@ class CircuitPanel extends JPanel {
 
                         // Fix floating selection
                         if(!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed()){
-      
-                             // Add connection points to grid dots
-                            Point d = new Point(endPoint.x - drawnComponents.peek().getOrigin().x,
-                                    endPoint.y - drawnComponents.peek().getOrigin().y);                            
-                            //if(Grid.canMoveComponent(drawnComponents.peek(), d)){
-                                drawnComponents.peek().moveTo(endPoint, true);                          
-                            //} 
-                                
+                            drawnComponents.peek().moveTo(endPoint, true);                          
                             selectTool(currentTool);
                         }                               
 
@@ -256,10 +250,8 @@ class CircuitPanel extends JPanel {
                 // Drop draged components
                 if(nowDraging){
                     for(SelectableComponent sc: activeComponents){    
-                        //if(Grid.canMoveComponent(sc, new Point(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y))){
-                            sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, true);
-                            sc.mouseDraggedDropped(e);                         
-                        //}
+                        sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, true);
+                        sc.mouseDraggedDropped(e);                         
                     }
                     multipleSelection = false;                
                     nowDraging = false;
@@ -490,5 +482,15 @@ class CircuitPanel extends JPanel {
     
     public void mouseExited(MouseEvent e){
         endPoint = e.getPoint();
+    }
+    
+    public void saveAs(String filename){
+        FileCreator fc = new FileCreator(filename);
+        for(SelectableComponent sc: drawnComponents){
+            if(sc.isFixed()){
+                fc.add(sc);
+            }
+        }
+        fc.write();
     }
 }
