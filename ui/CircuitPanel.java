@@ -493,4 +493,15 @@ class CircuitPanel extends JPanel {
         }
         fc.write();
     }
+    
+    public void loadStack(Stack<SelectableComponent> stack){
+        drawnComponents.clear();
+        activeComponents.clear();
+        temporaryComponent = null;
+        nowDraging = false;
+        multipleSelection = false;
+        drawnComponents = stack;
+
+        repaint();
+    }
 }

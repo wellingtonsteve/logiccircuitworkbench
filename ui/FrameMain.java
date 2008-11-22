@@ -28,6 +28,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
+import ui.file.CircuitFileHandler;
 
 /**
  *
@@ -484,6 +485,7 @@ public class FrameMain extends javax.swing.JFrame {
 		if (fileMenu == null) {
 			fileMenu = new JMenu();
 			fileMenu.setText("File");
+                        fileMenu.add(getOpenMenuItem());
 			fileMenu.add(getSaveAsMenuItem());
 			fileMenu.add(getExitMenuItem());
 		}
@@ -700,6 +702,35 @@ public class FrameMain extends javax.swing.JFrame {
 		}
 		return saveAsMenuItem;
 	}
+        
+        /**
+	 * This method initializes jMenuItem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getOpenMenuItem() {
+		if (openMenuItem == null) {
+			openMenuItem = new JMenuItem();
+			openMenuItem.setText("Open..");
+			openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
+					Event.CTRL_MASK, true));
+                        openMenuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+                                    String filename;                                    
+                                    JFileChooser c = new JFileChooser();
+                                    c.setDialogType(JFileChooser.OPEN_DIALOG);
+                                    int rVal = c.showOpenDialog(FrameMain.this);
+                                    if (rVal == JFileChooser.APPROVE_OPTION) {
+                                        filename = c.getSelectedFile().getAbsolutePath();
+                                        CircuitFileHandler cfh = new CircuitFileHandler();
+                                        ((CircuitPanel)circuitPanel).loadStack(cfh.loadFile(filename));
+                                    }
+    
+                               }
+			});
+		}
+		return openMenuItem;
+	}
     
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 // TODO add your handling code here:
@@ -870,6 +901,7 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JMenuItem copyMenuItem = null;
     private javax.swing.JMenuItem pasteMenuItem = null;
     private javax.swing.JMenuItem saveAsMenuItem = null;
+    private javax.swing.JMenuItem openMenuItem = null;
     private javax.swing.JDialog aboutDialog = null;
     private javax.swing.JPanel aboutContentPane = null;
     private javax.swing.JLabel aboutVersionLabel = null;

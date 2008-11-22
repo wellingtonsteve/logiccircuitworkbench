@@ -205,4 +205,9 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
 
     public abstract void createXML(TransformerHandler hd);
     
+    
+    public void setRotation(double rotation) {
+        this.rotation = rotation;
+    }
+    
 }

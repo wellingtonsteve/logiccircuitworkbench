@@ -24,6 +24,7 @@
     author CDATA #IMPLIED
     createdOn CDATA #IMPLIED
     name CDATA #IMPLIED
+    version CDATA #IMPLIED
   >
 
 <!--- Put your DTDDoc comment here. -->
