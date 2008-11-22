@@ -144,4 +144,13 @@ public class Input extends ImageSelectableComponent{
             Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public boolean isOn() {
+        return isOn;
+    }
+
+    public void setIsOn(boolean isOn) {
+        this.isOn = isOn;
+    }
+
 }

@@ -10,6 +10,7 @@ import org.xml.sax.helpers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 import javax.xml.transform.sax.*;
+import ui.UIConstants;
 import ui.tools.SelectableComponent;
 /**
  *
@@ -48,6 +49,7 @@ public class FileCreator {
             atts.addAttribute("", "", "author", "CDATA",  System.getProperty("user.name"));
             atts.addAttribute("", "", "createdOn", "CDATA",  sdf.format(cal.getTime()));
             atts.addAttribute("", "", "name", "CDATA", "test1");
+            atts.addAttribute("", "", "version", "CDATA", UIConstants.FILE_FORMAT_VERSION);
             hd.startElement("", "", "circuit", atts);        
 
             // "components" tag
@@ -65,7 +67,6 @@ public class FileCreator {
     
     public void add(SelectableComponent sc) {
         sc.createXML(hd);     
-        System.out.print("test");
     }
 
     public void write() {
@@ -74,7 +75,6 @@ public class FileCreator {
             hd.endElement("", "", "circuit");
             hd.endDocument();
             out.close();
-            System.out.println("done!");
         } catch (SAXException ex) {
             Logger.getLogger(FileCreator.class.getName()).log(Level.SEVERE, null, ex);
         }

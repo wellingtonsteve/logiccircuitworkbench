@@ -28,6 +28,7 @@ public class UIConstants {
     public static Stroke CONNECTED_POINT_STROKE = new BasicStroke(2.0f); 
     
     public static final boolean DO_SYSTEM_BEEP = true;
+    public static String FILE_FORMAT_VERSION = "LCW v1.0";
     public static void beep(){
         java.awt.Toolkit.getDefaultToolkit ().beep();
     }

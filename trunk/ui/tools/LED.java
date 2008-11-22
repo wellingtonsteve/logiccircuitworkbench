@@ -27,7 +27,7 @@ import ui.UIConstants;
  */
 public class LED extends ImageSelectableComponent{
     private boolean isOn;
-    private String colour = "Yellow";
+    private String colour = "yellow";
 
     public LED(Component component, Point point) {
         super(component, point);
@@ -53,10 +53,13 @@ public class LED extends ImageSelectableComponent{
 
     @Override
     protected void setActiveImage() {
-         try {
-            if(colour.equals("Red")){
+        try {
+            if(colour==null){
+                colour = "yellow";
+            }
+            if(colour.equals("red")){
                 activeBi = ImageIO.read(new File("build/classes/ui/images/components/default_led_on_red.png"));
-            } else if(colour.equals("Green")){
+            } else if(colour.equals("green")){
                 activeBi = ImageIO.read(new File("build/classes/ui/images/components/default_led_on_green.png"));
             } else {
                 activeBi = ImageIO.read(new File("build/classes/ui/images/components/default_led_on_yellow.png"));
@@ -150,5 +153,16 @@ public class LED extends ImageSelectableComponent{
             Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    
+    public String getColour() {
+        return colour;
+    }
+
+    public void setColour(String colour) {
+        this.colour = colour;
+        setActiveImage();
+    }
+    
     
 }
