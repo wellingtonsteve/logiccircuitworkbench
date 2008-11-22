@@ -23,7 +23,7 @@ public class UIConstants {
               /* the dash pattern */new float[] { 8.0f, 8.0f },
               /* the dash phase */0.0f); /* on 8, off 8*/
     
-    public static final boolean SHOW_CONNECTION_POINTS = true;
+    public static final boolean SHOW_CONNECTION_POINTS = false;
     public static final Color CONNECTION_POINT_COLOUR = Color.RED;
     public static Stroke CONNECTED_POINT_STROKE = new BasicStroke(2.0f); 
     
@@ -32,7 +32,7 @@ public class UIConstants {
         java.awt.Toolkit.getDefaultToolkit ().beep();
     }
     
-    public static boolean SHOW_WIRE_WAYPOINTS = true;
+    public static boolean SHOW_WIRE_WAYPOINTS = false;
     public static Color WIRE_WAYPOINT_COLOUR = Color.GREEN;
     public static int WIRE_HOVER_THICKNESS = 2;
     public static final Color DEFAULT_WIRE_COLOUR = Color.BLACK;

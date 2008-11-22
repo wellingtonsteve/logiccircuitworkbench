@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.xml.transform.sax.TransformerHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 import sim.Component;
 import ui.UIConstants;
 
@@ -119,4 +122,26 @@ public class Input extends ImageSelectableComponent{
         }    
     }
     
+    @Override
+    public void createXML(TransformerHandler hd) {
+        try {
+            AttributesImpl atts = new AttributesImpl();
+            atts.addAttribute("", "", "type", "CDATA", this.getClass().getSimpleName());
+            atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
+            atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
+            atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
+            
+            hd.startElement("", "", "component", atts);
+
+                atts.clear();
+                atts.addAttribute("", "", "name", "CDATA", "value");
+                atts.addAttribute("", "", "value", "CDATA", (isOn)?"On":"Off");
+                hd.startElement("", "", "attr", atts);
+                hd.endElement("", "", "attr");
+
+            hd.endElement("", "", "component");
+        } catch (SAXException ex) {
+            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

@@ -11,7 +11,12 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.xml.transform.sax.TransformerHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 import ui.UIConstants;
 import ui.grid.Grid;
 
@@ -44,7 +49,7 @@ public class Wire extends SelectableComponent {
 
     @Override
     public boolean containsPoint(Point point) {
-        boolean retval = false; //hoverWaypoint = null;
+        boolean retval = false; 
         Point current = startPoint, next = startPoint;
         for (Point waypoint : waypoints) {
             next = waypoint;
@@ -117,7 +122,7 @@ public class Wire extends SelectableComponent {
     @Override
     public void draw(Graphics2D g, JComponent parent) {
         
-        // Find duplicates waypoints
+        // Find duplicate waypoints
         int i = 0, j = 0;
         dups: for(Point ptA: waypoints){             
             i = waypoints.indexOf(ptA);
@@ -188,7 +193,6 @@ public class Wire extends SelectableComponent {
             
             if(waypoints.getLast().x == endPoint.x && waypoints.getLast().y == endPoint.y){
                 Point last = waypoints.removeLast();
-                System.out.println("removed");
                 Point lastButOne;
                 if(waypoints.size()==0){
                     lastButOne = startPoint;
@@ -196,7 +200,6 @@ public class Wire extends SelectableComponent {
                     lastButOne = waypoints.getLast();
                 } 
                 createLeg(lastButOne, last);
-                //waypoints.add(new Point(x2, y2));
                 addWaypoint(new Point(x2,x2));
                                 
             } 
@@ -371,16 +374,53 @@ public class Wire extends SelectableComponent {
     @Override
     public void mouseDragged(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);
-        if(!hoverWaypoint.equals(endPoint)){
-            Point p = Grid.snapPointToGrid(e.getPoint());
-            hoverWaypoint.x = p.x;
-            hoverWaypoint.y = p.y;
-        }
         
+        // Moving a segment of the wire
+        if(!hoverWaypoint.equals(endPoint)){
+            int i = waypoints.indexOf(hoverWaypoint);
+            Point p = Grid.snapPointToGrid(e.getPoint());
+            
+            // We have more that one waypoint, let's get the i-1 th waypoint and move the right part of the wire
+            if(i > 0){ 
+                Point previousWaypoint = waypoints.get(i-1);
+                // There is no intermeditate point in the joining wire between the two waypoints
+                if(previousWaypoint.x == hoverWaypoint.x){ 
+                    previousWaypoint.x = p.x;
+                    hoverWaypoint.x = p.x;
+                } else
+                // There is no intermeditate point in the joining wire between the two waypoints
+                if(previousWaypoint.y == hoverWaypoint.y){ 
+                    previousWaypoint.y = p.y;
+                    hoverWaypoint.y = p.y;
+                } else
+                // Just move the horizontal part of the wire leg
+                if(previousWaypoint.y == hoverMousePoint.y){ 
+                    previousWaypoint.y = p.y;
+                    hoverMousePoint.y = p.y;
+                } else
+                // Just move the vertical part of the wire leg
+                if(hoverWaypoint.x == hoverMousePoint.x){ 
+                    hoverMousePoint.x = p.x;
+                    hoverWaypoint.x = p.x;
+                }
+            // We only have one waypoint, just move it
+            } else { 
+                hoverWaypoint.x = p.x;
+                hoverWaypoint.y = p.y;
+            }            
+        }        
     }
 
     public void mouseDraggedDropped(MouseEvent e) {
         setSelectionState(selectionState.ACTIVE);
+        
+        // Remove uneeded waypoints introduced by dragging
+        int i = waypoints.indexOf(hoverWaypoint);
+        if(i > 0 & i < waypoints.size()-1){ 
+            Point previousWaypoint = waypoints.get(i-1);
+            Point nextWaypoint = waypoints.get(i+1);
+            detectResolveWireOverlap(previousWaypoint, hoverWaypoint, nextWaypoint, true);
+        }
     }
 
     @Override
@@ -388,7 +428,7 @@ public class Wire extends SelectableComponent {
         if (!isFixed() && !getSelectionState().equals(SelectionState.ACTIVE)) {
             setSelectionState(SelectionState.DEFAULT);
         }
-        hoverMousePoint = e.getPoint();
+        hoverMousePoint = Grid.snapPointToGrid(e.getPoint());
     }
 
     @Override
@@ -518,5 +558,30 @@ public class Wire extends SelectableComponent {
         }
         
         return false;
+    }
+    
+    public void createXML(TransformerHandler hd) {
+        try {
+            AttributesImpl atts = new AttributesImpl();
+            atts.addAttribute("", "", "startx", "CDATA", String.valueOf(startPoint.x));
+            atts.addAttribute("", "", "starty", "CDATA", String.valueOf(startPoint.y));
+            atts.addAttribute("", "", "endx", "CDATA", String.valueOf(endPoint.x));
+            atts.addAttribute("", "", "endy", "CDATA", String.valueOf(endPoint.y));
+
+            hd.startElement("", "", "wire", atts);
+
+            for (Point p: waypoints) {
+                atts.clear();
+                atts.addAttribute("", "", "x", "CDATA", String.valueOf(p.x));
+                atts.addAttribute("", "", "y", "CDATA", String.valueOf(p.y));
+                hd.startElement("", "", "waypoint", atts);
+                hd.endElement("", "", "waypoint");
+            }
+            
+            hd.endElement("", "", "wire");
+            
+        } catch (SAXException ex) {
+            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
