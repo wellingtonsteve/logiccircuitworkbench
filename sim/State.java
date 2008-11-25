@@ -1,7 +1,6 @@
 package sim;
 
-public enum State {
-
+public enum State
+{
 	FLOATING, ON, OFF
-	
 }

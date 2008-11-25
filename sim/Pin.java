@@ -1,54 +1,28 @@
 package sim;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-public class Pin {
-		
-	private State state = State.FLOATING;
-	private boolean isInput;
-
-	private List<Pin> listConnections = new LinkedList<Pin>();
-
-	public State getValue(){
-		return state;
-	}
+public abstract class Pin
+{
+	private SimItem owner;
+	private String name;
 	
-	public void setValue(State state){
-		this.state = state;
-	}
-	
-	public void setIsInput(boolean isInput) {
-		this.isInput = isInput;
-	}
-	
-	public boolean getIsInput(){
-		return isInput;
-	}
-	
-	public void setIsOutput(boolean isInput) {
-		this.isInput = !isInput;
-	}
-	
-	public boolean getIsOutput(){
-		return !isInput;
-	}
-	
-	
-	public void addConnection(Pin pin)
+	protected Pin(SimItem owner, String name)
 	{
-		this.listConnections.add(pin);
+		this.owner = owner;
+		this.name = name;
 	}
 	
-	public boolean removeConnection(Pin pin)
+	public SimItem getOwner()
 	{
-		return this.listConnections.remove(pin);
+		return this.owner;
 	}
 	
-	public Iterator<Pin> getConnectionIterator()
+	public String getName()
 	{
-		return this.listConnections.iterator();
+		return this.name;
 	}
-
+	
+	protected void setName(String name)
+	{
+		this.name = name;
+	}
 }
