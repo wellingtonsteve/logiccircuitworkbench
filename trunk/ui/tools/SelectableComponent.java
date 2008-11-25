@@ -113,7 +113,8 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     public String getName(){
-        return component.getType();
+        //return component.getType();
+        return "";
     }
     
     public Rectangle getBoundingBox(){
