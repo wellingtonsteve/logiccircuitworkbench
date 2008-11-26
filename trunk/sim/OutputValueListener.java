@@ -2,5 +2,5 @@ package sim;
 
 public interface OutputValueListener
 {
-	void outputValueChanged();
+    void outputValueChanged();
 }
