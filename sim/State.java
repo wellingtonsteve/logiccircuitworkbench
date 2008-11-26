@@ -2,5 +2,5 @@ package sim;
 
 public enum State
 {
-	FLOATING, ON, OFF
+    FLOATING, ON, OFF
 }
