@@ -12,6 +12,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -38,7 +39,7 @@ import ui.tools.Wire;
 class CircuitPanel extends JPanel {
     
     private int frameOriginX, frameOriginY;
-    private Point currentPoint, startPoint = new Point(0,0), endPoint;
+    private Point currentPoint = new Point(0,0), startPoint = new Point(0,0), endPoint;
     private Stack<SelectableComponent> drawnComponents = new Stack<SelectableComponent>();
     private UITool currentTool = UITool.Select;
     private SelectableComponent temporaryComponent; // Used for reference to a selection from list of drawn components
@@ -55,7 +56,7 @@ class CircuitPanel extends JPanel {
     public CircuitPanel(){
         frameOriginX = this.getX();
         frameOriginY = this.getY();               
-                    
+    
         addMouseMotionListener(new MouseMotionAdapter(){  
             
             @Override
@@ -101,6 +102,9 @@ class CircuitPanel extends JPanel {
                         }
 
                     } 
+                    
+                    // Repaint only dirty areas
+                     //repaintDirtyAreas();
                     repaint();
                     
                 } else if(currentTool.equals(UITool.Wire) 
@@ -163,14 +167,17 @@ class CircuitPanel extends JPanel {
                             
                             
                             for(SelectableComponent sc: activeComponents){                
-                                if(!(sc instanceof Wire)){ sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, false); }
+                                if(!(sc instanceof Wire)){ 
+                                    sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, false);
+                                }
                                 sc.mouseDragged(e);
                             }
 
                         }
                     }
-            
+                    
                     repaint();
+
                 } else if(currentTool.equals(UITool.Wire) 
                         && !drawnComponents.isEmpty()){
                    
@@ -327,6 +334,7 @@ class CircuitPanel extends JPanel {
         }
     }
     
+    // Selection box attributes created by selecting the selection tool and dragging
     private void setSelectionBox() {
         selX = startPoint.x;
         selY = startPoint.y;
@@ -342,6 +350,31 @@ class CircuitPanel extends JPanel {
             selHeight = selHeight * -1;
         }
     }
+    
+    private void repaintDirtyAreas() {
+
+        
+        int dirtyX = Math.min(startPoint.x, Math.min(endPoint.x, currentPoint.x));
+        int dirtyY = Math.min(startPoint.y, Math.min(endPoint.y, currentPoint.y));
+        int dirtyMaxX = Math.max(startPoint.x, Math.max(endPoint.x, currentPoint.x));
+        int dirtyMaxY = Math.max(startPoint.y, Math.max(endPoint.y, currentPoint.y));
+        
+        // Include range of current selection (i.e. non-fixed components)
+        for(SelectableComponent sc: drawnComponents){
+            if(!sc.isFixed()){
+                Rectangle bb = sc.getBoundingBox();
+                if(bb.getMinX() < dirtyX) { dirtyX = (int) bb.getMinX(); }
+                if(bb.getMinY() < dirtyY) { dirtyY = (int) bb.getMinY(); }
+                if(bb.getMaxX() > dirtyMaxX) { dirtyMaxX = (int) bb.getMaxX(); }
+                if(bb.getMaxY() > dirtyMaxY) { dirtyMaxY = (int) bb.getMaxY(); }
+            }
+        }
+        
+        int dirtyWidth = dirtyMaxX - dirtyX;
+        int dirtyHeight = dirtyMaxY - dirtyY;
+        
+        repaint(dirtyX, dirtyY, dirtyWidth, dirtyHeight);
+    }
      
     @Override
     public void paintComponent(Graphics g) {
@@ -352,11 +385,11 @@ class CircuitPanel extends JPanel {
         // Background Colour
         g2.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
         g2.fillRect(0, 0, this.getWidth(), this.getHeight());
-        
+                
         // Grid Snap Dots
         g2.setColor(UIConstants.GRID_DOT_COLOUR);
-        for(int i =  0; i< this.getWidth(); i+=UIConstants.GRID_DOT_SPACING){
-            for(int j = 0; j < this.getHeight(); j+=UIConstants.GRID_DOT_SPACING){
+        for(int i =  UIConstants.GRID_DOT_SPACING; i< this.getWidth(); i+=UIConstants.GRID_DOT_SPACING){
+            for(int j = UIConstants.GRID_DOT_SPACING; j < this.getHeight(); j+=UIConstants.GRID_DOT_SPACING){
                 g2.fillRect(i, j, 1, 1);
             }
         }

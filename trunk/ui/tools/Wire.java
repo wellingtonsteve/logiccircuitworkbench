@@ -109,10 +109,10 @@ public class Wire extends SelectableComponent {
         for (Point p : waypoints) {
             p.translate(dx, dy);
         }
-        setBoundingBox();
+        setInvalidAreas();
         this.fixed = fixed; 
         if(fixed){
-            wasFixed = true;
+            wasEverFixed = true;
         }
         setLocalPins();
         setGlobalPins();       
@@ -179,7 +179,7 @@ public class Wire extends SelectableComponent {
         if(len == 1){
             start = startPoint;
         } else if (len > 1){
-            start =  waypoints.get(len - 2);
+            start = waypoints.get(len - 2);
         }
         if(start != null){
             detectResolveWireOverlap(start, waypoints.getLast(), endPoint, isFixed());
@@ -483,7 +483,7 @@ public class Wire extends SelectableComponent {
     }
     
     @Override
-    protected void setBoundingBox(){
+    protected void setInvalidAreas(){
         int maxX = startPoint.x, minX = startPoint.x, maxY = startPoint.y, minY = startPoint.y;
         
         for (Point waypoint : waypoints) {
@@ -514,7 +514,7 @@ public class Wire extends SelectableComponent {
             minY = endPoint.y;
         }
         
-        this.boundingBox = new Rectangle(minX, minY, maxX-minX, maxY-minY);
+        this.invalidArea = new Rectangle(minX, minY, maxX-minX, maxY-minY);
     }
     
     @Override

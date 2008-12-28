@@ -6,6 +6,7 @@ import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,20 +62,23 @@ public class ConnectionPoint extends GridObject {
         return connections.size();
     }
     
-    public Pin moveWireEnds(Point newPoint){
+    public Collection<Pin> getConnections(){
+        return (Collection<Pin>) connections.clone();
+    }
+    
+    public void moveWireEnds(Point newPoint){
         for(Pin pin: connections){
             if(pin.getParent() instanceof Wire){
                 Wire w = (Wire) pin.getParent();
                 if(w.getEndPoint().equals(this)){
                     w.moveEndPoint(newPoint);
-                    return pin;
+                    break;
                 } else if(w.getOrigin().equals(this)){
                     w.moveStartPoint(newPoint);
-                    return pin;
-                }
-                
-            }
-        } return null;
+                    break;
+                }                
+            } 
+        } 
     }
     
     public boolean isConnected(){

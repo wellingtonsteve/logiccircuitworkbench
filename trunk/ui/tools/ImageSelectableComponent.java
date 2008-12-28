@@ -26,6 +26,7 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
         setSelectedImage();
         setActiveImage();
         
+        setInvalidAreas();
         setBoundingBox();
         
         setSelectionState(SelectionState.DEFAULT);
@@ -123,7 +124,7 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
             
     @Override
     public boolean containsPoint(Point point) {
-        return this.getBoundingBox().contains(point);
+        return this.getInvalidAreas().contains(point);
     }
     
     public void createXML(TransformerHandler hd) {

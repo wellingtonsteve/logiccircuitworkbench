@@ -66,7 +66,7 @@ public class Input extends ImageSelectableComponent{
     }
 
     @Override
-    protected void setBoundingBox(){
+    protected void setInvalidAreas(){
         //Tight fitting box so that pins are not selected
         this.boundingBox = new Rectangle((int)getOrigin().getX()-getCentre().x,(int)getOrigin().getY()-getCentre().y,23,21);
     }

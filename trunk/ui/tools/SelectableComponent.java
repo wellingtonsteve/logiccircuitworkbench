@@ -27,12 +27,13 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     protected BufferedImage selectedBi;
     protected BufferedImage activeBi;
     protected Rectangle boundingBox = null;
-    protected boolean fixed = false, wasFixed = false;
+    protected boolean fixed = false, wasEverFixed = false; // fixed describes the current state, wasEverFixed indicates whether fixed has ever been true i.e. whether this is a brand new piece or not
     private Point point;
     protected Collection<Point> localPins = new HashSet<Point>();
     protected Collection<Pin> globalPins = new HashSet<Pin>();
     protected double rotation = 0; // Rotation in degrees, with 0 being with inputs on left, output on right of standard and-gate
     protected double cosTheta, sinTheta;
+    protected Rectangle invalidArea = null;
 
     public SelectableComponent(Component component,Point point){
         this.component = component;
@@ -72,35 +73,36 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     public void translate(int dx, int dy, boolean fixed) {       
 
-        if(Grid.canMoveComponent(this, dx, dy)){
+        if(Grid.canMoveComponent(this, dx, dy, !wasEverFixed)){
             this.point.translate(dx, dy);
             
             // Adding this component to the grid for the first time
-            if(!wasFixed && fixed){ 
+            if(!wasEverFixed && fixed){ 
                 this.fixed = fixed;
-                this.wasFixed = true;
+                this.wasEverFixed = true;
                 Grid.markInvalidAreas(this);
                 setGlobalPins();
             // About to refix the component
             } else if (!this.fixed && fixed){
                 this.fixed = fixed;
                 setGlobalPins();            
-                Grid.translateComponent(dx,dy,this);
-                Grid.markInvalidAreas(this);
+                Grid.translateComponent(dx,dy,this, !wasEverFixed);
+                Grid.markInvalidAreas(this); 
             // Just moving around 
             } else {
                 setGlobalPins();
                 this.fixed = fixed;
-                Grid.translateComponent(dx,dy,this);
+                Grid.translateComponent(dx,dy,this, !wasEverFixed);
             }
 
-
+            setInvalidAreas();
             setBoundingBox();
-        } else if(!this.fixed && fixed && UIConstants.DO_SYSTEM_BEEP){
-            UIConstants.beep();
-        }
-               
+            
+        }         
         
+        if(!this.fixed && fixed && UIConstants.DO_SYSTEM_BEEP){
+            UIConstants.beep();
+        }                    
                
     }
     
@@ -114,7 +116,14 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     public String getName(){
         //return component.getType();
-        return "";
+        return "TestName";
+    }
+    
+    public Rectangle getInvalidAreas(){
+        if(invalidArea == null){
+            setInvalidAreas();
+        }
+        return invalidArea;
     }
     
     public Rectangle getBoundingBox(){
@@ -141,9 +150,9 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         }
     }
     
-    protected void setBoundingBox(){
+    protected void setInvalidAreas(){
         Point rotOrigin = rotate(getOrigin());
-        this.boundingBox = new Rectangle(rotOrigin.x,rotOrigin.y,getWidth(),getHeight());
+        this.invalidArea = new Rectangle(rotOrigin.x,rotOrigin.y,getWidth(),getHeight());   
     }
     
     public Point getCentre(){
@@ -195,13 +204,14 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     protected abstract void setLocalPins();
     
     public boolean containedIn(Rectangle selBox) {
-        return selBox.contains(getBoundingBox());
+        return selBox.contains(getInvalidAreas());
     }
 
     private Point rotate(Point p) {
         Point transP = new Point(p.x - getCentre().x, p.y - getCentre().y);
-        Point rotP = Grid.snapPointToGrid(new Point((int) ((transP.x * cosTheta) - (transP.y * sinTheta)), (int) ((transP.y * cosTheta) + (transP.x * sinTheta))));
-        return new Point(rotP.x + getCentre().x, rotP.y + getCentre().y);
+        Point rotP = new Point((int) ((transP.x * cosTheta) - (transP.y * sinTheta)), (int) ((transP.y * cosTheta) + (transP.x * sinTheta)));
+        Point ansP = new Point(rotP.x + getCentre().x, rotP.y + getCentre().y);
+        return Grid.snapPointToGrid(ansP);
     }
 
     public abstract void createXML(TransformerHandler hd);
@@ -209,6 +219,11 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     public void setRotation(double rotation) {
         this.rotation = rotation;
+    }
+
+    protected void setBoundingBox() {
+        Point rotOrigin = rotate(getOrigin());
+        this.boundingBox = new Rectangle(rotOrigin.x,rotOrigin.y,getWidth(),getHeight());
     }
     
 }
