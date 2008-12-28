@@ -59,9 +59,9 @@ public class NorGate2Input extends ImageSelectableComponent{
     }
 
     @Override
-    protected void setBoundingBox(){
+    protected void setInvalidAreas(){
         //Tight fitting box so that pins are not selected
-        this.boundingBox = new Rectangle((int)getOrigin().getX()-getCentre().x+20,(int)getOrigin().getY()+15-getCentre().y,32,30);
+        this.invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+20,(int)getOrigin().getY()+20-getCentre().y,32,22);
     }
     
     @Override

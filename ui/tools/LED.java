@@ -77,9 +77,9 @@ public class LED extends ImageSelectableComponent{
     }
 
     @Override
-    protected void setBoundingBox(){
+    protected void setInvalidAreas(){
         //Tight fitting box so that pins are not selected
-        this.boundingBox = new Rectangle((int)getOrigin().getX()-getCentre().x+18,(int)getOrigin().getY()-getCentre().y,14,21);
+        this.invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+18,(int)getOrigin().getY()-getCentre().y,14,21);
     }
     
     @Override

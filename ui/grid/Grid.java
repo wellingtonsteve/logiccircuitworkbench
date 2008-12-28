@@ -3,6 +3,7 @@ package ui.grid;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import ui.UIConstants;
@@ -14,7 +15,8 @@ import ui.tools.SelectableComponent;
  */
 public class Grid {
     
-    private static HashMap<Point,GridObject> grid = new HashMap<Point,GridObject>(); 
+    private static HashMap<Point,GridObject> grid = new HashMap<Point,GridObject>();
+
     
     public static ConnectionPoint getConnectionPoint(Point p){
         GridObject go = getGridObjectAt(p);
@@ -27,7 +29,7 @@ public class Grid {
     
     public static boolean markInvalidAreas(SelectableComponent sc){
         if(!(sc instanceof ui.tools.Wire)){
-            Rectangle bb = sc.getBoundingBox();
+            Rectangle bb = sc.getInvalidAreas();
             for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
                 for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
                     Point p = snapPointToGrid(new Point(i, j));
@@ -40,10 +42,11 @@ public class Grid {
         return true;
     }
 
-    public static boolean translateComponent(int dx, int dy, SelectableComponent sc) {    
-        if(canMoveComponent(sc, dx, dy)){
-            if(!(sc instanceof ui.tools.Wire)){
-                Rectangle bb = sc.getBoundingBox();
+    public static boolean translateComponent(int dx, int dy, SelectableComponent sc, boolean newComponent) {    
+        if(canMoveComponent(sc, dx, dy, newComponent)){
+            if((sc.isFixed() || !newComponent) && !(sc instanceof ui.tools.Wire)){
+                Rectangle bb = sc.getInvalidAreas();
+                // Remove all invalid point markers
                 for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
                     for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
                         Point p = snapPointToGrid(new Point(i, j));
@@ -54,12 +57,18 @@ public class Grid {
                         }
                     }
                 }
-                
+                // Move all pins and move joined wires
                 for(Pin p: sc.getGlobalPins()){ 
-                    Pin oldPin = new Pin(p.getParent(), p.x-dx, p.y-dy);
-                    if(getGridObjectAt(oldPin) instanceof ConnectionPoint){
-                        ((ConnectionPoint) getGridObjectAt(oldPin)).moveWireEnds(new Point(p.x, p.y));                
-
+                   GridObject oldPin = getGridObjectAt(new Pin(p.getParent(), p.x-dx, p.y-dy));
+                    if(oldPin instanceof ConnectionPoint){
+                        ConnectionPoint cp = (ConnectionPoint) oldPin;
+                        Collection<Pin> cpBackup = cp.getConnections();
+                        cp.moveWireEnds(new Point(p.x, p.y));          
+                        if(!cp.getConnections().equals(cpBackup)){
+                            System.out.println("change");
+                        } else {
+                            System.out.println("nochange");
+                        }
                     } 
                 }   
             }
@@ -79,7 +88,7 @@ public class Grid {
                 } 
             }        
             if(!(sc instanceof ui.tools.Wire)){
-                Rectangle bb = sc.getBoundingBox();
+                Rectangle bb = sc.getInvalidAreas();
                 for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
                     for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
                         Point p = snapPointToGrid(new Point(i, j));
@@ -109,14 +118,15 @@ public class Grid {
         }
     }
     
-    public static boolean canMoveComponent(SelectableComponent sc, int dx, int dy){
-        return canMoveComponent(sc, new Point(dx, dy));
+    public static boolean canMoveComponent(SelectableComponent sc, int dx, int dy, boolean newComponent){
+        return canMoveComponent(sc, new Point(dx, dy), newComponent);
     }
     
-    public static boolean canMoveComponent(SelectableComponent sc, Point d){
+    public static boolean canMoveComponent(SelectableComponent sc, Point d, boolean newComponent){
         LinkedList<Point> tempPins = new LinkedList<Point>();
         Point temp;
         
+        // Check each pin
         for(Pin p: sc.getGlobalPins()){
             temp = new Point(p.x + d.x, p.y + d.y);
             tempPins.add(temp);
@@ -129,13 +139,16 @@ public class Grid {
             }           
         }
         
-        Rectangle bb = sc.getBoundingBox();
+        // Check each internal point of the component
+        Rectangle bb = sc.getInvalidAreas();
         for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
             for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
-                Point p = snapPointToGrid(new Point(i+d.x, j+d.y));
-                if(bb.contains(p) && getGridObjectAt(p) instanceof InvalidPoint
-                        && !((InvalidPoint)getGridObjectAt(p)).getParent().equals(sc)){
+                GridObject go = getGridObjectAt(new Point(i+d.x, j+d.y));
+                if(newComponent && go != null){
                     return false;                   
+                } else if(go instanceof InvalidPoint
+                        && !((InvalidPoint)go).getParent().equals(sc)) {
+                    return false;
                 }
             }
         }
@@ -144,6 +157,7 @@ public class Grid {
     }
     
     protected static GridObject getGridObjectAt(Point p){
+        // Must create a new object for lookup
         return grid.get(new Point(p.x, p.y));
     }
 
@@ -213,5 +227,19 @@ public class Grid {
         }                
     }
 
+    public boolean areDirectlyConnected(SelectableComponent a, SelectableComponent b){
+        
+        Collection<Pin> bPins = b.getGlobalPins();
+        
+        for(Pin pinA: a.getGlobalPins()){
+            if(bPins.contains(pinA)){
+                return true;
+            }
+        }
+        
+        return false;
+        
+    }
+    
             
 }

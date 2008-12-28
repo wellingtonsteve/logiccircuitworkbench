@@ -58,9 +58,9 @@ public class AndGate2Input extends ImageSelectableComponent{
     }
 
     @Override
-    protected void setBoundingBox(){
-        //Tight fitting box so that pins are not selected
-        this.boundingBox = new Rectangle((int)getOrigin().getX()-getCentre().x+20,(int)getOrigin().getY()+15-getCentre().y,32,30);
+    protected void setInvalidAreas(){
+        // Tight fitting box so that pins, used for hover selection of component and checking invalid areas
+        this.invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+20,(int)getOrigin().getY()+20-getCentre().y,32,22);
     }
     
     @Override

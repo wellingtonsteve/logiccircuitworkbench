@@ -8,9 +8,7 @@ package ui;
 
 import ui.tools.UITool;
 import java.awt.BorderLayout;
-import java.awt.Cursor;
 import java.awt.Event;
-import java.awt.FileDialog;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,6 +26,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.tree.TreePath;
 import ui.file.CircuitFileHandler;
 
 /**
@@ -51,283 +50,110 @@ public class FrameMain extends javax.swing.JFrame {
     private void initComponents() {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        jSeparator2 = new javax.swing.JSeparator();
-        jToolBar1 = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
+        jSplitPane2 = new javax.swing.JSplitPane();
+        statusPanel = new javax.swing.JPanel();
+        infoLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        DesktopPane = new javax.swing.JDesktopPane();
-        jInternalFrame4 = new javax.swing.JInternalFrame();
-        jSplitPane1 = new javax.swing.JSplitPane();
-        jPanel4 = new javax.swing.JPanel();
-        Selection = new javax.swing.JButton();
-        Wire = new javax.swing.JButton();
-        AndGate = new javax.swing.JButton();
-        OrGate = new javax.swing.JButton();
-        NandGate = new javax.swing.JButton();
-        NorGate = new javax.swing.JButton();
-        Input = new javax.swing.JButton();
-        LED = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        circuitFrame = new javax.swing.JInternalFrame();
         circuitToolbar = new javax.swing.JToolBar();
         clear_circuit = new javax.swing.JButton();
         delete_selected1 = new javax.swing.JButton();
         delete_selected2 = new javax.swing.JButton();
         delete_selected = new javax.swing.JButton();
         select_all = new javax.swing.JButton();
-        statusPanel = new javax.swing.JPanel();
-        infoLabel = new javax.swing.JLabel();
+        AndGate = new javax.swing.JButton();
+        OrGate = new javax.swing.JButton();
+        NandGate = new javax.swing.JButton();
+        Input = new javax.swing.JButton();
+        NorGate = new javax.swing.JButton();
+        LED = new javax.swing.JButton();
+        jToolBar1 = new javax.swing.JToolBar();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jSeparator3 = new javax.swing.JToolBar.Separator();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        ClearCircuit = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
+        jButton19 = new javax.swing.JButton();
+        jSeparator4 = new javax.swing.JToolBar.Separator();
+        jButton10 = new javax.swing.JButton();
+        jButton11 = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
+        jSlider1 = new javax.swing.JSlider();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        DesktopPane = new ScrollableDesktop();
+        circuitFrame = new javax.swing.JInternalFrame();
+        jScrollPane2 = new javax.swing.JScrollPane();
         circuitPanel = new CircuitPanel();
-        jSeparator1 = new javax.swing.JSeparator();
+        jInternalFrame1 = new javax.swing.JInternalFrame();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jSplitPane3 = new javax.swing.JSplitPane();
+        jPanel4 = new javax.swing.JPanel();
+        Selection = new javax.swing.JButton();
+        Wire = new javax.swing.JButton();
+        Wire1 = new javax.swing.JButton();
+        Wire2 = new javax.swing.JButton();
+        RotateLeft = new javax.swing.JButton();
+        RotateRght = new javax.swing.JButton();
+        jButton20 = new javax.swing.JButton();
+        jButton21 = new javax.swing.JButton();
+        InsertComponent = new javax.swing.JButton();
+        jButton16 = new javax.swing.JButton();
+        jButton18 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        ComponentSelectionTree = new javax.swing.JTree();
+        jPanel2 = new javax.swing.JPanel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        File = new javax.swing.JMenu();
+        Open = new javax.swing.JMenuItem();
+        Save = new javax.swing.JMenuItem();
+        SaveAs = new javax.swing.JMenuItem();
+        SaveAs1 = new javax.swing.JMenuItem();
+        Edit = new javax.swing.JMenu();
+        Undo = new javax.swing.JMenuItem();
+        Redo = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JSeparator();
+        Cut = new javax.swing.JMenuItem();
+        Copy = new javax.swing.JMenuItem();
+        Paste = new javax.swing.JMenuItem();
+        SelectAll = new javax.swing.JMenuItem();
+        Delete = new javax.swing.JMenuItem();
+        Simulation = new javax.swing.JMenu();
+        Window = new javax.swing.JMenu();
+        Help = new javax.swing.JMenu();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane2.setAutoscrolls(true);
+        jSplitPane2.setPreferredSize(new java.awt.Dimension(136, 600));
+
+        infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
-        setTitle(bundle.getString("FrameMain.title")); // NOI18N
-        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setMinimumSize(new java.awt.Dimension(750, 510));
-        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
+        infoLabel.setText(bundle.getString("TestJFrameForm.infoLabel.text_1")); // NOI18N
 
-        jToolBar1.setRollover(true);
-        jToolBar1.setMaximumSize(new java.awt.Dimension(750, 23));
-        jToolBar1.setMinimumSize(new java.awt.Dimension(750, 23));
-        jToolBar1.setPreferredSize(new java.awt.Dimension(750, 23));
-
-        jButton1.setText(bundle.getString("TestJFrameForm.jButton1.text_1")); // NOI18N
-        jButton1.setFocusable(false);
-        jButton1.setHideActionText(true);
-        jButton1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton1);
-
-        getContentPane().add(jToolBar1);
+        org.jdesktop.layout.GroupLayout statusPanelLayout = new org.jdesktop.layout.GroupLayout(statusPanel);
+        statusPanel.setLayout(statusPanelLayout);
+        statusPanelLayout.setHorizontalGroup(
+            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(infoLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        statusPanelLayout.setVerticalGroup(
+            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(infoLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
 
         jPanel1.setAutoscrolls(true);
         jPanel1.setMinimumSize(new java.awt.Dimension(750, 500));
         jPanel1.setPreferredSize(new java.awt.Dimension(750, 500));
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
-
-        DesktopPane.setAutoscrolls(true);
-        DesktopPane.setMinimumSize(new java.awt.Dimension(600, 400));
-
-        jInternalFrame4.setIconifiable(true);
-        jInternalFrame4.setResizable(true);
-        jInternalFrame4.setTitle(bundle.getString("TestJFrameForm.jInternalFrame4.title")); // NOI18N
-        jInternalFrame4.setVisible(true);
-
-        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-
-        jPanel4.setLayout(new java.awt.GridLayout(2, 4));
-
-        Selection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_select.png"))); // NOI18N
-        Selection.setText(bundle.getString("TestJFrameForm.Selection.text")); // NOI18N
-        Selection.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Selection.setMaximumSize(new java.awt.Dimension(26, 28));
-        Selection.setMinimumSize(new java.awt.Dimension(26, 28));
-        Selection.setPreferredSize(new java.awt.Dimension(26, 28));
-        Selection.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                SelectionMouseClicked(evt);
-            }
-        });
-        jPanel4.add(Selection);
-
-        Wire.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
-        Wire.setText(bundle.getString("TestJFrameForm.Wire.text")); // NOI18N
-        Wire.setToolTipText(bundle.getString("TestJFrameForm.Wire.toolTipText")); // NOI18N
-        Wire.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Wire.setMaximumSize(new java.awt.Dimension(26, 28));
-        Wire.setMinimumSize(new java.awt.Dimension(26, 28));
-        Wire.setPreferredSize(new java.awt.Dimension(26, 28));
-        Wire.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                WireMouseClicked(evt);
-            }
-        });
-        jPanel4.add(Wire);
-
-        AndGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_andgate.png"))); // NOI18N
-        AndGate.setText(bundle.getString("TestJFrameForm.AndGate.text")); // NOI18N
-        AndGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        AndGate.setMaximumSize(new java.awt.Dimension(26, 28));
-        AndGate.setMinimumSize(new java.awt.Dimension(26, 28));
-        AndGate.setPreferredSize(new java.awt.Dimension(26, 28));
-        AndGate.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                AndGateMouseClicked(evt);
-            }
-        });
-        jPanel4.add(AndGate);
-
-        OrGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_orgate.png"))); // NOI18N
-        OrGate.setText(bundle.getString("FrameMain.OrGate.text")); // NOI18N
-        OrGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        OrGate.setMaximumSize(new java.awt.Dimension(26, 28));
-        OrGate.setMinimumSize(new java.awt.Dimension(26, 28));
-        OrGate.setPreferredSize(new java.awt.Dimension(26, 26));
-        OrGate.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                OrGateMouseClicked(evt);
-            }
-        });
-        jPanel4.add(OrGate);
-        OrGate.getAccessibleContext().setAccessibleName(bundle.getString("FrameMain.AndGate1.AccessibleContext.accessibleName")); // NOI18N
-
-        NandGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_nandgate.png"))); // NOI18N
-        NandGate.setText(bundle.getString("FrameMain.NandGate.text")); // NOI18N
-        NandGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        NandGate.setMaximumSize(new java.awt.Dimension(26, 28));
-        NandGate.setMinimumSize(new java.awt.Dimension(26, 28));
-        NandGate.setPreferredSize(new java.awt.Dimension(26, 26));
-        NandGate.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                NandGateMouseClicked(evt);
-            }
-        });
-        jPanel4.add(NandGate);
-        NandGate.getAccessibleContext().setAccessibleName(bundle.getString("FrameMain.AndGate2.AccessibleContext.accessibleName")); // NOI18N
-
-        NorGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_norgate.png"))); // NOI18N
-        NorGate.setText(bundle.getString("FrameMain.NorGate.text")); // NOI18N
-        NorGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        NorGate.setMaximumSize(new java.awt.Dimension(26, 28));
-        NorGate.setMinimumSize(new java.awt.Dimension(26, 28));
-        NorGate.setPreferredSize(new java.awt.Dimension(26, 26));
-        NorGate.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                NorGateMouseClicked(evt);
-            }
-        });
-        jPanel4.add(NorGate);
-
-        Input.setText(bundle.getString("FrameMain.Input.text")); // NOI18N
-        Input.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Input.setMaximumSize(new java.awt.Dimension(26, 28));
-        Input.setMinimumSize(new java.awt.Dimension(26, 28));
-        Input.setPreferredSize(new java.awt.Dimension(26, 26));
-        Input.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                InputMouseClicked(evt);
-            }
-        });
-        jPanel4.add(Input);
-
-        LED.setText(bundle.getString("FrameMain.LED.text")); // NOI18N
-        LED.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        LED.setMaximumSize(new java.awt.Dimension(26, 28));
-        LED.setMinimumSize(new java.awt.Dimension(26, 28));
-        LED.setPreferredSize(new java.awt.Dimension(26, 26));
-        LED.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                LEDMouseClicked(evt);
-            }
-        });
-        jPanel4.add(LED);
-
-        jSplitPane1.setLeftComponent(jPanel4);
-
-        jTextField1.setText(bundle.getString("FrameMain.jTextField1.text")); // NOI18N
-
-        jLabel1.setText(bundle.getString("FrameMain.jLabel1.text")); // NOI18N
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0ᵒ", "90ᵒ", "180ᵒ", "270ᵒ" }));
-
-        jLabel2.setText(bundle.getString("FrameMain.jLabel2.text")); // NOI18N
-
-        jLabel3.setForeground(new java.awt.Color(108, 108, 108));
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText(bundle.getString("FrameMain.jLabel3.text")); // NOI18N
-
-        org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jLabel1)
-                    .add(jLabel2))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-            .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(jLabel3)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel1)
-                    .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel2)
-                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(26, Short.MAX_VALUE))
-        );
-
-        jSplitPane1.setRightComponent(jPanel2);
-
-        org.jdesktop.layout.GroupLayout jInternalFrame4Layout = new org.jdesktop.layout.GroupLayout(jInternalFrame4.getContentPane());
-        jInternalFrame4.getContentPane().setLayout(jInternalFrame4Layout);
-        jInternalFrame4Layout.setHorizontalGroup(
-            jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jInternalFrame4Layout.createSequentialGroup()
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 148, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 150, Short.MAX_VALUE))
-            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 150, Short.MAX_VALUE))
-            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 150, Short.MAX_VALUE))
-        );
-        jInternalFrame4Layout.setVerticalGroup(
-            jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jInternalFrame4Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
-                .add(114, 114, 114))
-            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 284, Short.MAX_VALUE))
-            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 284, Short.MAX_VALUE))
-            .add(jInternalFrame4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 284, Short.MAX_VALUE))
-        );
-
-        jInternalFrame4.setBounds(0, 0, 160, 310);
-        DesktopPane.add(jInternalFrame4, javax.swing.JLayeredPane.DEFAULT_LAYER);
-
-        circuitFrame.setClosable(true);
-        circuitFrame.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        circuitFrame.setIconifiable(true);
-        circuitFrame.setMaximizable(true);
-        circuitFrame.setResizable(true);
-        circuitFrame.setTitle("Breadboard");
-        circuitFrame.setPreferredSize(new java.awt.Dimension(600, 450));
-        circuitFrame.setVisible(true);
-        circuitFrame.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                circuitFrameMouseExited(evt);
-            }
-        });
-        circuitFrame.getContentPane().setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
         circuitToolbar.setRollover(true);
         circuitToolbar.setPreferredSize(new java.awt.Dimension(250, 31));
@@ -403,25 +229,243 @@ public class FrameMain extends javax.swing.JFrame {
         });
         circuitToolbar.add(select_all);
 
-        circuitFrame.getContentPane().add(circuitToolbar);
+        AndGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_andgate.png"))); // NOI18N
+        AndGate.setText(bundle.getString("TestJFrameForm.AndGate.text")); // NOI18N
+        AndGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        AndGate.setMaximumSize(new java.awt.Dimension(26, 28));
+        AndGate.setMinimumSize(new java.awt.Dimension(26, 28));
+        AndGate.setPreferredSize(new java.awt.Dimension(26, 28));
+        AndGate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                AndGateMouseClicked(evt);
+            }
+        });
 
-        infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        infoLabel.setText(bundle.getString("TestJFrameForm.infoLabel.text_1")); // NOI18N
+        OrGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_orgate.png"))); // NOI18N
+        OrGate.setText(bundle.getString("FrameMain.OrGate.text")); // NOI18N
+        OrGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        OrGate.setMaximumSize(new java.awt.Dimension(26, 28));
+        OrGate.setMinimumSize(new java.awt.Dimension(26, 28));
+        OrGate.setPreferredSize(new java.awt.Dimension(26, 26));
+        OrGate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                OrGateMouseClicked(evt);
+            }
+        });
+        OrGate.getAccessibleContext().setAccessibleName(bundle.getString("FrameMain.AndGate1.AccessibleContext.accessibleName")); // NOI18N
 
-        org.jdesktop.layout.GroupLayout statusPanelLayout = new org.jdesktop.layout.GroupLayout(statusPanel);
-        statusPanel.setLayout(statusPanelLayout);
-        statusPanelLayout.setHorizontalGroup(
-            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(infoLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
-        );
-        statusPanelLayout.setVerticalGroup(
-            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(infoLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
-        );
+        NandGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_nandgate.png"))); // NOI18N
+        NandGate.setText(bundle.getString("FrameMain.NandGate.text")); // NOI18N
+        NandGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        NandGate.setMaximumSize(new java.awt.Dimension(26, 28));
+        NandGate.setMinimumSize(new java.awt.Dimension(26, 28));
+        NandGate.setPreferredSize(new java.awt.Dimension(26, 26));
+        NandGate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                NandGateMouseClicked(evt);
+            }
+        });
+        NandGate.getAccessibleContext().setAccessibleName(bundle.getString("FrameMain.AndGate2.AccessibleContext.accessibleName")); // NOI18N
 
-        circuitFrame.getContentPane().add(statusPanel);
+        Input.setText(bundle.getString("FrameMain.Input.text")); // NOI18N
+        Input.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        Input.setMaximumSize(new java.awt.Dimension(26, 28));
+        Input.setMinimumSize(new java.awt.Dimension(26, 28));
+        Input.setPreferredSize(new java.awt.Dimension(26, 26));
+        Input.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                InputMouseClicked(evt);
+            }
+        });
 
-        circuitPanel.setPreferredSize(new java.awt.Dimension(700, 400));
+        NorGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_norgate.png"))); // NOI18N
+        NorGate.setText(bundle.getString("FrameMain.NorGate.text")); // NOI18N
+        NorGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        NorGate.setMaximumSize(new java.awt.Dimension(26, 28));
+        NorGate.setMinimumSize(new java.awt.Dimension(26, 28));
+        NorGate.setPreferredSize(new java.awt.Dimension(26, 26));
+        NorGate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                NorGateMouseClicked(evt);
+            }
+        });
+
+        LED.setText(bundle.getString("FrameMain.LED.text")); // NOI18N
+        LED.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        LED.setMaximumSize(new java.awt.Dimension(26, 28));
+        LED.setMinimumSize(new java.awt.Dimension(26, 28));
+        LED.setPreferredSize(new java.awt.Dimension(26, 26));
+        LED.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                LEDMouseClicked(evt);
+            }
+        });
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle(bundle.getString("FrameMain.title")); // NOI18N
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setMinimumSize(new java.awt.Dimension(750, 510));
+        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
+
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+        jToolBar1.setBorderPainted(false);
+        jToolBar1.setMaximumSize(new java.awt.Dimension(2000, 34));
+        jToolBar1.setMinimumSize(new java.awt.Dimension(750, 34));
+        jToolBar1.setPreferredSize(new java.awt.Dimension(750, 34));
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-new.png"))); // NOI18N
+        jButton1.setText(bundle.getString("FrameMain.jButton1.text")); // NOI18N
+        jButton1.setEnabled(false);
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton1);
+
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-open.png"))); // NOI18N
+        jButton2.setText(bundle.getString("FrameMain.jButton2.text")); // NOI18N
+        jButton2.setEnabled(false);
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton2);
+
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-save.png"))); // NOI18N
+        jButton3.setText(bundle.getString("FrameMain.jButton3.text")); // NOI18N
+        jButton3.setEnabled(false);
+        jButton3.setFocusable(false);
+        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton3);
+
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-save-as.png"))); // NOI18N
+        jButton4.setText(bundle.getString("FrameMain.jButton4.text")); // NOI18N
+        jButton4.setEnabled(false);
+        jButton4.setFocusable(false);
+        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton4);
+        jToolBar1.add(jSeparator3);
+
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-cut.png"))); // NOI18N
+        jButton5.setText(bundle.getString("FrameMain.jButton5.text")); // NOI18N
+        jButton5.setEnabled(false);
+        jButton5.setFocusable(false);
+        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton5);
+
+        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-copy.png"))); // NOI18N
+        jButton6.setText(bundle.getString("FrameMain.jButton6.text")); // NOI18N
+        jButton6.setEnabled(false);
+        jButton6.setFocusable(false);
+        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton6);
+
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-paste.png"))); // NOI18N
+        jButton7.setText(bundle.getString("FrameMain.jButton7.text")); // NOI18N
+        jButton7.setEnabled(false);
+        jButton7.setFocusable(false);
+        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton7);
+
+        ClearCircuit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-clear.png"))); // NOI18N
+        ClearCircuit.setText(bundle.getString("FrameMain.ClearCircuit.text")); // NOI18N
+        ClearCircuit.setToolTipText(bundle.getString("FrameMain.ClearCircuit.toolTipText")); // NOI18N
+        ClearCircuit.setFocusable(false);
+        ClearCircuit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        ClearCircuit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        ClearCircuit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ClearCircuitMouseClicked(evt);
+            }
+        });
+        ClearCircuit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ClearCircuitActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(ClearCircuit);
+
+        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-undo.png"))); // NOI18N
+        jButton8.setText(bundle.getString("FrameMain.jButton8.text")); // NOI18N
+        jButton8.setEnabled(false);
+        jButton8.setFocusable(false);
+        jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton8);
+
+        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-redo.png"))); // NOI18N
+        jButton9.setText(bundle.getString("FrameMain.jButton9.text")); // NOI18N
+        jButton9.setEnabled(false);
+        jButton9.setFocusable(false);
+        jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton9);
+
+        jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-delete.png"))); // NOI18N
+        jButton19.setText(bundle.getString("FrameMain.jButton19.text")); // NOI18N
+        jButton19.setToolTipText(bundle.getString("FrameMain.jButton19.toolTipText")); // NOI18N
+        jButton19.setFocusable(false);
+        jButton19.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton19.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton19);
+        jToolBar1.add(jSeparator4);
+
+        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-stop.png"))); // NOI18N
+        jButton10.setText(bundle.getString("FrameMain.jButton10.text")); // NOI18N
+        jButton10.setEnabled(false);
+        jButton10.setFocusable(false);
+        jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton10);
+
+        jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-pause.png"))); // NOI18N
+        jButton11.setText(bundle.getString("FrameMain.jButton11.text")); // NOI18N
+        jButton11.setEnabled(false);
+        jButton11.setFocusable(false);
+        jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton11);
+
+        jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png"))); // NOI18N
+        jButton12.setText(bundle.getString("FrameMain.jButton12.text")); // NOI18N
+        jButton12.setEnabled(false);
+        jButton12.setFocusable(false);
+        jButton12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton12);
+
+        jSlider1.setMajorTickSpacing(10);
+        jSlider1.setPaintTrack(false);
+        jSlider1.setSnapToTicks(true);
+        jSlider1.setEnabled(false);
+        jToolBar1.add(jSlider1);
+
+        getContentPane().add(jToolBar1);
+
+        DesktopPane.setAutoscrolls(true);
+        DesktopPane.setMinimumSize(new java.awt.Dimension(600, 400));
+
+        circuitFrame.setClosable(true);
+        circuitFrame.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        circuitFrame.setIconifiable(true);
+        circuitFrame.setMaximizable(true);
+        circuitFrame.setResizable(true);
+        circuitFrame.setTitle("Breadboard");
+        circuitFrame.setFrameIcon(null);
+        circuitFrame.setPreferredSize(new java.awt.Dimension(600, 450));
+        circuitFrame.setVisible(true);
+        circuitFrame.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                circuitFrameMouseExited(evt);
+            }
+        });
+
+        circuitPanel.setMinimumSize(new java.awt.Dimension(1000, 800));
+        circuitPanel.setPreferredSize(new java.awt.Dimension(1000, 800));
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, circuitFrame, org.jdesktop.beansbinding.ELProperty.create("${focusable}"), circuitPanel, org.jdesktop.beansbinding.BeanProperty.create("focusable"));
         bindingGroup.addBinding(binding);
@@ -436,36 +480,368 @@ public class FrameMain extends javax.swing.JFrame {
         circuitPanel.setLayout(circuitPanelLayout);
         circuitPanelLayout.setHorizontalGroup(
             circuitPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 700, Short.MAX_VALUE)
+            .add(0, 1000, Short.MAX_VALUE)
         );
         circuitPanelLayout.setVerticalGroup(
             circuitPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 400, Short.MAX_VALUE)
+            .add(0, 800, Short.MAX_VALUE)
         );
 
-        circuitFrame.getContentPane().add(circuitPanel);
+        jScrollPane2.setViewportView(circuitPanel);
 
-        jSeparator1.setPreferredSize(new java.awt.Dimension(750, 2));
-        circuitFrame.getContentPane().add(jSeparator1);
+        org.jdesktop.layout.GroupLayout circuitFrameLayout = new org.jdesktop.layout.GroupLayout(circuitFrame.getContentPane());
+        circuitFrame.getContentPane().setLayout(circuitFrameLayout);
+        circuitFrameLayout.setHorizontalGroup(
+            circuitFrameLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 770, Short.MAX_VALUE)
+        );
+        circuitFrameLayout.setVerticalGroup(
+            circuitFrameLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)
+        );
 
-        circuitFrame.setBounds(160, 0, 540, 460);
+        circuitFrame.setBounds(170, 0, 780, 600);
         DesktopPane.add(circuitFrame, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
-        jPanel1.add(DesktopPane);
+        jInternalFrame1.setIconifiable(true);
+        jInternalFrame1.setMaximizable(true);
+        jInternalFrame1.setResizable(true);
+        jInternalFrame1.setTitle(bundle.getString("FrameMain.jInternalFrame1.title")); // NOI18N
+        jInternalFrame1.setPreferredSize(new java.awt.Dimension(163, 600));
+        jInternalFrame1.setVisible(true);
 
-        getContentPane().add(jPanel1);
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane1.setResizeWeight(0.5);
 
-        jMenu1.setText(bundle.getString("TestJFrameForm.jMenu1.text_1")); // NOI18N
+        jSplitPane3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem1.setText(bundle.getString("FrameMain.jMenuItem1.text")); // NOI18N
-        jMenu1.add(jMenuItem1);
+        jPanel4.setLayout(new java.awt.GridLayout(3, 4));
 
-        jMenuBar1.add(jMenu1);
+        Selection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_select.png"))); // NOI18N
+        Selection.setText(bundle.getString("TestJFrameForm.Selection.text")); // NOI18N
+        Selection.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        Selection.setMaximumSize(new java.awt.Dimension(26, 28));
+        Selection.setMinimumSize(new java.awt.Dimension(26, 28));
+        Selection.setPreferredSize(new java.awt.Dimension(26, 28));
+        Selection.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                SelectionMouseClicked(evt);
+            }
+        });
+        jPanel4.add(Selection);
 
-        jMenuBar1.add(getFileMenu());
-        jMenuBar1.add(getEditMenu());
-        jMenuBar1.add(getHelpMenu());
+        Wire.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
+        Wire.setText(bundle.getString("TestJFrameForm.Wire.text")); // NOI18N
+        Wire.setToolTipText(bundle.getString("TestJFrameForm.Wire.toolTipText")); // NOI18N
+        Wire.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        Wire.setMaximumSize(new java.awt.Dimension(26, 28));
+        Wire.setMinimumSize(new java.awt.Dimension(26, 28));
+        Wire.setPreferredSize(new java.awt.Dimension(26, 28));
+        Wire.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                WireMouseClicked(evt);
+            }
+        });
+        jPanel4.add(Wire);
+
+        Wire1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
+        Wire1.setText(bundle.getString("FrameMain.Wire1.text")); // NOI18N
+        Wire1.setToolTipText(bundle.getString("FrameMain.Wire1.toolTipText")); // NOI18N
+        Wire1.setEnabled(false);
+        Wire1.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        Wire1.setMaximumSize(new java.awt.Dimension(26, 28));
+        Wire1.setMinimumSize(new java.awt.Dimension(26, 28));
+        Wire1.setPreferredSize(new java.awt.Dimension(26, 28));
+        Wire1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Wire1MouseClicked(evt);
+            }
+        });
+        jPanel4.add(Wire1);
+
+        Wire2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
+        Wire2.setText(bundle.getString("FrameMain.Wire2.text")); // NOI18N
+        Wire2.setToolTipText(bundle.getString("FrameMain.Wire2.toolTipText")); // NOI18N
+        Wire2.setEnabled(false);
+        Wire2.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        Wire2.setMaximumSize(new java.awt.Dimension(26, 28));
+        Wire2.setMinimumSize(new java.awt.Dimension(26, 28));
+        Wire2.setPreferredSize(new java.awt.Dimension(26, 28));
+        Wire2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Wire2MouseClicked(evt);
+            }
+        });
+        jPanel4.add(Wire2);
+
+        RotateLeft.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-left.png"))); // NOI18N
+        RotateLeft.setText(bundle.getString("FrameMain.RotateLeft.text")); // NOI18N
+        RotateLeft.setFocusable(false);
+        RotateLeft.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        RotateLeft.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jPanel4.add(RotateLeft);
+
+        RotateRght.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
+        RotateRght.setText(bundle.getString("FrameMain.RotateRght.text")); // NOI18N
+        RotateRght.setFocusable(false);
+        RotateRght.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        RotateRght.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jPanel4.add(RotateRght);
+
+        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
+        jButton20.setText(bundle.getString("FrameMain.jButton20.text")); // NOI18N
+        jButton20.setEnabled(false);
+        jButton20.setFocusable(false);
+        jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jPanel4.add(jButton20);
+
+        jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
+        jButton21.setText(bundle.getString("FrameMain.jButton21.text")); // NOI18N
+        jButton21.setEnabled(false);
+        jButton21.setFocusable(false);
+        jButton21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton21.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jPanel4.add(jButton21);
+
+        InsertComponent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-object.png"))); // NOI18N
+        InsertComponent.setText(bundle.getString("FrameMain.InsertComponent.text")); // NOI18N
+        InsertComponent.setFocusable(false);
+        InsertComponent.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        InsertComponent.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        InsertComponent.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                InsertComponentMouseClicked(evt);
+            }
+        });
+        jPanel4.add(InsertComponent);
+
+        jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-image.png"))); // NOI18N
+        jButton16.setText(bundle.getString("FrameMain.jButton16.text")); // NOI18N
+        jButton16.setEnabled(false);
+        jButton16.setFocusable(false);
+        jButton16.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton16.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jPanel4.add(jButton16);
+
+        jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-text.png"))); // NOI18N
+        jButton18.setText(bundle.getString("FrameMain.jButton18.text")); // NOI18N
+        jButton18.setEnabled(false);
+        jButton18.setFocusable(false);
+        jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jPanel4.add(jButton18);
+
+        jSplitPane3.setLeftComponent(jPanel4);
+
+        ComponentSelectionTree.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                ComponentSelectionTreeValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(ComponentSelectionTree);
+
+        jSplitPane3.setBottomComponent(jScrollPane1);
+
+        jSplitPane1.setLeftComponent(jSplitPane3);
+
+        jTextField1.setText(bundle.getString("FrameMain.jTextField1.text")); // NOI18N
+
+        jLabel1.setText(bundle.getString("FrameMain.jLabel1.text")); // NOI18N
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0ᵒ", "90ᵒ", "180ᵒ", "270ᵒ" }));
+
+        jLabel2.setText(bundle.getString("FrameMain.jLabel2.text")); // NOI18N
+
+        jLabel3.setForeground(new java.awt.Color(108, 108, 108));
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText(bundle.getString("FrameMain.jLabel3.text")); // NOI18N
+
+        org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel2Layout.createSequentialGroup()
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jLabel1)
+                            .add(jLabel2))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                    .add(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel2Layout.createSequentialGroup()
+                .add(jLabel3)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel1)
+                    .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel2)
+                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(188, Short.MAX_VALUE))
+        );
+
+        jSplitPane1.setBottomComponent(jPanel2);
+
+        org.jdesktop.layout.GroupLayout jInternalFrame1Layout = new org.jdesktop.layout.GroupLayout(jInternalFrame1.getContentPane());
+        jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
+        jInternalFrame1Layout.setHorizontalGroup(
+            jInternalFrame1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+            .add(jInternalFrame1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 153, Short.MAX_VALUE))
+            .add(jInternalFrame1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 153, Short.MAX_VALUE))
+            .add(jInternalFrame1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 153, Short.MAX_VALUE))
+        );
+        jInternalFrame1Layout.setVerticalGroup(
+            jInternalFrame1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)
+            .add(jInternalFrame1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 574, Short.MAX_VALUE))
+            .add(jInternalFrame1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 574, Short.MAX_VALUE))
+            .add(jInternalFrame1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 574, Short.MAX_VALUE))
+        );
+
+        jInternalFrame1.setBounds(0, 0, 163, 600);
+        DesktopPane.add(jInternalFrame1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        jScrollPane3.setViewportView(DesktopPane);
+
+        getContentPane().add(jScrollPane3);
+
+        File.setMnemonic('F');
+        File.setText(bundle.getString("TestJFrameForm.jMenu1.text_1")); // NOI18N
+
+        Open.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        Open.setMnemonic('o');
+        Open.setText(bundle.getString("FrameMain.Open.text")); // NOI18N
+        Open.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                OpenActionPerformed(evt);
+            }
+        });
+        File.add(Open);
+
+        Save.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        Save.setMnemonic('s');
+        Save.setText(bundle.getString("FrameMain.Save.text")); // NOI18N
+        File.add(Save);
+
+        SaveAs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        SaveAs.setMnemonic('v');
+        SaveAs.setText(bundle.getString("FrameMain.SaveAs.text")); // NOI18N
+        SaveAs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveAsActionPerformed(evt);
+            }
+        });
+        File.add(SaveAs);
+
+        SaveAs1.setMnemonic('x');
+        SaveAs1.setText(bundle.getString("FrameMain.SaveAs1.text")); // NOI18N
+        SaveAs1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveAs1ActionPerformed(evt);
+            }
+        });
+        File.add(SaveAs1);
+
+        jMenuBar1.add(File);
+
+        Edit.setMnemonic('E');
+        Edit.setText(bundle.getString("FrameMain.Edit.text")); // NOI18N
+
+        Undo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
+        Undo.setText(bundle.getString("FrameMain.Undo.text")); // NOI18N
+        Undo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UndoActionPerformed(evt);
+            }
+        });
+        Edit.add(Undo);
+
+        Redo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
+        Redo.setText(bundle.getString("FrameMain.Redo.text")); // NOI18N
+        Redo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RedoActionPerformed(evt);
+            }
+        });
+        Edit.add(Redo);
+        Edit.add(jSeparator1);
+
+        Cut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
+        Cut.setText(bundle.getString("FrameMain.Cut.text")); // NOI18N
+        Cut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CutActionPerformed(evt);
+            }
+        });
+        Edit.add(Cut);
+
+        Copy.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
+        Copy.setText(bundle.getString("FrameMain.Copy.text")); // NOI18N
+        Copy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CopyActionPerformed(evt);
+            }
+        });
+        Edit.add(Copy);
+
+        Paste.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
+        Paste.setText(bundle.getString("FrameMain.Paste.text")); // NOI18N
+        Paste.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PasteActionPerformed(evt);
+            }
+        });
+        Edit.add(Paste);
+
+        SelectAll.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
+        SelectAll.setText(bundle.getString("FrameMain.SelectAll.text")); // NOI18N
+        SelectAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SelectAllActionPerformed(evt);
+            }
+        });
+        Edit.add(SelectAll);
+
+        Delete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
+        Delete.setText(bundle.getString("FrameMain.Delete.text")); // NOI18N
+        Delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeleteActionPerformed(evt);
+            }
+        });
+        Edit.add(Delete);
+
+        jMenuBar1.add(Edit);
+
+        Simulation.setMnemonic('S');
+        Simulation.setText(bundle.getString("FrameMain.Simulation.text")); // NOI18N
+        jMenuBar1.add(Simulation);
+
+        Window.setMnemonic('W');
+        Window.setText(bundle.getString("FrameMain.Window.text")); // NOI18N
+        jMenuBar1.add(Window);
+
+        Help.setMnemonic('H');
+        Help.setText(bundle.getString("FrameMain.Help.text")); // NOI18N
+        jMenuBar1.add(Help);
 
         setJMenuBar(jMenuBar1);
 
@@ -476,51 +852,8 @@ public class FrameMain extends javax.swing.JFrame {
 
     
     
-        /**
-	 * This method initializes jMenu	
-	 * 	
-	 * @return javax.swing.JMenu	
-	 */
-	private JMenu getFileMenu() {
-		if (fileMenu == null) {
-			fileMenu = new JMenu();
-			fileMenu.setText("File");
-                        fileMenu.add(getOpenMenuItem());
-			fileMenu.add(getSaveAsMenuItem());
-			fileMenu.add(getExitMenuItem());
-		}
-		return fileMenu;
-	}
 
-	/**
-	 * This method initializes jMenu	
-	 * 	
-	 * @return javax.swing.JMenu	
-	 */
-	private JMenu getEditMenu() {
-		if (editMenu == null) {
-			editMenu = new JMenu();
-			editMenu.setText("Edit");
-			editMenu.add(getCutMenuItem());
-			editMenu.add(getCopyMenuItem());
-			editMenu.add(getPasteMenuItem());
-		}
-		return editMenu;
-	}
 
-	/**
-	 * This method initializes jMenu	
-	 * 	
-	 * @return javax.swing.JMenu	
-	 */
-	private JMenu getHelpMenu() {
-		if (helpMenu == null) {
-			helpMenu = new JMenu();
-			helpMenu.setText("Help");
-			helpMenu.add(getAboutMenuItem());
-		}
-		return helpMenu;
-	}
 
 	/**
 	 * This method initializes jMenuItem	
@@ -605,137 +938,9 @@ public class FrameMain extends javax.swing.JFrame {
 		return aboutVersionLabel;
 	}
 
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getCutMenuItem() {
-		if (cutMenuItem == null) {
-			cutMenuItem = new JMenuItem();
-			cutMenuItem.setText("Cut");
-			cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
-					Event.CTRL_MASK, true));
-		}
-		return cutMenuItem;
-	}
 
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getCopyMenuItem() {
-		if (copyMenuItem == null) {
-			copyMenuItem = new JMenuItem();
-			copyMenuItem.setText("Copy");
-			copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
-					Event.CTRL_MASK, true));
-		}
-		return copyMenuItem;
-	}
-
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getPasteMenuItem() {
-		if (pasteMenuItem == null) {
-			pasteMenuItem = new JMenuItem();
-			pasteMenuItem.setText("Paste");
-			pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
-					Event.CTRL_MASK, true));
-		}
-		return pasteMenuItem;
-	}
-
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getSaveAsMenuItem() {
-		if (saveAsMenuItem == null) {
-			saveAsMenuItem = new JMenuItem();
-			saveAsMenuItem.setText("Save As..");
-			saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-					Event.CTRL_MASK, true));
-                        saveAsMenuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-                                    String filename;                                    
-                                    JFileChooser c = new JFileChooser();
-                                    FileFilter xmlFilter = new FileFilter(){
-
-                                        public boolean accept(File pathname) {
-                                            String ext = getExtension(pathname);
-                                            return ext.equals("xml");
-                                        }         
-                                        
-                                        private String getExtension(File f) {
-                                            String ext = null;
-                                            String s = f.getName();
-                                            int i = s.lastIndexOf('.');
-
-                                            if (i > 0 &&  i < s.length() - 1) {
-                                                ext = s.substring(i+1).toLowerCase();
-                                            }
-                                            return ext;
-                                        }
-
-                                        @Override
-                                        public String getDescription() {
-                                            return "XML Files";
-                                        }
-
-                                    };
-                                    //c.addChoosableFileFilter(xmlFilter);
-                                    c.setDialogType(JFileChooser.SAVE_DIALOG);
-                                    int rVal = c.showSaveDialog(FrameMain.this);
-                                    if (rVal == JFileChooser.APPROVE_OPTION) {
-                                        filename = c.getSelectedFile().getAbsolutePath();
-                                        ((CircuitPanel)circuitPanel).saveAs(filename);
-                                    }
-    
-                               }
-			});
-		}
-		return saveAsMenuItem;
-	}
         
-        /**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getOpenMenuItem() {
-		if (openMenuItem == null) {
-			openMenuItem = new JMenuItem();
-			openMenuItem.setText("Open..");
-			openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
-					Event.CTRL_MASK, true));
-                        openMenuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-                                    String filename;                                    
-                                    JFileChooser c = new JFileChooser();
-                                    c.setDialogType(JFileChooser.OPEN_DIALOG);
-                                    int rVal = c.showOpenDialog(FrameMain.this);
-                                    if (rVal == JFileChooser.APPROVE_OPTION) {
-                                        filename = c.getSelectedFile().getAbsolutePath();
-                                        CircuitFileHandler cfh = new CircuitFileHandler();
-                                        ((CircuitPanel)circuitPanel).loadStack(cfh.loadFile(filename));
-                                    }
     
-                               }
-			});
-		}
-		return openMenuItem;
-	}
-    
-private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-// TODO add your handling code here:
-}//GEN-LAST:event_jButton1ActionPerformed
-
 private void SelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SelectionMouseClicked
     toggleToolboxButton(Selection);
     ((CircuitPanel) circuitPanel).selectTool(UITool.Select);
@@ -753,29 +958,17 @@ private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
 
 private void delete_selectedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_delete_selectedMouseClicked
     
-    if(((CircuitPanel) circuitPanel).hasActiveSelection()){
-        int ans = JOptionPane.showConfirmDialog(this,
-                "Are you sure that you want to delete the selected component?");
     
-        if(ans == JOptionPane.YES_OPTION){
-            infoLabel.setText(((CircuitPanel) circuitPanel).deleteActiveComponents());
-        }
-    } 
         
         
 }//GEN-LAST:event_delete_selectedMouseClicked
 
 private void clear_circuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clear_circuitMouseClicked
-    int ans = JOptionPane.showConfirmDialog(this, 
-        "Are you sure that you want to clear this circuit?");
     
-    if(ans == JOptionPane.YES_OPTION){
-        infoLabel.setText(((CircuitPanel) circuitPanel).resetCircuit());
-    }
 }//GEN-LAST:event_clear_circuitMouseClicked
 
 private void select_allMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_select_allMouseClicked
-    ((CircuitPanel) circuitPanel).selectAllComponents();
+    
 }//GEN-LAST:event_select_allMouseClicked
 
 private void OrGateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_OrGateMouseClicked
@@ -804,7 +997,14 @@ private void LEDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L
 }//GEN-LAST:event_LEDMouseClicked
 
 private void delete_selected1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_delete_selected1MouseClicked
-// TODO add your handling code here:
+    if(((CircuitPanel) circuitPanel).hasActiveSelection()){
+        int ans = JOptionPane.showConfirmDialog(this,
+                "Are you sure that you want to delete the selected component?");
+    
+        if(ans == JOptionPane.YES_OPTION){
+            infoLabel.setText(((CircuitPanel) circuitPanel).deleteActiveComponents());
+        }
+    } 
 }//GEN-LAST:event_delete_selected1MouseClicked
 
 private void delete_selected2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_delete_selected2MouseClicked
@@ -816,17 +1016,148 @@ private void circuitPanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST
 }//GEN-LAST:event_circuitPanelMouseExited
 
 private void circuitFrameMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_circuitFrameMouseExited
-    ((CircuitPanel)circuitPanel).mouseExited(evt);
+    DeleteActionPerformed(null);
 }//GEN-LAST:event_circuitFrameMouseExited
+
+private void Wire1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire1MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_Wire1MouseClicked
+
+private void Wire2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire2MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_Wire2MouseClicked
+
+private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeValueChanged
+// TODO add your handling code here:
+    if(InsertComponent.isSelected()){
+        ((CircuitPanel) circuitPanel).selectTool(UITool.OrGate2Input);
+    }
+}//GEN-LAST:event_ComponentSelectionTreeValueChanged
+
+private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertComponentMouseClicked
+    toggleToolboxButton(InsertComponent);
+    
+    TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
+    if(currentSelection != null){
+        Object[] nameArray = currentSelection.getPath();
+        String componentClassName = new String();
+        for(int i = 0; i<nameArray.length; i++){
+            componentClassName += nameArray[i] + ".";
+        }
+        componentClassName = componentClassName.substring(0, componentClassName.length() - 1);
+        System.out.println(componentClassName);
+
+        // Case selection on components
+        // case () of etc...
+        ((CircuitPanel) circuitPanel).selectTool(UITool.OrGate2Input);
+    }
+}//GEN-LAST:event_InsertComponentMouseClicked
+
+private void UndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UndoActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_UndoActionPerformed
+
+private void RedoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RedoActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_RedoActionPerformed
+
+private void CutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CutActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_CutActionPerformed
+
+private void CopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CopyActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_CopyActionPerformed
+
+private void PasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasteActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_PasteActionPerformed
+
+private void SelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectAllActionPerformed
+    ((CircuitPanel) circuitPanel).selectAllComponents();
+}//GEN-LAST:event_SelectAllActionPerformed
+
+private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
+    if(((CircuitPanel) circuitPanel).hasActiveSelection()){
+        int ans = JOptionPane.showConfirmDialog(this,
+                "Are you sure that you want to delete the selected component?");
+    
+        if(ans == JOptionPane.YES_OPTION){
+            infoLabel.setText(((CircuitPanel) circuitPanel).deleteActiveComponents());
+        }
+    } 
+}//GEN-LAST:event_DeleteActionPerformed
+
+private void SaveAs1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveAs1ActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_SaveAs1ActionPerformed
+
+private void ClearCircuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearCircuitActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_ClearCircuitActionPerformed
+
+private void ClearCircuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClearCircuitMouseClicked
+    int ans = JOptionPane.showConfirmDialog(this, 
+        "Are you sure that you want to clear this circuit?");
+    if(ans == JOptionPane.YES_OPTION){
+        infoLabel.setText(((CircuitPanel) circuitPanel).resetCircuit());
+    }
+
+}//GEN-LAST:event_ClearCircuitMouseClicked
+
+private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
+    String filename;                                    
+    JFileChooser c = new JFileChooser();
+    c.setDialogType(JFileChooser.OPEN_DIALOG);
+    int rVal = c.showOpenDialog(FrameMain.this);
+    if (rVal == JFileChooser.APPROVE_OPTION) {
+        filename = c.getSelectedFile().getAbsolutePath();
+        CircuitFileHandler cfh = new CircuitFileHandler();
+        ((CircuitPanel)circuitPanel).loadStack(cfh.loadFile(filename));
+    }
+}//GEN-LAST:event_OpenActionPerformed
+
+private void SaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveAsActionPerformed
+    String filename;                                    
+    JFileChooser c = new JFileChooser();
+    FileFilter xmlFilter = new FileFilter(){
+
+    public boolean accept(File pathname) {
+        String ext = getExtension(pathname);
+        return ext.equals("xml");
+    }         
+
+    private String getExtension(File f) {
+        String ext = null;
+        String s = f.getName();
+        int i = s.lastIndexOf('.');
+
+        if (i > 0 &&  i < s.length() - 1) {
+            ext = s.substring(i+1).toLowerCase();
+        }
+        return ext;
+    }
+
+    @Override
+    public String getDescription() {
+        return "XML Files";
+    }
+
+    };
+    //c.addChoosableFileFilter(xmlFilter);
+    c.setDialogType(JFileChooser.SAVE_DIALOG);
+    int rVal = c.showSaveDialog(FrameMain.this);
+    if (rVal == JFileChooser.APPROVE_OPTION) {
+    filename = c.getSelectedFile().getAbsolutePath();
+    ((CircuitPanel)circuitPanel).saveAs(filename);
+    }
+}//GEN-LAST:event_SaveAsActionPerformed
     
 private void toggleToolboxButton(JButton b){
     // Reset Selections
     Selection.setSelected(false);
     Wire.setSelected(false);
-    AndGate.setSelected(false);   
-    NandGate.setSelected(false);
-    OrGate.setSelected(false);
-    NorGate.setSelected(false);
+    InsertComponent.setSelected(false);
     
     // Select this button
     b.setSelected(true);
@@ -855,14 +1186,37 @@ private void toggleToolboxButton(JButton b){
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AndGate;
+    private javax.swing.JButton ClearCircuit;
+    private javax.swing.JTree ComponentSelectionTree;
+    private javax.swing.JMenuItem Copy;
+    private javax.swing.JMenuItem Cut;
+    private javax.swing.JMenuItem Delete;
     private javax.swing.JDesktopPane DesktopPane;
+    private javax.swing.JMenu Edit;
+    private javax.swing.JMenu File;
+    private javax.swing.JMenu Help;
     private javax.swing.JButton Input;
+    private javax.swing.JButton InsertComponent;
     private javax.swing.JButton LED;
     private javax.swing.JButton NandGate;
     private javax.swing.JButton NorGate;
+    private javax.swing.JMenuItem Open;
     private javax.swing.JButton OrGate;
+    private javax.swing.JMenuItem Paste;
+    private javax.swing.JMenuItem Redo;
+    private javax.swing.JButton RotateLeft;
+    private javax.swing.JButton RotateRght;
+    private javax.swing.JMenuItem Save;
+    private javax.swing.JMenuItem SaveAs;
+    private javax.swing.JMenuItem SaveAs1;
+    private javax.swing.JMenuItem SelectAll;
     private javax.swing.JButton Selection;
+    private javax.swing.JMenu Simulation;
+    private javax.swing.JMenuItem Undo;
+    private javax.swing.JMenu Window;
     private javax.swing.JButton Wire;
+    private javax.swing.JButton Wire1;
+    private javax.swing.JButton Wire2;
     private javax.swing.JInternalFrame circuitFrame;
     private javax.swing.JPanel circuitPanel;
     private javax.swing.JToolBar circuitToolbar;
@@ -872,20 +1226,41 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JButton delete_selected2;
     private javax.swing.JLabel infoLabel;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton16;
+    private javax.swing.JButton jButton18;
+    private javax.swing.JButton jButton19;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton20;
+    private javax.swing.JButton jButton21;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JInternalFrame jInternalFrame4;
+    private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JToolBar.Separator jSeparator3;
+    private javax.swing.JToolBar.Separator jSeparator4;
+    private javax.swing.JSlider jSlider1;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JSplitPane jSplitPane2;
+    private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JButton select_all;
