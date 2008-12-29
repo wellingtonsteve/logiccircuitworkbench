@@ -8,11 +8,11 @@ package ui;
 import java.awt.Point;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -36,7 +36,7 @@ import ui.tools.Wire;
  *
  * @author Matt
  */
-class CircuitPanel extends JPanel {
+public class CircuitPanel extends JPanel {
     
     private int frameOriginX, frameOriginY;
     private Point currentPoint = new Point(0,0), startPoint = new Point(0,0), endPoint;
@@ -51,7 +51,10 @@ class CircuitPanel extends JPanel {
     private int selY;
     private int selWidth;
     private int selHeight;
-
+    private Image offscreenImage;
+    private Graphics offscreenGraphics;
+    private boolean drawDirect = false;
+    private boolean detected = false;
 
     public CircuitPanel(){
         frameOriginX = this.getX();
@@ -380,6 +383,45 @@ class CircuitPanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
+        // If we haven't run auto-detection yet, do it now
+          if (!detected) {
+               doAutoDetect(g);
+          }
+
+          // If we draw direct, go ahead and call the parent update. This will
+          // clear the drawing area and then call paint. If you don't want the
+          // drawing area cleared, just change the super.update(g);
+          // to paint(g);
+
+          if (drawDirect) {
+               myPaintComponents(g);
+          } else {
+
+               // If we're doing buffered drawing, simulate the effects of the
+               // default update method by clearing the offscreen drawing area.
+               // If you don't want the drawing area cleared, remove the calls
+               // to setColor and fillRect.
+
+               // Clear the offscreen drawing area and set the drawing
+               // color back to foreground.
+
+               offscreenGraphics.setColor(getBackground());
+               offscreenGraphics.fillRect(0, 0, getWidth(),
+                    getHeight());
+               offscreenGraphics.setColor(getForeground());
+
+               // Paint to the offscreen image
+
+               myPaintComponents(offscreenGraphics);
+
+               // Copy the offscreen image to the screen
+
+               g.drawImage(offscreenImage, 0, 0, this);
+          }
+                                
+    }
+    
+    public void myPaintComponents(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
         
         // Background Colour
@@ -413,7 +455,6 @@ class CircuitPanel extends JPanel {
         
         // Draw Connection Points 
         Grid.draw(g2);
-                                
     }
             
     public void selectTool(UITool tool){
@@ -537,4 +578,89 @@ class CircuitPanel extends JPanel {
 
         repaint();
     }
+    
+    
+    // From: Expert Solutions by Mark Wutka, et. al. (http://www.webbasedprogramming.com/Java-Expert-Solutions/)
+    // doAutoDetect performs tries drawing to the screen and to a
+    // buffer. Whichever one takes the least time (actually, whichever
+    // one it can do the most times within a set time constraint) is
+    // the one that is best.
+
+     protected void doAutoDetect(Graphics g)
+     {
+
+        // Create the off-screen drawing area
+        offscreenImage = createImage(getWidth(), getHeight());
+        offscreenGraphics = offscreenImage.getGraphics();
+
+          long start;
+          long end;
+
+          // Tally the number of times we were able to draw direct and buffered
+          int directCount = 0;
+          int bufferedCount = 0;
+
+            // Draw in the applet's background color, makes the autodetection invisible.
+
+          g.setColor(getBackground());
+          // Mark what time we started
+          start = System.currentTimeMillis();
+          end = start;
+
+          // Paint patterns directly to the screen, but only for 500 milliseconds
+          while ((end-start) < 500) {
+               paintDetectDesign(g);
+               end = System.currentTimeMillis();
+               directCount++;
+          }
+          g.setColor(getForeground());
+
+          // record the total time spent drawing directly
+          long directTime = end - start;
+
+          start = System.currentTimeMillis();
+          end = start;
+
+          // Paint patterns to the offscreen graphics, but only for 500 milliseconds
+          while ((end-start) < 500) {
+               paintDetectDesign(offscreenGraphics);
+               end = System.currentTimeMillis();
+               bufferedCount++;
+          }
+
+          long bufferedTime = end - start;
+
+          // If we were able to draw more times using the buffered graphics,
+          // or if the drawing counts are the same, but the total time for
+          // the buffering was less, buffering is faster.
+
+          if ((bufferedCount > directCount) ||
+               ((bufferedCount == directCount) &&
+                (bufferedTime < directTime))) {
+               drawDirect = false;
+          } else {
+
+          // If we want to draw direct, free the space taken up by the
+          // offscreen image and graphics context.
+               offscreenImage.flush();
+               offscreenImage = null;
+               offscreenGraphics = null;
+               drawDirect = true;
+          }
+          detected = true;
+          System.out.println(bufferedCount + " " + directCount + " " + drawDirect);
+    }
+
+    // paintDetectDesign performs some graphical operations to gauge the time
+    // it takes to paint either directly or to an offscreen area. It just draws
+    // some lines, boxes and ovals a number of times and then returns.
+
+     protected void paintDetectDesign(Graphics g)
+     {
+          for (int i=0; i < 10; i++) {
+               g.drawLine(0, 0, 100, 100);
+               g.fillRect(0, 0, 100, 100);
+               g.fillOval(0, 0, 100, 100);
+          }
+     }
 }
