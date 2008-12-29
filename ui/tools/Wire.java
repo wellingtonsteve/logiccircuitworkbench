@@ -376,7 +376,7 @@ public class Wire extends SelectableComponent {
         setSelectionState(SelectionState.ACTIVE);
         
         // Moving a segment of the wire
-        if(!hoverWaypoint.equals(endPoint)){
+        if(hoverWaypoint!=null && !hoverWaypoint.equals(endPoint)){
             int i = waypoints.indexOf(hoverWaypoint);
             Point p = Grid.snapPointToGrid(e.getPoint());
             
