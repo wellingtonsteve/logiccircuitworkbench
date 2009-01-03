@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Stack;
 import javax.swing.JComponent;
 import ui.Editor;
+import ui.UIConstants;
 
 /**
  *
@@ -24,12 +25,20 @@ public class CommandHistory {
     
     public void doCommand(Command cmd){
         cmd.execute(parentEditor);
-        undostack.push(cmd);
-        for(JComponent c: undolisteners){
-            c.setEnabled(canUndo());
+        if(cmd.canUndo()){ // Is this an undoable command?
+            undostack.push(cmd);
+            if(undostack.size() == 1){
+                for(JComponent c: undolisteners){
+                    c.setEnabled(canUndo());
+                }
+            }
         }
         
-
+        // The state changes when we do new actions so redos are not guarenteed to be safe
+        redostack.clear();
+        for(JComponent c: redolisteners){
+            c.setEnabled(canRedo());
+        }
     }
     
     public void undo(){
@@ -37,12 +46,18 @@ public class CommandHistory {
             Command cmd = undostack.pop();
             cmd.undo(parentEditor);
             redostack.push(cmd);
-            for(JComponent c: undolisteners){
-                c.setEnabled(canUndo());
+            if(undostack.empty()){
+                for(JComponent c: undolisteners){
+                    c.setEnabled(canUndo());
+                }
             }
-            for(JComponent c: redolisteners){
-                c.setEnabled(canRedo());
+            if(redostack.size() == 1){
+                for(JComponent c: redolisteners){
+                    c.setEnabled(canRedo());
+                }
             }
+        } else {
+            UIConstants.beep();
         }
     }
     
@@ -51,12 +66,18 @@ public class CommandHistory {
             Command cmd = redostack.pop();
             cmd.execute(parentEditor);
             undostack.push(cmd);
-            for(JComponent c: undolisteners){
-                c.setEnabled(canUndo());
+            if(undostack.size() == 1){
+                for(JComponent c: undolisteners){
+                    c.setEnabled(canUndo());
+                }
             }
-            for(JComponent c: redolisteners){
-                c.setEnabled(canRedo());
+            if(redostack.empty()){
+                for(JComponent c: redolisteners){
+                    c.setEnabled(canRedo());
+                }
             }
+        } else {
+            UIConstants.beep();
         }
     }
     
