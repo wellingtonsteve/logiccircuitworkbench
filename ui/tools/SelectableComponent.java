@@ -1,5 +1,6 @@
 package ui.tools;
 
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -11,6 +12,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import javax.xml.transform.sax.TransformerHandler;
 import sim.Component;
+import ui.Labeled;
 import ui.UIConstants;
 import ui.grid.Grid;
 import ui.grid.Pin;
@@ -19,7 +21,7 @@ import ui.grid.Pin;
  *
  * @author Matt
  */
-public abstract class SelectableComponent implements MouseMotionListener, MouseListener {
+public abstract class SelectableComponent implements MouseMotionListener, MouseListener, Labeled {
     
     protected Component component;
     protected SelectionState selectionState = SelectionState.DEFAULT, preHoverState;
@@ -34,6 +36,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     protected double rotation = 0; // Rotation in degrees, with 0 being with inputs on left, output on right of standard and-gate
     protected double cosTheta, sinTheta;
     protected Rectangle invalidArea = null;
+    private String label = new String();
 
     public SelectableComponent(Component component,Point point){
         this.component = component;
@@ -45,6 +48,10 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
                 
         setLocalPins();
 
+    }
+
+    public double getRotation() {
+       return this.rotation;
     }
 
     public SelectionState getSelectionState() {
@@ -226,4 +233,25 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         this.boundingBox = new Rectangle(rotOrigin.x,rotOrigin.y,getWidth(),getHeight());
     }
     
+    public void draw(Graphics g){
+        if(hasLabel()){
+            g.drawString(getLabel(), getOrigin().x+UIConstants.LABEL_COMPONENT_X_OFFSET, getOrigin().y+UIConstants.LABEL_COMPONENT_Y_OFFSET);
+        }
+    }
+                   
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+    
+    public void removeLabel(){
+        this.label = "";
+    }
+    
+    public boolean hasLabel(){
+        return !label.isEmpty() || !label.equals("");
+    }
 }

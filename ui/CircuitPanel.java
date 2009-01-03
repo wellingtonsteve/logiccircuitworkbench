@@ -524,7 +524,7 @@ public class CircuitPanel extends JPanel {
         this.highlightedComponent.hover();
     }
     
-    public String deleteActiveComponents(){
+    public void deleteActiveComponents(){
 
         int size = activeComponents.size();
 
@@ -537,8 +537,10 @@ public class CircuitPanel extends JPanel {
 
         repaint();
 
-        return size +" component(s) deleted.";
-
+    }
+    
+    public List<SelectableComponent> getActiveComponents(){
+        return activeComponents;
     }
     
     public String resetCircuit(){
@@ -567,18 +569,10 @@ public class CircuitPanel extends JPanel {
         }
         fc.write();
     }
-    
-    public void loadStack(Stack<SelectableComponent> stack){
-        drawnComponents.clear();
-        activeComponents.clear();
-        temporaryComponent = null;
-        nowDraging = false;
-        multipleSelection = false;
-        drawnComponents = stack;
-
-        repaint();
+        
+    public void addComponentList(List<SelectableComponent> list){
+        drawnComponents.addAll(list);
     }
-    
     
     // From: Expert Solutions by Mark Wutka, et. al. (http://www.webbasedprogramming.com/Java-Expert-Solutions/)
     // doAutoDetect performs tries drawing to the screen and to a

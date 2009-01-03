@@ -15,12 +15,13 @@ import ui.tools.SelectableComponent;
 public class Pin extends Point {
 
     private SelectableComponent parent;
-    
+
     public Pin(SelectableComponent parent, int x, int y){
         super(x,y);
         this.parent = parent;
     }
-    
+   
+   
     public SelectableComponent getParent(){
         return parent;        
     }

@@ -8,25 +8,32 @@ import ui.Editor;
  * @author matt
  */
 public abstract class Command {
-    private CircuitPanel circuit;
+    protected CircuitPanel activeCircuit;
+    protected boolean canUndo = false;
+    
+    public Command(){
+    }
     
     /** Carry out the command (for the first time) */
     public final void execute(Editor editor) {
-       circuit = editor.getActiveCircuit();
-       perform(editor);
+       if(!canUndo){
+           activeCircuit = editor.getActiveCircuit();
+           perform(editor);
+           
+       }       
     }
-
     
     protected abstract void perform(Editor editor);
     
     /** After perform, test if command really made a change */
-    public boolean canUndo() { return false; }
+    public boolean canUndo() { return canUndo; }
     
     /** Undo the command */
     public final void undo(Editor editor) {
-        undoEffect(editor);
-        editor.setActiveCircuit(circuit);
-
+        if(canUndo){
+            editor.setActiveCircuit(activeCircuit);
+            undoEffect(editor);
+        }        
     }
     
     protected void undoEffect(Editor editor) {
@@ -45,4 +52,7 @@ public abstract class Command {
        }
     }
 
+    @Override
+    public abstract String toString();
+    
 }
