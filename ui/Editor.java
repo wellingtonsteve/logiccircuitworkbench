@@ -11,20 +11,15 @@ import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.TreePath;
 import ui.command.*;
-import ui.file.CircuitFileHandler;
 
 /**
  *
@@ -67,9 +62,9 @@ public class Editor extends javax.swing.JFrame {
         LED = new javax.swing.JButton();
         jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        OpenFileButton = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        SaveAsButton = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
@@ -247,13 +242,17 @@ public class Editor extends javax.swing.JFrame {
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(jButton1);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-open.png"))); // NOI18N
-        jButton2.setText(bundle.getString("Editor.jButton2.text")); // NOI18N
-        jButton2.setEnabled(false);
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton2);
+        OpenFileButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-open.png"))); // NOI18N
+        OpenFileButton.setText(bundle.getString("Editor.OpenFileButton.text")); // NOI18N
+        OpenFileButton.setFocusable(false);
+        OpenFileButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        OpenFileButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        OpenFileButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                OpenFileButtonMouseClicked(evt);
+            }
+        });
+        jToolBar1.add(OpenFileButton);
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-save.png"))); // NOI18N
         jButton3.setText(bundle.getString("Editor.jButton3.text")); // NOI18N
@@ -263,13 +262,17 @@ public class Editor extends javax.swing.JFrame {
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(jButton3);
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-save-as.png"))); // NOI18N
-        jButton4.setText(bundle.getString("Editor.jButton4.text")); // NOI18N
-        jButton4.setEnabled(false);
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton4);
+        SaveAsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-save-as.png"))); // NOI18N
+        SaveAsButton.setText(bundle.getString("Editor.SaveAsButton.text")); // NOI18N
+        SaveAsButton.setFocusable(false);
+        SaveAsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        SaveAsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        SaveAsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                SaveAsButtonMouseClicked(evt);
+            }
+        });
+        jToolBar1.add(SaveAsButton);
         jToolBar1.add(jSeparator3);
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-cut.png"))); // NOI18N
@@ -931,14 +934,6 @@ private void circuitFrameMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST
     DeleteActionPerformed(null);
 }//GEN-LAST:event_circuitFrameMouseExited
 
-private void Wire1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire1MouseClicked
-// TODO add your handling code here:
-}//GEN-LAST:event_Wire1MouseClicked
-
-private void Wire2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire2MouseClicked
-// TODO add your handling code here:
-}//GEN-LAST:event_Wire2MouseClicked
-
 private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeValueChanged
 // TODO add your handling code here:
     if(InsertComponent.isSelected()){
@@ -995,55 +990,14 @@ private void SaveAs1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
 
 private void ClearCircuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClearCircuitMouseClicked
     cmdHist.doCommand(new ClearCircuitCommand());
-
 }//GEN-LAST:event_ClearCircuitMouseClicked
 
 private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
-    String filename;                                    
-    JFileChooser c = new JFileChooser();
-    c.setDialogType(JFileChooser.OPEN_DIALOG);
-    int rVal = c.showOpenDialog(Editor.this);
-    if (rVal == JFileChooser.APPROVE_OPTION) {
-        filename = c.getSelectedFile().getAbsolutePath();
-        CircuitFileHandler cfh = new CircuitFileHandler();
-        ((CircuitPanel)circuitPanel).addComponentList(cfh.loadFile(filename));
-    }
+    cmdHist.doCommand(new FileOpenCommand());
 }//GEN-LAST:event_OpenActionPerformed
 
 private void SaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveAsActionPerformed
-    String filename;                                    
-    JFileChooser c = new JFileChooser();
-    FileFilter xmlFilter = new FileFilter(){
-
-    public boolean accept(File pathname) {
-        String ext = getExtension(pathname);
-        return ext.equals("xml");
-    }         
-
-    private String getExtension(File f) {
-        String ext = null;
-        String s = f.getName();
-        int i = s.lastIndexOf('.');
-
-        if (i > 0 &&  i < s.length() - 1) {
-            ext = s.substring(i+1).toLowerCase();
-        }
-        return ext;
-    }
-
-    @Override
-    public String getDescription() {
-        return "XML Files";
-    }
-
-    };
-    //c.addChoosableFileFilter(xmlFilter);
-    c.setDialogType(JFileChooser.SAVE_DIALOG);
-    int rVal = c.showSaveDialog(Editor.this);
-    if (rVal == JFileChooser.APPROVE_OPTION) {
-    filename = c.getSelectedFile().getAbsolutePath();
-    ((CircuitPanel)circuitPanel).saveAs(filename);
-    }
+    cmdHist.doCommand(new FileSaveAsCommand());
 }//GEN-LAST:event_SaveAsActionPerformed
 
 private void AddLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddLabelMouseClicked
@@ -1073,6 +1027,22 @@ private void jButton19MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
     cmdHist.doCommand(new DeleteSelectionCommand());
 }//GEN-LAST:event_DeleteActionPerformed
+
+private void OpenFileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_OpenFileButtonMouseClicked
+    cmdHist.doCommand(new FileOpenCommand());
+}//GEN-LAST:event_OpenFileButtonMouseClicked
+
+private void SaveAsButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveAsButtonMouseClicked
+    cmdHist.doCommand(new FileSaveAsCommand());
+}//GEN-LAST:event_SaveAsButtonMouseClicked
+
+private void Wire2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire2MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_Wire2MouseClicked
+
+private void Wire1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire1MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_Wire1MouseClicked
     
 private void toggleToolboxButton(JButton b){
     // Reset Selections
@@ -1123,6 +1093,7 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JButton NandGate;
     private javax.swing.JButton NorGate;
     private javax.swing.JMenuItem Open;
+    private javax.swing.JButton OpenFileButton;
     private javax.swing.JButton OrGate;
     private javax.swing.JMenuItem Paste;
     private javax.swing.JMenuItem Redo;
@@ -1132,6 +1103,7 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JMenuItem Save;
     private javax.swing.JMenuItem SaveAs;
     private javax.swing.JMenuItem SaveAs1;
+    private javax.swing.JButton SaveAsButton;
     private javax.swing.JMenuItem SelectAll;
     private javax.swing.JButton Selection;
     private javax.swing.JMenu Simulation;
@@ -1149,11 +1121,9 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton19;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton21;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
