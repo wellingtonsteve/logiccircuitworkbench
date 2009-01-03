@@ -23,6 +23,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.TreePath;
+import ui.command.*;
 import ui.file.CircuitFileHandler;
 
 /**
@@ -37,11 +38,11 @@ public class Editor extends javax.swing.JFrame {
     }
 
     public CircuitPanel getActiveCircuit() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return (CircuitPanel) circuitPanel;
     }
 
     public void setActiveCircuit(CircuitPanel circuit) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        circuitPanel = circuit;
     }
 
     /** This method is called from within the constructor to
@@ -58,12 +59,6 @@ public class Editor extends javax.swing.JFrame {
         statusPanel = new javax.swing.JPanel();
         infoLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        circuitToolbar = new javax.swing.JToolBar();
-        clear_circuit = new javax.swing.JButton();
-        delete_selected1 = new javax.swing.JButton();
-        delete_selected2 = new javax.swing.JButton();
-        delete_selected = new javax.swing.JButton();
-        select_all = new javax.swing.JButton();
         AndGate = new javax.swing.JButton();
         OrGate = new javax.swing.JButton();
         NandGate = new javax.swing.JButton();
@@ -80,8 +75,8 @@ public class Editor extends javax.swing.JFrame {
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         ClearCircuit = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
+        UndoButton = new javax.swing.JButton();
+        RedoButton = new javax.swing.JButton();
         jButton19 = new javax.swing.JButton();
         jSeparator4 = new javax.swing.JToolBar.Separator();
         jButton10 = new javax.swing.JButton();
@@ -106,8 +101,7 @@ public class Editor extends javax.swing.JFrame {
         jButton20 = new javax.swing.JButton();
         jButton21 = new javax.swing.JButton();
         InsertComponent = new javax.swing.JButton();
-        jButton16 = new javax.swing.JButton();
-        jButton18 = new javax.swing.JButton();
+        AddLabel = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         ComponentSelectionTree = new javax.swing.JTree();
         jPanel2 = new javax.swing.JPanel();
@@ -130,6 +124,7 @@ public class Editor extends javax.swing.JFrame {
         Copy = new javax.swing.JMenuItem();
         Paste = new javax.swing.JMenuItem();
         SelectAll = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JSeparator();
         Delete = new javax.swing.JMenuItem();
         Simulation = new javax.swing.JMenu();
         Window = new javax.swing.JMenu();
@@ -158,80 +153,6 @@ public class Editor extends javax.swing.JFrame {
         jPanel1.setMinimumSize(new java.awt.Dimension(750, 500));
         jPanel1.setPreferredSize(new java.awt.Dimension(750, 500));
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
-
-        circuitToolbar.setRollover(true);
-        circuitToolbar.setPreferredSize(new java.awt.Dimension(250, 31));
-
-        clear_circuit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/circuit_toolbar/clear_circuit.png"))); // NOI18N
-        clear_circuit.setText(bundle.getString("TestJFrameForm.jButton2.text")); // NOI18N
-        clear_circuit.setToolTipText(bundle.getString("TestJFrameForm.jButton2.toolTipText")); // NOI18N
-        clear_circuit.setFocusable(false);
-        clear_circuit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        clear_circuit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        clear_circuit.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                clear_circuitMouseClicked(evt);
-            }
-        });
-        circuitToolbar.add(clear_circuit);
-
-        delete_selected1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/circuit_toolbar/cut.png"))); // NOI18N
-        delete_selected1.setText(bundle.getString("Editor.delete_selected1.text")); // NOI18N
-        delete_selected1.setToolTipText(bundle.getString("Editor.delete_selected1.toolTipText")); // NOI18N
-        delete_selected1.setFocusable(false);
-        delete_selected1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        delete_selected1.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        delete_selected1.setMaximumSize(new java.awt.Dimension(24, 24));
-        delete_selected1.setMinimumSize(new java.awt.Dimension(24, 24));
-        delete_selected1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        delete_selected1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                delete_selected1MouseClicked(evt);
-            }
-        });
-        circuitToolbar.add(delete_selected1);
-
-        delete_selected2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/circuit_toolbar/copy.png"))); // NOI18N
-        delete_selected2.setText(bundle.getString("Editor.delete_selected2.text")); // NOI18N
-        delete_selected2.setToolTipText(bundle.getString("Editor.delete_selected2.toolTipText")); // NOI18N
-        delete_selected2.setFocusable(false);
-        delete_selected2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        delete_selected2.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        delete_selected2.setMaximumSize(new java.awt.Dimension(24, 24));
-        delete_selected2.setMinimumSize(new java.awt.Dimension(24, 24));
-        delete_selected2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        delete_selected2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                delete_selected2MouseClicked(evt);
-            }
-        });
-        circuitToolbar.add(delete_selected2);
-
-        delete_selected.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/circuit_toolbar/delete_selected.png"))); // NOI18N
-        delete_selected.setText(bundle.getString("TestJFrameForm.delete_selected.text")); // NOI18N
-        delete_selected.setToolTipText(bundle.getString("TestJFrameForm.delete_selected.toolTipText")); // NOI18N
-        delete_selected.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        delete_selected.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        delete_selected.setMaximumSize(new java.awt.Dimension(24, 24));
-        delete_selected.setMinimumSize(new java.awt.Dimension(24, 24));
-        delete_selected.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        delete_selected.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                delete_selectedMouseClicked(evt);
-            }
-        });
-        circuitToolbar.add(delete_selected);
-
-        select_all.setText(bundle.getString("Editor.select_all.text")); // NOI18N
-        select_all.setFocusable(false);
-        select_all.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        select_all.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        select_all.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                select_allMouseClicked(evt);
-            }
-        });
-        circuitToolbar.add(select_all);
 
         AndGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_andgate.png"))); // NOI18N
         AndGate.setText(bundle.getString("TestJFrameForm.AndGate.text")); // NOI18N
@@ -386,28 +307,35 @@ public class Editor extends javax.swing.JFrame {
                 ClearCircuitMouseClicked(evt);
             }
         });
-        ClearCircuit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ClearCircuitActionPerformed(evt);
-            }
-        });
         jToolBar1.add(ClearCircuit);
 
-        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-undo.png"))); // NOI18N
-        jButton8.setText(bundle.getString("Editor.jButton8.text")); // NOI18N
-        jButton8.setEnabled(false);
-        jButton8.setFocusable(false);
-        jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton8);
+        UndoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-undo.png"))); // NOI18N
+        UndoButton.setText(bundle.getString("Editor.UndoButton.text")); // NOI18N
+        UndoButton.setEnabled(false);
+        UndoButton.setFocusable(false);
+        UndoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        UndoButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        UndoButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                UndoButtonMouseClicked(evt);
+            }
+        });
+        cmdHist.addUndoEmptyListener(UndoButton);
+        jToolBar1.add(UndoButton);
 
-        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-redo.png"))); // NOI18N
-        jButton9.setText(bundle.getString("Editor.jButton9.text")); // NOI18N
-        jButton9.setEnabled(false);
-        jButton9.setFocusable(false);
-        jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton9);
+        RedoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-redo.png"))); // NOI18N
+        RedoButton.setText(bundle.getString("Editor.RedoButton.text")); // NOI18N
+        RedoButton.setEnabled(false);
+        RedoButton.setFocusable(false);
+        RedoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        RedoButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        RedoButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                RedoButtonMouseClicked(evt);
+            }
+        });
+        cmdHist.addRedoEmptyListener(RedoButton);
+        jToolBar1.add(RedoButton);
 
         jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-delete.png"))); // NOI18N
         jButton19.setText(bundle.getString("Editor.jButton19.text")); // NOI18N
@@ -415,6 +343,11 @@ public class Editor extends javax.swing.JFrame {
         jButton19.setFocusable(false);
         jButton19.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton19.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton19.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton19MouseClicked(evt);
+            }
+        });
         jToolBar1.add(jButton19);
         jToolBar1.add(jSeparator4);
 
@@ -583,6 +516,11 @@ public class Editor extends javax.swing.JFrame {
         RotateLeft.setFocusable(false);
         RotateLeft.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         RotateLeft.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        RotateLeft.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                RotateLeftMouseClicked(evt);
+            }
+        });
         jPanel4.add(RotateLeft);
 
         RotateRght.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
@@ -590,6 +528,11 @@ public class Editor extends javax.swing.JFrame {
         RotateRght.setFocusable(false);
         RotateRght.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         RotateRght.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        RotateRght.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                RotateRghtMouseClicked(evt);
+            }
+        });
         jPanel4.add(RotateRght);
 
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
@@ -620,21 +563,17 @@ public class Editor extends javax.swing.JFrame {
         });
         jPanel4.add(InsertComponent);
 
-        jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-image.png"))); // NOI18N
-        jButton16.setText(bundle.getString("Editor.jButton16.text")); // NOI18N
-        jButton16.setEnabled(false);
-        jButton16.setFocusable(false);
-        jButton16.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton16.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel4.add(jButton16);
-
-        jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-text.png"))); // NOI18N
-        jButton18.setText(bundle.getString("Editor.jButton18.text")); // NOI18N
-        jButton18.setEnabled(false);
-        jButton18.setFocusable(false);
-        jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel4.add(jButton18);
+        AddLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-text.png"))); // NOI18N
+        AddLabel.setText(bundle.getString("Editor.AddLabel.text")); // NOI18N
+        AddLabel.setFocusable(false);
+        AddLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        AddLabel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        AddLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                AddLabelMouseClicked(evt);
+            }
+        });
+        jPanel4.add(AddLabel);
 
         jSplitPane3.setLeftComponent(jPanel4);
 
@@ -771,20 +710,24 @@ public class Editor extends javax.swing.JFrame {
 
         Undo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
         Undo.setText(bundle.getString("Editor.Undo.text")); // NOI18N
+        Undo.setEnabled(false);
         Undo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 UndoActionPerformed(evt);
             }
         });
         Edit.add(Undo);
+        cmdHist.addUndoEmptyListener(Undo);
 
         Redo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
         Redo.setText(bundle.getString("Editor.Redo.text")); // NOI18N
+        Redo.setEnabled(false);
         Redo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 RedoActionPerformed(evt);
             }
         });
+        cmdHist.addRedoEmptyListener(Redo);
         Edit.add(Redo);
         Edit.add(jSeparator1);
 
@@ -823,6 +766,7 @@ public class Editor extends javax.swing.JFrame {
             }
         });
         Edit.add(SelectAll);
+        Edit.add(jSeparator2);
 
         Delete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         Delete.setText(bundle.getString("Editor.Delete.text")); // NOI18N
@@ -954,21 +898,6 @@ private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
     toggleToolboxButton(Wire);
 }//GEN-LAST:event_WireMouseClicked
 
-private void delete_selectedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_delete_selectedMouseClicked
-    
-    
-        
-        
-}//GEN-LAST:event_delete_selectedMouseClicked
-
-private void clear_circuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clear_circuitMouseClicked
-    
-}//GEN-LAST:event_clear_circuitMouseClicked
-
-private void select_allMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_select_allMouseClicked
-    
-}//GEN-LAST:event_select_allMouseClicked
-
 private void OrGateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_OrGateMouseClicked
     ((CircuitPanel) circuitPanel).selectTool(UITool.OrGate2Input);
     toggleToolboxButton(OrGate);
@@ -993,21 +922,6 @@ private void LEDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_L
 ((CircuitPanel) circuitPanel).selectTool(UITool.LED);
         toggleToolboxButton(LED);
 }//GEN-LAST:event_LEDMouseClicked
-
-private void delete_selected1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_delete_selected1MouseClicked
-    if(((CircuitPanel) circuitPanel).hasActiveSelection()){
-        int ans = JOptionPane.showConfirmDialog(this,
-                "Are you sure that you want to delete the selected component?");
-    
-        if(ans == JOptionPane.YES_OPTION){
-            infoLabel.setText(((CircuitPanel) circuitPanel).deleteActiveComponents());
-        }
-    } 
-}//GEN-LAST:event_delete_selected1MouseClicked
-
-private void delete_selected2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_delete_selected2MouseClicked
-// TODO add your handling code here:
-}//GEN-LAST:event_delete_selected2MouseClicked
 
 private void circuitPanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_circuitPanelMouseExited
     
@@ -1052,11 +966,11 @@ private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-F
 }//GEN-LAST:event_InsertComponentMouseClicked
 
 private void UndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UndoActionPerformed
-// TODO add your handling code here:
+    cmdHist.undo();
 }//GEN-LAST:event_UndoActionPerformed
 
 private void RedoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RedoActionPerformed
-// TODO add your handling code here:
+    cmdHist.redo();
 }//GEN-LAST:event_RedoActionPerformed
 
 private void CutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CutActionPerformed
@@ -1075,31 +989,12 @@ private void SelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     ((CircuitPanel) circuitPanel).selectAllComponents();
 }//GEN-LAST:event_SelectAllActionPerformed
 
-private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
-    if(((CircuitPanel) circuitPanel).hasActiveSelection()){
-        int ans = JOptionPane.showConfirmDialog(this,
-                "Are you sure that you want to delete the selected component?");
-    
-        if(ans == JOptionPane.YES_OPTION){
-            infoLabel.setText(((CircuitPanel) circuitPanel).deleteActiveComponents());
-        }
-    } 
-}//GEN-LAST:event_DeleteActionPerformed
-
 private void SaveAs1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveAs1ActionPerformed
 // TODO add your handling code here:
 }//GEN-LAST:event_SaveAs1ActionPerformed
 
-private void ClearCircuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearCircuitActionPerformed
-// TODO add your handling code here:
-}//GEN-LAST:event_ClearCircuitActionPerformed
-
 private void ClearCircuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClearCircuitMouseClicked
-    int ans = JOptionPane.showConfirmDialog(this, 
-        "Are you sure that you want to clear this circuit?");
-    if(ans == JOptionPane.YES_OPTION){
-        infoLabel.setText(((CircuitPanel) circuitPanel).resetCircuit());
-    }
+    cmdHist.doCommand(new ClearCircuitCommand());
 
 }//GEN-LAST:event_ClearCircuitMouseClicked
 
@@ -1111,7 +1006,7 @@ private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
     if (rVal == JFileChooser.APPROVE_OPTION) {
         filename = c.getSelectedFile().getAbsolutePath();
         CircuitFileHandler cfh = new CircuitFileHandler();
-        ((CircuitPanel)circuitPanel).loadStack(cfh.loadFile(filename));
+        ((CircuitPanel)circuitPanel).addComponentList(cfh.loadFile(filename));
     }
 }//GEN-LAST:event_OpenActionPerformed
 
@@ -1150,6 +1045,34 @@ private void SaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     ((CircuitPanel)circuitPanel).saveAs(filename);
     }
 }//GEN-LAST:event_SaveAsActionPerformed
+
+private void AddLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddLabelMouseClicked
+     cmdHist.doCommand(new AddLabelCommand());    
+}//GEN-LAST:event_AddLabelMouseClicked
+
+private void UndoButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UndoButtonMouseClicked
+    cmdHist.undo();
+}//GEN-LAST:event_UndoButtonMouseClicked
+
+private void RedoButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RedoButtonMouseClicked
+    cmdHist.redo();
+}//GEN-LAST:event_RedoButtonMouseClicked
+
+private void RotateLeftMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateLeftMouseClicked
+    cmdHist.doCommand(new RotateLeftCommand());
+}//GEN-LAST:event_RotateLeftMouseClicked
+
+private void RotateRghtMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateRghtMouseClicked
+    cmdHist.doCommand(new RotateRightCommand());
+}//GEN-LAST:event_RotateRghtMouseClicked
+
+private void jButton19MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton19MouseClicked
+    cmdHist.doCommand(new DeleteSelectionCommand());
+}//GEN-LAST:event_jButton19MouseClicked
+
+private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
+    cmdHist.doCommand(new DeleteSelectionCommand());
+}//GEN-LAST:event_DeleteActionPerformed
     
 private void toggleToolboxButton(JButton b){
     // Reset Selections
@@ -1183,6 +1106,7 @@ private void toggleToolboxButton(JButton b){
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AddLabel;
     private javax.swing.JButton AndGate;
     private javax.swing.JButton ClearCircuit;
     private javax.swing.JTree ComponentSelectionTree;
@@ -1202,6 +1126,7 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JButton OrGate;
     private javax.swing.JMenuItem Paste;
     private javax.swing.JMenuItem Redo;
+    private javax.swing.JButton RedoButton;
     private javax.swing.JButton RotateLeft;
     private javax.swing.JButton RotateRght;
     private javax.swing.JMenuItem Save;
@@ -1211,24 +1136,18 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JButton Selection;
     private javax.swing.JMenu Simulation;
     private javax.swing.JMenuItem Undo;
+    private javax.swing.JButton UndoButton;
     private javax.swing.JMenu Window;
     private javax.swing.JButton Wire;
     private javax.swing.JButton Wire1;
     private javax.swing.JButton Wire2;
     private javax.swing.JInternalFrame circuitFrame;
     private javax.swing.JPanel circuitPanel;
-    private javax.swing.JToolBar circuitToolbar;
-    private javax.swing.JButton clear_circuit;
-    private javax.swing.JButton delete_selected;
-    private javax.swing.JButton delete_selected1;
-    private javax.swing.JButton delete_selected2;
     private javax.swing.JLabel infoLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton16;
-    private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
@@ -1238,8 +1157,6 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
@@ -1253,6 +1170,7 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JSlider jSlider1;
@@ -1261,22 +1179,16 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JButton select_all;
     private javax.swing.JPanel statusPanel;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
-    private javax.swing.JMenu fileMenu = null;
-    private javax.swing.JMenu editMenu = null;
-    private javax.swing.JMenu helpMenu = null;
+
     private javax.swing.JMenuItem exitMenuItem = null;
     private javax.swing.JMenuItem aboutMenuItem = null;
-    private javax.swing.JMenuItem cutMenuItem = null;
-    private javax.swing.JMenuItem copyMenuItem = null;
-    private javax.swing.JMenuItem pasteMenuItem = null;
-    private javax.swing.JMenuItem saveAsMenuItem = null;
-    private javax.swing.JMenuItem openMenuItem = null;
     private javax.swing.JDialog aboutDialog = null;
     private javax.swing.JPanel aboutContentPane = null;
     private javax.swing.JLabel aboutVersionLabel = null;
+    
+    private CommandHistory cmdHist = new CommandHistory(this);
     
 }

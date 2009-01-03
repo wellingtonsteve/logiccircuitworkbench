@@ -24,6 +24,7 @@ public class ConnectionPoint extends GridObject {
     private boolean isActive = false;
     private boolean isCrossover = false;
     private static BufferedImage defaultCrossover;
+    private String label = new String();
 
     public ConnectionPoint(Point p){
         super(p);
@@ -114,8 +115,9 @@ public class ConnectionPoint extends GridObject {
         return isActive;
     }
 
-    @Override
     public void draw(Graphics2D g2) {
+        super.draw(g2);
+        
         if(!isCrossover){
         
             if(noOfConnections() > 1){
@@ -134,13 +136,29 @@ public class ConnectionPoint extends GridObject {
             }
 
             if(UIConstants.SHOW_CONNECTION_POINTS){                
-                    g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
-                    g2.drawOval(x-1, y-1, 3, 3);
-                    g2.fillOval(x-1, y-1, 3, 3);
+                g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
+                g2.drawOval(x-1, y-1, 3, 3);
+                g2.fillOval(x-1, y-1, 3, 3);
             }
+            
         } else {
             g2.drawImage(defaultCrossover, x-9, y-10, null);
         }
+    }
+ 
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    @Override
+    public void setLabel(String label) {
+        this.label = label;
+    }
+    
+    @Override
+    public boolean hasLabel(){
+        return label != null || !label.equals("");
     }
     
     @Override

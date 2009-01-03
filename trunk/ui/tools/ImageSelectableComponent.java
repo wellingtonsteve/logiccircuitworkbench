@@ -117,6 +117,8 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
 
     @Override
     public void draw(Graphics2D g, javax.swing.JComponent parent) {
+        super.draw(g); // Draw labels
+        
         g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
         g.drawImage(getCurrentImage(), (int)getOrigin().getX(), (int)getOrigin().getY(), parent);
         g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);

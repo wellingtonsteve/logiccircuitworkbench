@@ -1,0 +1,40 @@
+package ui.command;
+
+import java.util.LinkedList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import ui.Editor;
+import ui.tools.SelectableComponent;
+
+/**
+ *
+ * @author matt
+ */
+public class DeleteSelectionCommand extends Command {
+    private List<SelectableComponent> selection = new LinkedList<SelectableComponent>();
+     
+    protected void perform(Editor editor) {
+        if(activeCircuit.hasActiveSelection()){
+            int ans = JOptionPane.showConfirmDialog(editor,"Are you sure that you want to delete the selected component(s)?");
+
+            if(ans == JOptionPane.YES_OPTION){     
+                selection.addAll(activeCircuit.getActiveComponents());
+                activeCircuit.deleteActiveComponents();    
+                canUndo = true;
+            }  
+        }
+    }
+        
+    @Override
+    protected void undoEffect(Editor editor) {
+        activeCircuit.addComponentList(selection);
+        selection.clear();
+        canUndo = false;
+    }
+
+    @Override
+    public String toString() {
+        return "Delete " + selection.size() + "item(s)";
+   }
+
+}
