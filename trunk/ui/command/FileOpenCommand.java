@@ -22,11 +22,12 @@ public class FileOpenCommand extends Command {
         c.setDialogType(JFileChooser.OPEN_DIALOG);
         int rVal = c.showOpenDialog(editor);
         if (rVal == JFileChooser.APPROVE_OPTION) {
+            activeCircuit = editor.newCircuit();
             filename = c.getSelectedFile().getAbsolutePath();
             CircuitFileHandler cfh = new CircuitFileHandler();
             activeCircuit.addComponentList(cfh.loadFile(filename));
             activeCircuit.setFilename(filename);
-            ((JFrame) activeCircuit.getParent().getParent().getParent()).setTitle(filename);
+            activeCircuit.getParentFrame().setTitle(filename);
         }
     }
 
