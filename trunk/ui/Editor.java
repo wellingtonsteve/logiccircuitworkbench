@@ -8,13 +8,12 @@ package ui;
 
 import ui.tools.UITool;
 import java.awt.BorderLayout;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.LinkedList;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -26,6 +25,7 @@ import ui.command.*;
  * @author  Matt
  */
 public class Editor extends javax.swing.JFrame {
+    private CircuitPanel circuitPanel;
     
     /** Creates new form FrameMain */
     public Editor() {        
@@ -33,7 +33,15 @@ public class Editor extends javax.swing.JFrame {
     }
 
     public CircuitPanel getActiveCircuit() {
-        return (CircuitPanel) circuitPanel;
+        return circuitPanel;
+    }
+
+    public void newCircuit() {
+        CircuitFrame cir = new CircuitFrame(this);
+        circuitwindows.add(cir);
+        DesktopPane.add(cir, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        circuitPanel = cir.getCircuitPanel();
+        
     }
 
     public void setActiveCircuit(CircuitPanel circuit) {
@@ -48,22 +56,11 @@ public class Editor extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        jSplitPane2 = new javax.swing.JSplitPane();
-        statusPanel = new javax.swing.JPanel();
-        infoLabel = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
-        AndGate = new javax.swing.JButton();
-        OrGate = new javax.swing.JButton();
-        NandGate = new javax.swing.JButton();
-        Input = new javax.swing.JButton();
-        NorGate = new javax.swing.JButton();
-        LED = new javax.swing.JButton();
         jToolBar1 = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
+        NewButton = new javax.swing.JButton();
         OpenFileButton = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        SaveButton = new javax.swing.JButton();
         SaveAsButton = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
         jButton5 = new javax.swing.JButton();
@@ -80,9 +77,6 @@ public class Editor extends javax.swing.JFrame {
         jSlider1 = new javax.swing.JSlider();
         jScrollPane3 = new javax.swing.JScrollPane();
         DesktopPane = new ScrollableDesktop();
-        circuitFrame = new javax.swing.JInternalFrame();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        circuitPanel = new CircuitPanel();
         jInternalFrame1 = new javax.swing.JInternalFrame();
         jSplitPane1 = new javax.swing.JSplitPane();
         jSplitPane3 = new javax.swing.JSplitPane();
@@ -110,7 +104,7 @@ public class Editor extends javax.swing.JFrame {
         Open = new javax.swing.JMenuItem();
         Save = new javax.swing.JMenuItem();
         SaveAs = new javax.swing.JMenuItem();
-        SaveAs1 = new javax.swing.JMenuItem();
+        Exit = new javax.swing.JMenuItem();
         Edit = new javax.swing.JMenu();
         Undo = new javax.swing.JMenuItem();
         Redo = new javax.swing.JMenuItem();
@@ -124,104 +118,10 @@ public class Editor extends javax.swing.JFrame {
         Simulation = new javax.swing.JMenu();
         Window = new javax.swing.JMenu();
         Help = new javax.swing.JMenu();
-
-        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane2.setAutoscrolls(true);
-        jSplitPane2.setPreferredSize(new java.awt.Dimension(136, 600));
-
-        infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
-        infoLabel.setText(bundle.getString("TestJFrameForm.infoLabel.text_1")); // NOI18N
-
-        org.jdesktop.layout.GroupLayout statusPanelLayout = new org.jdesktop.layout.GroupLayout(statusPanel);
-        statusPanel.setLayout(statusPanelLayout);
-        statusPanelLayout.setHorizontalGroup(
-            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(infoLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        statusPanelLayout.setVerticalGroup(
-            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(infoLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        jPanel1.setAutoscrolls(true);
-        jPanel1.setMinimumSize(new java.awt.Dimension(750, 500));
-        jPanel1.setPreferredSize(new java.awt.Dimension(750, 500));
-        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
-
-        AndGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_andgate.png"))); // NOI18N
-        AndGate.setText(bundle.getString("TestJFrameForm.AndGate.text")); // NOI18N
-        AndGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        AndGate.setMaximumSize(new java.awt.Dimension(26, 28));
-        AndGate.setMinimumSize(new java.awt.Dimension(26, 28));
-        AndGate.setPreferredSize(new java.awt.Dimension(26, 28));
-        AndGate.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                AndGateMouseClicked(evt);
-            }
-        });
-
-        OrGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_orgate.png"))); // NOI18N
-        OrGate.setText(bundle.getString("Editor.OrGate.text")); // NOI18N
-        OrGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        OrGate.setMaximumSize(new java.awt.Dimension(26, 28));
-        OrGate.setMinimumSize(new java.awt.Dimension(26, 28));
-        OrGate.setPreferredSize(new java.awt.Dimension(26, 26));
-        OrGate.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                OrGateMouseClicked(evt);
-            }
-        });
-        OrGate.getAccessibleContext().setAccessibleName(bundle.getString("FrameMain.AndGate1.AccessibleContext.accessibleName")); // NOI18N
-
-        NandGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_nandgate.png"))); // NOI18N
-        NandGate.setText(bundle.getString("Editor.NandGate.text")); // NOI18N
-        NandGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        NandGate.setMaximumSize(new java.awt.Dimension(26, 28));
-        NandGate.setMinimumSize(new java.awt.Dimension(26, 28));
-        NandGate.setPreferredSize(new java.awt.Dimension(26, 26));
-        NandGate.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                NandGateMouseClicked(evt);
-            }
-        });
-        NandGate.getAccessibleContext().setAccessibleName(bundle.getString("FrameMain.AndGate2.AccessibleContext.accessibleName")); // NOI18N
-
-        Input.setText(bundle.getString("Editor.Input.text")); // NOI18N
-        Input.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Input.setMaximumSize(new java.awt.Dimension(26, 28));
-        Input.setMinimumSize(new java.awt.Dimension(26, 28));
-        Input.setPreferredSize(new java.awt.Dimension(26, 26));
-        Input.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                InputMouseClicked(evt);
-            }
-        });
-
-        NorGate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_norgate.png"))); // NOI18N
-        NorGate.setText(bundle.getString("Editor.NorGate.text")); // NOI18N
-        NorGate.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        NorGate.setMaximumSize(new java.awt.Dimension(26, 28));
-        NorGate.setMinimumSize(new java.awt.Dimension(26, 28));
-        NorGate.setPreferredSize(new java.awt.Dimension(26, 26));
-        NorGate.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                NorGateMouseClicked(evt);
-            }
-        });
-
-        LED.setText(bundle.getString("Editor.LED.text")); // NOI18N
-        LED.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        LED.setMaximumSize(new java.awt.Dimension(26, 28));
-        LED.setMinimumSize(new java.awt.Dimension(26, 28));
-        LED.setPreferredSize(new java.awt.Dimension(26, 26));
-        LED.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                LEDMouseClicked(evt);
-            }
-        });
+        About = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
         setTitle(bundle.getString("Editor.title")); // NOI18N
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setMinimumSize(new java.awt.Dimension(750, 510));
@@ -234,13 +134,17 @@ public class Editor extends javax.swing.JFrame {
         jToolBar1.setMinimumSize(new java.awt.Dimension(750, 34));
         jToolBar1.setPreferredSize(new java.awt.Dimension(750, 34));
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-new.png"))); // NOI18N
-        jButton1.setText(bundle.getString("Editor.jButton1.text")); // NOI18N
-        jButton1.setEnabled(false);
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton1);
+        NewButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-new.png"))); // NOI18N
+        NewButton.setText(bundle.getString("Editor.NewButton.text")); // NOI18N
+        NewButton.setFocusable(false);
+        NewButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        NewButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        NewButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                NewButtonMouseClicked(evt);
+            }
+        });
+        jToolBar1.add(NewButton);
 
         OpenFileButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-open.png"))); // NOI18N
         OpenFileButton.setText(bundle.getString("Editor.OpenFileButton.text")); // NOI18N
@@ -254,13 +158,17 @@ public class Editor extends javax.swing.JFrame {
         });
         jToolBar1.add(OpenFileButton);
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-save.png"))); // NOI18N
-        jButton3.setText(bundle.getString("Editor.jButton3.text")); // NOI18N
-        jButton3.setEnabled(false);
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton3);
+        SaveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-save.png"))); // NOI18N
+        SaveButton.setText(bundle.getString("Editor.SaveButton.text")); // NOI18N
+        SaveButton.setFocusable(false);
+        SaveButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        SaveButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        SaveButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                SaveButtonMouseClicked(evt);
+            }
+        });
+        jToolBar1.add(SaveButton);
 
         SaveAsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-save-as.png"))); // NOI18N
         SaveAsButton.setText(bundle.getString("Editor.SaveAsButton.text")); // NOI18N
@@ -388,60 +296,6 @@ public class Editor extends javax.swing.JFrame {
 
         DesktopPane.setAutoscrolls(true);
         DesktopPane.setMinimumSize(new java.awt.Dimension(600, 400));
-
-        circuitFrame.setClosable(true);
-        circuitFrame.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        circuitFrame.setIconifiable(true);
-        circuitFrame.setMaximizable(true);
-        circuitFrame.setResizable(true);
-        circuitFrame.setTitle("Breadboard");
-        circuitFrame.setFrameIcon(null);
-        circuitFrame.setPreferredSize(new java.awt.Dimension(600, 450));
-        circuitFrame.setVisible(true);
-        circuitFrame.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                circuitFrameMouseExited(evt);
-            }
-        });
-
-        circuitPanel.setMinimumSize(new java.awt.Dimension(1000, 800));
-        circuitPanel.setPreferredSize(new java.awt.Dimension(1000, 800));
-
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, circuitFrame, org.jdesktop.beansbinding.ELProperty.create("${focusable}"), circuitPanel, org.jdesktop.beansbinding.BeanProperty.create("focusable"));
-        bindingGroup.addBinding(binding);
-
-        circuitPanel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                circuitPanelMouseExited(evt);
-            }
-        });
-
-        org.jdesktop.layout.GroupLayout circuitPanelLayout = new org.jdesktop.layout.GroupLayout(circuitPanel);
-        circuitPanel.setLayout(circuitPanelLayout);
-        circuitPanelLayout.setHorizontalGroup(
-            circuitPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 1000, Short.MAX_VALUE)
-        );
-        circuitPanelLayout.setVerticalGroup(
-            circuitPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 800, Short.MAX_VALUE)
-        );
-
-        jScrollPane2.setViewportView(circuitPanel);
-
-        org.jdesktop.layout.GroupLayout circuitFrameLayout = new org.jdesktop.layout.GroupLayout(circuitFrame.getContentPane());
-        circuitFrame.getContentPane().setLayout(circuitFrameLayout);
-        circuitFrameLayout.setHorizontalGroup(
-            circuitFrameLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 772, Short.MAX_VALUE)
-        );
-        circuitFrameLayout.setVerticalGroup(
-            circuitFrameLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
-        );
-
-        circuitFrame.setBounds(170, 0, 780, 600);
-        DesktopPane.add(circuitFrame, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         jInternalFrame1.setIconifiable(true);
         jInternalFrame1.setMaximizable(true);
@@ -685,6 +539,11 @@ public class Editor extends javax.swing.JFrame {
         Save.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         Save.setMnemonic('s');
         Save.setText(bundle.getString("Editor.Save.text")); // NOI18N
+        Save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveActionPerformed(evt);
+            }
+        });
         File.add(Save);
 
         SaveAs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
@@ -697,14 +556,15 @@ public class Editor extends javax.swing.JFrame {
         });
         File.add(SaveAs);
 
-        SaveAs1.setMnemonic('x');
-        SaveAs1.setText(bundle.getString("Editor.SaveAs1.text")); // NOI18N
-        SaveAs1.addActionListener(new java.awt.event.ActionListener() {
+        Exit.setMnemonic('x');
+        Exit.setText(bundle.getString("Editor.Exit.text")); // NOI18N
+        Exit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ExitActionPerformed(evt);
                 SaveAs1ActionPerformed(evt);
             }
         });
-        File.add(SaveAs1);
+        File.add(Exit);
 
         jMenuBar1.add(File);
 
@@ -792,152 +652,37 @@ public class Editor extends javax.swing.JFrame {
 
         Help.setMnemonic('H');
         Help.setText(bundle.getString("Editor.Help.text")); // NOI18N
+
+        About.setText(bundle.getString("Editor.About.text")); // NOI18N
+        About.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AboutActionPerformed(evt);
+            }
+        });
+        Help.add(About);
+
         jMenuBar1.add(Help);
 
         setJMenuBar(jMenuBar1);
 
-        bindingGroup.bind();
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
-        /**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getExitMenuItem() {
-		if (exitMenuItem == null) {
-			exitMenuItem = new JMenuItem();
-			exitMenuItem.setText("Exit");
-			exitMenuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					System.exit(0);
-				}
-			});
-		}
-		return exitMenuItem;
-	}
-
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getAboutMenuItem() {
-		if (aboutMenuItem == null) {
-			aboutMenuItem = new JMenuItem();
-			aboutMenuItem.setText("About");
-			aboutMenuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					JDialog aboutDialog = getAboutDialog();
-					aboutDialog.pack();
-					Point loc = jMenuBar1.getLocation();
-					loc.translate(20, 20);
-					aboutDialog.setLocation(loc);
-					aboutDialog.setVisible(true);
-				}
-			});
-		}
-		return aboutMenuItem;
-	}
-
-	/**
-	 * This method initializes aboutDialog	
-	 * 	
-	 * @return javax.swing.JDialog
-	 */
-	private JDialog getAboutDialog() {
-		if (aboutDialog == null) {
-			aboutDialog = new JDialog(this, true);
-			aboutDialog.setTitle("About");
-			aboutDialog.setContentPane(getAboutContentPane());
-		}
-		return aboutDialog;
-	}
-
-	/**
-	 * This method initializes aboutContentPane
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getAboutContentPane() {
-		if (aboutContentPane == null) {
-			aboutContentPane = new JPanel();
-			aboutContentPane.setLayout(new BorderLayout());
-			aboutContentPane.add(getAboutVersionLabel(), BorderLayout.CENTER);
-		}
-		return aboutContentPane;
-	}
-
-	/**
-	 * This method initializes aboutVersionLabel	
-	 * 	
-	 * @return javax.swing.JLabel	
-	 */
-	private JLabel getAboutVersionLabel() {
-		if (aboutVersionLabel == null) {
-			aboutVersionLabel = new JLabel();
-			aboutVersionLabel.setText("Version 1.0");
-			aboutVersionLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		}
-		return aboutVersionLabel;
-	}
-
-
-        
+   
     
 private void SelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SelectionMouseClicked
     toggleToolboxButton(Selection);
-    ((CircuitPanel) circuitPanel).selectTool(UITool.Select);
+    getActiveCircuit().selectTool(UITool.Select);
 }//GEN-LAST:event_SelectionMouseClicked
 
-private void AndGateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AndGateMouseClicked
-    ((CircuitPanel) circuitPanel).selectTool(UITool.AndGate2Input);
-    toggleToolboxButton(AndGate);
-}//GEN-LAST:event_AndGateMouseClicked
-
 private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WireMouseClicked
-    ((CircuitPanel) circuitPanel).selectTool(UITool.Wire);
+    getActiveCircuit().selectTool(UITool.Wire);
     toggleToolboxButton(Wire);
 }//GEN-LAST:event_WireMouseClicked
-
-private void OrGateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_OrGateMouseClicked
-    ((CircuitPanel) circuitPanel).selectTool(UITool.OrGate2Input);
-    toggleToolboxButton(OrGate);
-}//GEN-LAST:event_OrGateMouseClicked
-
-private void NandGateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NandGateMouseClicked
-((CircuitPanel) circuitPanel).selectTool(UITool.NandGate2Input);
-toggleToolboxButton(NandGate);
-}//GEN-LAST:event_NandGateMouseClicked
-
-private void NorGateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NorGateMouseClicked
-((CircuitPanel) circuitPanel).selectTool(UITool.NorGate2Input);
-        toggleToolboxButton(NorGate);
-}//GEN-LAST:event_NorGateMouseClicked
-
-private void InputMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InputMouseClicked
-((CircuitPanel) circuitPanel).selectTool(UITool.Input);
-        toggleToolboxButton(Input);
-}//GEN-LAST:event_InputMouseClicked
-
-private void LEDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LEDMouseClicked
-((CircuitPanel) circuitPanel).selectTool(UITool.LED);
-        toggleToolboxButton(LED);
-}//GEN-LAST:event_LEDMouseClicked
-
-private void circuitPanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_circuitPanelMouseExited
-    
-}//GEN-LAST:event_circuitPanelMouseExited
-
-private void circuitFrameMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_circuitFrameMouseExited
-    DeleteActionPerformed(null);
-}//GEN-LAST:event_circuitFrameMouseExited
 
 private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeValueChanged
 // TODO add your handling code here:
     if(InsertComponent.isSelected()){
-        ((CircuitPanel) circuitPanel).selectTool(UITool.OrGate2Input);
+        getActiveCircuit().selectTool(UITool.OrGate2Input);
     }
 }//GEN-LAST:event_ComponentSelectionTreeValueChanged
 
@@ -956,7 +701,7 @@ private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-F
 
         // Case selection on components
         // case () of etc...
-        ((CircuitPanel) circuitPanel).selectTool(UITool.OrGate2Input);
+        getActiveCircuit().selectTool(UITool.OrGate2Input);
     }
 }//GEN-LAST:event_InsertComponentMouseClicked
 
@@ -981,12 +726,12 @@ private void PasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
 }//GEN-LAST:event_PasteActionPerformed
 
 private void SelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectAllActionPerformed
-    ((CircuitPanel) circuitPanel).selectAllComponents();
+    getActiveCircuit().selectAllComponents();
 }//GEN-LAST:event_SelectAllActionPerformed
 
-private void SaveAs1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveAs1ActionPerformed
-// TODO add your handling code here:
-}//GEN-LAST:event_SaveAs1ActionPerformed
+private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
+    System.exit(0);
+}//GEN-LAST:event_ExitActionPerformed
 
 private void ClearCircuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClearCircuitMouseClicked
     cmdHist.doCommand(new ClearCircuitCommand());
@@ -1043,6 +788,43 @@ private void Wire2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event
 private void Wire1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire1MouseClicked
 // TODO add your handling code here:
 }//GEN-LAST:event_Wire1MouseClicked
+
+private void SaveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveButtonMouseClicked
+    cmdHist.doCommand(new FileSaveCommand());
+}//GEN-LAST:event_SaveButtonMouseClicked
+
+private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
+    cmdHist.doCommand(new FileSaveCommand());
+}//GEN-LAST:event_SaveActionPerformed
+
+private void SaveAs1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveAs1ActionPerformed
+}//GEN-LAST:event_SaveAs1ActionPerformed
+
+private void AboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AboutActionPerformed
+    if (aboutVersionLabel == null) {
+            aboutVersionLabel = new JLabel();
+            aboutVersionLabel.setText("Version 1.0");
+            aboutVersionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    }
+    
+    if (aboutContentPane == null) {
+        aboutContentPane = new JPanel();
+        aboutContentPane.setLayout(new BorderLayout());
+        aboutContentPane.add(aboutVersionLabel, BorderLayout.CENTER);
+    }
+    
+    if (aboutDialog == null) {
+        aboutDialog = new JDialog(Editor.this, true);
+        aboutDialog.setTitle("About");
+        aboutDialog.setContentPane(aboutContentPane);
+    }
+    aboutDialog.pack();
+    aboutDialog.setVisible(true);
+}//GEN-LAST:event_AboutActionPerformed
+
+private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NewButtonMouseClicked
+    cmdHist.doCommand(new NewCircuitCommand());
+}//GEN-LAST:event_NewButtonMouseClicked
     
 private void toggleToolboxButton(JButton b){
     // Reset Selections
@@ -1076,8 +858,8 @@ private void toggleToolboxButton(JButton b){
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem About;
     private javax.swing.JButton AddLabel;
-    private javax.swing.JButton AndGate;
     private javax.swing.JButton ClearCircuit;
     private javax.swing.JTree ComponentSelectionTree;
     private javax.swing.JMenuItem Copy;
@@ -1085,16 +867,13 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JMenuItem Delete;
     private javax.swing.JDesktopPane DesktopPane;
     private javax.swing.JMenu Edit;
+    private javax.swing.JMenuItem Exit;
     private javax.swing.JMenu File;
     private javax.swing.JMenu Help;
-    private javax.swing.JButton Input;
     private javax.swing.JButton InsertComponent;
-    private javax.swing.JButton LED;
-    private javax.swing.JButton NandGate;
-    private javax.swing.JButton NorGate;
+    private javax.swing.JButton NewButton;
     private javax.swing.JMenuItem Open;
     private javax.swing.JButton OpenFileButton;
-    private javax.swing.JButton OrGate;
     private javax.swing.JMenuItem Paste;
     private javax.swing.JMenuItem Redo;
     private javax.swing.JButton RedoButton;
@@ -1102,8 +881,8 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JButton RotateRght;
     private javax.swing.JMenuItem Save;
     private javax.swing.JMenuItem SaveAs;
-    private javax.swing.JMenuItem SaveAs1;
     private javax.swing.JButton SaveAsButton;
+    private javax.swing.JButton SaveButton;
     private javax.swing.JMenuItem SelectAll;
     private javax.swing.JButton Selection;
     private javax.swing.JMenu Simulation;
@@ -1113,17 +892,12 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JButton Wire;
     private javax.swing.JButton Wire1;
     private javax.swing.JButton Wire2;
-    private javax.swing.JInternalFrame circuitFrame;
-    private javax.swing.JPanel circuitPanel;
-    private javax.swing.JLabel infoLabel;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton21;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
@@ -1133,11 +907,9 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
@@ -1145,20 +917,16 @@ private void toggleToolboxButton(JButton b){
     private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JSlider jSlider1;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JPanel statusPanel;
-    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
-    private javax.swing.JMenuItem exitMenuItem = null;
-    private javax.swing.JMenuItem aboutMenuItem = null;
     private javax.swing.JDialog aboutDialog = null;
     private javax.swing.JPanel aboutContentPane = null;
     private javax.swing.JLabel aboutVersionLabel = null;
     
     private CommandHistory cmdHist = new CommandHistory(this);
+    private LinkedList<JInternalFrame> circuitwindows = new LinkedList<JInternalFrame>();
     
 }

@@ -55,6 +55,7 @@ public class CircuitPanel extends JPanel {
     private Graphics offscreenGraphics;
     private boolean drawDirect = false;
     private boolean detected = false;
+    private String filename;
 
     public CircuitPanel(){
         frameOriginX = this.getX();
@@ -322,6 +323,10 @@ public class CircuitPanel extends JPanel {
         
     }
 
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
     
     private void resetActiveComponents() {
         for (SelectableComponent sc : activeComponents) {
@@ -384,7 +389,7 @@ public class CircuitPanel extends JPanel {
         super.paintComponent(g);
         
         // If we haven't run auto-detection yet, do it now
-          if (!detected) {
+          if (UIConstants.DO_OFFSCREEN_DRAWING_TEST && !detected) {
                doAutoDetect(g);
           }
 
@@ -561,6 +566,7 @@ public class CircuitPanel extends JPanel {
     }
     
     public void saveAs(String filename){
+        this.filename = filename;
         FileCreator fc = new FileCreator(filename);
         for(SelectableComponent sc: drawnComponents){
             if(sc.isFixed()){
@@ -569,7 +575,11 @@ public class CircuitPanel extends JPanel {
         }
         fc.write();
     }
-        
+    
+    public String getFilename(){
+        return filename;
+    }
+            
     public void addComponentList(List<SelectableComponent> list){
         drawnComponents.addAll(list);
     }
