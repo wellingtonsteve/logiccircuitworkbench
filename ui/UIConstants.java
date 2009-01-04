@@ -33,6 +33,7 @@ public class UIConstants {
     public static int LABEL_CONNECTION_POINT_Y_OFFSET = -3;
     public static int LABEL_COMPONENT_X_OFFSET = 0;
     public static int LABEL_COMPONENT_Y_OFFSET = 0;
+    static boolean DO_OFFSCREEN_DRAWING_TEST = true;
 
     public static void beep(){
         java.awt.Toolkit.getDefaultToolkit ().beep();
