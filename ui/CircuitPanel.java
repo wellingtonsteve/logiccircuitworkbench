@@ -56,6 +56,15 @@ public class CircuitPanel extends JPanel {
     private boolean drawDirect = false;
     private boolean detected = false;
     private String filename;
+    private CircuitFrame parentFrame;
+
+    public CircuitFrame getParentFrame() {
+        return parentFrame;
+    }
+
+    public void setParentFrame(CircuitFrame parentFrame) {
+        this.parentFrame = parentFrame;
+    }
 
     public CircuitPanel(){
         frameOriginX = this.getX();

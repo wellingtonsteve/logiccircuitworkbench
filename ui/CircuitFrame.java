@@ -36,7 +36,10 @@ public class CircuitFrame extends JInternalFrame{
         setPreferredSize(new java.awt.Dimension(600, 450));
 
         setVisible(true);
+        
+        setTitle("Untitled");
 
+        circuitPanel.setParentFrame(this);
         circuitPanel.setMinimumSize(new java.awt.Dimension(1000, 800));
         circuitPanel.setPreferredSize(new java.awt.Dimension(1000, 800));
 
