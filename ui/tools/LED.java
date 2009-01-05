@@ -29,8 +29,8 @@ public class LED extends ImageSelectableComponent{
     private boolean isOn;
     private String colour = "yellow";
 
-    public LED(Component component, Point point) {
-        super(component, point);
+    public LED(Point point) {
+        super(point);
     }
 
      @Override

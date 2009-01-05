@@ -38,8 +38,8 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     protected Rectangle invalidArea = null;
     private String label = new String();
 
-    public SelectableComponent(Component component,Point point){
-        this.component = component;
+    public SelectableComponent(Point point){
+        //this.component = ;
         if(point == null){
             this.point = new Point(0,0);
         } else {
@@ -233,7 +233,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         this.boundingBox = new Rectangle(rotOrigin.x,rotOrigin.y,getWidth(),getHeight());
     }
     
-    public void draw(Graphics g){
+    public void draw(Graphics2D g){
         if(hasLabel()){
             g.drawString(getLabel(), getOrigin().x+UIConstants.LABEL_COMPONENT_X_OFFSET, getOrigin().y+UIConstants.LABEL_COMPONENT_Y_OFFSET);
         }

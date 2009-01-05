@@ -21,8 +21,8 @@ import ui.grid.ConnectionPoint;
  */
 public class NandGate2Input extends ImageSelectableComponent{
 
-    public NandGate2Input(Component component, Point point) {
-        super(component, point);
+    public NandGate2Input(Point point) {
+        super(point);
     }
 
     @Override

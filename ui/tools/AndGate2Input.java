@@ -20,8 +20,8 @@ import sim.Component;
  */
 public class AndGate2Input extends ImageSelectableComponent{
 
-    public AndGate2Input(Component component, Point point) {
-        super(component, point);
+    public AndGate2Input(Point point) {
+        super(point);
     }
 
     @Override
@@ -53,8 +53,7 @@ public class AndGate2Input extends ImageSelectableComponent{
     
     @Override
     public String getName(){
-        //return getComponent().getType();
-        return "And Gate (2 Input)";
+        return "Component.Logic Gates.2 Input.AND";
     }
 
     @Override

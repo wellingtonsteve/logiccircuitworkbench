@@ -19,6 +19,7 @@ public abstract class Command {
        if(!canUndo){
            activeCircuit = editor.getActiveCircuit();
            perform(editor);
+           editor.setActiveCircuit(activeCircuit);
        }       
     }
     

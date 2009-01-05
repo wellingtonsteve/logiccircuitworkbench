@@ -470,8 +470,9 @@ public class CircuitPanel extends JPanel {
         // Draw Connection Points 
         Grid.draw(g2);
     }
-            
+             
     public void selectTool(UITool tool){
+        //TODO integrate with netlists
         
         // Remove any temporary components left over
         if(!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed()){
@@ -485,25 +486,25 @@ public class CircuitPanel extends JPanel {
                 drawnComponents.push(new Wire());
                 break;
             case AndGate2Input:
-                drawnComponents.push(new AndGate2Input(null, endPoint));
+                drawnComponents.push(new AndGate2Input(endPoint));
                 break;
             case NandGate2Input:
-                drawnComponents.push(new NandGate2Input(null, endPoint));
+                drawnComponents.push(new NandGate2Input(endPoint));
                 break;
             case AndGate3Input:
-                drawnComponents.push(new AndGate3Input(null, endPoint));
+                drawnComponents.push(new AndGate3Input(endPoint));
                 break;
             case OrGate2Input:
-                drawnComponents.push(new OrGate2Input(null, endPoint));
+                drawnComponents.push(new OrGate2Input(endPoint));
                 break;    
             case NorGate2Input:
-                drawnComponents.push(new NorGate2Input(null, endPoint));
+                drawnComponents.push(new NorGate2Input(endPoint));
                 break;    
             case Input:
-                drawnComponents.push(new Input(null, endPoint));
+                drawnComponents.push(new Input(endPoint));
                 break;  
             case LED:
-                drawnComponents.push(new LED(null, endPoint));
+                drawnComponents.push(new LED(endPoint));
                 break;  
             default:
                 break;

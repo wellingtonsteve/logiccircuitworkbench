@@ -17,8 +17,8 @@ import sim.Component;
  */
 public abstract class ImageSelectableComponent extends SelectableComponent {
     
-    public ImageSelectableComponent(Component component, Point point){
-        super(component,point);
+    public ImageSelectableComponent(Point point){
+        super(point);
         
         rotation = Math.PI * 0 / 2;
         

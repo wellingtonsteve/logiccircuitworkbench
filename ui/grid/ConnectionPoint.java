@@ -1,5 +1,6 @@
 package ui.grid;
 
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
@@ -115,6 +116,7 @@ public class ConnectionPoint extends GridObject {
         return isActive;
     }
 
+    @Override
     public void draw(Graphics2D g2) {
         super.draw(g2);
         
@@ -135,7 +137,7 @@ public class ConnectionPoint extends GridObject {
                 isActive = false;
             }
 
-            if(UIConstants.SHOW_CONNECTION_POINTS){                
+            if(UIConstants.SHOW_CONNECTION_POINTS){ 
                 g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
                 g2.drawOval(x-1, y-1, 3, 3);
                 g2.fillOval(x-1, y-1, 3, 3);

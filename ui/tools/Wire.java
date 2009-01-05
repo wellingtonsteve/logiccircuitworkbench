@@ -33,8 +33,12 @@ public class Wire extends SelectableComponent {
     private Point hoverWaypoint;
     private Point hoverMousePoint;
 
-    public Wire() {
-        super(null, null);
+    public Wire(){
+        super(null);
+    }
+    
+    public Wire(Object o) {
+        super(null);
     }
 
     @Override

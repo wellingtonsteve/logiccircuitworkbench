@@ -71,6 +71,7 @@ public class CircuitFrame extends JInternalFrame{
         );
 
         addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
             public void focusGained(java.awt.event.FocusEvent evt) {
                 editor.setActiveCircuit(circuitPanel);
             }

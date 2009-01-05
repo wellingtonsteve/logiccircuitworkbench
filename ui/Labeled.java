@@ -15,7 +15,7 @@ import java.awt.Graphics2D;
  */
 public interface Labeled {
     
-    public void draw(Graphics g);
+    public void draw(Graphics2D g2);
                 
     public String getLabel();
 
