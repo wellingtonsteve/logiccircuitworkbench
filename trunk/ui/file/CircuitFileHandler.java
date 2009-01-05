@@ -62,14 +62,15 @@ public class CircuitFileHandler extends DefaultHandler{
             double rotation = Double.parseDouble(attribs.getValue("rotation"));
             
             String type = attribs.getValue("type");
+            // TODO Integrate with netlists
             
-            if(type.equals("Input")){               stack.push(new Input(null, p)); }
-            else if(type.equals("LED")){            stack.push(new LED(null, p)); }
-            else if(type.equals("AndGate2Input")){  stack.push(new AndGate2Input(null, p)); }
-            else if(type.equals("AndGate3Input")){  stack.push(new AndGate3Input(null, p)); }
-            else if(type.equals("NandGate2Input")){ stack.push(new NandGate2Input(null, p)); }
-            else if(type.equals("NorGate2Input")){  stack.push(new NorGate2Input(null, p)); }
-            else if(type.equals("OrGate2Input")){   stack.push(new OrGate2Input(null, p)); }
+            if(type.equals("Input")){               stack.push(new Input( p)); }
+            else if(type.equals("LED")){            stack.push(new LED( p)); }
+            else if(type.equals("AndGate2Input")){  stack.push(new AndGate2Input( p)); }
+            else if(type.equals("AndGate3Input")){  stack.push(new AndGate3Input( p)); }
+            else if(type.equals("NandGate2Input")){ stack.push(new NandGate2Input( p)); }
+            else if(type.equals("NorGate2Input")){  stack.push(new NorGate2Input( p)); }
+            else if(type.equals("OrGate2Input")){   stack.push(new OrGate2Input( p)); }
             
             stack.peek().setRotation(rotation);
             stack.peek().translate(0, 0, true);

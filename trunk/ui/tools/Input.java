@@ -28,8 +28,8 @@ import ui.UIConstants;
 public class Input extends ImageSelectableComponent{
     private boolean isOn = false;
 
-    public Input(Component component, Point point) {
-        super(component, point);
+    public Input(Point point) {
+        super(point);
     }
 
        @Override
@@ -62,13 +62,13 @@ public class Input extends ImageSelectableComponent{
     @Override
     public String getName(){
         //return getComponent().getType();
-        return "Input";
+        return "Component.Standard.Button Source";
     }
 
     @Override
     protected void setInvalidAreas(){
         //Tight fitting box so that pins are not selected
-        this.boundingBox = new Rectangle((int)getOrigin().getX()-getCentre().x,(int)getOrigin().getY()-getCentre().y,23,21);
+        this.invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x,(int)getOrigin().getY()-getCentre().y,22,22);
     }
     
     @Override
@@ -107,7 +107,7 @@ public class Input extends ImageSelectableComponent{
                 break;
         }   
         // TODO: set stroke to dotted, possibly knock out image when active?
-        g.drawRect(boundingBox.x+3, boundingBox.y, 19, 19);
+        g.drawRect(invalidArea.x+3, invalidArea.y, 19, 19);
         g.translate(-getCentre().x, -getCentre().y);
         
         g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);

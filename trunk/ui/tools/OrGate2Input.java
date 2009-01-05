@@ -21,8 +21,8 @@ import ui.grid.ConnectionPoint;
  */
 public class OrGate2Input extends ImageSelectableComponent{
 
-    public OrGate2Input(Component component, Point point) {
-        super(component, point);
+    public OrGate2Input(Point point) {
+        super(point);
     }
 
     @Override

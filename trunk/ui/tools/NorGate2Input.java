@@ -21,8 +21,8 @@ import ui.grid.ConnectionPoint;
  */
 public class NorGate2Input extends ImageSelectableComponent{
 
-    public NorGate2Input(Component component, Point point) {
-        super(component, point);
+    public NorGate2Input(Point point) {
+        super(point);
     }
 
     @Override

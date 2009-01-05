@@ -21,8 +21,8 @@ import ui.grid.ConnectionPoint;
  */
 public class AndGate3Input extends ImageSelectableComponent{
 
-    public AndGate3Input(Component component, Point point) {
-        super(component, point);
+    public AndGate3Input(Point point) {
+        super(point);
     }
 
   @Override

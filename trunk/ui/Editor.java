@@ -8,11 +8,10 @@ package ui;
 
 import ui.tools.UITool;
 import java.awt.BorderLayout;
-import java.awt.Toolkit;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,6 +22,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import ui.command.*;
+import ui.netlist.Netlist;
 
 /**
  *
@@ -30,9 +30,11 @@ import ui.command.*;
  */
 public class Editor extends javax.swing.JFrame {
     private CircuitPanel circuitPanel;
+    private LinkedList<Netlist> netlists = new LinkedList<Netlist>();
     
     /** Creates new form FrameMain */
     public Editor() {        
+        addNetlist(new ui.netlist.Standard());
         initComponents();
         setIconImage(new javax.swing.ImageIcon(this.getClass().getResource("/ui/images/buttons/toolbar/led.png")).getImage());
     }
@@ -672,32 +674,31 @@ private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
 }//GEN-LAST:event_WireMouseClicked
 
 private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeValueChanged
-// TODO add your handling code here:
-    if(InsertComponent.isSelected()){
-        getActiveCircuit().selectTool(UITool.OrGate2Input);
+    TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
+    if(currentSelection != null){
+        Object[] nameArray = currentSelection.getPath();
+        String componentName = new String();
+        for(int i = 0; i<nameArray.length; i++){
+            componentName += nameArray[i] + ".";
+        }
+        componentName = componentName.substring(0, componentName.length() - 1);
+        
+        // Case selection on components
+        if(getActiveCircuit() != null){
+            for(Netlist nl: netlists){
+                if(nl.containsKey(componentName)){
+                    getActiveCircuit().selectTool(nl.get(componentName));
+                }
+            }
+        }
     }
+    toggleToolboxButton(InsertComponent);
 }//GEN-LAST:event_ComponentSelectionTreeValueChanged
 
 private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertComponentMouseClicked
     toggleToolboxButton(InsertComponent);
     
-    TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
-    if(currentSelection != null){
-        Object[] nameArray = currentSelection.getPath();
-        String componentClassName = new String();
-        for(int i = 0; i<nameArray.length; i++){
-            componentClassName += nameArray[i] + ".";
-        }
-        componentClassName = componentClassName.substring(0, componentClassName.length() - 1);
-        
-        System.out.println(componentClassName);
-
-        // Case selection on components
-        // case () of etc...
-        if(getActiveCircuit() != null){
-            getActiveCircuit().selectTool(UITool.OrGate2Input);
-        }
-    }
+    
 }//GEN-LAST:event_InsertComponentMouseClicked
 
 private void UndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UndoActionPerformed
@@ -836,36 +837,64 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         CircuitFrame cir = new CircuitFrame(this);
         circuitwindows.add(cir);
         DesktopPane.add(cir, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        circuitPanel = cir.getCircuitPanel();
+        setActiveCircuit(cir.getCircuitPanel());
         return circuitPanel;
         
     }
 
     public void setActiveCircuit(CircuitPanel circuit) {
         circuitPanel = circuit;
+        this.setTitle("Logic Circuit Workbench - " + ((circuitPanel.getFilename()==null)?"":circuitPanel.getFilename()));
+        DesktopPane.setSelectedFrame(circuitPanel.getParentFrame());
+              
     }
 
+    /**
+     * Construct the component tree from the list of netlists associated with this editor.
+     * 
+     * @return rootNode     A well-formed TreeModel for use in a JTree
+     */
     public TreeModel getTreeValues(){
         
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Components");
-            DefaultMutableTreeNode standard = new DefaultMutableTreeNode("Standard");
-                standard.add(new DefaultMutableTreeNode("Button Source"));
-                standard.add(new DefaultMutableTreeNode("LED"));
-                standard.add(new DefaultMutableTreeNode("Bulb"));
-            DefaultMutableTreeNode logicgates = new DefaultMutableTreeNode("Logic Gates");
-                DefaultMutableTreeNode twoinput = new DefaultMutableTreeNode("2 Input");
-                    twoinput.add(new DefaultMutableTreeNode("AND"));
-                    twoinput.add(new DefaultMutableTreeNode("OR"));
-                    twoinput.add(new DefaultMutableTreeNode("XOR"));
-                    twoinput.add(new DefaultMutableTreeNode("NOR"));
-                DefaultMutableTreeNode threeinput = new DefaultMutableTreeNode("3 Input");
-                    threeinput.add(new DefaultMutableTreeNode("AND"));
-                logicgates.add(twoinput);
-                logicgates.add(threeinput);
-        rootNode.add(standard);
-        rootNode.add(logicgates);
+        DefaultMutableTreeNode parent, rootNode = new DefaultMutableTreeNode("Components");
+        String[] nodes = null;
+        parent = rootNode;
         
+        for(Netlist nl: netlists){
+            for(String s: nl.keySet()){
+                nodes = s.split("\\.");
+                parent = rootNode;
+                for(int i=1; i<nodes.length; i++){ // i=1, assume root node is common, "components"
+                    DefaultMutableTreeNode mtn = new DefaultMutableTreeNode(nodes[i]);
+                    
+                    // This node does not exist, create a new node
+                    Enumeration children = parent.children();
+                    Boolean exists = false;
+                    whileBreak: while(children.hasMoreElements()){
+                        DefaultMutableTreeNode next = (DefaultMutableTreeNode) children.nextElement();
+                        if(next.getUserObject().equals(mtn.getUserObject())){ // Compare String names of the nodes
+                            exists = true;
+                            mtn = next;
+                            break whileBreak;
+                        }
+                    }
+                    if(!exists){
+                        parent.add(mtn);                    
+                    }
+                        
+                    // We already have this node, move to the child
+                    parent = mtn;            
+
+                }
+                    
+            }            
+        }
+              
         return new DefaultTreeModel(rootNode);
+    }
+    
+    public void addNetlist(Netlist nl){
+        this.netlists.add(nl);
     }
     
 
@@ -876,8 +905,9 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
        // TODO case analysis for non-windows environments
         try {
            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
             //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
         } 
         catch (Exception e) {
            e.printStackTrace();
