@@ -52,6 +52,7 @@ public class CircuitPanel extends JPanel {
     private boolean detected = false;
     private String filename;
     private CircuitFrame parentFrame;
+    private Editor editor;
 
     public CircuitFrame getParentFrame() {
         return parentFrame;
@@ -59,12 +60,13 @@ public class CircuitPanel extends JPanel {
 
     public void setParentFrame(CircuitFrame parentFrame) {
         this.parentFrame = parentFrame;
+        editor = ((CircuitFrame) this.getParentFrame()).getEditor();
     }
 
     public CircuitPanel(){
         frameOriginX = this.getX();
         frameOriginY = this.getY();               
-    
+        
         addMouseMotionListener(new MouseMotionAdapter(){  
             
             @Override
@@ -282,12 +284,17 @@ public class CircuitPanel extends JPanel {
                     }
                     activeComponents.clear();
                     for(SelectableComponent sc: drawnComponents){
-                        if(sc.isFixed() && sc.containedIn(selBox)){
-                            
+                        if(sc.isFixed() && sc.containedIn(selBox)){                            
                             sc.mouseReleased(e);
                             activeComponents.add(sc);
                         }
                     }
+                    
+                    // Update the current selection options panel
+                    if(activeComponents.size()==1){
+                        editor.getOptionsPanel().setComponent(activeComponents.get(0));
+                    }
+                    
                     
                     multipleSelection = false;
 
@@ -476,7 +483,6 @@ public class CircuitPanel extends JPanel {
         repaint();
         
         // Create a new non-fixed component
-        Editor editor = ((CircuitFrame) this.getParentFrame()).getEditor();
         SelectableComponent sc;
         try {
             sc = (SelectableComponent) editor.getNetlistComponent(tool).getConstructor(Point.class).newInstance(endPoint);

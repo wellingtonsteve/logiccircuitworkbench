@@ -40,6 +40,11 @@ public class Wire extends SelectableComponent {
     public Wire(Point o) {
         super(null);
     }
+    
+    @Override
+    public String getName(){
+        return "Wire";
+    }
 
     @Override
     public int getWidth() {

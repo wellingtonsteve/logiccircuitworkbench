@@ -53,7 +53,7 @@ public class AndGate2Input extends ImageSelectableComponent{
     
     @Override
     public String getName(){
-        return "Component.Logic Gates.2 Input.AND";
+        return "And Gate (2 Input)";
     }
 
     @Override

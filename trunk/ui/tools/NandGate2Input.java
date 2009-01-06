@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import sim.Component;
-import ui.grid.ConnectionPoint;
 
 /**
  *
@@ -54,8 +52,7 @@ public class NandGate2Input extends ImageSelectableComponent{
     
     @Override
     public String getName(){
-        //return getComponent().getType();
-        return "And Gate (2 Input)";
+        return "Nand Gate";
     }
 
     @Override

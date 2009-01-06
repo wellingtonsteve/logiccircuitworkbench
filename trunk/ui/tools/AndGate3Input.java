@@ -16,7 +16,7 @@ import sim.Component;
 
 /**
  *
- * @author Matt
+ * @author matt
  */
 public class AndGate3Input extends ImageSelectableComponent{
 
@@ -54,7 +54,7 @@ public class AndGate3Input extends ImageSelectableComponent{
     @Override
     public String getName(){
         //return getComponent().getType();
-        return "And Gate (2 Input)";
+        return "And Gate (3 Input)";
     }
 
     @Override
