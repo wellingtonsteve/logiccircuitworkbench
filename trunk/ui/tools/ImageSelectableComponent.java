@@ -48,7 +48,7 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
         return selectedBi;
     }
     
-    protected BufferedImage getDefaultImage(){
+    public BufferedImage getDefaultImage(){
         return defaultBi;   
     }
     

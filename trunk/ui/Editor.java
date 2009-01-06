@@ -6,7 +6,6 @@
 
 package ui;
 
-import ui.tools.UITool;
 import java.awt.BorderLayout;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -23,6 +22,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import ui.command.*;
 import ui.netlist.Netlist;
+import ui.tools.SelectableComponent;
 
 /**
  *
@@ -35,6 +35,7 @@ public class Editor extends javax.swing.JFrame {
     /** Creates new form FrameMain */
     public Editor() {        
         addNetlist(new ui.netlist.Standard());
+        addNetlist(new ui.netlist.LogicGates());
         initComponents();
         setIconImage(new javax.swing.ImageIcon(this.getClass().getResource("/ui/images/buttons/toolbar/led.png")).getImage());
     }
@@ -84,12 +85,12 @@ public class Editor extends javax.swing.JFrame {
         AddLabel = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         ComponentSelectionTree = new javax.swing.JTree();
-        jPanel2 = new javax.swing.JPanel();
+        Options = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        Preview = new PreviewPanel(this);
         MenuBar = new javax.swing.JMenuBar();
         File = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -442,8 +443,6 @@ public class Editor extends javax.swing.JFrame {
 
         jTextField1.setText(bundle.getString("Editor.jTextField1.text")); // NOI18N
 
-        jLabel1.setText(bundle.getString("Editor.jLabel1.text")); // NOI18N
-
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0ᵒ", "90ᵒ", "180ᵒ", "270ᵒ" }));
 
         jLabel2.setText(bundle.getString("Editor.jLabel2.text")); // NOI18N
@@ -452,41 +451,52 @@ public class Editor extends javax.swing.JFrame {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText(bundle.getString("Editor.jLabel3.text")); // NOI18N
 
-        org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel2Layout.createSequentialGroup()
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabel1)
-                            .add(jLabel2))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                    .add(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)))
-                .addContainerGap())
+        org.jdesktop.layout.GroupLayout PreviewLayout = new org.jdesktop.layout.GroupLayout(Preview);
+        Preview.setLayout(PreviewLayout);
+        PreviewLayout.setHorizontalGroup(
+            PreviewLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 148, Short.MAX_VALUE)
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(jLabel3)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel1)
-                    .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel2)
-                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(182, Short.MAX_VALUE))
+        PreviewLayout.setVerticalGroup(
+            PreviewLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 88, Short.MAX_VALUE)
         );
 
-        jSplitPane1.setBottomComponent(jPanel2);
+        org.jdesktop.layout.GroupLayout OptionsLayout = new org.jdesktop.layout.GroupLayout(Options);
+        Options.setLayout(OptionsLayout);
+        OptionsLayout.setHorizontalGroup(
+            OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, OptionsLayout.createSequentialGroup()
+                .add(OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, OptionsLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(Preview, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, OptionsLayout.createSequentialGroup()
+                        .add(jLabel2)
+                        .add(34, 34, 34)
+                        .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, OptionsLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 143, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        OptionsLayout.setVerticalGroup(
+            OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(OptionsLayout.createSequentialGroup()
+                .add(jLabel3)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel2)
+                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 129, Short.MAX_VALUE)
+                .add(Preview, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jSplitPane1.setBottomComponent(Options);
 
         org.jdesktop.layout.GroupLayout ToolboxLayout = new org.jdesktop.layout.GroupLayout(Toolbox.getContentPane());
         Toolbox.getContentPane().setLayout(ToolboxLayout);
@@ -665,11 +675,11 @@ public class Editor extends javax.swing.JFrame {
     
 private void SelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SelectionMouseClicked
     toggleToolboxButton(Selection);
-    getActiveCircuit().selectTool(UITool.Select);
+    getActiveCircuit().selectTool("Select");
 }//GEN-LAST:event_SelectionMouseClicked
 
 private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WireMouseClicked
-    getActiveCircuit().selectTool(UITool.Wire);
+    getActiveCircuit().selectTool("Components.Standard.Wire");
     toggleToolboxButton(Wire);
 }//GEN-LAST:event_WireMouseClicked
 
@@ -682,15 +692,17 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
             componentName += nameArray[i] + ".";
         }
         componentName = componentName.substring(0, componentName.length() - 1);
-        
+
         // Case selection on components
         if(getActiveCircuit() != null){
-            for(Netlist nl: netlists){
-                if(nl.containsKey(componentName)){
-                    getActiveCircuit().selectTool(nl.get(componentName));
-                }
-            }
+            getActiveCircuit().selectTool(componentName);
         }
+        
+        // Set Options panel (Preview, Component Specific Options etc.)
+                      
+        ((PreviewPanel) Preview).setComponentName(componentName);
+        Preview.repaint();
+        
     }
     toggleToolboxButton(InsertComponent);
 }//GEN-LAST:event_ComponentSelectionTreeValueChanged
@@ -844,7 +856,7 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 
     public void setActiveCircuit(CircuitPanel circuit) {
         circuitPanel = circuit;
-        this.setTitle("Logic Circuit Workbench - " + ((circuitPanel.getFilename()==null)?"":circuitPanel.getFilename()));
+        this.setTitle("Logic Circuit Workbench - " + circuitPanel.getFilename());
         DesktopPane.setSelectedFrame(circuitPanel.getParentFrame());
               
     }
@@ -864,7 +876,7 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
             for(String s: nl.keySet()){
                 nodes = s.split("\\.");
                 parent = rootNode;
-                for(int i=1; i<nodes.length; i++){ // i=1, assume root node is common, "components"
+                for(int i=0; i<nodes.length; i++){
                     DefaultMutableTreeNode mtn = new DefaultMutableTreeNode(nodes[i]);
                     
                     // This node does not exist, create a new node
@@ -897,6 +909,15 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         this.netlists.add(nl);
     }
     
+    public Class<? extends SelectableComponent> getNetlistComponent(String key){
+        key = key.substring(11); //Remove "Components." from begining
+        for(Netlist nl: netlists){
+            if(nl.containsKey(key)){
+                return (Class<? extends SelectableComponent>) nl.get(key);
+            }
+        }
+        return null;
+    }
 
     /**
      * @param args the command line arguments
@@ -938,7 +959,9 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     private javax.swing.JButton NewButton;
     private javax.swing.JMenuItem Open;
     private javax.swing.JButton OpenFileButton;
+    private javax.swing.JPanel Options;
     private javax.swing.JMenuItem Paste;
+    private javax.swing.JPanel Preview;
     private javax.swing.JMenuItem Redo;
     private javax.swing.JButton RedoButton;
     private javax.swing.JButton RotateLeft;
@@ -968,10 +991,8 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;

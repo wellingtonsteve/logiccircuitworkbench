@@ -37,7 +37,7 @@ public class Wire extends SelectableComponent {
         super(null);
     }
     
-    public Wire(Object o) {
+    public Wire(Point o) {
         super(null);
     }
 
