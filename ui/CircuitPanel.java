@@ -13,23 +13,18 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import ui.file.FileCreator;
 import ui.grid.Pin;
 import ui.grid.Grid;
-import ui.tools.AndGate2Input;
-import ui.tools.AndGate3Input;
-import ui.tools.Input;
-import ui.tools.LED;
-import ui.tools.NandGate2Input;
-import ui.tools.NorGate2Input;
-import ui.tools.OrGate2Input;
 import ui.tools.SelectableComponent;
 import ui.tools.SelectionState;
-import ui.tools.UITool;
 import ui.tools.Wire;
 
 /**
@@ -41,7 +36,7 @@ public class CircuitPanel extends JPanel {
     private int frameOriginX, frameOriginY;
     private Point currentPoint = new Point(0,0), startPoint = new Point(0,0), endPoint;
     private Stack<SelectableComponent> drawnComponents = new Stack<SelectableComponent>();
-    private UITool currentTool = UITool.Select;
+    private String currentTool = "Select";
     private SelectableComponent temporaryComponent; // Used for reference to a selection from list of drawn components
     private SelectableComponent highlightedComponent; // The currently highlighted (SelectionState.HOVER) component 
     private List<SelectableComponent> activeComponents = new LinkedList<SelectableComponent>();       
@@ -76,7 +71,7 @@ public class CircuitPanel extends JPanel {
             @SuppressWarnings("static-access")
             public void mouseMoved(MouseEvent e) {
                 
-                if(!nowDraging && !currentTool.equals(UITool.Wire)){                
+                if(!nowDraging && !currentTool.equals("Wire")){                
                     
                     // Find the location in the circuit
                     endPoint = Grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
@@ -95,7 +90,7 @@ public class CircuitPanel extends JPanel {
                         
 
                     // Hover highlights    
-                    } else if (getCurrentTool().equals(UITool.Select)){
+                    } else if (getCurrentTool().equals("Select")){
 
                         temporaryComponent = null;
                         if(getHighlightedComponent()!=null){getHighlightedComponent().unHover();}
@@ -120,7 +115,7 @@ public class CircuitPanel extends JPanel {
                      //repaintDirtyAreas();
                     repaint();
                     
-                } else if(currentTool.equals(UITool.Wire) 
+                } else if(currentTool.equals("Wire") 
                         && !drawnComponents.isEmpty()
                         && drawnComponents.peek() instanceof Wire){
                     endPoint = Grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
@@ -142,7 +137,7 @@ public class CircuitPanel extends JPanel {
                 // Find the location in the circuit
                 endPoint = Grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
                 
-                if(getCurrentTool().equals(UITool.Select)){
+                if(getCurrentTool().equals("Select")){
                         
                     if(nowDraging){
                         for(SelectableComponent sc: activeComponents){
@@ -191,7 +186,7 @@ public class CircuitPanel extends JPanel {
                     
                     repaint();
 
-                } else if(currentTool.equals(UITool.Wire) 
+                } else if(currentTool.equals("Wire") 
                         && !drawnComponents.isEmpty()){
                    
                     Wire w = (Wire) drawnComponents.peek();
@@ -212,7 +207,7 @@ public class CircuitPanel extends JPanel {
 
             public void mouseClicked(MouseEvent e) {
                 
-                 if (!currentTool.equals(UITool.Wire)){
+                 if (!currentTool.equals("Wire")){
                      
                     // Area we clicking empty space?
                     boolean clickingEmptySpace = true;
@@ -296,7 +291,7 @@ public class CircuitPanel extends JPanel {
                     
                     multipleSelection = false;
 
-                } else if (currentTool.equals(UITool.Wire) 
+                } else if (currentTool.equals("Wire") 
                         && !drawnComponents.isEmpty()){
                     // Has the current wire been fixed?
                     Wire w = (Wire) drawnComponents.peek();
@@ -471,7 +466,7 @@ public class CircuitPanel extends JPanel {
         Grid.draw(g2);
     }
              
-    public void selectTool(UITool tool){
+    public void selectTool(String tool){
         //TODO integrate with netlists
         
         // Remove any temporary components left over
@@ -481,39 +476,32 @@ public class CircuitPanel extends JPanel {
         repaint();
         
         // Create a new non-fixed component
-        switch(tool){
-            case Wire:
-                drawnComponents.push(new Wire());
-                break;
-            case AndGate2Input:
-                drawnComponents.push(new AndGate2Input(endPoint));
-                break;
-            case NandGate2Input:
-                drawnComponents.push(new NandGate2Input(endPoint));
-                break;
-            case AndGate3Input:
-                drawnComponents.push(new AndGate3Input(endPoint));
-                break;
-            case OrGate2Input:
-                drawnComponents.push(new OrGate2Input(endPoint));
-                break;    
-            case NorGate2Input:
-                drawnComponents.push(new NorGate2Input(endPoint));
-                break;    
-            case Input:
-                drawnComponents.push(new Input(endPoint));
-                break;  
-            case LED:
-                drawnComponents.push(new LED(endPoint));
-                break;  
-            default:
-                break;
+        Editor editor = ((CircuitFrame) this.getParentFrame()).getEditor();
+        SelectableComponent sc;
+        try {
+            sc = (SelectableComponent) editor.getNetlistComponent(tool).getConstructor(Point.class).newInstance(endPoint);
+            if(!tool.equals("Select")){
+                drawnComponents.push(sc);
+            }
+        } catch (InstantiationException ex) {
+            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         this.currentTool = tool;            
         
     }
     
-    public UITool getCurrentTool(){
+    public String getCurrentTool(){
         return this.currentTool;
     }
     

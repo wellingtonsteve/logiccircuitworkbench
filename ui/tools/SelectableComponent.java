@@ -25,9 +25,9 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     protected Component component;
     protected SelectionState selectionState = SelectionState.DEFAULT, preHoverState;
-    protected BufferedImage defaultBi;
-    protected BufferedImage selectedBi;
-    protected BufferedImage activeBi;
+    protected static BufferedImage defaultBi;
+    protected static BufferedImage selectedBi;
+    protected static BufferedImage activeBi;
     protected Rectangle boundingBox = null;
     protected boolean fixed = false, wasEverFixed = false; // fixed describes the current state, wasEverFixed indicates whether fixed has ever been true i.e. whether this is a brand new piece or not
     private Point point;
@@ -49,7 +49,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         setLocalPins();
 
     }
-
+    
     public double getRotation() {
        return this.rotation;
     }

@@ -16,10 +16,17 @@ public class CircuitFrame extends JInternalFrame{
 
     private CircuitPanel circuitPanel = new CircuitPanel();
     private JScrollPane jScrollPane2 = new JScrollPane();
+    private Editor editor;
+
+    public Editor getEditor() {
+        return editor;
+    }
     
     public CircuitFrame(final Editor editor){
         
         super();
+        
+        this.editor = editor;
 
         setClosable(true);
 
