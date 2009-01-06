@@ -62,7 +62,7 @@ public class Input extends ImageSelectableComponent{
     @Override
     public String getName(){
         //return getComponent().getType();
-        return "Component.Standard.Button Source";
+        return "Button Source [On/Off]";
     }
 
     @Override

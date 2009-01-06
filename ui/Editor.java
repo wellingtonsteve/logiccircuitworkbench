@@ -49,6 +49,12 @@ public class Editor extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        Options1 = new javax.swing.JPanel();
+        jTextField2 = new javax.swing.JTextField();
+        jComboBox2 = new javax.swing.JComboBox();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        Preview1 = new PreviewPanel(this);
         Toolbar = new javax.swing.JToolBar();
         NewButton = new javax.swing.JButton();
         OpenFileButton = new javax.swing.JButton();
@@ -85,12 +91,7 @@ public class Editor extends javax.swing.JFrame {
         AddLabel = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         ComponentSelectionTree = new javax.swing.JTree();
-        Options = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        Preview = new PreviewPanel(this);
+        Options = new OptionsPanel(this);
         MenuBar = new javax.swing.JMenuBar();
         File = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -112,8 +113,63 @@ public class Editor extends javax.swing.JFrame {
         Help = new javax.swing.JMenu();
         About = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
+        jTextField2.setText(bundle.getString("Editor.jTextField2.text")); // NOI18N
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0ᵒ", "90ᵒ", "180ᵒ", "270ᵒ" }));
+
+        jLabel4.setText(bundle.getString("Editor.jLabel4.text")); // NOI18N
+
+        jLabel5.setForeground(new java.awt.Color(108, 108, 108));
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText(bundle.getString("Editor.jLabel5.text")); // NOI18N
+
+        org.jdesktop.layout.GroupLayout Preview1Layout = new org.jdesktop.layout.GroupLayout(Preview1);
+        Preview1.setLayout(Preview1Layout);
+        Preview1Layout.setHorizontalGroup(
+            Preview1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 148, Short.MAX_VALUE)
+        );
+        Preview1Layout.setVerticalGroup(
+            Preview1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 88, Short.MAX_VALUE)
+        );
+
+        org.jdesktop.layout.GroupLayout Options1Layout = new org.jdesktop.layout.GroupLayout(Options1);
+        Options1.setLayout(Options1Layout);
+        Options1Layout.setHorizontalGroup(
+            Options1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, Options1Layout.createSequentialGroup()
+                .add(Options1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, Options1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(Preview1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, Options1Layout.createSequentialGroup()
+                        .add(jLabel4)
+                        .add(34, 34, 34)
+                        .add(jComboBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, Options1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jLabel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 143, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        Options1Layout.setVerticalGroup(
+            Options1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(Options1Layout.createSequentialGroup()
+                .add(jLabel5)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(Options1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel4)
+                    .add(jComboBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 129, Short.MAX_VALUE)
+                .add(Preview1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(bundle.getString("Editor.title")); // NOI18N
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setMinimumSize(new java.awt.Dimension(750, 510));
@@ -441,59 +497,15 @@ public class Editor extends javax.swing.JFrame {
 
         jSplitPane1.setLeftComponent(jSplitPane3);
 
-        jTextField1.setText(bundle.getString("Editor.jTextField1.text")); // NOI18N
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0ᵒ", "90ᵒ", "180ᵒ", "270ᵒ" }));
-
-        jLabel2.setText(bundle.getString("Editor.jLabel2.text")); // NOI18N
-
-        jLabel3.setForeground(new java.awt.Color(108, 108, 108));
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText(bundle.getString("Editor.jLabel3.text")); // NOI18N
-
-        org.jdesktop.layout.GroupLayout PreviewLayout = new org.jdesktop.layout.GroupLayout(Preview);
-        Preview.setLayout(PreviewLayout);
-        PreviewLayout.setHorizontalGroup(
-            PreviewLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 148, Short.MAX_VALUE)
-        );
-        PreviewLayout.setVerticalGroup(
-            PreviewLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 88, Short.MAX_VALUE)
-        );
-
         org.jdesktop.layout.GroupLayout OptionsLayout = new org.jdesktop.layout.GroupLayout(Options);
         Options.setLayout(OptionsLayout);
         OptionsLayout.setHorizontalGroup(
             OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, OptionsLayout.createSequentialGroup()
-                .add(OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, OptionsLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(Preview, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, OptionsLayout.createSequentialGroup()
-                        .add(jLabel2)
-                        .add(34, 34, 34)
-                        .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, OptionsLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 143, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+            .add(0, 172, Short.MAX_VALUE)
         );
         OptionsLayout.setVerticalGroup(
             OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(OptionsLayout.createSequentialGroup()
-                .add(jLabel3)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel2)
-                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 129, Short.MAX_VALUE)
-                .add(Preview, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .add(0, 312, Short.MAX_VALUE)
         );
 
         jSplitPane1.setBottomComponent(Options);
@@ -700,8 +712,8 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
         
         // Set Options panel (Preview, Component Specific Options etc.)
                       
-        ((PreviewPanel) Preview).setComponentName(componentName);
-        Preview.repaint();
+        ((OptionsPanel) Options).setComponentByName(componentName);
+        Options.repaint();
         
     }
     toggleToolboxButton(InsertComponent);
@@ -918,6 +930,10 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         }
         return null;
     }
+    
+    public OptionsPanel getOptionsPanel(){
+        return (OptionsPanel) Options;
+    }
 
     /**
      * @param args the command line arguments
@@ -960,8 +976,9 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     private javax.swing.JMenuItem Open;
     private javax.swing.JButton OpenFileButton;
     private javax.swing.JPanel Options;
+    private javax.swing.JPanel Options1;
     private javax.swing.JMenuItem Paste;
-    private javax.swing.JPanel Preview;
+    private javax.swing.JPanel Preview1;
     private javax.swing.JMenuItem Redo;
     private javax.swing.JButton RedoButton;
     private javax.swing.JButton RotateLeft;
@@ -990,9 +1007,9 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JComboBox jComboBox2;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
@@ -1002,7 +1019,7 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     private javax.swing.JSlider jSlider1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane3;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 
     private javax.swing.JDialog aboutDialog = null;

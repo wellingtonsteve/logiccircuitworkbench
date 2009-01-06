@@ -55,7 +55,7 @@ public class OrGate2Input extends ImageSelectableComponent{
     @Override
     public String getName(){
         //return getComponent().getType();
-        return "And Gate (2 Input)";
+        return "Or Gate";
     }
 
     @Override

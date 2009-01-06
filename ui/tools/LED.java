@@ -73,7 +73,7 @@ public class LED extends ImageSelectableComponent{
     @Override
     public String getName(){
         //return getComponent().getType();
-        return "LED";
+        return "Light Emitting Diode";
     }
 
     @Override
@@ -98,6 +98,14 @@ public class LED extends ImageSelectableComponent{
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
         if(e != null) { isOn = !isOn; } // To check that this is an activation due to a click, not a selection
+    }
+    
+    public void setValue(boolean isOn){
+        this.isOn = isOn;
+    }
+    
+    public boolean getValue(){
+        return isOn;
     }
     
     @Override
@@ -160,7 +168,7 @@ public class LED extends ImageSelectableComponent{
     }
 
     public void setColour(String colour) {
-        this.colour = colour;
+        this.colour = colour.toLowerCase();
         setActiveImage();
     }
     
