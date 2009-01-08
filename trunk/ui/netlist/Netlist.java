@@ -7,7 +7,7 @@ import ui.tools.SelectableComponent;
  *
  * @author matt
  */
-public abstract class Netlist extends LinkedHashMap<String, Class<? extends SelectableComponent>> {
+public abstract class Netlist extends LinkedHashMap<String, String> {
     
     public Netlist(){
         super();

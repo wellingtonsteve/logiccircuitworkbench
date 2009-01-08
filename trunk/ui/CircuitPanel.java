@@ -54,8 +54,16 @@ public class CircuitPanel extends JPanel {
     private CircuitFrame parentFrame;
     private Editor editor;
 
+    public void addComponent(SelectableComponent sc) {
+        drawnComponents.push(sc);
+    }
+
     public CircuitFrame getParentFrame() {
         return parentFrame;
+    }
+
+    public void removeComponent(SelectableComponent sc) {
+        drawnComponents.remove(sc);
     }
 
     public void setParentFrame(CircuitFrame parentFrame) {
@@ -73,7 +81,7 @@ public class CircuitPanel extends JPanel {
             @SuppressWarnings("static-access")
             public void mouseMoved(MouseEvent e) {
                 
-                if(!nowDraging && !currentTool.equals("Wire")){                
+                if(!nowDraging && !currentTool.equals("Standard.Wire")){                
                     
                     // Find the location in the circuit
                     endPoint = Grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
@@ -115,9 +123,9 @@ public class CircuitPanel extends JPanel {
                     
                     // Repaint only dirty areas
                      //repaintDirtyAreas();
-                    repaint();
+                   repaint();
                     
-                } else if(currentTool.equals("Wire") 
+                } else if(currentTool.equals("Standard.Wire") 
                         && !drawnComponents.isEmpty()
                         && drawnComponents.peek() instanceof Wire){
                     endPoint = Grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
@@ -227,14 +235,13 @@ public class CircuitPanel extends JPanel {
                         // Reset all selections
                         for(SelectableComponent sc: drawnComponents){
                             sc.resetDefaultState();
-
                         }  
                         resetActiveComponents();
 
                         // Fix floating selection
                         if(!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed()){
-                            drawnComponents.peek().moveTo(endPoint, true);                          
-                            selectTool(currentTool);
+                            editor.fixSelection(drawnComponents.peek(), endPoint);
+                            editor.makeToolSelection();
                         }                               
 
                     } else {
@@ -242,6 +249,9 @@ public class CircuitPanel extends JPanel {
                         temporaryComponent.mouseClicked(e); 
                         resetActiveComponents();
                         activeComponents.add(temporaryComponent);
+                        
+                        // Update the current selection options panel
+                       //editor.getOptionsPanel().setComponent(temporaryComponent);
 
                     } 
                     repaint();
@@ -292,7 +302,7 @@ public class CircuitPanel extends JPanel {
                     
                     // Update the current selection options panel
                     if(activeComponents.size()==1){
-                        editor.getOptionsPanel().setComponent(activeComponents.get(0));
+                        //editor.getOptionsPanel().setComponent(activeComponents.get(0));
                     }
                     
                     
@@ -336,6 +346,17 @@ public class CircuitPanel extends JPanel {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    void removeUnFixedComponents() {
+        Stack<SelectableComponent> stack2 = new Stack<SelectableComponent>();
+        for(SelectableComponent sc: drawnComponents){
+            if(sc.isFixed()){
+                stack2.push(sc);
+            }
+        }
+        drawnComponents.clear();
+        drawnComponents.addAll(stack2);
     }
 
     
@@ -451,7 +472,6 @@ public class CircuitPanel extends JPanel {
                 g2.fillRect(i, j, 1, 1);
             }
         }
-                
         // Draw previous components
         for(SelectableComponent sc: drawnComponents){
             g2.translate(-sc.getCentre().x, -sc.getCentre().y);
@@ -474,7 +494,6 @@ public class CircuitPanel extends JPanel {
     }
              
     public void selectTool(String tool){
-        //TODO integrate with netlists
         
         // Remove any temporary components left over
         if(!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed()){
@@ -483,22 +502,25 @@ public class CircuitPanel extends JPanel {
         repaint();
         
         // Create a new non-fixed component
-        SelectableComponent sc;
+        SelectableComponent newComponent;
         try {
-            sc = (SelectableComponent) editor.getNetlistComponent(tool).getConstructor(Point.class).newInstance(endPoint);
+            //Class<SelectableComponent> clazz = editor.getNetlistComponent(tool);
+            //newComponent = clazz.getConstructor(Point.class).newInstance(endPoint);
+            newComponent = editor.getOptionsPanel().getSelectableComponent();
             if(!tool.equals("Select")){
-                drawnComponents.push(sc);
+                drawnComponents.push(newComponent);
+                //drawnComponents.push(new ui.tools.AndGate2Input(endPoint));
             }
-        } catch (InstantiationException ex) {
-            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IllegalArgumentException ex) {
+//            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (InvocationTargetException ex) {
+//            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (NoSuchMethodException ex) {
+//            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
             Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
         }

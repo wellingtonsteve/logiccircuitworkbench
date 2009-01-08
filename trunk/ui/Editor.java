@@ -7,8 +7,11 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Point;
 import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
@@ -687,11 +690,11 @@ public class Editor extends javax.swing.JFrame {
     
 private void SelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SelectionMouseClicked
     toggleToolboxButton(Selection);
-    getActiveCircuit().selectTool("Select");
+    //getActiveCircuit().selectTool("Select");
 }//GEN-LAST:event_SelectionMouseClicked
 
 private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WireMouseClicked
-    getActiveCircuit().selectTool("Components.Standard.Wire");
+    //getActiveCircuit().selectTool("Components.Standard.Wire");
     toggleToolboxButton(Wire);
 }//GEN-LAST:event_WireMouseClicked
 
@@ -704,25 +707,21 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
             componentName += nameArray[i] + ".";
         }
         componentName = componentName.substring(0, componentName.length() - 1);
-
-        // Case selection on components
-        if(getActiveCircuit() != null){
-            getActiveCircuit().selectTool(componentName);
-        }
         
         // Set Options panel (Preview, Component Specific Options etc.)
-                      
         ((OptionsPanel) Options).setComponentByName(componentName);
         Options.repaint();
+               
+        // Update the circuit
+        makeToolSelection();
         
+        toggleToolboxButton(InsertComponent);
     }
-    toggleToolboxButton(InsertComponent);
+    
 }//GEN-LAST:event_ComponentSelectionTreeValueChanged
 
 private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertComponentMouseClicked
-    toggleToolboxButton(InsertComponent);
-    
-    
+    toggleToolboxButton(InsertComponent);    
 }//GEN-LAST:event_InsertComponentMouseClicked
 
 private void UndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UndoActionPerformed
@@ -921,14 +920,38 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         this.netlists.add(nl);
     }
     
-    public Class<? extends SelectableComponent> getNetlistComponent(String key){
-        key = key.substring(11); //Remove "Components." from begining
+    public Class<SelectableComponent> getNetlistComponent(String key){
+        //Remove "Components." from begining
+        if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
+            key = key.substring(11); 
+        }
         for(Netlist nl: netlists){
             if(nl.containsKey(key)){
-                return (Class<? extends SelectableComponent>) nl.get(key);
+                try {
+                    return (Class<SelectableComponent>) Class.forName(nl.get(key));
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         return null;
+    }
+    
+    /**
+     * Get the current selection from the options panel and add the component to the current active circuit
+     */
+    public void makeToolSelection(){
+        circuitPanel.removeUnFixedComponents();
+        cmdHist.doCommand(new AddComponentCommand(((OptionsPanel) Options).getSelectableComponent()));
+    }
+    
+    /**
+     * Fix the current component to the circuit
+     * 
+     * @param endPoint  the point at which to fix the component
+     */
+    public void fixSelection(SelectableComponent old, Point endPoint) {
+        cmdHist.doCommand(new FixComponentCommand(old, ((OptionsPanel) Options).getSelectableComponent(), endPoint));
     }
     
     public OptionsPanel getOptionsPanel(){
