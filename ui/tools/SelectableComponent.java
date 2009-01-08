@@ -49,7 +49,9 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         setLocalPins();
 
     }
-    
+
+    public abstract SelectableComponent copy();
+   
     public double getRotation() {
        return this.rotation;
     }
@@ -254,4 +256,5 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     public boolean hasLabel(){
         return !label.isEmpty() || !label.equals("");
     }
+    
 }

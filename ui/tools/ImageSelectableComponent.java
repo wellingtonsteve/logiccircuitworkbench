@@ -4,8 +4,10 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComponent;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -142,6 +144,31 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
         } catch (SAXException ex) {
             Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public SelectableComponent copy() {        
+       SelectableComponent copy = null;
+        try {
+            copy = getClass().getConstructor(Point.class).newInstance((Point) getOrigin().clone());
+        } catch (InstantiationException ex) {
+            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+        }
+           
+       copy.setSelectionState(selectionState);
+       copy.setLabel(getLabel());
+       copy.setRotation(rotation);
+       
+       return copy;
     }
     
 }

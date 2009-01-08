@@ -7,7 +7,7 @@ import ui.Editor;
  *
  * @author matt
  */
-public abstract class Command {
+public abstract class Command implements Cloneable{
     protected CircuitPanel activeCircuit;
     protected boolean canUndo = false;
     

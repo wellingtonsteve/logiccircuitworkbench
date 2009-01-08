@@ -593,4 +593,16 @@ public class Wire extends SelectableComponent {
             Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    @Override
+    public SelectableComponent copy() {
+        Wire copy = new Wire((Point)getOrigin().clone());
+        
+        for(Point p: waypoints){
+            copy.addWaypoint(p);
+        }
+        copy.setEndPoint(endPoint);
+        
+        return copy;
+    }
 }

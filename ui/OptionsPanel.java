@@ -5,15 +5,12 @@
 
 package ui;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import ui.tools.SelectableComponent;
 import java.awt.Point;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
@@ -105,13 +102,19 @@ public class OptionsPanel extends JPanel{
         labelText.setText(sc.getLabel());
     }
 
+    public SelectableComponent getSelectableComponent(){
+        return sc.copy();
+    }
+    
     public void setComponentByName(String componentName){
         
         titleLabel.setText(titleNew);
         
-        if(componentName!=null){
+        if(componentName!=null && editor!=null){
             try {
-                sc = (SelectableComponent) editor.getNetlistComponent(componentName).getConstructor(Point.class).newInstance((Point)null);
+                Class<SelectableComponent> clazz = editor.getNetlistComponent(componentName);
+                sc = clazz.getConstructor(Point.class).newInstance(new Point(0,0));
+                //sc = (SelectableComponent) editor.getNetlistComponent(componentName).getConstructor(Point.class).newInstance(new Point(0,0));
             } catch (InstantiationException ex) {
                 Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
@@ -139,7 +142,7 @@ public class OptionsPanel extends JPanel{
             ((Input) sc).setIsOn((boolean) sourceIsOn.isSelected());
         }
         
-        Preview.setComponent(sc);
+        Preview.setComponent(sc.copy());
         setLayoutManager();
     }
     
