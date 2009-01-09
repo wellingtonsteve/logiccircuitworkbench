@@ -10,6 +10,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.transform.sax.TransformerHandler;
 import sim.Component;
 import ui.Labeled;
@@ -21,13 +23,13 @@ import ui.grid.Pin;
  *
  * @author Matt
  */
-public abstract class SelectableComponent implements MouseMotionListener, MouseListener, Labeled {
+public abstract class SelectableComponent implements MouseMotionListener, MouseListener, Labeled, Cloneable {
     
     protected Component component;
     protected SelectionState selectionState = SelectionState.DEFAULT, preHoverState;
-    protected static BufferedImage defaultBi;
-    protected static BufferedImage selectedBi;
-    protected static BufferedImage activeBi;
+    protected BufferedImage defaultBi;
+    protected BufferedImage selectedBi;
+    protected BufferedImage activeBi;
     protected Rectangle boundingBox = null;
     protected boolean fixed = false, wasEverFixed = false; // fixed describes the current state, wasEverFixed indicates whether fixed has ever been true i.e. whether this is a brand new piece or not
     private Point point;
@@ -50,7 +52,19 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
 
     }
 
-    public abstract SelectableComponent copy();
+    public SelectableComponent copy(){
+        try {
+            return (SelectableComponent) this.clone();
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(SelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    @Override
+    public Object clone() throws CloneNotSupportedException{
+        return super.clone();
+    }
    
     public double getRotation() {
        return this.rotation;
@@ -124,7 +138,6 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     public String getName(){
-        //return component.getType();
         return "TestName";
     }
     
@@ -178,9 +191,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     public abstract void mousePressed(MouseEvent e);
     public abstract void mouseReleased(MouseEvent e);
     public abstract void mouseDraggedDropped(MouseEvent e);
-    
-    public abstract void draw(Graphics2D g, javax.swing.JComponent parent);
-    
+       
     public  Collection<Pin> getGlobalPins(){
         return globalPins;
     }
