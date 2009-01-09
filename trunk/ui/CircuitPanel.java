@@ -54,7 +54,6 @@ public class CircuitPanel extends JPanel {
     private Editor editor;
 
     public void addComponent(SelectableComponent sc) {
-        Grid.translateComponent(sc.getOrigin().x, sc.getOrigin().y, sc, true);
         drawnComponents.push(sc);
     }
 

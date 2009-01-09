@@ -84,7 +84,7 @@ public class CircuitFrame extends JInternalFrame{
             }
         });
         
-        setBounds(0, 0, 780, 600);
+        setBounds(180, 0, 780, 600);
         
         //setBounds(170, 0, 780, 600);
         //DesktopPane.add(circuitFrame, javax.swing.JLayeredPane.DEFAULT_LAYER);

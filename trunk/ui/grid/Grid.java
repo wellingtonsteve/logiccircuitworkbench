@@ -1,5 +1,6 @@
 package ui.grid;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -17,6 +18,20 @@ public class Grid {
     
     private static HashMap<Point,GridObject> grid = new HashMap<Point,GridObject>();
 
+    static {
+        // Add invalid boundary on topmost edge        
+        for(int i = 0; i<UIConstants.GRID_STANDARD_WIDTH; i++){
+            Point p = new Point(i * UIConstants.GRID_DOT_SPACING, 1);
+            grid.put(p, new InvalidPoint(p, null));    
+        }
+
+        // Add invalid boundary on leftmost edge        
+        for(int j = 0; j<UIConstants.GRID_STANDARD_HEIGHT; j++){
+            Point p = new Point(1, j * UIConstants.GRID_DOT_SPACING);
+            grid.put(p, new InvalidPoint(p, null));    
+        }
+    }
+    
     
     public static ConnectionPoint getConnectionPoint(Point p){
         GridObject go = getGridObjectAt(p);

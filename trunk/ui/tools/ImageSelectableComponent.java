@@ -136,7 +136,7 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     public void draw(Graphics2D g) {
         super.draw(g); // Draw labels
         g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-        g.drawImage(getCurrentImage(), (int)getOrigin().getX(), (int)getOrigin().getY(), null);
+        g.drawImage(getCurrentImage(), getOrigin().x, getOrigin().y, null);
         g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
     }
             
