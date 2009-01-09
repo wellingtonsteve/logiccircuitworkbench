@@ -74,7 +74,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         return selectionState;
     }
 
-    protected void setSelectionState(SelectionState selectiontype) {
+    public void setSelectionState(SelectionState selectiontype) {
         this.selectionState = selectiontype;
     }
     
@@ -248,6 +248,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     public void draw(Graphics2D g){
         if(hasLabel()){
+            g.setColor(UIConstants.LABEL_TEXT_COLOUR);
             g.drawString(getLabel(), getOrigin().x+UIConstants.LABEL_COMPONENT_X_OFFSET, getOrigin().y+UIConstants.LABEL_COMPONENT_Y_OFFSET);
         }
     }

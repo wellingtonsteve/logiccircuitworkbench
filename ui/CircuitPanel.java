@@ -195,7 +195,7 @@ public class CircuitPanel extends JPanel {
                     
                     repaint();
 
-                } else if(currentTool.equals("Wire") 
+                } else if(currentTool.equals("Standard.Wire") 
                         && !drawnComponents.isEmpty()){
                    
                     Wire w = (Wire) drawnComponents.peek();
@@ -216,7 +216,7 @@ public class CircuitPanel extends JPanel {
 
             public void mouseClicked(MouseEvent e) {
                 
-                 if (!currentTool.equals("Wire")){
+                 if (!currentTool.equals("Standard.Wire")){
                      
                     // Area we clicking empty space?
                     boolean clickingEmptySpace = true;
@@ -250,7 +250,7 @@ public class CircuitPanel extends JPanel {
                         activeComponents.add(temporaryComponent);
                         
                         // Update the current selection options panel
-                       //editor.getOptionsPanel().setComponent(temporaryComponent);
+                        editor.getOptionsPanel().setComponent(temporaryComponent);
 
                     } 
                     repaint();
@@ -301,13 +301,13 @@ public class CircuitPanel extends JPanel {
                     
                     // Update the current selection options panel
                     if(activeComponents.size()==1){
-                        //editor.getOptionsPanel().setComponent(activeComponents.get(0));
+                        editor.getOptionsPanel().setComponent(activeComponents.get(0));
                     }
                     
                     
                     multipleSelection = false;
 
-                } else if (currentTool.equals("Wire") 
+                } else if (currentTool.equals("Standard.Wire") 
                         && !drawnComponents.isEmpty()){
                     // Has the current wire been fixed?
                     Wire w = (Wire) drawnComponents.peek();
@@ -356,6 +356,7 @@ public class CircuitPanel extends JPanel {
         }
         drawnComponents.clear();
         drawnComponents.addAll(stack2);
+        repaint();
     }
 
     
@@ -501,27 +502,11 @@ public class CircuitPanel extends JPanel {
         repaint();
         
         // Create a new non-fixed component
-        SelectableComponent newComponent;
-        try {
-            //Class<SelectableComponent> clazz = editor.getNetlistComponent(tool);
-            //newComponent = clazz.getConstructor(Point.class).newInstance(endPoint);
-            newComponent = editor.getOptionsPanel().getSelectableComponent();
-            if(!tool.equals("Select")){
-                drawnComponents.push(newComponent);
-                //drawnComponents.push(new ui.tools.AndGate2Input(endPoint));
-            }
-//        } catch (InstantiationException ex) {
-//            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (IllegalArgumentException ex) {
-//            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (InvocationTargetException ex) {
-//            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (NoSuchMethodException ex) {
-//            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+        if(tool.equals("Standard.Wire")){
+            drawnComponents.push(new Wire());
+        } else if(!tool.equals("Select")){
+            SelectableComponent newComponent = editor.getOptionsPanel().getSelectableComponent();
+            drawnComponents.push(newComponent);
         }
 
         this.currentTool = tool;            

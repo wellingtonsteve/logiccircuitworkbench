@@ -18,6 +18,7 @@ public class InvalidPoint extends GridObject {
         this.parent = parent;
     }
 
+    @Override
     public void draw(Graphics2D g2) {
         if(UIConstants.SHOW_CONNECTION_POINTS){
             g2.drawLine(x-2, y-2, x+2, y+2);
