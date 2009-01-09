@@ -25,7 +25,7 @@ public class UIConstants {
               /* the dash pattern */new float[] { 8.0f, 8.0f },
               /* the dash phase */0.0f); /* on 8, off 8*/
     
-    public static final boolean SHOW_CONNECTION_POINTS = true;
+    public static final boolean SHOW_CONNECTION_POINTS = false;
     public static final Color CONNECTION_POINT_COLOUR = Color.RED;
     public static Stroke CONNECTED_POINT_STROKE = new BasicStroke(2.0f); 
     public static final boolean DO_SYSTEM_BEEP = true;
@@ -33,8 +33,9 @@ public class UIConstants {
     
     public static int LABEL_CONNECTION_POINT_X_OFFSET = -3;
     public static int LABEL_CONNECTION_POINT_Y_OFFSET = -3;
-    public static int LABEL_COMPONENT_X_OFFSET = 0;
-    public static int LABEL_COMPONENT_Y_OFFSET = 0;
+    public static int LABEL_COMPONENT_X_OFFSET = 10;
+    public static int LABEL_COMPONENT_Y_OFFSET = 10;
+    public static Color LABEL_TEXT_COLOUR = Color.BLACK;
     static boolean DO_OFFSCREEN_DRAWING_TEST = true;
 
     public static void beep(){

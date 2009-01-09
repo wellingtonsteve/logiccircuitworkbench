@@ -86,13 +86,7 @@ public class LED extends ImageSelectableComponent{
              
         localPins.add(in1);        
     }
-    
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        super.mouseClicked(e);
-        if(e != null) { isOn = !isOn; } // To check that this is an activation due to a click, not a selection
-    }
-    
+        
     public void setValue(boolean isOn){
         this.isOn = isOn;
     }

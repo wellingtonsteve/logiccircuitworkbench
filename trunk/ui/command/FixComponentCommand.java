@@ -16,23 +16,20 @@ import ui.tools.SelectableComponent;
 public class FixComponentCommand extends Command {
     
     private SelectableComponent sc;
-    private SelectableComponent old;
     private Point endPoint;
 
-    public FixComponentCommand(SelectableComponent old, SelectableComponent sc, Point endPoint){
+    public FixComponentCommand(SelectableComponent sc, Point endPoint){
         this.sc = sc;
-        this.old = old;
         this.endPoint = endPoint;
     }
     
     @Override
     protected void perform(Editor editor) {
         if(activeCircuit != null){
-            //activeCircuit.removeComponent(old);
-            old.moveTo(endPoint, true);
-            //sc.moveTo(endPoint,true);
+            sc.moveTo(endPoint, true);
+            sc.setLabel(editor.getOptionsPanel().getLabelTextbox().getText());
             editor.repaint();
-            //activeCircuit.addComponent(sc);
+            editor.getOptionsPanel().repaint();
             canUndo = true;
         }
     }
@@ -40,9 +37,9 @@ public class FixComponentCommand extends Command {
     @Override
     protected void undoEffect(Editor editor) {
         if(activeCircuit != null){
-            activeCircuit.removeComponent(sc);
             sc.moveTo(endPoint, false);
-            activeCircuit.addComponent(old);
+            editor.repaint();
+            editor.getOptionsPanel().repaint();
             canUndo = false;
         }
     }

@@ -44,6 +44,10 @@ public class Editor extends javax.swing.JFrame {
         newCircuit();
     }
 
+    public CommandHistory getCommandHistory() {
+        return cmdHist;
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -59,6 +63,23 @@ public class Editor extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         Preview1 = new PreviewPanel(this);
+        Toolbox1 = new javax.swing.JInternalFrame();
+        jSplitPane2 = new javax.swing.JSplitPane();
+        jSplitPane4 = new javax.swing.JSplitPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        ComponentSelectionTree1 = new javax.swing.JTree();
+        jPanel5 = new javax.swing.JPanel();
+        Selection1 = new javax.swing.JButton();
+        Wire3 = new javax.swing.JButton();
+        Wire4 = new javax.swing.JButton();
+        Wire5 = new javax.swing.JButton();
+        RotateLeft1 = new javax.swing.JButton();
+        RotateRght1 = new javax.swing.JButton();
+        jButton22 = new javax.swing.JButton();
+        jButton23 = new javax.swing.JButton();
+        InsertComponent1 = new javax.swing.JButton();
+        AddLabel1 = new javax.swing.JButton();
+        Options2 = new OptionsPanel(this);
         Toolbar = new javax.swing.JToolBar();
         NewButton = new javax.swing.JButton();
         OpenFileButton = new javax.swing.JButton();
@@ -80,8 +101,6 @@ public class Editor extends javax.swing.JFrame {
         MainScrollPane = new javax.swing.JScrollPane();
         DesktopPane = new ScrollableDesktop();
         Toolbox = new javax.swing.JInternalFrame();
-        jSplitPane1 = new javax.swing.JSplitPane();
-        jSplitPane3 = new javax.swing.JSplitPane();
         jPanel4 = new javax.swing.JPanel();
         Selection = new javax.swing.JButton();
         Wire = new javax.swing.JButton();
@@ -171,6 +190,193 @@ public class Editor extends javax.swing.JFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 129, Short.MAX_VALUE)
                 .add(Preview1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+        );
+
+        Toolbox1.setClosable(true);
+        Toolbox1.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        Toolbox1.setIconifiable(true);
+        Toolbox1.setMaximizable(true);
+        Toolbox1.setResizable(true);
+        Toolbox1.setTitle(bundle.getString("Editor.Toolbox1.title")); // NOI18N
+        Toolbox1.setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/system-run.png"))); // NOI18N
+        Toolbox1.setPreferredSize(new java.awt.Dimension(163, 600));
+        Toolbox1.setVisible(true);
+
+        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        jSplitPane4.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        ComponentSelectionTree1.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                ComponentSelectionTree1ValueChanged(evt);
+            }
+        });
+        ComponentSelectionTree.setModel(getTreeValues());
+        jScrollPane2.setViewportView(ComponentSelectionTree1);
+
+        jSplitPane4.setTopComponent(jScrollPane2);
+
+        jPanel5.setLayout(new java.awt.GridLayout(3, 4));
+
+        Selection1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_select.png"))); // NOI18N
+        Selection1.setText(bundle.getString("Editor.Selection1.text")); // NOI18N
+        Selection1.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        Selection1.setMaximumSize(new java.awt.Dimension(26, 28));
+        Selection1.setMinimumSize(new java.awt.Dimension(26, 28));
+        Selection1.setPreferredSize(new java.awt.Dimension(26, 28));
+        Selection1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Selection1MouseClicked(evt);
+            }
+        });
+        jPanel5.add(Selection1);
+
+        Wire3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
+        Wire3.setText(bundle.getString("Editor.Wire3.text")); // NOI18N
+        Wire3.setToolTipText(bundle.getString("Editor.Wire3.toolTipText")); // NOI18N
+        Wire3.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        Wire3.setMaximumSize(new java.awt.Dimension(26, 28));
+        Wire3.setMinimumSize(new java.awt.Dimension(26, 28));
+        Wire3.setPreferredSize(new java.awt.Dimension(26, 28));
+        Wire3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Wire3MouseClicked(evt);
+            }
+        });
+        jPanel5.add(Wire3);
+
+        Wire4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
+        Wire4.setText(bundle.getString("Editor.Wire4.text")); // NOI18N
+        Wire4.setToolTipText(bundle.getString("Editor.Wire4.toolTipText")); // NOI18N
+        Wire4.setEnabled(false);
+        Wire4.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        Wire4.setMaximumSize(new java.awt.Dimension(26, 28));
+        Wire4.setMinimumSize(new java.awt.Dimension(26, 28));
+        Wire4.setPreferredSize(new java.awt.Dimension(26, 28));
+        Wire4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Wire4MouseClicked(evt);
+            }
+        });
+        jPanel5.add(Wire4);
+
+        Wire5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
+        Wire5.setText(bundle.getString("Editor.Wire5.text")); // NOI18N
+        Wire5.setToolTipText(bundle.getString("Editor.Wire5.toolTipText")); // NOI18N
+        Wire5.setEnabled(false);
+        Wire5.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        Wire5.setMaximumSize(new java.awt.Dimension(26, 28));
+        Wire5.setMinimumSize(new java.awt.Dimension(26, 28));
+        Wire5.setPreferredSize(new java.awt.Dimension(26, 28));
+        Wire5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Wire5MouseClicked(evt);
+            }
+        });
+        jPanel5.add(Wire5);
+
+        RotateLeft1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-left.png"))); // NOI18N
+        RotateLeft1.setText(bundle.getString("Editor.RotateLeft1.text")); // NOI18N
+        RotateLeft1.setFocusable(false);
+        RotateLeft1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        RotateLeft1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        RotateLeft1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                RotateLeft1MouseClicked(evt);
+            }
+        });
+        jPanel5.add(RotateLeft1);
+
+        RotateRght1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
+        RotateRght1.setText(bundle.getString("Editor.RotateRght1.text")); // NOI18N
+        RotateRght1.setFocusable(false);
+        RotateRght1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        RotateRght1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        RotateRght1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                RotateRght1MouseClicked(evt);
+            }
+        });
+        jPanel5.add(RotateRght1);
+
+        jButton22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
+        jButton22.setText(bundle.getString("Editor.jButton22.text")); // NOI18N
+        jButton22.setEnabled(false);
+        jButton22.setFocusable(false);
+        jButton22.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton22.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jPanel5.add(jButton22);
+
+        jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
+        jButton23.setText(bundle.getString("Editor.jButton23.text")); // NOI18N
+        jButton23.setEnabled(false);
+        jButton23.setFocusable(false);
+        jButton23.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton23.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jPanel5.add(jButton23);
+
+        InsertComponent1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-object.png"))); // NOI18N
+        InsertComponent1.setText(bundle.getString("Editor.InsertComponent1.text")); // NOI18N
+        InsertComponent1.setFocusable(false);
+        InsertComponent1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        InsertComponent1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        InsertComponent1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                InsertComponent1MouseClicked(evt);
+            }
+        });
+        jPanel5.add(InsertComponent1);
+
+        AddLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-text.png"))); // NOI18N
+        AddLabel1.setText(bundle.getString("Editor.AddLabel1.text")); // NOI18N
+        AddLabel1.setFocusable(false);
+        AddLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        AddLabel1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        AddLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                AddLabel1MouseClicked(evt);
+            }
+        });
+        jPanel5.add(AddLabel1);
+
+        jSplitPane4.setLeftComponent(jPanel5);
+
+        jSplitPane2.setTopComponent(jSplitPane4);
+
+        org.jdesktop.layout.GroupLayout Options2Layout = new org.jdesktop.layout.GroupLayout(Options2);
+        Options2.setLayout(Options2Layout);
+        Options2Layout.setHorizontalGroup(
+            Options2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 170, Short.MAX_VALUE)
+        );
+        Options2Layout.setVerticalGroup(
+            Options2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 434, Short.MAX_VALUE)
+        );
+
+        jSplitPane2.setBottomComponent(Options2);
+
+        org.jdesktop.layout.GroupLayout Toolbox1Layout = new org.jdesktop.layout.GroupLayout(Toolbox1.getContentPane());
+        Toolbox1.getContentPane().setLayout(Toolbox1Layout);
+        Toolbox1Layout.setHorizontalGroup(
+            Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jSplitPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 170, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 170, Short.MAX_VALUE))
+            .add(Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 170, Short.MAX_VALUE))
+            .add(Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 170, Short.MAX_VALUE))
+        );
+        Toolbox1Layout.setVerticalGroup(
+            Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 574, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 574, Short.MAX_VALUE))
+            .add(Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 574, Short.MAX_VALUE))
+            .add(Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(0, 574, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -359,11 +565,7 @@ public class Editor extends javax.swing.JFrame {
         Toolbox.setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/system-run.png"))); // NOI18N
         Toolbox.setPreferredSize(new java.awt.Dimension(163, 600));
         Toolbox.setVisible(true);
-
-        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane1.setResizeWeight(0.5);
-
-        jSplitPane3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        Toolbox.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel4.setLayout(new java.awt.GridLayout(3, 4));
 
@@ -488,7 +690,7 @@ public class Editor extends javax.swing.JFrame {
         });
         jPanel4.add(AddLabel);
 
-        jSplitPane3.setLeftComponent(jPanel4);
+        Toolbox.getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 170, -1));
 
         ComponentSelectionTree.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
@@ -498,9 +700,7 @@ public class Editor extends javax.swing.JFrame {
         ComponentSelectionTree.setModel(getTreeValues());
         jScrollPane1.setViewportView(ComponentSelectionTree);
 
-        jSplitPane3.setBottomComponent(jScrollPane1);
-
-        jSplitPane1.setLeftComponent(jSplitPane3);
+        Toolbox.getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 104, 170, 220));
 
         org.jdesktop.layout.GroupLayout OptionsLayout = new org.jdesktop.layout.GroupLayout(Options);
         Options.setLayout(OptionsLayout);
@@ -510,33 +710,10 @@ public class Editor extends javax.swing.JFrame {
         );
         OptionsLayout.setVerticalGroup(
             OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 217, Short.MAX_VALUE)
+            .add(0, 250, Short.MAX_VALUE)
         );
 
-        jSplitPane1.setBottomComponent(Options);
-
-        org.jdesktop.layout.GroupLayout ToolboxLayout = new org.jdesktop.layout.GroupLayout(Toolbox.getContentPane());
-        Toolbox.getContentPane().setLayout(ToolboxLayout);
-        ToolboxLayout.setHorizontalGroup(
-            ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-            .add(ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 170, Short.MAX_VALUE))
-            .add(ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 170, Short.MAX_VALUE))
-            .add(ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 170, Short.MAX_VALUE))
-        );
-        ToolboxLayout.setVerticalGroup(
-            ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)
-            .add(ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 574, Short.MAX_VALUE))
-            .add(ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 574, Short.MAX_VALUE))
-            .add(ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 574, Short.MAX_VALUE))
-        );
+        Toolbox.getContentPane().add(Options, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 324, 170, 250));
 
         Toolbox.setBounds(0, 0, 180, 600);
         DesktopPane.add(Toolbox, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -692,12 +869,12 @@ public class Editor extends javax.swing.JFrame {
     
 private void SelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SelectionMouseClicked
     toggleToolboxButton(Selection);
-    //getActiveCircuit().selectTool("Select");
+    getActiveCircuit().selectTool("Select");
 }//GEN-LAST:event_SelectionMouseClicked
 
 private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WireMouseClicked
-    //getActiveCircuit().selectTool("Components.Standard.Wire");
     toggleToolboxButton(Wire);
+    getActiveCircuit().selectTool("Standard.Wire");
 }//GEN-LAST:event_WireMouseClicked
 
 private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeValueChanged
@@ -710,16 +887,19 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
         }
         componentName = componentName.substring(0, componentName.length() - 1);
         
-        // Set Options panel (Preview, Component Specific Options etc.)
-        ((OptionsPanel) Options).setComponentByName(componentName);
-        Options.repaint();
-               
-        // Update the circuit
-        makeToolSelection();
-        
-        toggleToolboxButton(InsertComponent);
-        
-        repaint();
+        if(isValidComponent(componentName)){
+            // Set Options panel (Preview, Component Specific Options etc.)
+            ((OptionsPanel) Options).setComponentByName(componentName);
+            Options.setVisible(true);
+            Options.repaint();
+
+            // Update the circuit
+            makeToolSelection();
+
+            toggleToolboxButton(InsertComponent);
+
+            repaint();
+        }        
     }
     
 }//GEN-LAST:event_ComponentSelectionTreeValueChanged
@@ -845,6 +1025,42 @@ private void AboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
 private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NewButtonMouseClicked
     cmdHist.doCommand(new NewCircuitCommand());
 }//GEN-LAST:event_NewButtonMouseClicked
+
+private void ComponentSelectionTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_ComponentSelectionTree1ValueChanged
+// TODO add your handling code here:
+}//GEN-LAST:event_ComponentSelectionTree1ValueChanged
+
+private void Selection1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Selection1MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_Selection1MouseClicked
+
+private void Wire3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire3MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_Wire3MouseClicked
+
+private void Wire4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire4MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_Wire4MouseClicked
+
+private void Wire5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire5MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_Wire5MouseClicked
+
+private void RotateLeft1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateLeft1MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_RotateLeft1MouseClicked
+
+private void RotateRght1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateRght1MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_RotateRght1MouseClicked
+
+private void InsertComponent1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertComponent1MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_InsertComponent1MouseClicked
+
+private void AddLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddLabel1MouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_AddLabel1MouseClicked
     
     private void toggleToolboxButton(JButton b){
         // Reset Selections
@@ -854,6 +1070,12 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 
         // Select this button
         b.setSelected(true);
+        
+        // Remove floating components
+        if(!b.equals(InsertComponent)){
+            Options.setVisible(false);
+            circuitPanel.removeUnFixedComponents();
+        }
     }
 
     public CircuitPanel getActiveCircuit() {
@@ -924,6 +1146,19 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         this.netlists.add(nl);
     }
     
+    private boolean isValidComponent(String  key){
+        //Remove "Components." from begining
+        if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
+            key = key.substring(11); 
+        }
+        for(Netlist nl: netlists){
+            if(nl.containsKey(key)){
+                return true;
+            }
+        }        
+        return false;
+    }
+    
     @SuppressWarnings("unchecked")
     public Class<? extends SelectableComponent> getNetlistComponent(String key){
         //Remove "Components." from begining
@@ -955,7 +1190,7 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
      * @param endPoint  the point at which to fix the component
      */
     public void fixSelection(SelectableComponent old, Point endPoint) {
-        cmdHist.doCommand(new FixComponentCommand(old, ((OptionsPanel) Options).getSelectableComponent(), endPoint));
+        cmdHist.doCommand(new FixComponentCommand(old, endPoint));
     }
     
     public OptionsPanel getOptionsPanel(){
@@ -986,8 +1221,10 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem About;
     private javax.swing.JButton AddLabel;
+    private javax.swing.JButton AddLabel1;
     private javax.swing.JButton ClearCircuit;
     private javax.swing.JTree ComponentSelectionTree;
+    private javax.swing.JTree ComponentSelectionTree1;
     private javax.swing.JMenuItem Copy;
     private javax.swing.JMenuItem Cut;
     private javax.swing.JMenuItem Delete;
@@ -997,6 +1234,7 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     private javax.swing.JMenu File;
     private javax.swing.JMenu Help;
     private javax.swing.JButton InsertComponent;
+    private javax.swing.JButton InsertComponent1;
     private javax.swing.JScrollPane MainScrollPane;
     private javax.swing.JMenuBar MenuBar;
     private javax.swing.JButton NewButton;
@@ -1004,33 +1242,43 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     private javax.swing.JButton OpenFileButton;
     private javax.swing.JPanel Options;
     private javax.swing.JPanel Options1;
+    private javax.swing.JPanel Options2;
     private javax.swing.JMenuItem Paste;
     private javax.swing.JPanel Preview1;
     private javax.swing.JMenuItem Redo;
     private javax.swing.JButton RedoButton;
     private javax.swing.JButton RotateLeft;
+    private javax.swing.JButton RotateLeft1;
     private javax.swing.JButton RotateRght;
+    private javax.swing.JButton RotateRght1;
     private javax.swing.JMenuItem Save;
     private javax.swing.JMenuItem SaveAs;
     private javax.swing.JButton SaveAsButton;
     private javax.swing.JButton SaveButton;
     private javax.swing.JMenuItem SelectAll;
     private javax.swing.JButton Selection;
+    private javax.swing.JButton Selection1;
     private javax.swing.JMenu Simulation;
     private javax.swing.JToolBar Toolbar;
     private javax.swing.JInternalFrame Toolbox;
+    private javax.swing.JInternalFrame Toolbox1;
     private javax.swing.JMenuItem Undo;
     private javax.swing.JButton UndoButton;
     private javax.swing.JMenu Window;
     private javax.swing.JButton Wire;
     private javax.swing.JButton Wire1;
     private javax.swing.JButton Wire2;
+    private javax.swing.JButton Wire3;
+    private javax.swing.JButton Wire4;
+    private javax.swing.JButton Wire5;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton21;
+    private javax.swing.JButton jButton22;
+    private javax.swing.JButton jButton23;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
@@ -1038,14 +1286,16 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JSlider jSlider1;
-    private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JSplitPane jSplitPane3;
+    private javax.swing.JSplitPane jSplitPane2;
+    private javax.swing.JSplitPane jSplitPane4;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 
