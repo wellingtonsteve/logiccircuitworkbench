@@ -30,6 +30,8 @@ public class FixComponentCommand extends Command {
         if(activeCircuit != null){
             //activeCircuit.removeComponent(old);
             old.moveTo(endPoint, true);
+            //sc.moveTo(endPoint,true);
+            editor.repaint();
             //activeCircuit.addComponent(sc);
             canUndo = true;
         }

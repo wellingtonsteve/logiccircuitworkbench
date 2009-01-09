@@ -944,7 +944,7 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
      */
     public void makeToolSelection(){
         if(circuitPanel != null){
-            //circuitPanel.removeUnFixedComponents();
+            circuitPanel.removeUnFixedComponents();
             cmdHist.doCommand(new AddComponentCommand(((OptionsPanel) Options).getSelectableComponent()));
         }
     }

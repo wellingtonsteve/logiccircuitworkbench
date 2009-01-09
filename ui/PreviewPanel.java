@@ -8,7 +8,6 @@ package ui;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
-import ui.netlist.standard.LED;
 import ui.tools.SelectableComponent;
 
 /**
@@ -29,14 +28,14 @@ public class PreviewPanel extends JPanel{
      
         g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
         g.fillRect(0, 0, getWidth(), getHeight());
-        //g.translate((int)(getWidth() - sc.getWidth())/2, (int)(getHeight() - sc.getHeight())/2);
+        g.translate((int)(getWidth() - sc.getWidth())/2, (int)(getHeight() - sc.getHeight())/2);
  
         sc.draw((Graphics2D) g);
-        //g.translate(-(int)(getWidth() - sc.getWidth())/2, (int)-(getHeight() - sc.getHeight())/2);
+        g.translate(-(int)(getWidth() - sc.getWidth())/2, (int)-(getHeight() - sc.getHeight())/2);
  
     }
 
     public void setComponent(SelectableComponent sc) {
-        this.sc = sc;
+        this.sc = sc.copy();
     }
 }

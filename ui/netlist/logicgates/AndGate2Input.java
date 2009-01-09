@@ -13,8 +13,7 @@ import java.awt.Rectangle;
  *
  * @author Matt
  */
-public class AndGate2Input extends ImageSelectableComponent{
-    
+public class AndGate2Input extends ImageSelectableComponent{    
     
     public AndGate2Input(Point point) {
         super(point);

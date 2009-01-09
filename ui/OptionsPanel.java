@@ -35,6 +35,7 @@ public class OptionsPanel extends JPanel{
     private SelectableComponent sc = null;
     private Editor editor;
     private String titleNew, titleOld;
+    private String componentName;
 
     public OptionsPanel(Editor editor){
         this.editor = editor;
@@ -104,11 +105,19 @@ public class OptionsPanel extends JPanel{
     }
 
     public SelectableComponent getSelectableComponent(){
-        return sc.copy();
+        if(componentName!=null){
+            setComponentByName(componentName);
+            return sc;
+        } else {
+            // TODO Error reporting
+            throw new Error("component not set");
+        }
+        
     }
     
     public void setComponentByName(String componentName){
-              
+        this.componentName = componentName;      
+        
         if(componentName!=null && editor!=null){
             try {
                 sc = editor.getNetlistComponent(componentName).getConstructor(Point.class).newInstance(new Point(0,0));
