@@ -43,6 +43,7 @@ class ScrollableDesktop extends JDesktopPane
      * which resizes the desktop if a frame is resized.
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void add(Component comp, Object constraints)
     {
       super.add(comp, constraints);

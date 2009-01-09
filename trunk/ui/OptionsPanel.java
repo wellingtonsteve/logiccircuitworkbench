@@ -16,8 +16,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
-import ui.tools.Input;
-import ui.tools.LED;
+import ui.netlist.standard.Input;
+import ui.netlist.standard.LED;
 import ui.tools.SelectableComponent;
 
 /**
@@ -97,6 +97,7 @@ public class OptionsPanel extends JPanel{
     
     public void setComponent(SelectableComponent sc){
         this.sc = sc;
+        sc.moveTo(new Point(0,0), true);
         titleLabel.setText(titleOld);
         typeLabel.setText(sc.getName());
         labelText.setText(sc.getLabel());
@@ -107,29 +108,26 @@ public class OptionsPanel extends JPanel{
     }
     
     public void setComponentByName(String componentName){
-        
-        titleLabel.setText(titleNew);
-        
+              
         if(componentName!=null && editor!=null){
             try {
-                Class<SelectableComponent> clazz = editor.getNetlistComponent(componentName);
-                sc = clazz.getConstructor(Point.class).newInstance(new Point(0,0));
-                //sc = (SelectableComponent) editor.getNetlistComponent(componentName).getConstructor(Point.class).newInstance(new Point(0,0));
+                sc = editor.getNetlistComponent(componentName).getConstructor(Point.class).newInstance(new Point(0,0));
             } catch (InstantiationException ex) {
-                Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
-                Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalArgumentException ex) {
-                Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InvocationTargetException ex) {
-                Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
             } catch (NoSuchMethodException ex) {
-                Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SecurityException ex) {
-                Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
+        titleLabel.setText(titleNew);
         typeLabel.setText(sc.getName());
         ledColours.setVisible(sc instanceof LED);
         sourceIsOn.setVisible(sc instanceof Input);
@@ -142,7 +140,7 @@ public class OptionsPanel extends JPanel{
             ((Input) sc).setIsOn((boolean) sourceIsOn.isSelected());
         }
         
-        Preview.setComponent(sc.copy());
+        Preview.setComponent(sc);
         setLayoutManager();
     }
     

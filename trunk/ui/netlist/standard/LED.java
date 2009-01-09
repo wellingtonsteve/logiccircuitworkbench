@@ -3,8 +3,9 @@
  * and open the template in the editor.
  */
 
-package ui.tools;
+package ui.netlist.standard;
 
+import ui.tools.*;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -33,24 +34,16 @@ public class LED extends ImageSelectableComponent{
         super(point);
     }
 
-     @Override
-    protected void setDefaultImage() {
-         try {
-            defaultBi = ImageIO.read(new File("build/classes/ui/images/components/default_led.png"));
-        } catch (IOException ex) {
-            Logger.getLogger(Input.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     @Override
-    protected void setSelectedImage() {
-         try {
-            selectedBi = ImageIO.read(new File("build/classes/ui/images/components/default_led.png"));
-        } catch (IOException ex) {
-            Logger.getLogger(Input.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    protected void setNetlist() {
+        nl = new ui.netlist.standard.Standard();
     }
-
+    
+    @Override
+    protected void setComponentTreeName() {
+        componentTreeName = "Standard.LED";
+    }
+    
     @Override
     protected void setActiveImage() {
         try {
@@ -109,9 +102,11 @@ public class LED extends ImageSelectableComponent{
     }
     
     @Override
-    public void draw(Graphics2D g, javax.swing.JComponent parent) {
+    public void draw(Graphics2D g) {
+        super.draw(g);
+        
         g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-        g.drawImage(getCurrentImage(), (int)getOrigin().getX(), (int)getOrigin().getY(), parent);
+        g.drawImage(getCurrentImage(), (int)getOrigin().getX(), (int)getOrigin().getY(), null);
         
         switch(getSelectionState()){            
             case ACTIVE:

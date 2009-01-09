@@ -28,9 +28,9 @@ public class FixComponentCommand extends Command {
     @Override
     protected void perform(Editor editor) {
         if(activeCircuit != null){
-            activeCircuit.removeComponent(old);
-            sc.moveTo(endPoint, true);
-            activeCircuit.addComponent(sc);
+            //activeCircuit.removeComponent(old);
+            old.moveTo(endPoint, true);
+            //activeCircuit.addComponent(sc);
             canUndo = true;
         }
     }

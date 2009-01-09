@@ -37,10 +37,11 @@ public class Editor extends javax.swing.JFrame {
     
     /** Creates new form FrameMain */
     public Editor() {        
-        addNetlist(new ui.netlist.Standard());
-        addNetlist(new ui.netlist.LogicGates());
+        addNetlist(new ui.netlist.standard.Standard());
+        addNetlist(new ui.netlist.logicgates.LogicGates());
         initComponents();
         setIconImage(new javax.swing.ImageIcon(this.getClass().getResource("/ui/images/buttons/toolbar/led.png")).getImage());
+        newCircuit();
     }
 
     /** This method is called from within the constructor to
@@ -174,8 +175,9 @@ public class Editor extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(bundle.getString("Editor.title")); // NOI18N
+        setBounds(new java.awt.Rectangle(0, 0, 800, 600));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setMinimumSize(new java.awt.Dimension(750, 510));
+        setMinimumSize(new java.awt.Dimension(800, 600));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
 
         Toolbar.setFloatable(false);
@@ -504,11 +506,11 @@ public class Editor extends javax.swing.JFrame {
         Options.setLayout(OptionsLayout);
         OptionsLayout.setHorizontalGroup(
             OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 172, Short.MAX_VALUE)
+            .add(0, 170, Short.MAX_VALUE)
         );
         OptionsLayout.setVerticalGroup(
             OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 312, Short.MAX_VALUE)
+            .add(0, 217, Short.MAX_VALUE)
         );
 
         jSplitPane1.setBottomComponent(Options);
@@ -517,23 +519,23 @@ public class Editor extends javax.swing.JFrame {
         Toolbox.getContentPane().setLayout(ToolboxLayout);
         ToolboxLayout.setHorizontalGroup(
             ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
             .add(ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 172, Short.MAX_VALUE))
+                .add(0, 170, Short.MAX_VALUE))
             .add(ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 172, Short.MAX_VALUE))
+                .add(0, 170, Short.MAX_VALUE))
             .add(ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 172, Short.MAX_VALUE))
+                .add(0, 170, Short.MAX_VALUE))
         );
         ToolboxLayout.setVerticalGroup(
             ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)
             .add(ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 572, Short.MAX_VALUE))
+                .add(0, 574, Short.MAX_VALUE))
             .add(ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 572, Short.MAX_VALUE))
+                .add(0, 574, Short.MAX_VALUE))
             .add(ToolboxLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 572, Short.MAX_VALUE))
+                .add(0, 574, Short.MAX_VALUE))
         );
 
         Toolbox.setBounds(0, 0, 180, 600);
@@ -716,6 +718,8 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
         makeToolSelection();
         
         toggleToolboxButton(InsertComponent);
+        
+        repaint();
     }
     
 }//GEN-LAST:event_ComponentSelectionTreeValueChanged
@@ -920,20 +924,18 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         this.netlists.add(nl);
     }
     
-    public Class<SelectableComponent> getNetlistComponent(String key){
+    @SuppressWarnings("unchecked")
+    public Class<? extends SelectableComponent> getNetlistComponent(String key){
         //Remove "Components." from begining
         if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
             key = key.substring(11); 
         }
         for(Netlist nl: netlists){
             if(nl.containsKey(key)){
-                try {
-                    return (Class<SelectableComponent>) Class.forName(nl.get(key));
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                return nl.getClass(key);
             }
         }
+        
         return null;
     }
     
@@ -941,8 +943,10 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
      * Get the current selection from the options panel and add the component to the current active circuit
      */
     public void makeToolSelection(){
-        circuitPanel.removeUnFixedComponents();
-        cmdHist.doCommand(new AddComponentCommand(((OptionsPanel) Options).getSelectableComponent()));
+        if(circuitPanel != null){
+            //circuitPanel.removeUnFixedComponents();
+            cmdHist.doCommand(new AddComponentCommand(((OptionsPanel) Options).getSelectableComponent()));
+        }
     }
     
     /**

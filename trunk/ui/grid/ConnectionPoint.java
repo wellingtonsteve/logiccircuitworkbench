@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import ui.UIConstants;
 import ui.tools.SelectableComponent;
-import ui.tools.Wire;
+import ui.netlist.standard.Wire;
 
 /**
  *
@@ -64,6 +64,7 @@ public class ConnectionPoint extends GridObject {
         return connections.size();
     }
     
+    @SuppressWarnings("unchecked")
     public Collection<Pin> getConnections(){
         return (Collection<Pin>) connections.clone();
     }

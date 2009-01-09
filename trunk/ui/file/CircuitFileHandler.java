@@ -1,5 +1,13 @@
 package ui.file;
 
+import ui.netlist.logicgates.AndGate2Input;
+import ui.netlist.logicgates.NandGate2Input;
+import ui.netlist.logicgates.OrGate2Input;
+import ui.netlist.logicgates.NorGate2Input;
+import ui.netlist.logicgates.AndGate3Input;
+import ui.netlist.standard.Input;
+import ui.netlist.standard.LED;
+import ui.netlist.standard.Wire;
 import java.awt.Point;
 import java.io.*;
 import java.util.Stack;

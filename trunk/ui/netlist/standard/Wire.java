@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ui.tools;
+package ui.netlist.standard;
 
+import ui.tools.*;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -129,7 +130,7 @@ public class Wire extends SelectableComponent {
     }
 
     @Override
-    public void draw(Graphics2D g, JComponent parent) {
+    public void draw(Graphics2D g) {
         
         // Find duplicate waypoints
         int i = 0, j = 0;
@@ -592,17 +593,5 @@ public class Wire extends SelectableComponent {
         } catch (SAXException ex) {
             Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    @Override
-    public SelectableComponent copy() {
-        Wire copy = new Wire((Point)getOrigin().clone());
-        
-        for(Point p: waypoints){
-            copy.addWaypoint(p);
-        }
-        copy.setEndPoint(endPoint);
-        
-        return copy;
     }
 }

@@ -13,7 +13,6 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -25,7 +24,7 @@ import ui.grid.Pin;
 import ui.grid.Grid;
 import ui.tools.SelectableComponent;
 import ui.tools.SelectionState;
-import ui.tools.Wire;
+import ui.netlist.standard.Wire;
 
 /**
  *
@@ -55,6 +54,7 @@ public class CircuitPanel extends JPanel {
     private Editor editor;
 
     public void addComponent(SelectableComponent sc) {
+        Grid.translateComponent(sc.getOrigin().x, sc.getOrigin().y, sc, true);
         drawnComponents.push(sc);
     }
 
@@ -476,7 +476,7 @@ public class CircuitPanel extends JPanel {
         for(SelectableComponent sc: drawnComponents){
             g2.translate(-sc.getCentre().x, -sc.getCentre().y);
             if(sc.isFixed() || (endPoint != null && contains(endPoint))){ // Don't draw the temp component, when mouse is outside viewable area.
-                sc.draw(g2, this);
+                sc.draw(g2);
             }
             g2.translate(sc.getCentre().x, sc.getCentre().y);           
         }
@@ -557,8 +557,6 @@ public class CircuitPanel extends JPanel {
     
     public void deleteActiveComponents(){
 
-        int size = activeComponents.size();
-
         for(SelectableComponent sc: activeComponents){
             Grid.removeComponent(sc);
         }
@@ -603,7 +601,7 @@ public class CircuitPanel extends JPanel {
     }
     
     public String getFilename(){
-        return filename;
+        return (filename==null)?"Untitled":filename;
     }
             
     public void addComponentList(List<SelectableComponent> list){

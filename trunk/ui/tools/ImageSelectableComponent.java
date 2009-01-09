@@ -12,6 +12,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import sim.Component;
+import ui.netlist.Netlist;
 
 /**
  *
@@ -19,17 +20,23 @@ import sim.Component;
  */
 public abstract class ImageSelectableComponent extends SelectableComponent {
     
+    protected Netlist nl;
+    protected String componentTreeName;
+      
     public ImageSelectableComponent(Point point){
         super(point);
         
-        rotation = Math.PI * 0 / 2;
+        rotation = 0;
+        
+        setComponentTreeName();
+        setNetlist();
         
         setDefaultImage();
         setSelectedImage();
         setActiveImage();
         
         setInvalidAreas();
-        setBoundingBox();
+        setBoundingBox();       
         
         setSelectionState(SelectionState.DEFAULT);
     }    
@@ -65,9 +72,17 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
         }    
     }
 
-    protected abstract void setDefaultImage();
-    protected abstract void setSelectedImage();
-    protected abstract void setActiveImage();
+    protected void setDefaultImage(){        
+        defaultBi = nl.getImage(getComponentTreeName()+".default");
+    }
+    
+    protected void setSelectedImage(){
+        selectedBi = nl.getImage(getComponentTreeName()+".selected");
+    }
+    
+    protected void setActiveImage(){
+        activeBi = nl.getImage(getComponentTreeName()+".active");
+    }
     
     @Override
     public void mouseDragged(MouseEvent e) {
@@ -118,11 +133,10 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     }
 
     @Override
-    public void draw(Graphics2D g, javax.swing.JComponent parent) {
+    public void draw(Graphics2D g) {
         super.draw(g); // Draw labels
-        
         g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-        g.drawImage(getCurrentImage(), (int)getOrigin().getX(), (int)getOrigin().getY(), parent);
+        g.drawImage(getCurrentImage(), (int)getOrigin().getX(), (int)getOrigin().getY(), null);
         g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
     }
             
@@ -145,30 +159,13 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
             Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public SelectableComponent copy() {        
-       SelectableComponent copy = null;
-        try {
-            copy = getClass().getConstructor(Point.class).newInstance((Point) getOrigin().clone());
-        } catch (InstantiationException ex) {
-            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
-        }
-           
-       copy.setSelectionState(selectionState);
-       copy.setLabel(getLabel());
-       copy.setRotation(rotation);
-       
-       return copy;
+        
+    protected abstract void setNetlist();
+
+    private String getComponentTreeName() {
+        return componentTreeName;
     }
+
+    protected abstract void setComponentTreeName();
     
 }

@@ -3,52 +3,20 @@
  * and open the template in the editor.
  */
 
-package ui.tools;
+package ui.netlist.logicgates;
 
+import ui.tools.*;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import sim.Component;
 
 /**
  *
  * @author matt
  */
 public class AndGate3Input extends ImageSelectableComponent{
-
+    
     public AndGate3Input(Point point) {
         super(point);
-    }
-
-  @Override
-    protected void setDefaultImage() {
-         try {
-            defaultBi = ImageIO.read(new File("build/classes/ui/images/components/default_3in_and.png"));
-        } catch (IOException ex) {
-            Logger.getLogger(AndGate2Input.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
-    protected void setSelectedImage() {
-         try {
-            selectedBi = ImageIO.read(new File("build/classes/ui/images/components/selected_3in_and.png"));
-        } catch (IOException ex) {
-            Logger.getLogger(AndGate2Input.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
-    protected void setActiveImage() {
-         try {
-            activeBi = ImageIO.read(new File("build/classes/ui/images/components/active_3in_and.png"));
-        } catch (IOException ex) {
-            Logger.getLogger(AndGate2Input.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
     
     @Override
@@ -80,6 +48,16 @@ public class AndGate3Input extends ImageSelectableComponent{
         localPins.add(in3);
         localPins.add(out1);
         
+    }
+    
+    @Override
+    protected void setNetlist() {
+        nl = new ui.netlist.logicgates.LogicGates();
+    }
+    
+    @Override
+    protected void setComponentTreeName() {
+        componentTreeName = "Logic Gates.3 Input.AND";
     }
     
 }

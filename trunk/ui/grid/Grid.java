@@ -28,7 +28,7 @@ public class Grid {
     }
     
     public static boolean markInvalidAreas(SelectableComponent sc){
-        if(!(sc instanceof ui.tools.Wire)){
+        if(!(sc instanceof ui.netlist.standard.Wire)){
             Rectangle bb = sc.getInvalidAreas();
             for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
                 for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
@@ -44,7 +44,7 @@ public class Grid {
 
     public static boolean translateComponent(int dx, int dy, SelectableComponent sc, boolean newComponent) {    
         if(canMoveComponent(sc, dx, dy, newComponent)){
-            if((sc.isFixed() || !newComponent) && !(sc instanceof ui.tools.Wire)){
+            if((sc.isFixed() || !newComponent) && !(sc instanceof ui.netlist.standard.Wire)){
                 Rectangle bb = sc.getInvalidAreas();
                 // Remove all invalid point markers
                 for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
@@ -87,7 +87,7 @@ public class Grid {
                     }
                 } 
             }        
-            if(!(sc instanceof ui.tools.Wire)){
+            if(!(sc instanceof ui.netlist.standard.Wire)){
                 Rectangle bb = sc.getInvalidAreas();
                 for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
                     for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){

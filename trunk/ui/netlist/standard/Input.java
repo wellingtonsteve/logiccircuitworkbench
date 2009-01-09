@@ -3,22 +3,19 @@
  * and open the template in the editor.
  */
 
-package ui.tools;
+package ui.netlist.standard;
 
+import ui.tools.*;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-import sim.Component;
 import ui.UIConstants;
 
 /**
@@ -31,40 +28,22 @@ public class Input extends ImageSelectableComponent{
     public Input(Point point) {
         super(point);
     }
-
-       @Override
-    protected void setDefaultImage() {
-         try {
-            defaultBi = ImageIO.read(new File("build/classes/ui/images/components/default_input_off.png"));
-        } catch (IOException ex) {
-            Logger.getLogger(LED.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
-    protected void setSelectedImage() {
-         try {
-            selectedBi = ImageIO.read(new File("build/classes/ui/images/components/default_input_off.png"));
-        } catch (IOException ex) {
-            Logger.getLogger(LED.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
-    protected void setActiveImage() {
-         try {
-            activeBi = ImageIO.read(new File("build/classes/ui/images/components/default_input_on.png"));
-        } catch (IOException ex) {
-            Logger.getLogger(LED.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
     
     @Override
+    protected void setComponentTreeName() {
+        componentTreeName = "Standard.Button Source";
+    }
+   
+    @Override
     public String getName(){
-        //return getComponent().getType();
         return "Button Source [On/Off]";
     }
 
+    @Override
+    protected void setNetlist() {
+        nl = new ui.netlist.standard.Standard();
+    }
+    
     @Override
     protected void setInvalidAreas(){
         //Tight fitting box so that pins are not selected
@@ -90,9 +69,11 @@ public class Input extends ImageSelectableComponent{
     }
     
     @Override
-    public void draw(Graphics2D g, javax.swing.JComponent parent) {
+    public void draw(Graphics2D g) {
+        super.draw(g);
+        
         g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-        g.drawImage(getCurrentImage(), (int)getOrigin().getX(), (int)getOrigin().getY(), parent);
+        g.drawImage(getCurrentImage(), (int)getOrigin().getX(), (int)getOrigin().getY(), null);
         
         g.translate(getCentre().x, getCentre().y);
         switch(getSelectionState()){            
