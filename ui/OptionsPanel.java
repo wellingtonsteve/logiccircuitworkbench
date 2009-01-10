@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import ui.command.AddLabelCommand;
 import ui.command.EditLabelCommand;
+import ui.error.ErrorHandler;
 import ui.netlist.standard.Input;
 import ui.netlist.standard.LED;
 import ui.tools.SelectableComponent;
@@ -153,8 +154,8 @@ public class OptionsPanel extends JPanel{
             setComponentByName(componentName);
             return sc;
         } else {
-            // TODO Error reporting
-            throw new Error("component not set");
+            ErrorHandler.newError(new ui.error.Error("Component Creation Error","Please select a component from the selection box."));
+            return null;
         }
         
     }

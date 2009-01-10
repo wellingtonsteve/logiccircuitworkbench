@@ -14,9 +14,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.transform.sax.TransformerHandler;
 import sim.Component;
+import ui.CircuitPanel;
 import ui.Labeled;
 import ui.UIConstants;
-import ui.grid.Grid;
 import ui.grid.Pin;
 
 /**
@@ -39,9 +39,11 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     protected double cosTheta, sinTheta;
     protected Rectangle invalidArea = null;
     private String label = new String();
+    protected CircuitPanel parent;
+    
 
-    public SelectableComponent(Point point){
-        //this.component = ;
+    public SelectableComponent(CircuitPanel parent, Point point){
+        this.parent = parent;
         if(point == null){
             this.point = new Point(0,0);
         } else {
@@ -96,26 +98,26 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     public void translate(int dx, int dy, boolean fixed) {       
 
-        if(Grid.canMoveComponent(this, dx, dy, !wasEverFixed)){
+        if(parent.getGrid().canMoveComponent(this, dx, dy, !wasEverFixed)){
             this.point.translate(dx, dy);
             
             // Adding this component to the grid for the first time
             if(!wasEverFixed && fixed){ 
                 this.fixed = fixed;
                 this.wasEverFixed = true;
-                Grid.markInvalidAreas(this);
+                parent.getGrid().markInvalidAreas(this);
                 setGlobalPins();
             // About to refix the component
             } else if (!this.fixed && fixed){
                 this.fixed = fixed;
                 setGlobalPins();            
-                Grid.translateComponent(dx,dy,this, !wasEverFixed);
-                Grid.markInvalidAreas(this); 
+                parent.getGrid().translateComponent(dx,dy,this, !wasEverFixed);
+                parent.getGrid().markInvalidAreas(this); 
             // Just moving around 
             } else {
                 setGlobalPins();
                 this.fixed = fixed;
-                Grid.translateComponent(dx,dy,this, !wasEverFixed);
+                parent.getGrid().translateComponent(dx,dy,this, !wasEverFixed);
             }
 
             setInvalidAreas();
@@ -198,7 +200,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     protected void setGlobalPins(){
         for(Pin p: globalPins){
-            Grid.removePin(p);
+            parent.getGrid().removePin(p);
         }         
         
         globalPins.clear();
@@ -211,7 +213,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
             Pin pin = new Pin(this, rotP.x +getOrigin().x-getCentre().x,rotP.y +getOrigin().y-getCentre().x);
             globalPins.add(pin);
             if(isFixed()){ 
-                Grid.addPin(pin);
+                parent.getGrid().addPin(pin);
             }
         }
         
@@ -231,7 +233,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         Point transP = new Point(p.x - getCentre().x, p.y - getCentre().y);
         Point rotP = new Point((int) ((transP.x * cosTheta) - (transP.y * sinTheta)), (int) ((transP.y * cosTheta) + (transP.x * sinTheta)));
         Point ansP = new Point(rotP.x + getCentre().x, rotP.y + getCentre().y);
-        return Grid.snapPointToGrid(ansP);
+        return parent.getGrid().snapPointToGrid(ansP);
     }
 
     public abstract void createXML(TransformerHandler hd);

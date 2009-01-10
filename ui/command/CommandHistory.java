@@ -23,6 +23,12 @@ public class CommandHistory {
         this.parentEditor = parentEditor;
     }
     
+    /**
+     * Execute a new command and if it can be undone, push it onto the undo stack
+     * for later.
+     * 
+     * @param cmd   The #Command to be performed
+     */
     public void doCommand(Command cmd){
         cmd.execute(parentEditor);
         if(cmd.canUndo()){ // Is this an undoable command?
@@ -41,6 +47,9 @@ public class CommandHistory {
         }
     }
     
+    /**
+     * Undo the command at the top of the undo stack.
+     */
     public void undo(){
         if(canUndo() && undostack.peek().canUndo()){
             Command cmd = undostack.pop();
@@ -61,6 +70,9 @@ public class CommandHistory {
         }
     }
     
+    /**
+     * Redo the command at the top of the redo stack.
+     */
     public void redo(){
         if(canRedo()){
             Command cmd = redostack.pop();
@@ -94,10 +106,22 @@ public class CommandHistory {
         redostack.clear();
     }
     
+    /**
+     * Add a #JComponent which is can call an undo operation. Undo Listeners are
+     * disabled when there are no actions to undo.
+     * 
+     * @param undolistener
+     */
     public void addUndoEmptyListener(JComponent undolistener){
         undolisteners.add(undolistener);
     }
     
+    /**
+     * Add a #JComponent which is can call a redo operation. Redo Listeners are
+     * disabled when there are no actions to redo.
+     * 
+     * @param undolistener
+     */
     public void addRedoEmptyListener(JComponent redolistener){
         redolisteners.add(redolistener);
     }

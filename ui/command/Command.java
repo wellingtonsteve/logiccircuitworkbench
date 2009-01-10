@@ -11,10 +11,12 @@ public abstract class Command implements Cloneable{
     protected CircuitPanel activeCircuit;
     protected boolean canUndo = false;
     
-    public Command(){
-    }
     
-    /** Carry out the command (for the first time) */
+    /**
+     * Carry out the command (if we are in the correct state to do so)
+     * 
+     * @param editor The #Editor executing this command
+     */
     public final void execute(Editor editor) {
        if(!canUndo){
            activeCircuit = editor.getActiveCircuit();
@@ -23,6 +25,13 @@ public abstract class Command implements Cloneable{
        }       
     }
     
+    
+    /**
+     * Perform the main action of this command. This method must be overwritten
+     * in all classes which extend the Command class.
+     * 
+     * @param editor    The #Editor executing this command
+     */
     protected abstract void perform(Editor editor);
     
     /** After perform, test if command really made a change */
@@ -37,8 +46,7 @@ public abstract class Command implements Cloneable{
     }
     
     protected void undoEffect(Editor editor) {
-        //TODO Error reporting
-           throw new Error("Can’t undo");
+        ui.error.ErrorHandler.newError(new ui.error.Error("Cannot Undo Command",this.getClass().getSimpleName() +"\nThis command cannot be undone."));
     }
     
     /** Make an independent copy of an unperformed command */
@@ -47,8 +55,8 @@ public abstract class Command implements Cloneable{
              return (Command) this.clone();
        }
        catch (CloneNotSupportedException e) {
-                   //TODO Error reporting
-             throw new Error("Can’t clone command");
+             ui.error.ErrorHandler.newError(new ui.error.Error("Cannot Clone Command",this.getClass().getSimpleName() +"\nThis command cannot be copied."));
+             return null;
        }
     }
 
