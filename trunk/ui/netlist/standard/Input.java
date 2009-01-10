@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+import ui.CircuitPanel;
 import ui.UIConstants;
 
 /**
@@ -25,8 +26,8 @@ import ui.UIConstants;
 public class Input extends ImageSelectableComponent{
     private boolean isOn = false;
 
-    public Input(Point point) {
-        super(point);
+    public Input(CircuitPanel parent, Point point) {
+        super(parent, point);
     }
     
     @Override
@@ -70,7 +71,10 @@ public class Input extends ImageSelectableComponent{
     
     @Override
     public void draw(Graphics2D g) {
-        super.draw(g);
+        if(hasLabel()){
+            g.setColor(UIConstants.LABEL_TEXT_COLOUR);
+            g.drawString(getLabel(), getOrigin().x, getOrigin().y-2);
+        }
         
         g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
         g.drawImage(getCurrentImage(), (int)getOrigin().getX(), (int)getOrigin().getY(), null);
@@ -87,7 +91,6 @@ public class Input extends ImageSelectableComponent{
                 g.setColor(UIConstants.DEFAULT_WIRE_COLOUR);
                 break;
         }   
-        // TODO: set stroke to dotted, possibly knock out image when active?
         g.drawRect(invalidArea.x+3, invalidArea.y, 19, 19);
         g.translate(-getCentre().x, -getCentre().y);
         

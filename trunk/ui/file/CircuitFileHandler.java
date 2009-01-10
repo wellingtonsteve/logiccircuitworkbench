@@ -14,6 +14,7 @@ import java.util.Stack;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
+import ui.Editor;
 import ui.UIConstants;
 import ui.tools.*;
 
@@ -24,8 +25,10 @@ import ui.tools.*;
 public class CircuitFileHandler extends DefaultHandler{
 
     private Stack<SelectableComponent> stack;
+    private Editor editor;
     
-    public CircuitFileHandler(){
+    public CircuitFileHandler(Editor editor){
+        this.editor = editor;
         stack = new Stack<SelectableComponent>();
     }
     
@@ -58,8 +61,8 @@ public class CircuitFileHandler extends DefaultHandler{
 
         if(qName.equals("circuit")){
             if(!attribs.getValue("version").equals(UIConstants.FILE_FORMAT_VERSION)){
-                // TODO: Error reporting to user and cancel load
-                System.err.println("Invalid File Format: Version is incorrect..."+attribs.getValue("version"));
+                // TODO: Cancel load
+                ui.error.ErrorHandler.newError(new ui.error.Error("File Load Error","Invalid File Format: Version is incorrect..."+attribs.getValue("version")));
             }
         } else if(qName.equals("component")){
             
@@ -72,13 +75,13 @@ public class CircuitFileHandler extends DefaultHandler{
             String type = attribs.getValue("type");
             // TODO Integrate with netlists
             
-            if(type.equals("Input")){               stack.push(new Input( p)); }
-            else if(type.equals("LED")){            stack.push(new LED( p)); }
-            else if(type.equals("AndGate2Input")){  stack.push(new AndGate2Input( p)); }
-            else if(type.equals("AndGate3Input")){  stack.push(new AndGate3Input( p)); }
-            else if(type.equals("NandGate2Input")){ stack.push(new NandGate2Input( p)); }
-            else if(type.equals("NorGate2Input")){  stack.push(new NorGate2Input( p)); }
-            else if(type.equals("OrGate2Input")){   stack.push(new OrGate2Input( p)); }
+            if(type.equals("Input")){               stack.push(new Input(editor.getActiveCircuit(), p)); }
+            else if(type.equals("LED")){            stack.push(new LED(editor.getActiveCircuit(), p)); }
+            else if(type.equals("AndGate2Input")){  stack.push(new AndGate2Input(editor.getActiveCircuit(), p)); }
+            else if(type.equals("AndGate3Input")){  stack.push(new AndGate3Input(editor.getActiveCircuit(), p)); }
+            else if(type.equals("NandGate2Input")){ stack.push(new NandGate2Input(editor.getActiveCircuit(), p)); }
+            else if(type.equals("NorGate2Input")){  stack.push(new NorGate2Input(editor.getActiveCircuit(), p)); }
+            else if(type.equals("OrGate2Input")){   stack.push(new OrGate2Input(editor.getActiveCircuit(), p)); }
             
             stack.peek().setRotation(rotation);
             stack.peek().translate(0, 0, true);
@@ -89,8 +92,8 @@ public class CircuitFileHandler extends DefaultHandler{
             int starty = Integer.parseInt(attribs.getValue("starty"));
             int endx = Integer.parseInt(attribs.getValue("endx"));
             int endy = Integer.parseInt(attribs.getValue("endy"));
-            
-            Wire w = new Wire();
+
+            Wire w = new Wire(editor.getActiveCircuit());
             
             w.setStartPoint(new Point(startx, starty));
             w.setEndPoint(new Point(endx, endy));
@@ -110,8 +113,8 @@ public class CircuitFileHandler extends DefaultHandler{
             } else if(top instanceof Input && attrName.equals("value")){
                 ((Input) top).setIsOn(attrValue.equals("On"));
             } else {
-                // TODO: Error reporting to user and cancel load
-                System.err.println("Invalid File Format: The property \"" + attrName + "\" is not valid for a "+ top.getClass().getSimpleName() +".");
+                // TODO: Cancel load
+                ui.error.ErrorHandler.newError(new ui.error.Error("File Load Error","Invalid File Format: The property \"" + attrName + "\" is not valid for a "+ top.getClass().getSimpleName() +"."));
             }
         
         } else if(qName.equals("waypoint")){    
@@ -124,8 +127,8 @@ public class CircuitFileHandler extends DefaultHandler{
             if(top instanceof Wire){
                 ((Wire) top).addWaypoint(new Point(x,y));
             } else {
-                // TODO: Error reporting to user and cancel load
-                System.err.println("Invalid File Format: The element \"waypoint\" is not valid for a "+ top.getClass().getSimpleName() +".");
+                // TODO:  cancel load
+                ui.error.ErrorHandler.newError(new ui.error.Error("File Load Error","Invalid File Format: The element \"waypoint\" is not valid for a "+ top.getClass().getSimpleName() +"."));
             }
         }
         

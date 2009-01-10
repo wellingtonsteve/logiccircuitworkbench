@@ -20,6 +20,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import sim.Component;
+import ui.CircuitPanel;
 import ui.UIConstants;
 
 /**
@@ -30,8 +31,8 @@ public class LED extends ImageSelectableComponent{
     private boolean isOn;
     private String colour = "yellow";
 
-    public LED(Point point) {
-        super(point);
+    public LED(CircuitPanel parent, Point point) {
+        super(parent, point);
     }
 
     @Override
@@ -97,7 +98,10 @@ public class LED extends ImageSelectableComponent{
     
     @Override
     public void draw(Graphics2D g) {
-        super.draw(g);
+        if(hasLabel()){
+            g.setColor(UIConstants.LABEL_TEXT_COLOUR);
+            g.drawString(getLabel(), getOrigin().x+10, getOrigin().y-2);
+        }
         
         g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
         g.drawImage(getCurrentImage(), (int)getOrigin().getX(), (int)getOrigin().getY(), null);
@@ -113,7 +117,6 @@ public class LED extends ImageSelectableComponent{
                 g.setColor(UIConstants.DEFAULT_WIRE_COLOUR);
                 break;
         }   
-        // TODO: set stroke to dotted, possibly knock out image when active?
         g.drawOval(getOrigin().x+18,getOrigin().y+3,13,13);
         
         g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);

@@ -15,9 +15,9 @@ import ui.tools.SelectableComponent;
  */
 public class Grid {
     
-    private static HashMap<Point,GridObject> grid = new HashMap<Point,GridObject>();
+    private  HashMap<Point,GridObject> grid = new HashMap<Point,GridObject>();
 
-//    static {
+//     {
 //        // Add invalid boundary on topmost edge        
 //        for(int i = 0; i<UIConstants.GRID_STANDARD_WIDTH; i++){
 //            Point p = new Point(i * UIConstants.GRID_DOT_SPACING, 1);
@@ -32,7 +32,7 @@ public class Grid {
 //    }
     
     
-    public static ConnectionPoint getConnectionPoint(Point p){
+    public  ConnectionPoint getConnectionPoint(Point p){
         GridObject go = getGridObjectAt(p);
         if(go != null && go instanceof ConnectionPoint){
             return (ConnectionPoint) go;
@@ -41,7 +41,7 @@ public class Grid {
         }
     }
     
-    public static boolean markInvalidAreas(SelectableComponent sc){
+    public  boolean markInvalidAreas(SelectableComponent sc){
         if(!(sc instanceof ui.netlist.standard.Wire)){
             Rectangle bb = sc.getInvalidAreas();
             for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
@@ -56,7 +56,7 @@ public class Grid {
         return true;
     }
 
-    public static boolean translateComponent(int dx, int dy, SelectableComponent sc, boolean newComponent) {    
+    public  boolean translateComponent(int dx, int dy, SelectableComponent sc, boolean newComponent) {    
         if(canMoveComponent(sc, dx, dy, newComponent)){
             if((sc.isFixed() || !newComponent) && !(sc instanceof ui.netlist.standard.Wire)){
                 Rectangle bb = sc.getInvalidAreas();
@@ -92,7 +92,7 @@ public class Grid {
 
     }
     
-    public static void removeComponent(SelectableComponent sc){
+    public  void removeComponent(SelectableComponent sc){
             for(Pin p: sc.getGlobalPins()){ 
                 if(getGridObjectAt(p) instanceof ConnectionPoint){
                     ((ConnectionPoint) getGridObjectAt(p)).removeConnection(p);
@@ -117,7 +117,7 @@ public class Grid {
 
     }
     
-    public static boolean addPin(Pin p){
+    public  boolean addPin(Pin p){
         GridObject go = getGridObjectAt(p);
         if(go==null){
             grid.put(new Point(p.x, p.y), new ConnectionPoint(new Point(p.x, p.y)));
@@ -132,11 +132,11 @@ public class Grid {
         }
     }
     
-    public static boolean canMoveComponent(SelectableComponent sc, int dx, int dy, boolean newComponent){
+    public  boolean canMoveComponent(SelectableComponent sc, int dx, int dy, boolean newComponent){
         return canMoveComponent(sc, new Point(dx, dy), newComponent);
     }
     
-    public static boolean canMoveComponent(SelectableComponent sc, Point d, boolean newComponent){
+    public  boolean canMoveComponent(SelectableComponent sc, Point d, boolean newComponent){
         LinkedList<Point> tempPins = new LinkedList<Point>();
         Point temp;
         
@@ -181,12 +181,12 @@ public class Grid {
         return true;
     }
     
-    protected static GridObject getGridObjectAt(Point p){
+    protected  GridObject getGridObjectAt(Point p){
         // Must create a new object for lookup
         return grid.get(new Point(p.x, p.y));
     }
 
-    public static void removePin(Pin p){
+    public  void removePin(Pin p){
         GridObject go = getGridObjectAt(p);
 
         if(go instanceof ConnectionPoint){
@@ -197,28 +197,28 @@ public class Grid {
         } 
     }
     
-    public static boolean isConnectionPoint(Point p){
+    public  boolean isConnectionPoint(Point p){
         return getGridObjectAt(p) instanceof ConnectionPoint;
     }
     
-    public static void clear(){
+    public  void clear(){
         grid.clear();
     }
 
-    public static void setActivePoint(Point p, Boolean active) {
+    public  void setActivePoint(Point p, Boolean active) {
         if(isConnectionPoint(p)){
             ((ConnectionPoint) getGridObjectAt(p)).setActive(active);
         } 
     }
     
-    public static boolean getIsActivePoint(Point p) {
+    public  boolean getIsActivePoint(Point p) {
         if(isConnectionPoint(p)){
             return ((ConnectionPoint) getGridObjectAt(p)).isActive();
         }
         return false;
     }
     
-    public static void draw(Graphics2D g2){
+    public  void draw(Graphics2D g2){
        g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
         
        for(GridObject p: grid.values()){           
@@ -227,7 +227,7 @@ public class Grid {
 
     }
     
-    public static Point snapPointToGrid(Point old){
+    public  Point snapPointToGrid(Point old){
         if(UIConstants.SNAP_TO_GRID){
             
             int d = UIConstants.GRID_DOT_SPACING;

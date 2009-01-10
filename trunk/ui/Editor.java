@@ -10,12 +10,11 @@ import java.awt.BorderLayout;
 import java.awt.Point;
 import java.util.Enumeration;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -24,6 +23,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import ui.command.*;
+import ui.error.Error;
+import ui.error.ErrorHandler;
+import ui.error.ErrorListener;
 import ui.netlist.Netlist;
 import ui.tools.SelectableComponent;
 
@@ -31,7 +33,7 @@ import ui.tools.SelectableComponent;
  *
  * @author  Matt
  */
-public class Editor extends javax.swing.JFrame {
+public class Editor extends javax.swing.JFrame implements ErrorListener {
     private CircuitPanel circuitPanel;
     private LinkedList<Netlist> netlists = new LinkedList<Netlist>();
     
@@ -40,6 +42,7 @@ public class Editor extends javax.swing.JFrame {
         addNetlist(new ui.netlist.standard.Standard());
         addNetlist(new ui.netlist.logicgates.LogicGates());
         initComponents();
+        ErrorHandler.addErrorListener(this);
         setIconImage(new javax.swing.ImageIcon(this.getClass().getResource("/ui/images/buttons/toolbar/led.png")).getImage());
         newCircuit();
     }
@@ -57,46 +60,26 @@ public class Editor extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        Options1 = new javax.swing.JPanel();
-        jTextField2 = new javax.swing.JTextField();
-        jComboBox2 = new javax.swing.JComboBox();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        Preview1 = new PreviewPanel(this);
-        Toolbox1 = new javax.swing.JInternalFrame();
-        jSplitPane2 = new javax.swing.JSplitPane();
-        jSplitPane4 = new javax.swing.JSplitPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        ComponentSelectionTree1 = new javax.swing.JTree();
-        jPanel5 = new javax.swing.JPanel();
-        Selection1 = new javax.swing.JButton();
-        Wire3 = new javax.swing.JButton();
-        Wire4 = new javax.swing.JButton();
-        Wire5 = new javax.swing.JButton();
-        RotateLeft1 = new javax.swing.JButton();
-        RotateRght1 = new javax.swing.JButton();
-        jButton22 = new javax.swing.JButton();
-        jButton23 = new javax.swing.JButton();
-        InsertComponent1 = new javax.swing.JButton();
-        AddLabel1 = new javax.swing.JButton();
-        Options2 = new OptionsPanel(this);
         Toolbar = new javax.swing.JToolBar();
         NewButton = new javax.swing.JButton();
         OpenFileButton = new javax.swing.JButton();
         SaveButton = new javax.swing.JButton();
         SaveAsButton = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        CutButton = new javax.swing.JButton();
+        CopyButton = new javax.swing.JButton();
+        PasteButton = new javax.swing.JButton();
+        DeleteSelection = new javax.swing.JButton();
         ClearCircuit = new javax.swing.JButton();
         UndoButton = new javax.swing.JButton();
         RedoButton = new javax.swing.JButton();
-        jButton19 = new javax.swing.JButton();
-        jSeparator4 = new javax.swing.JToolBar.Separator();
-        jButton10 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
+        jSeparator6 = new javax.swing.JToolBar.Separator();
+        MakeImageButton = new javax.swing.JButton();
+        jSeparator5 = new javax.swing.JToolBar.Separator();
+        RecordButton = new javax.swing.JButton();
+        StopButton = new javax.swing.JButton();
+        PauseButton = new javax.swing.JButton();
+        StartButton = new javax.swing.JButton();
         jSlider1 = new javax.swing.JSlider();
         MainScrollPane = new javax.swing.JScrollPane();
         DesktopPane = new ScrollableDesktop();
@@ -104,14 +87,10 @@ public class Editor extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         Selection = new javax.swing.JButton();
         Wire = new javax.swing.JButton();
-        Wire1 = new javax.swing.JButton();
-        Wire2 = new javax.swing.JButton();
+        InsertSubComponent = new javax.swing.JButton();
         RotateLeft = new javax.swing.JButton();
         RotateRght = new javax.swing.JButton();
-        jButton20 = new javax.swing.JButton();
-        jButton21 = new javax.swing.JButton();
         InsertComponent = new javax.swing.JButton();
-        AddLabel = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         ComponentSelectionTree = new javax.swing.JTree();
         Options = new OptionsPanel(this);
@@ -136,250 +115,8 @@ public class Editor extends javax.swing.JFrame {
         Help = new javax.swing.JMenu();
         About = new javax.swing.JMenuItem();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
-        jTextField2.setText(bundle.getString("Editor.jTextField2.text")); // NOI18N
-
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0ᵒ", "90ᵒ", "180ᵒ", "270ᵒ" }));
-
-        jLabel4.setText(bundle.getString("Editor.jLabel4.text")); // NOI18N
-
-        jLabel5.setForeground(new java.awt.Color(108, 108, 108));
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText(bundle.getString("Editor.jLabel5.text")); // NOI18N
-
-        org.jdesktop.layout.GroupLayout Preview1Layout = new org.jdesktop.layout.GroupLayout(Preview1);
-        Preview1.setLayout(Preview1Layout);
-        Preview1Layout.setHorizontalGroup(
-            Preview1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 148, Short.MAX_VALUE)
-        );
-        Preview1Layout.setVerticalGroup(
-            Preview1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 88, Short.MAX_VALUE)
-        );
-
-        org.jdesktop.layout.GroupLayout Options1Layout = new org.jdesktop.layout.GroupLayout(Options1);
-        Options1.setLayout(Options1Layout);
-        Options1Layout.setHorizontalGroup(
-            Options1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, Options1Layout.createSequentialGroup()
-                .add(Options1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, Options1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(Preview1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, Options1Layout.createSequentialGroup()
-                        .add(jLabel4)
-                        .add(34, 34, 34)
-                        .add(jComboBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, Options1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jLabel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 143, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-        Options1Layout.setVerticalGroup(
-            Options1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(Options1Layout.createSequentialGroup()
-                .add(jLabel5)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(Options1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel4)
-                    .add(jComboBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 129, Short.MAX_VALUE)
-                .add(Preview1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        Toolbox1.setClosable(true);
-        Toolbox1.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        Toolbox1.setIconifiable(true);
-        Toolbox1.setMaximizable(true);
-        Toolbox1.setResizable(true);
-        Toolbox1.setTitle(bundle.getString("Editor.Toolbox1.title")); // NOI18N
-        Toolbox1.setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/system-run.png"))); // NOI18N
-        Toolbox1.setPreferredSize(new java.awt.Dimension(163, 600));
-        Toolbox1.setVisible(true);
-
-        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-
-        jSplitPane4.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-
-        ComponentSelectionTree1.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
-            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
-                ComponentSelectionTree1ValueChanged(evt);
-            }
-        });
-        ComponentSelectionTree.setModel(getTreeValues());
-        jScrollPane2.setViewportView(ComponentSelectionTree1);
-
-        jSplitPane4.setTopComponent(jScrollPane2);
-
-        jPanel5.setLayout(new java.awt.GridLayout(3, 4));
-
-        Selection1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_select.png"))); // NOI18N
-        Selection1.setText(bundle.getString("Editor.Selection1.text")); // NOI18N
-        Selection1.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Selection1.setMaximumSize(new java.awt.Dimension(26, 28));
-        Selection1.setMinimumSize(new java.awt.Dimension(26, 28));
-        Selection1.setPreferredSize(new java.awt.Dimension(26, 28));
-        Selection1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                Selection1MouseClicked(evt);
-            }
-        });
-        jPanel5.add(Selection1);
-
-        Wire3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
-        Wire3.setText(bundle.getString("Editor.Wire3.text")); // NOI18N
-        Wire3.setToolTipText(bundle.getString("Editor.Wire3.toolTipText")); // NOI18N
-        Wire3.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Wire3.setMaximumSize(new java.awt.Dimension(26, 28));
-        Wire3.setMinimumSize(new java.awt.Dimension(26, 28));
-        Wire3.setPreferredSize(new java.awt.Dimension(26, 28));
-        Wire3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                Wire3MouseClicked(evt);
-            }
-        });
-        jPanel5.add(Wire3);
-
-        Wire4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
-        Wire4.setText(bundle.getString("Editor.Wire4.text")); // NOI18N
-        Wire4.setToolTipText(bundle.getString("Editor.Wire4.toolTipText")); // NOI18N
-        Wire4.setEnabled(false);
-        Wire4.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Wire4.setMaximumSize(new java.awt.Dimension(26, 28));
-        Wire4.setMinimumSize(new java.awt.Dimension(26, 28));
-        Wire4.setPreferredSize(new java.awt.Dimension(26, 28));
-        Wire4.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                Wire4MouseClicked(evt);
-            }
-        });
-        jPanel5.add(Wire4);
-
-        Wire5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
-        Wire5.setText(bundle.getString("Editor.Wire5.text")); // NOI18N
-        Wire5.setToolTipText(bundle.getString("Editor.Wire5.toolTipText")); // NOI18N
-        Wire5.setEnabled(false);
-        Wire5.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Wire5.setMaximumSize(new java.awt.Dimension(26, 28));
-        Wire5.setMinimumSize(new java.awt.Dimension(26, 28));
-        Wire5.setPreferredSize(new java.awt.Dimension(26, 28));
-        Wire5.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                Wire5MouseClicked(evt);
-            }
-        });
-        jPanel5.add(Wire5);
-
-        RotateLeft1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-left.png"))); // NOI18N
-        RotateLeft1.setText(bundle.getString("Editor.RotateLeft1.text")); // NOI18N
-        RotateLeft1.setFocusable(false);
-        RotateLeft1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        RotateLeft1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        RotateLeft1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                RotateLeft1MouseClicked(evt);
-            }
-        });
-        jPanel5.add(RotateLeft1);
-
-        RotateRght1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
-        RotateRght1.setText(bundle.getString("Editor.RotateRght1.text")); // NOI18N
-        RotateRght1.setFocusable(false);
-        RotateRght1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        RotateRght1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        RotateRght1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                RotateRght1MouseClicked(evt);
-            }
-        });
-        jPanel5.add(RotateRght1);
-
-        jButton22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
-        jButton22.setText(bundle.getString("Editor.jButton22.text")); // NOI18N
-        jButton22.setEnabled(false);
-        jButton22.setFocusable(false);
-        jButton22.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton22.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel5.add(jButton22);
-
-        jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
-        jButton23.setText(bundle.getString("Editor.jButton23.text")); // NOI18N
-        jButton23.setEnabled(false);
-        jButton23.setFocusable(false);
-        jButton23.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton23.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel5.add(jButton23);
-
-        InsertComponent1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-object.png"))); // NOI18N
-        InsertComponent1.setText(bundle.getString("Editor.InsertComponent1.text")); // NOI18N
-        InsertComponent1.setFocusable(false);
-        InsertComponent1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        InsertComponent1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        InsertComponent1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                InsertComponent1MouseClicked(evt);
-            }
-        });
-        jPanel5.add(InsertComponent1);
-
-        AddLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-text.png"))); // NOI18N
-        AddLabel1.setText(bundle.getString("Editor.AddLabel1.text")); // NOI18N
-        AddLabel1.setFocusable(false);
-        AddLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        AddLabel1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        AddLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                AddLabel1MouseClicked(evt);
-            }
-        });
-        jPanel5.add(AddLabel1);
-
-        jSplitPane4.setLeftComponent(jPanel5);
-
-        jSplitPane2.setTopComponent(jSplitPane4);
-
-        org.jdesktop.layout.GroupLayout Options2Layout = new org.jdesktop.layout.GroupLayout(Options2);
-        Options2.setLayout(Options2Layout);
-        Options2Layout.setHorizontalGroup(
-            Options2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 170, Short.MAX_VALUE)
-        );
-        Options2Layout.setVerticalGroup(
-            Options2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 434, Short.MAX_VALUE)
-        );
-
-        jSplitPane2.setBottomComponent(Options2);
-
-        org.jdesktop.layout.GroupLayout Toolbox1Layout = new org.jdesktop.layout.GroupLayout(Toolbox1.getContentPane());
-        Toolbox1.getContentPane().setLayout(Toolbox1Layout);
-        Toolbox1Layout.setHorizontalGroup(
-            Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jSplitPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 170, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .add(Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 170, Short.MAX_VALUE))
-            .add(Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 170, Short.MAX_VALUE))
-            .add(Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 170, Short.MAX_VALUE))
-        );
-        Toolbox1Layout.setVerticalGroup(
-            Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSplitPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 574, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .add(Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 574, Short.MAX_VALUE))
-            .add(Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 574, Short.MAX_VALUE))
-            .add(Toolbox1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(0, 574, Short.MAX_VALUE))
-        );
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
         setTitle(bundle.getString("Editor.title")); // NOI18N
         setBounds(new java.awt.Rectangle(0, 0, 800, 600));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -442,29 +179,54 @@ public class Editor extends javax.swing.JFrame {
         Toolbar.add(SaveAsButton);
         Toolbar.add(jSeparator3);
 
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-cut.png"))); // NOI18N
-        jButton5.setText(bundle.getString("Editor.jButton5.text")); // NOI18N
-        jButton5.setEnabled(false);
-        jButton5.setFocusable(false);
-        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        Toolbar.add(jButton5);
+        CutButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-cut.png"))); // NOI18N
+        CutButton.setText(bundle.getString("Editor.CutButton.text")); // NOI18N
+        CutButton.setFocusable(false);
+        CutButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        CutButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        CutButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                CutButtonMouseClicked(evt);
+            }
+        });
+        Toolbar.add(CutButton);
 
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-copy.png"))); // NOI18N
-        jButton6.setText(bundle.getString("Editor.jButton6.text")); // NOI18N
-        jButton6.setEnabled(false);
-        jButton6.setFocusable(false);
-        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        Toolbar.add(jButton6);
+        CopyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-copy.png"))); // NOI18N
+        CopyButton.setText(bundle.getString("Editor.CopyButton.text")); // NOI18N
+        CopyButton.setFocusable(false);
+        CopyButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        CopyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        CopyButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                CopyButtonMouseClicked(evt);
+            }
+        });
+        Toolbar.add(CopyButton);
 
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-paste.png"))); // NOI18N
-        jButton7.setText(bundle.getString("Editor.jButton7.text")); // NOI18N
-        jButton7.setEnabled(false);
-        jButton7.setFocusable(false);
-        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        Toolbar.add(jButton7);
+        PasteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-paste.png"))); // NOI18N
+        PasteButton.setText(bundle.getString("Editor.PasteButton.text")); // NOI18N
+        PasteButton.setFocusable(false);
+        PasteButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        PasteButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        PasteButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                PasteButtonMouseClicked(evt);
+            }
+        });
+        Toolbar.add(PasteButton);
+
+        DeleteSelection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-delete.png"))); // NOI18N
+        DeleteSelection.setText(bundle.getString("Editor.DeleteSelection.text")); // NOI18N
+        DeleteSelection.setToolTipText(bundle.getString("Editor.DeleteSelection.toolTipText")); // NOI18N
+        DeleteSelection.setFocusable(false);
+        DeleteSelection.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        DeleteSelection.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        DeleteSelection.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                DeleteSelectionMouseClicked(evt);
+            }
+        });
+        Toolbar.add(DeleteSelection);
 
         ClearCircuit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-clear.png"))); // NOI18N
         ClearCircuit.setText(bundle.getString("Editor.ClearCircuit.text")); // NOI18N
@@ -506,49 +268,72 @@ public class Editor extends javax.swing.JFrame {
         });
         cmdHist.addRedoEmptyListener(RedoButton);
         Toolbar.add(RedoButton);
+        Toolbar.add(jSeparator6);
 
-        jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-delete.png"))); // NOI18N
-        jButton19.setText(bundle.getString("Editor.jButton19.text")); // NOI18N
-        jButton19.setToolTipText(bundle.getString("Editor.jButton19.toolTipText")); // NOI18N
-        jButton19.setFocusable(false);
-        jButton19.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton19.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton19.addMouseListener(new java.awt.event.MouseAdapter() {
+        MakeImageButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/create-image.png"))); // NOI18N
+        MakeImageButton.setText(bundle.getString("Editor.MakeImageButton.text")); // NOI18N
+        MakeImageButton.setFocusable(false);
+        MakeImageButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        MakeImageButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        MakeImageButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton19MouseClicked(evt);
+                MakeImageButtonMouseClicked(evt);
             }
         });
-        Toolbar.add(jButton19);
-        Toolbar.add(jSeparator4);
+        Toolbar.add(MakeImageButton);
+        Toolbar.add(jSeparator5);
 
-        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-stop.png"))); // NOI18N
-        jButton10.setText(bundle.getString("Editor.jButton10.text")); // NOI18N
-        jButton10.setEnabled(false);
-        jButton10.setFocusable(false);
-        jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        Toolbar.add(jButton10);
+        RecordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-record.png"))); // NOI18N
+        RecordButton.setText(bundle.getString("Editor.RecordButton.text")); // NOI18N
+        RecordButton.setFocusable(false);
+        RecordButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        RecordButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        RecordButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                RecordButtonMouseClicked(evt);
+            }
+        });
+        Toolbar.add(RecordButton);
 
-        jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-pause.png"))); // NOI18N
-        jButton11.setText(bundle.getString("Editor.jButton11.text")); // NOI18N
-        jButton11.setEnabled(false);
-        jButton11.setFocusable(false);
-        jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        Toolbar.add(jButton11);
+        StopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-stop.png"))); // NOI18N
+        StopButton.setText(bundle.getString("Editor.StopButton.text")); // NOI18N
+        StopButton.setFocusable(false);
+        StopButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        StopButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        StopButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                StopButtonMouseClicked(evt);
+            }
+        });
+        Toolbar.add(StopButton);
 
-        jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png"))); // NOI18N
-        jButton12.setText(bundle.getString("Editor.jButton12.text")); // NOI18N
-        jButton12.setEnabled(false);
-        jButton12.setFocusable(false);
-        jButton12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        Toolbar.add(jButton12);
+        PauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-pause.png"))); // NOI18N
+        PauseButton.setText(bundle.getString("Editor.PauseButton.text")); // NOI18N
+        PauseButton.setFocusable(false);
+        PauseButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        PauseButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        PauseButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                PauseButtonMouseClicked(evt);
+            }
+        });
+        Toolbar.add(PauseButton);
+
+        StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png"))); // NOI18N
+        StartButton.setText(bundle.getString("Editor.StartButton.text")); // NOI18N
+        StartButton.setFocusable(false);
+        StartButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        StartButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        StartButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                StartButtonMouseClicked(evt);
+            }
+        });
+        Toolbar.add(StartButton);
 
         jSlider1.setMajorTickSpacing(10);
         jSlider1.setPaintTrack(false);
         jSlider1.setSnapToTicks(true);
-        jSlider1.setEnabled(false);
         Toolbar.add(jSlider1);
 
         getContentPane().add(Toolbar);
@@ -567,7 +352,7 @@ public class Editor extends javax.swing.JFrame {
         Toolbox.setVisible(true);
         Toolbox.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel4.setLayout(new java.awt.GridLayout(3, 4));
+        jPanel4.setLayout(new java.awt.GridLayout(2, 3));
 
         Selection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_select.png"))); // NOI18N
         Selection.setText(bundle.getString("TestJFrameForm.Selection.text")); // NOI18N
@@ -596,35 +381,17 @@ public class Editor extends javax.swing.JFrame {
         });
         jPanel4.add(Wire);
 
-        Wire1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
-        Wire1.setText(bundle.getString("Editor.Wire1.text")); // NOI18N
-        Wire1.setToolTipText(bundle.getString("Editor.Wire1.toolTipText")); // NOI18N
-        Wire1.setEnabled(false);
-        Wire1.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Wire1.setMaximumSize(new java.awt.Dimension(26, 28));
-        Wire1.setMinimumSize(new java.awt.Dimension(26, 28));
-        Wire1.setPreferredSize(new java.awt.Dimension(26, 28));
-        Wire1.addMouseListener(new java.awt.event.MouseAdapter() {
+        InsertSubComponent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-link.png"))); // NOI18N
+        InsertSubComponent.setText(bundle.getString("Editor.InsertSubComponent.text")); // NOI18N
+        InsertSubComponent.setFocusable(false);
+        InsertSubComponent.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        InsertSubComponent.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        InsertSubComponent.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                Wire1MouseClicked(evt);
+                InsertSubComponentMouseClicked(evt);
             }
         });
-        jPanel4.add(Wire1);
-
-        Wire2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
-        Wire2.setText(bundle.getString("Editor.Wire2.text")); // NOI18N
-        Wire2.setToolTipText(bundle.getString("Editor.Wire2.toolTipText")); // NOI18N
-        Wire2.setEnabled(false);
-        Wire2.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Wire2.setMaximumSize(new java.awt.Dimension(26, 28));
-        Wire2.setMinimumSize(new java.awt.Dimension(26, 28));
-        Wire2.setPreferredSize(new java.awt.Dimension(26, 28));
-        Wire2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                Wire2MouseClicked(evt);
-            }
-        });
-        jPanel4.add(Wire2);
+        jPanel4.add(InsertSubComponent);
 
         RotateLeft.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-left.png"))); // NOI18N
         RotateLeft.setText(bundle.getString("Editor.RotateLeft.text")); // NOI18N
@@ -650,22 +417,6 @@ public class Editor extends javax.swing.JFrame {
         });
         jPanel4.add(RotateRght);
 
-        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
-        jButton20.setText(bundle.getString("Editor.jButton20.text")); // NOI18N
-        jButton20.setEnabled(false);
-        jButton20.setFocusable(false);
-        jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel4.add(jButton20);
-
-        jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
-        jButton21.setText(bundle.getString("Editor.jButton21.text")); // NOI18N
-        jButton21.setEnabled(false);
-        jButton21.setFocusable(false);
-        jButton21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton21.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel4.add(jButton21);
-
         InsertComponent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-object.png"))); // NOI18N
         InsertComponent.setText(bundle.getString("Editor.InsertComponent.text")); // NOI18N
         InsertComponent.setFocusable(false);
@@ -678,19 +429,7 @@ public class Editor extends javax.swing.JFrame {
         });
         jPanel4.add(InsertComponent);
 
-        AddLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-text.png"))); // NOI18N
-        AddLabel.setText(bundle.getString("Editor.AddLabel.text")); // NOI18N
-        AddLabel.setFocusable(false);
-        AddLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        AddLabel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        AddLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                AddLabelMouseClicked(evt);
-            }
-        });
-        jPanel4.add(AddLabel);
-
-        Toolbox.getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 170, -1));
+        Toolbox.getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 170, 70));
 
         ComponentSelectionTree.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
@@ -700,7 +439,7 @@ public class Editor extends javax.swing.JFrame {
         ComponentSelectionTree.setModel(getTreeValues());
         jScrollPane1.setViewportView(ComponentSelectionTree);
 
-        Toolbox.getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 104, 170, 220));
+        Toolbox.getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 74, 170, 250));
 
         org.jdesktop.layout.GroupLayout OptionsLayout = new org.jdesktop.layout.GroupLayout(Options);
         Options.setLayout(OptionsLayout);
@@ -890,6 +629,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
         if(isValidComponent(componentName)){
             // Set Options panel (Preview, Component Specific Options etc.)
             ((OptionsPanel) Options).setComponentByName(componentName);
+            ((OptionsPanel) Options).getLabelTextbox().setText(""); // Assume user wants a different name for a different component
             Options.setVisible(true);
             Options.repaint();
 
@@ -904,10 +644,6 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
     
 }//GEN-LAST:event_ComponentSelectionTreeValueChanged
 
-private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertComponentMouseClicked
-    toggleToolboxButton(InsertComponent);    
-}//GEN-LAST:event_InsertComponentMouseClicked
-
 private void UndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UndoActionPerformed
     cmdHist.undo();
 }//GEN-LAST:event_UndoActionPerformed
@@ -917,15 +653,15 @@ private void RedoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
 }//GEN-LAST:event_RedoActionPerformed
 
 private void CutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CutActionPerformed
-// TODO add your handling code here:
+    cmdHist.doCommand(new SelectionCutCommand());    
 }//GEN-LAST:event_CutActionPerformed
 
 private void CopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CopyActionPerformed
-// TODO add your handling code here:
+    cmdHist.doCommand(new SelectionCopyCommand());
 }//GEN-LAST:event_CopyActionPerformed
 
 private void PasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasteActionPerformed
-// TODO add your handling code here:
+    cmdHist.doCommand(new SelectionPasteCommand());
 }//GEN-LAST:event_PasteActionPerformed
 
 private void SelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectAllActionPerformed
@@ -933,6 +669,7 @@ private void SelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_SelectAllActionPerformed
 
 private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
+    // TODO: check do we want to save?
     System.exit(0);
 }//GEN-LAST:event_ExitActionPerformed
 
@@ -947,10 +684,6 @@ private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
 private void SaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveAsActionPerformed
     cmdHist.doCommand(new FileSaveAsCommand());
 }//GEN-LAST:event_SaveAsActionPerformed
-
-private void AddLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddLabelMouseClicked
-     cmdHist.doCommand(new AddLabelCommand());    
-}//GEN-LAST:event_AddLabelMouseClicked
 
 private void UndoButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UndoButtonMouseClicked
     cmdHist.undo();
@@ -968,12 +701,12 @@ private void RotateRghtMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
     cmdHist.doCommand(new RotateRightCommand());
 }//GEN-LAST:event_RotateRghtMouseClicked
 
-private void jButton19MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton19MouseClicked
-    cmdHist.doCommand(new DeleteSelectionCommand());
-}//GEN-LAST:event_jButton19MouseClicked
+private void DeleteSelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DeleteSelectionMouseClicked
+    cmdHist.doCommand(new SelectionDeleteCommand());
+}//GEN-LAST:event_DeleteSelectionMouseClicked
 
 private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
-    cmdHist.doCommand(new DeleteSelectionCommand());
+    cmdHist.doCommand(new SelectionDeleteCommand());
 }//GEN-LAST:event_DeleteActionPerformed
 
 private void OpenFileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_OpenFileButtonMouseClicked
@@ -983,14 +716,6 @@ private void OpenFileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FI
 private void SaveAsButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveAsButtonMouseClicked
     cmdHist.doCommand(new FileSaveAsCommand());
 }//GEN-LAST:event_SaveAsButtonMouseClicked
-
-private void Wire2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire2MouseClicked
-// TODO add your handling code here:
-}//GEN-LAST:event_Wire2MouseClicked
-
-private void Wire1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire1MouseClicked
-// TODO add your handling code here:
-}//GEN-LAST:event_Wire1MouseClicked
 
 private void SaveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveButtonMouseClicked
     cmdHist.doCommand(new FileSaveCommand());
@@ -1026,53 +751,81 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     cmdHist.doCommand(new NewCircuitCommand());
 }//GEN-LAST:event_NewButtonMouseClicked
 
-private void ComponentSelectionTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_ComponentSelectionTree1ValueChanged
-// TODO add your handling code here:
-}//GEN-LAST:event_ComponentSelectionTree1ValueChanged
+private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertComponentMouseClicked
+    toggleToolboxButton(InsertComponent);
+}//GEN-LAST:event_InsertComponentMouseClicked
 
-private void Selection1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Selection1MouseClicked
-// TODO add your handling code here:
-}//GEN-LAST:event_Selection1MouseClicked
+private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertSubComponentMouseClicked
+    cmdHist.doCommand(new InsertSubcomponentCommand());
+}//GEN-LAST:event_InsertSubComponentMouseClicked
 
-private void Wire3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire3MouseClicked
-// TODO add your handling code here:
-}//GEN-LAST:event_Wire3MouseClicked
+private void MakeImageButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MakeImageButtonMouseClicked
+    cmdHist.doCommand(new MakeImageCommand());
+}//GEN-LAST:event_MakeImageButtonMouseClicked
 
-private void Wire4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire4MouseClicked
-// TODO add your handling code here:
-}//GEN-LAST:event_Wire4MouseClicked
+private void RecordButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RecordButtonMouseClicked
+    cmdHist.doCommand(new SimulationRecordCommand());
+}//GEN-LAST:event_RecordButtonMouseClicked
 
-private void Wire5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Wire5MouseClicked
-// TODO add your handling code here:
-}//GEN-LAST:event_Wire5MouseClicked
+private void StopButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StopButtonMouseClicked
+    cmdHist.doCommand(new SimulationStopCommand());
+}//GEN-LAST:event_StopButtonMouseClicked
 
-private void RotateLeft1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateLeft1MouseClicked
-// TODO add your handling code here:
-}//GEN-LAST:event_RotateLeft1MouseClicked
+private void PauseButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PauseButtonMouseClicked
+    cmdHist.doCommand(new SimulationPauseCommand());
+}//GEN-LAST:event_PauseButtonMouseClicked
 
-private void RotateRght1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateRght1MouseClicked
-// TODO add your handling code here:
-}//GEN-LAST:event_RotateRght1MouseClicked
+private void StartButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StartButtonMouseClicked
+    cmdHist.doCommand(new SimulationStartCommand());
+}//GEN-LAST:event_StartButtonMouseClicked
 
-private void InsertComponent1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertComponent1MouseClicked
-// TODO add your handling code here:
-}//GEN-LAST:event_InsertComponent1MouseClicked
+private void CutButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CutButtonMouseClicked
+    cmdHist.doCommand(new SelectionCutCommand());
+}//GEN-LAST:event_CutButtonMouseClicked
 
-private void AddLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddLabel1MouseClicked
-// TODO add your handling code here:
-}//GEN-LAST:event_AddLabel1MouseClicked
+private void PasteButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PasteButtonMouseClicked
+    cmdHist.doCommand(new SelectionPasteCommand());
+}//GEN-LAST:event_PasteButtonMouseClicked
+
+private void CopyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CopyButtonMouseClicked
+    cmdHist.doCommand(new SelectionCopyCommand());
+}//GEN-LAST:event_CopyButtonMouseClicked
+
+    /** 
+     * Repopulate the windows menu in the toolbar with the opened circuits
+     */
+    public void refreshWindowsMenu() {
+        Window.removeAll();
+        for(JInternalFrame cf: circuitwindows){
+            final JInternalFrame cf2 = cf;
+            javax.swing.JMenuItem windowItem = new javax.swing.JMenuItem();
+            windowItem.setText(cf.getTitle()); 
+            windowItem.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    cf2.moveToFront();
+                }
+            });
+            Window.add(windowItem);
+            
+        }
+    }
     
-    private void toggleToolboxButton(JButton b){
+    /** Reset selections of the component toolbox so that we only have one 
+     * button depressed at a time.
+     * 
+     * @param button    The button which is currently being selected
+     */
+    private void toggleToolboxButton(JButton button){
         // Reset Selections
         Selection.setSelected(false);
         Wire.setSelected(false);
         InsertComponent.setSelected(false);
 
         // Select this button
-        b.setSelected(true);
+        button.setSelected(true);
         
         // Remove floating components
-        if(!b.equals(InsertComponent)){
+        if(!button.equals(InsertComponent)){
             Options.setVisible(false);
             circuitPanel.removeUnFixedComponents();
         }
@@ -1087,6 +840,10 @@ private void AddLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         circuitwindows.add(cir);
         DesktopPane.add(cir, javax.swing.JLayeredPane.DEFAULT_LAYER);
         setActiveCircuit(cir.getCircuitPanel());
+        
+        // Populate Windows menu
+        refreshWindowsMenu();
+        
         return circuitPanel;
         
     }
@@ -1094,7 +851,7 @@ private void AddLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     public void setActiveCircuit(CircuitPanel circuit) {
         circuitPanel = circuit;
         this.setTitle("Logic Circuit Workbench - " + circuitPanel.getFilename());
-        DesktopPane.setSelectedFrame(circuitPanel.getParentFrame());
+        circuitPanel.getParentFrame().moveToFront();
               
     }
 
@@ -1220,83 +977,59 @@ private void AddLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem About;
-    private javax.swing.JButton AddLabel;
-    private javax.swing.JButton AddLabel1;
     private javax.swing.JButton ClearCircuit;
     private javax.swing.JTree ComponentSelectionTree;
-    private javax.swing.JTree ComponentSelectionTree1;
     private javax.swing.JMenuItem Copy;
+    private javax.swing.JButton CopyButton;
     private javax.swing.JMenuItem Cut;
+    private javax.swing.JButton CutButton;
     private javax.swing.JMenuItem Delete;
+    private javax.swing.JButton DeleteSelection;
     private javax.swing.JDesktopPane DesktopPane;
     private javax.swing.JMenu Edit;
     private javax.swing.JMenuItem Exit;
     private javax.swing.JMenu File;
     private javax.swing.JMenu Help;
     private javax.swing.JButton InsertComponent;
-    private javax.swing.JButton InsertComponent1;
+    private javax.swing.JButton InsertSubComponent;
     private javax.swing.JScrollPane MainScrollPane;
+    private javax.swing.JButton MakeImageButton;
     private javax.swing.JMenuBar MenuBar;
     private javax.swing.JButton NewButton;
     private javax.swing.JMenuItem Open;
     private javax.swing.JButton OpenFileButton;
     private javax.swing.JPanel Options;
-    private javax.swing.JPanel Options1;
-    private javax.swing.JPanel Options2;
     private javax.swing.JMenuItem Paste;
-    private javax.swing.JPanel Preview1;
+    private javax.swing.JButton PasteButton;
+    private javax.swing.JButton PauseButton;
+    private javax.swing.JButton RecordButton;
     private javax.swing.JMenuItem Redo;
     private javax.swing.JButton RedoButton;
     private javax.swing.JButton RotateLeft;
-    private javax.swing.JButton RotateLeft1;
     private javax.swing.JButton RotateRght;
-    private javax.swing.JButton RotateRght1;
     private javax.swing.JMenuItem Save;
     private javax.swing.JMenuItem SaveAs;
     private javax.swing.JButton SaveAsButton;
     private javax.swing.JButton SaveButton;
     private javax.swing.JMenuItem SelectAll;
     private javax.swing.JButton Selection;
-    private javax.swing.JButton Selection1;
     private javax.swing.JMenu Simulation;
+    private javax.swing.JButton StartButton;
+    private javax.swing.JButton StopButton;
     private javax.swing.JToolBar Toolbar;
     private javax.swing.JInternalFrame Toolbox;
-    private javax.swing.JInternalFrame Toolbox1;
     private javax.swing.JMenuItem Undo;
     private javax.swing.JButton UndoButton;
     private javax.swing.JMenu Window;
     private javax.swing.JButton Wire;
-    private javax.swing.JButton Wire1;
-    private javax.swing.JButton Wire2;
-    private javax.swing.JButton Wire3;
-    private javax.swing.JButton Wire4;
-    private javax.swing.JButton Wire5;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton19;
-    private javax.swing.JButton jButton20;
-    private javax.swing.JButton jButton21;
-    private javax.swing.JButton jButton22;
-    private javax.swing.JButton jButton23;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JComboBox jComboBox2;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
-    private javax.swing.JToolBar.Separator jSeparator4;
+    private javax.swing.JToolBar.Separator jSeparator5;
+    private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JSlider jSlider1;
-    private javax.swing.JSplitPane jSplitPane2;
-    private javax.swing.JSplitPane jSplitPane4;
-    private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 
     private javax.swing.JDialog aboutDialog = null;
@@ -1305,5 +1038,9 @@ private void AddLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     
     private CommandHistory cmdHist = new CommandHistory(this);
     private LinkedList<JInternalFrame> circuitwindows = new LinkedList<JInternalFrame>();
+
+    public void reportError(Error error) {
+        JOptionPane.showMessageDialog(this,error.getMessage(), error.getTitle(), JOptionPane.ERROR_MESSAGE);
+    }
     
 }

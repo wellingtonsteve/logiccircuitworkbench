@@ -81,14 +81,14 @@ public abstract class Netlist {
     }
     
     /**
-     * @see java.util.Set
+     * @see #java.util.Set
      */
     public Set<String> keySet(){
         return classMap.keySet();
     }
     
     /**
-     * @see java.util.Set
+     * @see #java.util.Set
      */
     public boolean containsKey(String key){
         return classMap.containsKey(key);

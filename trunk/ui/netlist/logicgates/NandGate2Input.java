@@ -15,8 +15,8 @@ import java.awt.Rectangle;
  */
 public class NandGate2Input extends ImageSelectableComponent{
 
-    public NandGate2Input(Point point) {
-        super(point);
+    public NandGate2Input(ui.CircuitPanel parent, Point point) {
+        super(parent, point);
     }
     
     @Override

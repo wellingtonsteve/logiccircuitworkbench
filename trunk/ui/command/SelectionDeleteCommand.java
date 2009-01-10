@@ -10,7 +10,7 @@ import ui.tools.SelectableComponent;
  *
  * @author matt
  */
-public class DeleteSelectionCommand extends Command {
+public class SelectionDeleteCommand extends Command {
     private List<SelectableComponent> selection = new LinkedList<SelectableComponent>();
      
     protected void perform(Editor editor) {

@@ -15,8 +15,9 @@ public class UIConstants {
     
     public static final int GRID_DOT_SPACING = 10; // Changing this value will require substantial changes to the component images and classes
     public static final boolean SNAP_TO_GRID = true;
-    public static int GRID_STANDARD_WIDTH = 70;
-    public static int GRID_STANDARD_HEIGHT = 60;
+    public static final int GRID_STANDARD_WIDTH = 70;
+    public static final int GRID_STANDARD_HEIGHT = 60;
+    public static boolean DRAW_GRID_DOTS = true;
 
     public static Color SELECTION_BOX_COLOUR = Color.BLACK;
     public static Stroke SELECTION_BOX_STROKE = new BasicStroke(1.0f, // line width
@@ -36,7 +37,9 @@ public class UIConstants {
     public static int LABEL_COMPONENT_X_OFFSET = 10;
     public static int LABEL_COMPONENT_Y_OFFSET = 10;
     public static Color LABEL_TEXT_COLOUR = Color.BLACK;
-    static boolean DO_OFFSCREEN_DRAWING_TEST = true;
+    public static boolean DO_OFFSCREEN_DRAWING_TEST = true;
+    public static int WIRE_HANDLE_LENGTH = 40;
+
 
     public static void beep(){
         java.awt.Toolkit.getDefaultToolkit ().beep();
@@ -47,7 +50,8 @@ public class UIConstants {
     public static int WIRE_HOVER_THICKNESS = 2;
     public static final Color DEFAULT_WIRE_COLOUR = Color.BLACK;
     public static final Color ACTIVE_WIRE_COLOUR = Color.BLUE;
-    public static final Color HOVER_WIRE_COLOUR = Color.RED;
+    public static final Stroke ACTIVE_WIRE_STROKE = new BasicStroke(5.0f);
+    public static final Color HOVER_WIRE_COLOUR = Color.GRAY;
     
     
     public static final int LOG_VIEWER_MARGIN = 20;

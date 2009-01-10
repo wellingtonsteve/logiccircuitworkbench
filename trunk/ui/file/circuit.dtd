@@ -1,22 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 
-<!--
-    TODO define vocabulary identification
-    PUBLIC ID: -//vendor//vocabulary//EN
-    SYSTEM ID: http://server/path/circuit.dtd
-
---><!--
-    An example how to use this DTD from your XML document:
-
-    <?xml version="1.0"?>
-
-    <!DOCTYPE circuit SYSTEM "circuit.dtd">
-
-    <circuit>
-    ...
-    </circuit>
--->
-
 <!--- Put your DTDDoc comment here. -->
 <!ELEMENT circuit (components)*>
 <!ATTLIST circuit

@@ -15,8 +15,8 @@ import java.awt.Rectangle;
  */
 public class OrGate2Input extends ImageSelectableComponent{
 
-    public OrGate2Input(Point point) {
-        super(point);
+    public OrGate2Input(ui.CircuitPanel parent, Point point) {
+        super(parent, point);
     }
 
     @Override

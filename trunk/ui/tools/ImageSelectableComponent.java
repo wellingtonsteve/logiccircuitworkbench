@@ -12,6 +12,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import sim.Component;
+import ui.CircuitPanel;
 import ui.netlist.Netlist;
 
 /**
@@ -23,8 +24,8 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     protected Netlist nl;
     protected String componentTreeName;
       
-    public ImageSelectableComponent(Point point){
-        super(point);
+    public ImageSelectableComponent(CircuitPanel parent, Point point){
+        super(parent, point);
         
         rotation = 0;
         

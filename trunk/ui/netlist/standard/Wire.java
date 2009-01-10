@@ -4,9 +4,9 @@
  */
 package ui.netlist.standard;
 
+import java.awt.BasicStroke;
+import java.awt.Cursor;
 import ui.tools.*;
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -14,10 +14,11 @@ import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComponent;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+import ui.CircuitPanel;
+import ui.Editor;
 import ui.UIConstants;
 import ui.grid.Grid;
 
@@ -34,12 +35,12 @@ public class Wire extends SelectableComponent {
     private Point hoverWaypoint;
     private Point hoverMousePoint;
 
-    public Wire(){
-        super(null);
+    public Wire(CircuitPanel parent){
+        super(parent, null);
     }
     
-    public Wire(Point o) {
-        super(null);
+    public Wire(CircuitPanel parent, Point o) {
+        super(parent, null); // Ignore point, as we are going to drag to start it
     }
     
     @Override
@@ -166,7 +167,7 @@ public class Wire extends SelectableComponent {
             
         }
         
-        // Debuging
+        // Debugging
         if(UIConstants.SHOW_WIRE_WAYPOINTS){
             for(Point p: waypoints){
                 g.setColor(UIConstants.WIRE_WAYPOINT_COLOUR);
@@ -294,12 +295,9 @@ public class Wire extends SelectableComponent {
         y3 = to.y;
     }
 
-    private void drawLeg(Graphics g, Point from, Point to) {
+    private void drawLeg(Graphics2D g, Point from, Point to) {
 
         createLeg(from, to);
-        
-        Color leg1colour = UIConstants.DEFAULT_WIRE_COLOUR;
-        Color leg2colour = UIConstants.DEFAULT_WIRE_COLOUR;
         
         if(to.equals(hoverWaypoint)){
             
@@ -307,35 +305,85 @@ public class Wire extends SelectableComponent {
                     ||(x1 >= hoverMousePoint.x && x2 <= hoverMousePoint.x))
                && ((y1-UIConstants.WIRE_HOVER_THICKNESS <= hoverMousePoint.y && y2+UIConstants.WIRE_HOVER_THICKNESS >= hoverMousePoint.y)
                     ||(y1+UIConstants.WIRE_HOVER_THICKNESS >= hoverMousePoint.y && y2-UIConstants.WIRE_HOVER_THICKNESS <= hoverMousePoint.y))){
-                switch (getSelectionState()) {
+                                    
+                int handleX0, handleX1, handleY0, handleY1;
+                
+                handleX0 = (x1 + x2 - UIConstants.WIRE_HANDLE_LENGTH) / 2;
+                handleX1 = handleX0 + UIConstants.WIRE_HANDLE_LENGTH;
+                handleY0 = y1;
+                handleY1 = y2;
+                
+                // Allow for very short wires
+                if(handleX0 < x1 && x1 < x2){
+                    handleX0 = x1;
+                    handleX1 = x2;
+                }
+                
+               if(handleX0 > x1 && x1 > x2){
+                    handleX0 = x1;
+                    handleX1 = x2;
+                }
+                
+                switch (getSelectionState()) {                  
                     case ACTIVE:
-                        leg1colour = UIConstants.ACTIVE_WIRE_COLOUR;
+                        g.setColor(UIConstants.ACTIVE_WIRE_COLOUR);
+                        g.setStroke(UIConstants.ACTIVE_WIRE_STROKE);                        
+                        g.drawLine(handleX0, handleY0, handleX1, handleY1);
                         break;
                     case HOVER:
-                        leg1colour = UIConstants.HOVER_WIRE_COLOUR;
+                        g.setColor(UIConstants.HOVER_WIRE_COLOUR);
+                        g.setStroke(UIConstants.ACTIVE_WIRE_STROKE);                        
+                        g.drawLine(handleX0, handleY0, handleX1, handleY1);
                         break;
                     default:
+                        break;
                 }   
+                                
             } else if (((y2 <= hoverMousePoint.y && y3 >= hoverMousePoint.y)
                     ||(y2 >= hoverMousePoint.y && y3 <= hoverMousePoint.y))
                && ((x2-UIConstants.WIRE_HOVER_THICKNESS <= hoverMousePoint.x && x3+UIConstants.WIRE_HOVER_THICKNESS >= hoverMousePoint.x)
                     ||(x2+UIConstants.WIRE_HOVER_THICKNESS >= hoverMousePoint.x && x3-UIConstants.WIRE_HOVER_THICKNESS <= hoverMousePoint.x))){
-                switch (getSelectionState()) {
+                
+                int handleX0, handleX1, handleY0, handleY1;
+            
+                handleX0 = x2;
+                handleX1 = x3;
+                handleY0 = (y2 + y3 - UIConstants.WIRE_HANDLE_LENGTH) / 2;
+                handleY1 = handleY0 + UIConstants.WIRE_HANDLE_LENGTH;
+ 
+                // Allow for very short wires
+                if(handleY0 < y2 && y2 < y3){
+                    handleY0 = y2;
+                    handleY1 = y3;
+                }
+                
+                if(handleY0 > y2 && y2 > y3){
+                    handleY0 = y2;
+                    handleY1 = y3;
+                }
+                
+                switch (getSelectionState()) {                  
                     case ACTIVE:
-                        leg2colour = UIConstants.ACTIVE_WIRE_COLOUR;
+                        g.setColor(UIConstants.ACTIVE_WIRE_COLOUR);
+                        g.setStroke(UIConstants.ACTIVE_WIRE_STROKE);                        
+                        g.drawLine(handleX0, handleY0, handleX1, handleY1);
                         break;
                     case HOVER:
-                        leg2colour = UIConstants.HOVER_WIRE_COLOUR;
+                        g.setColor(UIConstants.HOVER_WIRE_COLOUR);
+                        g.setStroke(UIConstants.ACTIVE_WIRE_STROKE);                        
+                        g.drawLine(handleX0, handleY0, handleX1, handleY1);
                         break;
                     default:
+                        break;
                 }   
-            }
+                              
+            } 
             
             
         }
-        g.setColor(leg1colour);
+        g.setColor(UIConstants.DEFAULT_WIRE_COLOUR);
+        g.setStroke(new BasicStroke(1.0f));
         g.drawLine(x1, y1, x2, y2); 
-        g.setColor(leg2colour);
         g.drawLine(x2, y2, x3, y3);
 
     }
@@ -384,11 +432,12 @@ public class Wire extends SelectableComponent {
     @Override
     public void mouseDragged(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);
+        parent.getParentFrame().getEditor().setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
         
         // Moving a segment of the wire
         if(hoverWaypoint!=null && !hoverWaypoint.equals(endPoint)){
             int i = waypoints.indexOf(hoverWaypoint);
-            Point p = Grid.snapPointToGrid(e.getPoint());
+            Point p = parent.getGrid().snapPointToGrid(e.getPoint());
             
             // We have more that one waypoint, let's get the i-1 th waypoint and move the right part of the wire
             if(i > 0){ 
@@ -423,6 +472,7 @@ public class Wire extends SelectableComponent {
 
     public void mouseDraggedDropped(MouseEvent e) {
         setSelectionState(selectionState.ACTIVE);
+        parent.getParentFrame().getEditor().setCursor(Cursor.getDefaultCursor());
         
         // Remove uneeded waypoints introduced by dragging
         int i = waypoints.indexOf(hoverWaypoint);
@@ -438,7 +488,8 @@ public class Wire extends SelectableComponent {
         if (!isFixed() && !getSelectionState().equals(SelectionState.ACTIVE)) {
             setSelectionState(SelectionState.DEFAULT);
         }
-        hoverMousePoint = Grid.snapPointToGrid(e.getPoint());
+        hoverMousePoint = parent.getGrid().snapPointToGrid(e.getPoint());
+        
     }
 
     @Override

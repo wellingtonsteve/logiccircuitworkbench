@@ -24,9 +24,10 @@ public class FileOpenCommand extends Command {
         if (rVal == JFileChooser.APPROVE_OPTION) {
             activeCircuit = editor.newCircuit();
             filename = c.getSelectedFile().getAbsolutePath();
-            CircuitFileHandler cfh = new CircuitFileHandler();
+            CircuitFileHandler cfh = new CircuitFileHandler(editor);
             activeCircuit.addComponentList(cfh.loadFile(filename));
             activeCircuit.setFilename(filename);
+            editor.refreshWindowsMenu();
             activeCircuit.getParentFrame().setTitle(filename);
         }
     }
