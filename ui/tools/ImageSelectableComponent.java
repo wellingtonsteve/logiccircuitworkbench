@@ -4,14 +4,11 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComponent;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-import sim.Component;
 import ui.CircuitPanel;
 import ui.netlist.Netlist;
 
@@ -106,10 +103,9 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
         if(isFixed()){
             if(getSelectionState().equals(SelectionState.ACTIVE)){
                  setSelectionState(SelectionState.HOVER);
-                 
             } else {
                  setSelectionState(SelectionState.ACTIVE);
-            } 
+            }
         }
     }
 
