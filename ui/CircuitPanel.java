@@ -492,19 +492,13 @@ public class CircuitPanel extends JPanel {
     public void selectTool(String tool){
         
         // Remove any temporary components left over
-        if(!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed()){
-            drawnComponents.pop();
-        }
-        repaint();
+        removeUnFixedComponents();
         
         // Create a new non-fixed component
         if(tool.equals("Standard.Wire")){
             drawnComponents.push(new Wire(CircuitPanel.this));
-        } else if(!tool.equals("Select")){
-            SelectableComponent newComponent = editor.getOptionsPanel().getSelectableComponent();
-            drawnComponents.push(newComponent);
-        }
-
+        } 
+        
         this.currentTool = tool;            
         
     }
@@ -672,7 +666,7 @@ public class CircuitPanel extends JPanel {
           }
      }
      
-         public void addComponent(SelectableComponent sc) {
+    public void addComponent(SelectableComponent sc) {
         drawnComponents.push(sc);
     }
 

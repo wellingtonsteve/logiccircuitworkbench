@@ -20,7 +20,7 @@ public class LogicGates extends Netlist{
 
     @Override
     protected void setImageMappings() {
-        // Active Images
+        // Default Images
         putImage("Logic Gates.2 Input.AND.default",   "build/classes/ui/images/components/default_2in_and.png");
         putImage("Logic Gates.2 Input.OR.default",    "build/classes/ui/images/components/default_2in_or.png");
         putImage("Logic Gates.2 Input.NAND.default",  "build/classes/ui/images/components/default_2in_nand.png");

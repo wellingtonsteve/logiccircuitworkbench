@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ui.command;
 
 import java.util.List;
@@ -26,6 +21,11 @@ public class RotateRightCommand extends Command {
             
             canUndo = true;
             editor.repaint();
+        } else if(editor.getOptionsPanel().getSelectableComponent() != null 
+                && !activeCircuit.getCurrentTool().equals("Standard.Wire") 
+                && !activeCircuit.getCurrentTool().equals("Select")){
+            editor.getOptionsPanel().setComponentRotation(editor.getOptionsPanel().getSelectableComponent().getRotation() + Math.PI/2);
+            editor.getOptionsPanel().repaint();
         }
     }
     

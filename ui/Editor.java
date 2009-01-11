@@ -45,6 +45,8 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         ErrorHandler.addErrorListener(this);
         setIconImage(new javax.swing.ImageIcon(this.getClass().getResource("/ui/images/buttons/toolbar/led.png")).getImage());
         newCircuit();
+        
+        
     }
 
     public CommandHistory getCommandHistory() {
@@ -436,6 +438,11 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
                 ComponentSelectionTreeValueChanged(evt);
             }
         });
+        ComponentSelectionTree.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                ComponentSelectionTreeFocusGained(evt);
+            }
+        });
         ComponentSelectionTree.setModel(getTreeValues());
         jScrollPane1.setViewportView(ComponentSelectionTree);
 
@@ -614,9 +621,14 @@ private void SelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WireMouseClicked
     toggleToolboxButton(Wire);
     getActiveCircuit().selectTool("Standard.Wire");
+    RotateRght.setEnabled(false);
+    RotateLeft.setEnabled(false);
 }//GEN-LAST:event_WireMouseClicked
 
 private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeValueChanged
+    RotateRght.setEnabled(true);
+    RotateLeft.setEnabled(true);
+    
     TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
     if(currentSelection != null){
         Object[] nameArray = currentSelection.getPath();
@@ -634,7 +646,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
             Options.repaint();
 
             // Update the circuit
-            makeToolSelection();
+            makeToolSelection(componentName);
 
             toggleToolboxButton(InsertComponent);
 
@@ -753,6 +765,7 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 
 private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertComponentMouseClicked
     toggleToolboxButton(InsertComponent);
+    ComponentSelectionTreeFocusGained(null);
 }//GEN-LAST:event_InsertComponentMouseClicked
 
 private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertSubComponentMouseClicked
@@ -790,6 +803,11 @@ private void PasteButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
 private void CopyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CopyButtonMouseClicked
     cmdHist.doCommand(new SelectionCopyCommand());
 }//GEN-LAST:event_CopyButtonMouseClicked
+
+private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeFocusGained
+    ((OptionsPanel)Options).setComponentRotation(0);
+    ComponentSelectionTreeValueChanged(null);
+}//GEN-LAST:event_ComponentSelectionTreeFocusGained
 
     /** 
      * Repopulate the windows menu in the toolbar with the opened circuits
@@ -934,10 +952,27 @@ private void CopyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
     /**
      * Get the current selection from the options panel and add the component to the current active circuit
      */
-    public void makeToolSelection(){
+    public void makeToolSelection(String tool){
         if(circuitPanel != null){
             circuitPanel.removeUnFixedComponents();
+            circuitPanel.selectTool(tool);
             cmdHist.doCommand(new AddComponentCommand(((OptionsPanel) Options).getSelectableComponent()));
+        }
+    }
+    
+    public void makeToolSelection(){
+        TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
+        if(currentSelection != null){
+            Object[] nameArray = currentSelection.getPath();
+            String componentName = new String();
+            for(int i = 0; i<nameArray.length; i++){
+                componentName += nameArray[i] + ".";
+            }
+            componentName = componentName.substring(0, componentName.length() - 1);
+
+            if(isValidComponent(componentName)){
+                makeToolSelection(componentName);
+            }     
         }
     }
     

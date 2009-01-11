@@ -31,9 +31,9 @@ public class PreviewPanel extends JPanel{
         g.fillRect(0, 0, getWidth(), getHeight());
         g.translate(-sc.getOrigin().x, -sc.getOrigin().y);
         g.translate((int)(getWidth() - sc.getWidth())/2, (int)(getHeight() - sc.getHeight())/2);
- 
+
         sc.draw((Graphics2D) g);
-        
+
         g.translate(-(int)(getWidth() - sc.getWidth())/2, (int)-(getHeight() - sc.getHeight())/2);
         g.translate(sc.getOrigin().x, sc.getOrigin().y);
     }

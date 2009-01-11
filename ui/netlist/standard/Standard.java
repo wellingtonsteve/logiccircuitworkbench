@@ -11,7 +11,6 @@ public class Standard extends Netlist{
     @Override
     protected void setClassMappings() {
         putClass("Standard.Button Source",    ui.netlist.standard.Input.class);
-        putClass("Standard.Wire",             ui.netlist.standard.Wire.class);
         putClass("Standard.LED",              ui.netlist.standard.LED.class);
        
     }  
