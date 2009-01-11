@@ -52,11 +52,11 @@ public class LED extends ImageSelectableComponent{
                 colour = "yellow";
             }
             if(colour.equals("red")){
-                activeBi = ImageIO.read(new File("build/classes/ui/images/components/default_led_on_red.png"));
+                activeBi = ImageIO.read(getClass().getResource("ui/images/components/default_led_on_red.png"));
             } else if(colour.equals("green")){
-                activeBi = ImageIO.read(new File("build/classes/ui/images/components/default_led_on_green.png"));
+                activeBi = ImageIO.read(getClass().getResource("ui/images/components/default_led_on_green.png"));
             } else {
-                activeBi = ImageIO.read(new File("build/classes/ui/images/components/default_led_on_yellow.png"));
+                activeBi = ImageIO.read(getClass().getResource("ui/images/components/default_led_on_yellow.png"));
             }
                     
         } catch (IOException ex) {

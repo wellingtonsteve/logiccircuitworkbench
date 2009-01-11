@@ -31,7 +31,7 @@ public class ConnectionPoint extends GridObject {
         super(p);
         
         try {
-            defaultCrossover = ImageIO.read(new File("build/classes/ui/images/components/default_wire_crossover.png"));
+            defaultCrossover = ImageIO.read(getClass().getResource("/ui/images/components/default_wire_crossover.png"));
         } catch (IOException ex) {
             Logger.getLogger(ConnectionPoint.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -219,11 +219,14 @@ public class OptionsPanel extends JPanel{
 
     public void setComponentRotation(double d) {
         this.rotation = d;
-        sc.setRotation(rotation);
-        Preview.setComponent(sc);
-        Preview.repaint();
-        editor.getActiveCircuit().removeUnFixedComponents();
-        editor.getActiveCircuit().addComponent(sc);
+        if(sc != null){
+            sc.setRotation(rotation);
+            Preview.setComponent(sc);
+            Preview.repaint();
+            editor.getActiveCircuit().removeUnFixedComponents();
+            editor.getActiveCircuit().addComponent(sc);
+        }
+        
     }
     
     private void setLayoutManager(){      

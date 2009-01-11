@@ -7,6 +7,8 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Point;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -36,6 +38,10 @@ import ui.tools.SelectableComponent;
 public class Editor extends javax.swing.JFrame implements ErrorListener {
     private CircuitPanel circuitPanel;
     private LinkedList<Netlist> netlists = new LinkedList<Netlist>();
+    private Image offscreenImage;
+    private Graphics offscreenGraphics;
+    private boolean drawDirect = false;
+    private boolean detected = false;
     
     /** Creates new form FrameMain */
     public Editor() {        
@@ -47,10 +53,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         newCircuit();
         
         
-    }
-
-    public CommandHistory getCommandHistory() {
-        return cmdHist;
     }
 
     /** This method is called from within the constructor to
@@ -120,9 +122,9 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
         setTitle(bundle.getString("Editor.title")); // NOI18N
-        setBounds(new java.awt.Rectangle(0, 0, 800, 600));
+        setBounds(new java.awt.Rectangle(0, 0, 985, 750));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setMinimumSize(new java.awt.Dimension(800, 600));
+        setMinimumSize(new java.awt.Dimension(985, 750));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
 
         Toolbar.setFloatable(false);
@@ -340,6 +342,8 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         getContentPane().add(Toolbar);
 
+        MainScrollPane.setPreferredSize(new java.awt.Dimension(750, 550));
+
         DesktopPane.setAutoscrolls(true);
         DesktopPane.setMinimumSize(new java.awt.Dimension(600, 400));
 
@@ -444,6 +448,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
             }
         });
         ComponentSelectionTree.setModel(getTreeValues());
+        ComponentSelectionTree.setRootVisible(false);
         jScrollPane1.setViewportView(ComponentSelectionTree);
 
         Toolbox.getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 74, 170, 250));
@@ -913,7 +918,7 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
                     
             }            
         }
-              
+
         return new DefaultTreeModel(rootNode);
     }
     
@@ -988,6 +993,124 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
     public OptionsPanel getOptionsPanel(){
         return (OptionsPanel) Options;
     }
+    
+    public CommandHistory getCommandHistory() {
+        return cmdHist;
+    }
+
+    public Graphics getOffscreenGraphics() {
+        return offscreenGraphics;
+    }
+    
+    public Image getOffscreenImage() {
+        return offscreenImage;
+    }
+    
+    /**
+     * Query the result of the fastest place to draw
+     * 
+     * @return
+     */
+    public boolean drawDirect() {
+        return drawDirect;
+    }
+    
+    /**@see #paint(java.awt.Graphics) 
+     * 
+     * Also find the fastest place to draw (Offscreen/Onscreen)
+     */
+    @Override
+    public void paint(Graphics g){
+        // If we haven't run auto-detection yet, do it now
+        if (UIConstants.DO_OFFSCREEN_DRAWING_TEST && !detected) {
+            doAutoDetect(g);
+        }
+        
+        super.paint(g);
+    }
+    
+    /** From: Expert Solutions by Mark Wutka, et. al. (http://www.webbasedprogramming.com/Java-Expert-Solutions/)
+     * doAutoDetect performs tries drawing to the screen and to a
+     * buffer. Whichever one takes the least time (actually, whichever
+     * one it can do the most times within a set time constraint) is
+     * the one that is best.
+     */
+     protected void doAutoDetect(Graphics g)
+     {
+
+        // Create the off-screen drawing area
+        offscreenImage = createImage(getWidth(), getHeight());
+        offscreenGraphics = offscreenImage.getGraphics();
+
+          long start;
+          long end;
+
+          // Tally the number of times we were able to draw direct and buffered
+          int directCount = 0;
+          int bufferedCount = 0;
+
+            // Draw in the applet's background color, makes the autodetection invisible.
+
+          g.setColor(getBackground());
+          // Mark what time we started
+          start = System.currentTimeMillis();
+          end = start;
+
+          // Paint patterns directly to the screen, but only for 500 milliseconds
+          while ((end-start) < 500) {
+               paintDetectDesign(g);
+               end = System.currentTimeMillis();
+               directCount++;
+          }
+          g.setColor(getForeground());
+
+          // record the total time spent drawing directly
+          long directTime = end - start;
+
+          start = System.currentTimeMillis();
+          end = start;
+
+          // Paint patterns to the offscreen graphics, but only for 500 milliseconds
+          while ((end-start) < 500) {
+               paintDetectDesign(offscreenGraphics);
+               end = System.currentTimeMillis();
+               bufferedCount++;
+          }
+
+          long bufferedTime = end - start;
+
+          // If we were able to draw more times using the buffered graphics,
+          // or if the drawing counts are the same, but the total time for
+          // the buffering was less, buffering is faster.
+
+          if ((bufferedCount > directCount) ||
+               ((bufferedCount == directCount) &&
+                (bufferedTime < directTime))) {
+               drawDirect = false;
+          } else {
+
+          // If we want to draw direct, free the space taken up by the
+          // offscreen image and graphics context.
+               offscreenImage.flush();
+               offscreenImage = null;
+               offscreenGraphics = null;
+               drawDirect = true;
+          }
+          detected = true;
+    }
+
+    /** paintDetectDesign performs some graphical operations to gauge the time
+     * it takes to paint either directly or to an offscreen area. It just draws
+     * some lines, boxes and ovals a number of times and then returns.
+     */
+     protected void paintDetectDesign(Graphics g)
+     {
+          for (int i=0; i < 10; i++) {
+               g.drawLine(0, 0, 100, 100);
+               g.fillRect(0, 0, 100, 100);
+               g.fillOval(0, 0, 100, 100);
+          }
+     }
 
     /**
      * @param args the command line arguments
@@ -997,8 +1120,8 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         try {
            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
         } 
         catch (Exception e) {
            e.printStackTrace();
