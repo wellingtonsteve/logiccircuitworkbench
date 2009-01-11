@@ -1,7 +1,6 @@
 package ui.netlist;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Set;
@@ -53,11 +52,13 @@ public abstract class Netlist {
     public void putImage(String key, String value){
         BufferedImage image = null;
         try {
-            image = ImageIO.read(new File(value));
+            image = ImageIO.read(getClass().getResource(value));
         } catch (IOException ex) {
             Logger.getLogger(Netlist.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(image==null){System.out.println("no file loaded");}
+        if(image==null){System.out.println("no file loaded");
+            
+        }
         imageMap.put(key, image);
     }
     
