@@ -752,6 +752,7 @@
                     <Component class="javax.swing.JTree" name="ComponentSelectionTree">
                       <Events>
                         <EventHandler event="valueChanged" listener="javax.swing.event.TreeSelectionListener" parameters="javax.swing.event.TreeSelectionEvent" handler="ComponentSelectionTreeValueChanged"/>
+                        <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="ComponentSelectionTreeFocusGained"/>
                       </Events>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_ListenersCodePost" type="java.lang.String" value="ComponentSelectionTree.setModel(getTreeValues());"/>

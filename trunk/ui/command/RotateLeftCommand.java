@@ -26,6 +26,11 @@ public class RotateLeftCommand extends Command {
             
             canUndo = true;
             editor.repaint();
+        } else if(editor.getOptionsPanel().getSelectableComponent() != null 
+                && !activeCircuit.getCurrentTool().equals("Standard.Wire") 
+                && !activeCircuit.getCurrentTool().equals("Select")){
+            editor.getOptionsPanel().setComponentRotation(editor.getOptionsPanel().getSelectableComponent().getRotation() - Math.PI/2);
+            editor.getOptionsPanel().repaint();
         }
     }
     
