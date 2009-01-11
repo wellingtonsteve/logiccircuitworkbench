@@ -60,6 +60,7 @@ public class CircuitPanel extends JPanel {
         
         addMouseMotionListener(new MouseMotionAdapter(){  
             
+            
             @Override
             @SuppressWarnings("static-access")
             public void mouseMoved(MouseEvent e) {
@@ -102,11 +103,9 @@ public class CircuitPanel extends JPanel {
                             temporaryComponent.mouseMoved(e);
                         }
 
-                    } 
-                    
-                    // Repaint only dirty areas
-                     //repaintDirtyAreas();
-                   repaint();
+                    }             
+                     
+                    repaint();
                     
                 } else if(currentTool.equals("Standard.Wire") 
                         && !drawnComponents.isEmpty()
@@ -379,31 +378,6 @@ public class CircuitPanel extends JPanel {
             selHeight = selHeight * -1;
         }
     }
-    
-    private void repaintDirtyAreas() {
-
-        
-        int dirtyX = Math.min(startPoint.x, Math.min(endPoint.x, currentPoint.x));
-        int dirtyY = Math.min(startPoint.y, Math.min(endPoint.y, currentPoint.y));
-        int dirtyMaxX = Math.max(startPoint.x, Math.max(endPoint.x, currentPoint.x));
-        int dirtyMaxY = Math.max(startPoint.y, Math.max(endPoint.y, currentPoint.y));
-        
-        // Include range of current selection (i.e. non-fixed components)
-        for(SelectableComponent sc: drawnComponents){
-            if(!sc.isFixed()){
-                Rectangle bb = sc.getBoundingBox();
-                if(bb.getMinX() < dirtyX) { dirtyX = (int) bb.getMinX(); }
-                if(bb.getMinY() < dirtyY) { dirtyY = (int) bb.getMinY(); }
-                if(bb.getMaxX() > dirtyMaxX) { dirtyMaxX = (int) bb.getMaxX(); }
-                if(bb.getMaxY() > dirtyMaxY) { dirtyMaxY = (int) bb.getMaxY(); }
-            }
-        }
-        
-        int dirtyWidth = dirtyMaxX - dirtyX;
-        int dirtyHeight = dirtyMaxY - dirtyY;
-        
-        repaint(dirtyX, dirtyY, dirtyWidth, dirtyHeight);
-    }
      
     @Override
     public void paintComponent(Graphics g) {
@@ -460,11 +434,13 @@ public class CircuitPanel extends JPanel {
         
         // Draw previous components
         for(SelectableComponent sc: drawnComponents){
-            g2.translate(-sc.getCentre().x, -sc.getCentre().y);
+            
             if(sc.isFixed() || (endPoint != null && contains(endPoint))){ // Don't draw the temp component, when mouse is outside viewable area.
-                sc.draw(g2);
+                g2.translate(-sc.getCentre().x, -sc.getCentre().y);
+                sc.draw(g2); 
+                g2.translate(sc.getCentre().x, sc.getCentre().y);    
             }
-            g2.translate(sc.getCentre().x, sc.getCentre().y);           
+                   
         }
         
         if(multipleSelection){

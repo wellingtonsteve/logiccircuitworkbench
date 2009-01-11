@@ -39,8 +39,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     protected double cosTheta, sinTheta;
     protected Rectangle invalidArea = null;
     private String label = new String();
-    protected CircuitPanel parent;
-    
+    protected CircuitPanel parent;    
 
     public SelectableComponent(CircuitPanel parent, Point point){
         this.parent = parent;
@@ -122,7 +121,6 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
 
             setInvalidAreas();
             setBoundingBox();
-            
         }         
         
         if(!this.fixed && fixed && UIConstants.DO_SYSTEM_BEEP){
@@ -236,8 +234,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         return parent.getGrid().snapPointToGrid(ansP);
     }
 
-    public abstract void createXML(TransformerHandler hd);
-    
+    public abstract void createXML(TransformerHandler hd);    
     
     public void setRotation(double rotation) {
         this.rotation = rotation;
@@ -249,12 +246,13 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     public void draw(Graphics2D g){
+            
         if(hasLabel()){
             g.setColor(UIConstants.LABEL_TEXT_COLOUR);
             g.drawString(getLabel(), getOrigin().x+UIConstants.LABEL_COMPONENT_X_OFFSET, getOrigin().y+UIConstants.LABEL_COMPONENT_Y_OFFSET);
         }
     }
-                   
+
     public String getLabel() {
         return label;
     }
