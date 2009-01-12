@@ -53,6 +53,7 @@ public class CircuitPanel extends JPanel {
     private CircuitFrame parentFrame;
     private Editor editor;
     private final Grid grid = new Grid();
+    private Point previousPoint = new Point(0,0);
 
     public CircuitPanel(){
         frameOriginX = this.getX();
@@ -377,6 +378,41 @@ public class CircuitPanel extends JPanel {
             selY = selY + selHeight;
             selHeight = selHeight * -1;
         }
+    }
+    
+    private void repaintDirtyAreas() {
+        
+       
+        int dirtyX = Math.min(endPoint.x, previousPoint.x);
+        int dirtyY = Math.min(endPoint.y, previousPoint.y);
+        int dirtyMaxX = Math.max(endPoint.x, previousPoint.x);
+        int dirtyMaxY = Math.max(endPoint.y, previousPoint.y);
+       
+        // Include range of current selection (i.e. non-fixed components)
+        for(SelectableComponent sc: drawnComponents){
+            if(!sc.isFixed()){
+                Rectangle bb = sc.getBoundingBox();
+                if(dirtyX - sc.getCentre().x < dirtyX) { dirtyX = dirtyX - sc.getCentre().x - 10; }
+                if(dirtyY - sc.getCentre().y < dirtyY) { dirtyY = dirtyY - sc.getCentre().y - 10; }
+                if(dirtyMaxX + sc.getCentre().x > dirtyMaxX) { dirtyMaxX = dirtyMaxX + sc.getCentre().x +10; }
+                if(dirtyMaxY + sc.getCentre().y > dirtyMaxY) { dirtyMaxY = dirtyMaxY + sc.getCentre().y +10; }
+//                if(bb.getMinY() < dirtyY) { dirtyY = (int) bb.getMinY(); }
+//                if(bb.getMaxX() > dirtyMaxX) { dirtyMaxX = (int) bb.getMaxX(); }
+//                if(bb.getMaxY() > dirtyMaxY) { dirtyMaxY = (int) bb.getMaxY(); }
+//                if(bb.getMinX() - dX < dirtyX) { dirtyX = (int) bb.getMinX() - dX; }
+//                if(bb.getMinY() - dY < dirtyY) { dirtyY = (int) bb.getMinY() - dY; }
+//                if(bb.getMaxX() + dX > dirtyMaxX) { dirtyMaxX = (int) bb.getMaxX() + dX; }
+//                if(bb.getMaxY() + dY > dirtyMaxY) { dirtyMaxY = (int) bb.getMaxY() + dY; }
+            }
+            
+        }
+
+        int dirtyWidth = dirtyMaxX - dirtyX;
+        int dirtyHeight = dirtyMaxY - dirtyY;
+        
+        repaint(dirtyX, dirtyY, dirtyWidth, dirtyHeight);
+        
+
     }
      
     @Override
