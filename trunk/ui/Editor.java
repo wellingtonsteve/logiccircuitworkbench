@@ -26,7 +26,6 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import ui.command.*;
 import ui.error.Error;
-import ui.error.ErrorHandler;
 import ui.error.ErrorListener;
 import ui.netlist.Netlist;
 import ui.tools.SelectableComponent;
@@ -41,18 +40,11 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     private Image offscreenImage;
     private Graphics offscreenGraphics;
     private boolean drawDirect = false;
-    private boolean detected = false;
     
     /** Creates new form FrameMain */
     public Editor() {        
-        addNetlist(new ui.netlist.standard.Standard());
-        addNetlist(new ui.netlist.logicgates.LogicGates());
         initComponents();
-        ErrorHandler.addErrorListener(this);
-        setIconImage(new javax.swing.ImageIcon(this.getClass().getResource("/ui/images/buttons/toolbar/led.png")).getImage());
-        newCircuit();
-        
-        
+        setIconImage(new javax.swing.ImageIcon(this.getClass().getResource("/ui/images/buttons/toolbar/led.png")).getImage());       
     }
 
     /** This method is called from within the constructor to
@@ -924,6 +916,7 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
     
     public void addNetlist(Netlist nl){
         this.netlists.add(nl);
+        ComponentSelectionTree.setModel(getTreeValues());
     }
     
     private boolean isValidComponent(String  key){
@@ -1014,30 +1007,17 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
     public boolean drawDirect() {
         return drawDirect;
     }
-    
-    /**@see #paint(java.awt.Graphics) 
-     * 
-     * Also find the fastest place to draw (Offscreen/Onscreen)
-     */
-    @Override
-    public void paint(Graphics g){
-        // If we haven't run auto-detection yet, do it now
-        if (UIConstants.DO_OFFSCREEN_DRAWING_TEST && !detected) {
-            doAutoDetect(g);
-        }
         
-        super.paint(g);
-    }
-    
     /** From: Expert Solutions by Mark Wutka, et. al. (http://www.webbasedprogramming.com/Java-Expert-Solutions/)
      * doAutoDetect performs tries drawing to the screen and to a
      * buffer. Whichever one takes the least time (actually, whichever
      * one it can do the most times within a set time constraint) is
      * the one that is best.
      */
-     protected void doAutoDetect(Graphics g)
+     public void doAutoDetect()
      {
-
+        Graphics g = this.getGraphics();
+        
         // Create the off-screen drawing area
         offscreenImage = createImage(getWidth(), getHeight());
         offscreenGraphics = offscreenImage.getGraphics();
@@ -1096,7 +1076,6 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
                offscreenGraphics = null;
                drawDirect = true;
           }
-          detected = true;
     }
 
     /** paintDetectDesign performs some graphical operations to gauge the time
