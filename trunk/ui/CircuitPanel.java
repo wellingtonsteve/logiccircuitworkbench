@@ -28,7 +28,7 @@ import ui.grid.Pin;
 import ui.grid.Grid;
 import ui.tools.SelectableComponent;
 import ui.tools.SelectionState;
-import ui.netlist.standard.Wire;
+import netlist.standard.Wire;
 
 /**
  *

@@ -36,11 +36,11 @@ public class Main {
         loadingBar.setValue(30);
 
         loadingBar.setString("Loading Standard Netlist...");
-        editor.addNetlist(new ui.netlist.standard.Standard());
+        editor.addNetlist(new netlist.standard.Standard());
         loadingBar.setValue(40);
 
         loadingBar.setString("Loading Logic Gates Netlist...");
-        editor.addNetlist(new ui.netlist.logicgates.LogicGates());
+        editor.addNetlist(new netlist.logicgates.LogicGates());
         loadingBar.setValue(50);
 
         loadingBar.setString("Creating Blank Circuit...");

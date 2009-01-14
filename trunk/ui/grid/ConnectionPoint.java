@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import ui.UIConstants;
 import ui.tools.SelectableComponent;
-import ui.netlist.standard.Wire;
+import netlist.standard.Wire;
 
 /**
  *
