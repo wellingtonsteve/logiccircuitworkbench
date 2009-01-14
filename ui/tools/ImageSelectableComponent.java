@@ -10,7 +10,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import ui.CircuitPanel;
-import ui.netlist.Netlist;
+import netlist.Netlist;
 
 /**
  *

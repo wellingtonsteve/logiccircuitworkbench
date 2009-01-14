@@ -27,7 +27,7 @@ import javax.swing.tree.TreePath;
 import ui.command.*;
 import ui.error.Error;
 import ui.error.ErrorListener;
-import ui.netlist.Netlist;
+import netlist.Netlist;
 import ui.tools.SelectableComponent;
 
 /**

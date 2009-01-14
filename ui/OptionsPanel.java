@@ -20,12 +20,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
-import ui.command.AddLabelCommand;
 import ui.command.EditLabelCommand;
 import ui.error.ErrorHandler;
-import ui.netlist.standard.Input;
-import ui.netlist.standard.LED;
-import ui.netlist.standard.Wire;
+import netlist.standard.Input;
+import netlist.standard.LED;
+import netlist.standard.Wire;
 import ui.tools.SelectableComponent;
 
 /**

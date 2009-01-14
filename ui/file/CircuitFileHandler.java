@@ -1,13 +1,5 @@
 package ui.file;
 
-import ui.netlist.logicgates.AndGate2Input;
-import ui.netlist.logicgates.NandGate2Input;
-import ui.netlist.logicgates.OrGate2Input;
-import ui.netlist.logicgates.NorGate2Input;
-import ui.netlist.logicgates.AndGate3Input;
-import ui.netlist.standard.Input;
-import ui.netlist.standard.LED;
-import ui.netlist.standard.Wire;
 import java.awt.Point;
 import java.io.*;
 import java.util.Stack;
@@ -75,13 +67,13 @@ public class CircuitFileHandler extends DefaultHandler{
             String type = attribs.getValue("type");
             // TODO Integrate with netlists
             
-            if(type.equals("Input")){               stack.push(new Input(editor.getActiveCircuit(), p)); }
-            else if(type.equals("LED")){            stack.push(new LED(editor.getActiveCircuit(), p)); }
-            else if(type.equals("AndGate2Input")){  stack.push(new AndGate2Input(editor.getActiveCircuit(), p)); }
-            else if(type.equals("AndGate3Input")){  stack.push(new AndGate3Input(editor.getActiveCircuit(), p)); }
-            else if(type.equals("NandGate2Input")){ stack.push(new NandGate2Input(editor.getActiveCircuit(), p)); }
-            else if(type.equals("NorGate2Input")){  stack.push(new NorGate2Input(editor.getActiveCircuit(), p)); }
-            else if(type.equals("OrGate2Input")){   stack.push(new OrGate2Input(editor.getActiveCircuit(), p)); }
+            if(type.equals("Input")){               stack.push(new netlist.standard.Input(editor.getActiveCircuit(), p)); }
+            else if(type.equals("LED")){            stack.push(new netlist.standard.LED(editor.getActiveCircuit(), p)); }
+            else if(type.equals("AndGate2Input")){  stack.push(new netlist.logicgates.AndGate2Input(editor.getActiveCircuit(), p)); }
+            else if(type.equals("AndGate3Input")){  stack.push(new netlist.logicgates.AndGate3Input(editor.getActiveCircuit(), p)); }
+            else if(type.equals("NandGate2Input")){ stack.push(new netlist.logicgates.NandGate2Input(editor.getActiveCircuit(), p)); }
+            else if(type.equals("NorGate2Input")){  stack.push(new netlist.logicgates.NorGate2Input(editor.getActiveCircuit(), p)); }
+            else if(type.equals("OrGate2Input")){   stack.push(new netlist.logicgates.OrGate2Input(editor.getActiveCircuit(), p)); }
             
             stack.peek().setRotation(rotation);
             stack.peek().translate(0, 0, true);
@@ -93,7 +85,7 @@ public class CircuitFileHandler extends DefaultHandler{
             int endx = Integer.parseInt(attribs.getValue("endx"));
             int endy = Integer.parseInt(attribs.getValue("endy"));
 
-            Wire w = new Wire(editor.getActiveCircuit());
+            netlist.standard.Wire w = new netlist.standard.Wire(editor.getActiveCircuit());
             
             w.setStartPoint(new Point(startx, starty));
             w.setEndPoint(new Point(endx, endy));
@@ -108,10 +100,10 @@ public class CircuitFileHandler extends DefaultHandler{
             
             SelectableComponent top = stack.peek();
             
-            if(top instanceof LED && attrName.equals("colour")){
-                ((LED) top).setColour(attrValue);
-            } else if(top instanceof Input && attrName.equals("value")){
-                ((Input) top).setIsOn(attrValue.equals("On"));
+            if(top instanceof netlist.standard.LED && attrName.equals("colour")){
+                ((netlist.standard.LED) top).setColour(attrValue);
+            } else if(top instanceof netlist.standard.Input && attrName.equals("value")){
+                ((netlist.standard.Input) top).setIsOn(attrValue.equals("On"));
             } else {
                 // TODO: Cancel load
                 ui.error.ErrorHandler.newError(new ui.error.Error("File Load Error","Invalid File Format: The property \"" + attrName + "\" is not valid for a "+ top.getClass().getSimpleName() +"."));
@@ -124,8 +116,8 @@ public class CircuitFileHandler extends DefaultHandler{
             
             SelectableComponent top = stack.peek();
             
-            if(top instanceof Wire){
-                ((Wire) top).addWaypoint(new Point(x,y));
+            if(top instanceof netlist.standard.Wire){
+                ((netlist.standard.Wire) top).addWaypoint(new Point(x,y));
             } else {
                 // TODO:  cancel load
                 ui.error.ErrorHandler.newError(new ui.error.Error("File Load Error","Invalid File Format: The element \"waypoint\" is not valid for a "+ top.getClass().getSimpleName() +"."));
