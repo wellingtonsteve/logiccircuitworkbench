@@ -44,12 +44,15 @@ public class UIConstants {
     public static void beep(){
         java.awt.Toolkit.getDefaultToolkit ().beep();
     }
+
+    public static final Color DEFAULT_COMPONENT_COLOUR = Color.BLACK;
+    public static final Color ACTIVE_COMPONENT_COLOUR = Color.BLUE;
+    public static final Color HOVER_COMPONENT_COLOUR = Color.RED;
+    
     
     public static boolean SHOW_WIRE_WAYPOINTS = false;
     public static Color WIRE_WAYPOINT_COLOUR = Color.GREEN;
     public static int WIRE_HOVER_THICKNESS = 2;
-    public static final Color DEFAULT_WIRE_COLOUR = Color.BLACK;
-    public static final Color ACTIVE_WIRE_COLOUR = Color.BLUE;
     public static final Stroke ACTIVE_WIRE_STROKE = new BasicStroke(5.0f);
     public static final Color HOVER_WIRE_COLOUR = Color.GRAY;
     
