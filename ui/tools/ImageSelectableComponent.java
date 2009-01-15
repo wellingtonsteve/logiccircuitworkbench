@@ -24,7 +24,7 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     public ImageSelectableComponent(CircuitPanel parent, Point point){
         super(parent, point);
         
-        rotation = 0;
+        setRotation(0);
         
         setComponentTreeName();
         setNetlist();
@@ -41,7 +41,7 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     
     public int getWidth(){
         return getDefaultImage().getWidth();
-    };
+    }
     
     public int getHeight(){
         return getDefaultImage().getHeight();

@@ -8,10 +8,16 @@ package ui;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
@@ -24,10 +30,13 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import javax.xml.transform.sax.TransformerHandler;
+import sim.SimItem;
 import ui.command.*;
 import ui.error.Error;
 import ui.error.ErrorListener;
 import netlist.Netlist;
+import ui.tools.ImageSelectableComponent;
 import ui.tools.SelectableComponent;
 
 /**
@@ -630,6 +639,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
     
     TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
     if(currentSelection != null){
+        // Implode from array path to string delimited by periods.
         Object[] nameArray = currentSelection.getPath();
         String componentName = new String();
         for(int i = 0; i<nameArray.length; i++){
@@ -917,7 +927,9 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
     }
     
     public void addNetlist(Netlist nl){
-        this.netlists.add(nl);
+        if(!nl.keySet().isEmpty()){
+            netlists.add(nl);
+        }
         ComponentSelectionTree.setModel(getTreeValues());
     }
     
@@ -927,13 +939,14 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
             key = key.substring(11); 
         }
         for(Netlist nl: netlists){
-            if(nl.containsKey(key)){
+            if(nl.containsLogicKey(key)){
                 return true;
             }
         }        
-        return false;
+        return true;
     }
     
+    private sim.SimItem simitem;
     @SuppressWarnings("unchecked")
     public Class<? extends SelectableComponent> getNetlistComponent(String key){
         //Remove "Components." from begining
@@ -943,6 +956,28 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         for(Netlist nl: netlists){
             if(nl.containsKey(key)){
                 return nl.getClass(key);
+            } else if(nl.containsLogicKey(key)){
+            // Component not found, revert to default component created from Logic Class data
+            
+                try {
+                    simitem = nl.getLogicClass(key).getConstructor(sim.Simulator.class).newInstance(getActiveCircuit().getSimulator());
+                    ImageSelectableComponentImpl sc = new ImageSelectableComponentImpl(getActiveCircuit(), new Point(0,0));
+                return sc.getClass();
+                                
+                } catch (InstantiationException ex) {
+                    Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvocationTargetException ex) {
+                    Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (NoSuchMethodException ex) {
+                    Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SecurityException ex) {
+                    Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             }
         }
         
@@ -1180,6 +1215,85 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
 
     public void reportError(Error error) {
         JOptionPane.showMessageDialog(this,error.getMessage(), error.getTitle(), JOptionPane.ERROR_MESSAGE);
+    }
+
+    public class ImageSelectableComponentImpl extends ImageSelectableComponent {
+
+        public ImageSelectableComponentImpl(CircuitPanel parent, Point point) {
+            super(parent, point);
+        }
+
+        @Override
+        protected void setLocalPins() {
+            int inputPins = simitem.getInputs().size();
+            int outputPins = simitem.getOutputs().size();
+
+            for (int i = 0; i < inputPins; i++) {
+                localPins.add(new Point(UIConstants.GRID_DOT_SPACING, (i + 1) * UIConstants.GRID_DOT_SPACING));
+            }
+
+            for (int i = 0; i < outputPins; i++) {
+                localPins.add(new Point(5 * UIConstants.GRID_DOT_SPACING, (i + 1) * UIConstants.GRID_DOT_SPACING));
+            }
+        }
+
+        @Override
+        public String getName() {
+            return simitem.getName();
+        }
+
+        @Override
+        public int getHeight() {
+            return (Math.max(simitem.getInputs().size(), simitem.getOutputs().size()) + 2) * UIConstants.GRID_DOT_SPACING;
+        }
+
+        @Override
+        public int getWidth() {
+            return 5 * UIConstants.GRID_DOT_SPACING;
+        }
+
+        @Override
+        protected void setInvalidAreas() {
+            // Tight fitting box so that pins, used for hover selection of component and checking invalid areas
+            this.invalidArea = new java.awt.Rectangle(10, 10, 30, getHeight());
+        }
+
+        @Override
+        public Point getCentre() {
+            return new Point(30, 30);
+        }
+
+        @Override
+        public void draw(Graphics2D g) {
+            super.draw(g); // Draw labels
+            g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
+            g.draw(getInvalidAreas());
+            g.drawString(simitem.getName(), 0, 0);
+            g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
+        }
+
+        @Override
+        protected void setNetlist() {
+        }
+
+        @Override
+        protected void setComponentTreeName() {
+        }
+
+        @Override
+        protected void setDefaultImage() {
+            defaultBi = null;
+        }
+
+        @Override
+        protected void setSelectedImage() {
+            selectedBi = null;
+        }
+
+        @Override
+        protected void setActiveImage() {
+            activeBi = null;
+        }
     }
     
 }
