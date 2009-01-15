@@ -175,7 +175,11 @@ public class OptionsPanel extends JPanel{
         
         if(componentName!=null && editor!=null){
             try {
-                sc = editor.getNetlistComponent(componentName).getConstructor(CircuitPanel.class, Point.class).newInstance(editor.getActiveCircuit(), new Point(0,0));
+                if(editor.isNetlistComponent(componentName)){
+                    sc = editor.getNetlistComponent(componentName).getConstructor(CircuitPanel.class, Point.class).newInstance(editor.getActiveCircuit(), new Point(0,0));
+                } else {
+                    sc = editor.getDefaultNetlistComponent(componentName);
+                }
             } catch (InstantiationException ex) {
                 Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {

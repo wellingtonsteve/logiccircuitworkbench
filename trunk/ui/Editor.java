@@ -11,11 +11,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Enumeration;
 import java.util.LinkedList;
-import java.util.logging.Level;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -30,12 +28,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import javax.xml.transform.sax.TransformerHandler;
-import sim.SimItem;
 import ui.command.*;
 import ui.error.Error;
 import ui.error.ErrorListener;
 import netlist.Netlist;
+import ui.grid.Pin;
 import ui.tools.ImageSelectableComponent;
 import ui.tools.SelectableComponent;
 
@@ -337,6 +334,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Toolbar.add(StartButton);
 
         jSlider1.setMajorTickSpacing(10);
+        jSlider1.setPaintLabels(true);
         jSlider1.setPaintTicks(true);
         jSlider1.setSnapToTicks(true);
         jSlider1.setMaximumSize(new java.awt.Dimension(200, 33));
@@ -660,7 +658,9 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
             toggleToolboxButton(InsertComponent);
 
             repaint();
-        }        
+        }
+        
+        
     }
     
 }//GEN-LAST:event_ComponentSelectionTreeValueChanged
@@ -933,36 +933,53 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         ComponentSelectionTree.setModel(getTreeValues());
     }
     
-    private boolean isValidComponent(String  key){
-        //Remove "Components." from begining
-        if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
-            key = key.substring(11); 
-        }
-        for(Netlist nl: netlists){
-            if(nl.containsLogicKey(key)){
-                return true;
-            }
-        }        
-        return true;
-    }
-    
-    private sim.SimItem simitem;
-    @SuppressWarnings("unchecked")
-    public Class<? extends SelectableComponent> getNetlistComponent(String key){
+    public boolean isNetlistComponent(String key){
         //Remove "Components." from begining
         if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
             key = key.substring(11); 
         }
         for(Netlist nl: netlists){
             if(nl.containsKey(key)){
-                return nl.getClass(key);
-            } else if(nl.containsLogicKey(key)){
+                return true;
+            }
+        }        
+        return false;
+    }
+    
+    public boolean isValidComponent(String key){
+        //Remove "Components." from begining
+        if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
+            key = key.substring(11); 
+        }
+        for(Netlist nl: netlists){
+            if(nl.containsKey(key)){
+                return true;
+            }
+        }        
+        
+        for(Netlist nl: netlists){
+            if(nl.containsLogicKey(key)){
+                return true;
+            }
+        }    
+        return false;
+    }
+    
+    private sim.SimItem simitem;
+    public SelectableComponent getDefaultNetlistComponent(String key){
+        //Remove "Components." from begining
+        if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
+            key = key.substring(11); 
+        }
+        
+        for(Netlist nl: netlists){
+            if(nl.containsLogicKey(key)){
             // Component not found, revert to default component created from Logic Class data
             
                 try {
                     simitem = nl.getLogicClass(key).getConstructor(sim.Simulator.class).newInstance(getActiveCircuit().getSimulator());
-                    ImageSelectableComponentImpl sc = new ImageSelectableComponentImpl(getActiveCircuit(), new Point(0,0));
-                return sc.getClass();
+                    ImageSelectableComponentImpl sc = new ImageSelectableComponentImpl(getActiveCircuit(), new Point(0,0),key);
+                    return sc;
                                 
                 } catch (InstantiationException ex) {
                     Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -978,6 +995,21 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
                     Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
+            }
+        }
+        return null;
+    }
+    
+    
+    @SuppressWarnings("unchecked")
+    public Class<? extends SelectableComponent> getNetlistComponent(String key){
+        //Remove "Components." from begining
+        if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
+            key = key.substring(11); 
+        }
+        for(Netlist nl: netlists){
+            if(nl.containsKey(key)){
+                return nl.getClass(key);
             }
         }
         
@@ -1217,23 +1249,27 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         JOptionPane.showMessageDialog(this,error.getMessage(), error.getTitle(), JOptionPane.ERROR_MESSAGE);
     }
 
-    public class ImageSelectableComponentImpl extends ImageSelectableComponent {
-
-        public ImageSelectableComponentImpl(CircuitPanel parent, Point point) {
+    private class ImageSelectableComponentImpl extends ImageSelectableComponent {
+        
+        public ImageSelectableComponentImpl(CircuitPanel parent, Point point, String key) {
             super(parent, point);
+            this.componentTreeName = key;
         }
 
         @Override
         protected void setLocalPins() {
-            int inputPins = simitem.getInputs().size();
-            int outputPins = simitem.getOutputs().size();
+ 
+            int inputPinNo = simitem.getInputs().size();
+            int outputPinNo = simitem.getOutputs().size();
 
-            for (int i = 0; i < inputPins; i++) {
-                localPins.add(new Point(UIConstants.GRID_DOT_SPACING, (i + 1) * UIConstants.GRID_DOT_SPACING));
+            for (int i = 0; i < inputPinNo; i++) {
+                Point p = new Point(0, (i + 1) * UIConstants.GRID_DOT_SPACING);
+                localPins.add(p);
             }
 
-            for (int i = 0; i < outputPins; i++) {
-                localPins.add(new Point(5 * UIConstants.GRID_DOT_SPACING, (i + 1) * UIConstants.GRID_DOT_SPACING));
+            for (int i = 0; i < outputPinNo; i++) {
+                Point p = new Point(getWidth() + UIConstants.GRID_DOT_SPACING, (i + 1) * UIConstants.GRID_DOT_SPACING);
+                localPins.add(p);
             }
         }
 
@@ -1244,18 +1280,18 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
 
         @Override
         public int getHeight() {
-            return (Math.max(simitem.getInputs().size(), simitem.getOutputs().size()) + 2) * UIConstants.GRID_DOT_SPACING;
+            return (Math.max(simitem.getInputs().size(), simitem.getOutputs().size()) + 1) * UIConstants.GRID_DOT_SPACING;
         }
 
         @Override
         public int getWidth() {
-            return 5 * UIConstants.GRID_DOT_SPACING;
+            return 50;
         }
 
         @Override
         protected void setInvalidAreas() {
             // Tight fitting box so that pins, used for hover selection of component and checking invalid areas
-            this.invalidArea = new java.awt.Rectangle(10, 10, 30, getHeight());
+            this.invalidArea = new java.awt.Rectangle(getOrigin().x-getCentre().x+10, getOrigin().y-getCentre().y, getWidth()-UIConstants.GRID_DOT_SPACING+1, getHeight()+1);
         }
 
         @Override
@@ -1265,20 +1301,46 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
 
         @Override
         public void draw(Graphics2D g) {
-            super.draw(g); // Draw labels
+           if(hasLabel()){
+                g.setColor(UIConstants.LABEL_TEXT_COLOUR);
+                g.drawString(getLabel(), getOrigin().x, getOrigin().y-2);
+            }
+            
             g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-            g.draw(getInvalidAreas());
-            g.drawString(simitem.getName(), 0, 0);
+            g.translate(getOrigin().x, getOrigin().y);
+            g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+            g.drawRect(10, 0, getWidth()-UIConstants.GRID_DOT_SPACING, getHeight());
+            
+            g.setColor(UIConstants.DEFAULT_WIRE_COLOUR);
+            g.drawRect(10, 0, getWidth()-UIConstants.GRID_DOT_SPACING, getHeight());
+            g.drawString(simitem.getName(), 10, 12);
+            
+            int inputPinNo = simitem.getInputs().size();
+            int outputPinNo = simitem.getOutputs().size();
+
+            for (int i = 0; i < inputPinNo; i++) {
+                Point p = new Point(0, (i + 1) * UIConstants.GRID_DOT_SPACING);
+                g.fillOval(p.x-3, p.y-3, 5, 5);
+                g.drawOval(p.x-3, p.y-3, 5, 5);
+                g.drawLine(p.x, p.y, p.x+UIConstants.GRID_DOT_SPACING, p.y);
+            }
+
+            for (int i = 0; i < outputPinNo; i++) {
+                Point p = new Point(getWidth() + UIConstants.GRID_DOT_SPACING, (i + 1) * UIConstants.GRID_DOT_SPACING);
+                g.fillOval(p.x-3, p.y-3, 5, 5);
+                g.drawOval(p.x-3, p.y-3, 5, 5);
+                g.drawLine(p.x, p.y, p.x-UIConstants.GRID_DOT_SPACING, p.y);
+            }
+
+            g.translate(-getOrigin().x, -getOrigin().y);
             g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
         }
 
         @Override
-        protected void setNetlist() {
-        }
+        protected void setNetlist() {}
 
         @Override
-        protected void setComponentTreeName() {
-        }
+        protected void setComponentTreeName() {}
 
         @Override
         protected void setDefaultImage() {
