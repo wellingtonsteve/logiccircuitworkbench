@@ -12,7 +12,11 @@ import java.awt.event.ComponentListener;
 import java.util.Hashtable;
 import javax.swing.*;
 
-class ScrollableDesktop extends JDesktopPane
+/**
+ *  From: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4129109
+ *
+ */
+public class ScrollableDesktop extends JDesktopPane
   {
     
     private Hashtable listeners = new Hashtable();
@@ -51,7 +55,9 @@ class ScrollableDesktop extends JDesktopPane
         {
           public void componentResized(ComponentEvent e)
           {                               // Layout the JScrollPane
-            getParent().getParent().validate();
+            if(getParent() != null && getParent().getParent() != null){ // Bug workaround
+                getParent().getParent().validate();
+            }
           }
           public void componentMoved(ComponentEvent e)
           {

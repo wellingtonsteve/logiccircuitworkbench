@@ -104,13 +104,13 @@ public class LED extends ImageSelectableComponent{
         
         switch(getSelectionState()){            
             case ACTIVE:
-                g.setColor(UIConstants.ACTIVE_WIRE_COLOUR);
+                g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
                 break;
             case HOVER:
                 g.setColor(UIConstants.HOVER_WIRE_COLOUR);   
                 break;
             default: 
-                g.setColor(UIConstants.DEFAULT_WIRE_COLOUR);
+                g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
                 break;
         }   
         g.drawOval(getOrigin().x+18,getOrigin().y+3,13,13);

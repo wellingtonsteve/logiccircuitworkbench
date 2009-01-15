@@ -124,7 +124,7 @@ public class ConnectionPoint extends GridObject {
         if(!isCrossover){
         
             if(noOfConnections() > 1){
-                 g2.setColor(UIConstants.DEFAULT_WIRE_COLOUR);
+                 g2.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
                  g2.drawOval(x-2, y-2, 5, 5);
                  g2.fillOval(x-2, y-2, 5, 5);
             }

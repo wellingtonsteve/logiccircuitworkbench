@@ -35,6 +35,7 @@ import netlist.Netlist;
 import ui.grid.Pin;
 import ui.tools.ImageSelectableComponent;
 import ui.tools.SelectableComponent;
+import ui.tools.SelectionState;
 
 /**
  *
@@ -1308,12 +1309,25 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
             
             g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
             g.translate(getOrigin().x, getOrigin().y);
-            g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-            g.drawRect(10, 0, getWidth()-UIConstants.GRID_DOT_SPACING, getHeight());
+              
+            if(getSelectionState().equals(SelectionState.ACTIVE)){
+                g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
+                g.drawRect(10, 0, getWidth()-UIConstants.GRID_DOT_SPACING, getHeight());
+            } else if(getSelectionState().equals(SelectionState.HOVER)){
+                g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+                g.fillRect(10, 0, getWidth()-UIConstants.GRID_DOT_SPACING, getHeight());
+                g.setColor(UIConstants.HOVER_COMPONENT_COLOUR);
+                g.drawRect(10, 0, getWidth()-UIConstants.GRID_DOT_SPACING, getHeight());
+            } else {
+                g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+                g.fillRect(10, 0, getWidth()-UIConstants.GRID_DOT_SPACING, getHeight());             
+                g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
+                g.drawRect(10, 0, getWidth()-UIConstants.GRID_DOT_SPACING, getHeight());
+                
+            }            
             
-            g.setColor(UIConstants.DEFAULT_WIRE_COLOUR);
-            g.drawRect(10, 0, getWidth()-UIConstants.GRID_DOT_SPACING, getHeight());
-            g.drawString(simitem.getName(), 10, 12);
+            g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
+            g.drawString(simitem.getName(), 10, 10);
             
             int inputPinNo = simitem.getInputs().size();
             int outputPinNo = simitem.getOutputs().size();

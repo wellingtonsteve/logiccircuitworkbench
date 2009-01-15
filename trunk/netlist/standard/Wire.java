@@ -326,7 +326,7 @@ public class Wire extends SelectableComponent {
                 
                 switch (getSelectionState()) {                  
                     case ACTIVE:
-                        g.setColor(UIConstants.ACTIVE_WIRE_COLOUR);
+                        g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
                         g.setStroke(UIConstants.ACTIVE_WIRE_STROKE);                        
                         g.drawLine(handleX0, handleY0, handleX1, handleY1);
                         break;
@@ -364,7 +364,7 @@ public class Wire extends SelectableComponent {
                 
                 switch (getSelectionState()) {                  
                     case ACTIVE:
-                        g.setColor(UIConstants.ACTIVE_WIRE_COLOUR);
+                        g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
                         g.setStroke(UIConstants.ACTIVE_WIRE_STROKE);                        
                         g.drawLine(handleX0, handleY0, handleX1, handleY1);
                         break;
@@ -381,7 +381,7 @@ public class Wire extends SelectableComponent {
             
             
         }
-        g.setColor(UIConstants.DEFAULT_WIRE_COLOUR);
+        g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
         g.setStroke(new BasicStroke(1.0f));
         g.drawLine(x1, y1, x2, y2); 
         g.drawLine(x2, y2, x3, y3);
