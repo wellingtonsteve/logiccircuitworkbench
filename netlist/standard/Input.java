@@ -59,7 +59,7 @@ public class Input extends ImageSelectableComponent{
     @Override
     public void setLocalPins() {
         Point out1 = new Point(30, 10);
-             
+                
         localPins.add(out1);        
     }
     

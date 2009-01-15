@@ -35,7 +35,6 @@ public class Standard extends Netlist{
     protected void setLogicMappings() {
         putLogicClass("Standard.Button Source",    sim.componentLibrary.AndGate2Input.class);
         putLogicClass("Standard.LED",              sim.componentLibrary.AndGate2Input.class);
-        putLogicClass("Logic Gates.2 Input.XOR",    sim.componentLibrary.AndGate2Input.class);
     }
 
 }

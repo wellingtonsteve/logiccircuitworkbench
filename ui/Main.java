@@ -41,7 +41,7 @@ public class Main {
         loadingBar.setValue(40);
 
         loadingBar.setString("Loading Logic Gates Netlist...");
-        //editor.addNetlist(new netlist.logicgates.LogicGates());
+        editor.addNetlist(new netlist.logicgates.LogicGates());
         loadingBar.setValue(50);
 
         loadingBar.setString("Creating Blank Circuit...");
