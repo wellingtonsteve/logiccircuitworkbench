@@ -9,9 +9,7 @@ import ui.tools.*;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +17,6 @@ import javax.imageio.ImageIO;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-import sim.Component;
 import ui.CircuitPanel;
 import ui.UIConstants;
 
@@ -52,11 +49,11 @@ public class LED extends ImageSelectableComponent{
                 colour = "yellow";
             }
             if(colour.equals("red")){
-                activeBi = ImageIO.read(getClass().getResource("ui/images/components/default_led_on_red.png"));
+                activeBi = ImageIO.read(getClass().getResource("/ui/images/components/default_led_on_red.png"));
             } else if(colour.equals("green")){
-                activeBi = ImageIO.read(getClass().getResource("ui/images/components/default_led_on_green.png"));
+                activeBi = ImageIO.read(getClass().getResource("/ui/images/components/default_led_on_green.png"));
             } else {
-                activeBi = ImageIO.read(getClass().getResource("ui/images/components/default_led_on_yellow.png"));
+                activeBi = ImageIO.read(getClass().getResource("/ui/images/components/default_led_on_yellow.png"));
             }
                     
         } catch (IOException ex) {
@@ -66,7 +63,6 @@ public class LED extends ImageSelectableComponent{
     
     @Override
     public String getName(){
-        //return getComponent().getType();
         return "Light Emitting Diode";
     }
 

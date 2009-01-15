@@ -31,7 +31,8 @@ public class Main {
         loadingBar.setStringPainted(true);
         loadingBar.setMaximum(100);    
               
-        Editor editor = new Editor();         
+        Editor editor = new Editor();   
+        ErrorHandler.addErrorListener(editor);
 
         loadingBar.setValue(30);
 
@@ -40,11 +41,10 @@ public class Main {
         loadingBar.setValue(40);
 
         loadingBar.setString("Loading Logic Gates Netlist...");
-        editor.addNetlist(new netlist.logicgates.LogicGates());
+        //editor.addNetlist(new netlist.logicgates.LogicGates());
         loadingBar.setValue(50);
 
         loadingBar.setString("Creating Blank Circuit...");
-        ErrorHandler.addErrorListener(editor);
         editor.newCircuit();
         loadingBar.setValue(80);
 

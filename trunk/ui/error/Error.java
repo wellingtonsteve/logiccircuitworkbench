@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ui.error;
 
 /**
@@ -12,10 +7,17 @@ package ui.error;
 public class Error {
     private String title;
     private String message;
+    private Exception exception = null;
 
     public Error(String title, String message){
         this.title = title;
         this.message = message;
+    }
+    
+    public Error(String title, String message, Exception exception){
+        this.title = title;
+        this.message = message;
+        this.exception = exception;
     }
 
     public String getMessage() {

@@ -601,6 +601,10 @@ public class CircuitPanel extends JPanel {
         
     }
 
+    public sim.Simulator getSimulator(){
+        return null;
+    }
+    
     public CircuitFrame getParentFrame() {
         return parentFrame;
     }
