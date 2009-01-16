@@ -16,7 +16,6 @@ public abstract class Netlist {
     
     protected LinkedHashMap<String, Class<? extends SelectableComponent>> classMap = new  LinkedHashMap<String, Class<? extends SelectableComponent>>();
     protected LinkedHashMap<String, BufferedImage> imageMap = new  LinkedHashMap<String, BufferedImage>();
-    // Steve: Just dummy objects so that I can go about creating the default component
     protected LinkedHashMap<String, Class<? extends SimItem>> logicMap = new LinkedHashMap<String, Class<? extends SimItem>>();    
     
     public Netlist(){

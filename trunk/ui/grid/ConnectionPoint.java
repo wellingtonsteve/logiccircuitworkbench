@@ -1,16 +1,12 @@
 package ui.grid;
 
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import ui.UIConstants;
 import ui.tools.SelectableComponent;
@@ -33,7 +29,8 @@ public class ConnectionPoint extends GridObject {
         try {
             defaultCrossover = ImageIO.read(getClass().getResource("/ui/images/components/default_wire_crossover.png"));
         } catch (IOException ex) {
-            Logger.getLogger(ConnectionPoint.class.getName()).log(Level.SEVERE, null, ex);
+            defaultCrossover = new BufferedImage(0,0,BufferedImage.TYPE_INT_RGB);
+            ui.error.ErrorHandler.newError(new ui.error.Error("Initialisation Error", "Could not load \"Connection Point Crossover\" image.", ex));    
         }
     }
     

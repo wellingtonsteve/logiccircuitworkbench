@@ -3,8 +3,6 @@ package ui.file;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import javax.xml.transform.*;
@@ -57,11 +55,11 @@ public class FileCreator {
             hd.startElement("", "", "components", atts);       
             
         } catch (SAXException ex) {
-            Logger.getLogger(FileCreator.class.getName()).log(Level.SEVERE, null, ex);
+            ui.error.ErrorHandler.newError("File Creation Error","Please refer to the system output below.",ex);
         } catch (TransformerConfigurationException ex) {
-            Logger.getLogger(FileCreator.class.getName()).log(Level.SEVERE, null, ex);
+            ui.error.ErrorHandler.newError("File Creation Error","Please refer to the system output below.",ex);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(FileCreator.class.getName()).log(Level.SEVERE, null, ex);
+            ui.error.ErrorHandler.newError("File Not Found","Please refer to the system output below.",ex);
         } 
     }
     
@@ -76,7 +74,7 @@ public class FileCreator {
             hd.endDocument();
             out.close();
         } catch (SAXException ex) {
-            Logger.getLogger(FileCreator.class.getName()).log(Level.SEVERE, null, ex);
+            ui.error.ErrorHandler.newError("File Creation Error","Please refer to the system output below.",ex);
         }
     }
 }

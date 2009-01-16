@@ -27,4 +27,12 @@ public class Error {
     public String getTitle() {
         return title;
     }
+    
+    public boolean hasException(){
+        return exception != null;
+    }
+    
+    public Exception getException() {
+        return exception;
+    }
 }

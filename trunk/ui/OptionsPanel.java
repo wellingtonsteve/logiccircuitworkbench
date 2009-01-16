@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the Options.
- */
-
 package ui;
 
 import java.awt.event.ActionEvent;
@@ -16,9 +11,6 @@ import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemListener;
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import ui.command.EditLabelCommand;
 import ui.error.ErrorHandler;
@@ -28,7 +20,14 @@ import netlist.standard.Wire;
 import ui.tools.SelectableComponent;
 
 /**
- *
+ * This panel displays the preview of the currently selected component along with
+ * any related options and a label text field, where the label of the current 
+ * selection can be created or edited.
+ * 
+ * The current selection may be either a selection from the circuit editor workarea
+ * or from the Component selection tree in the toolbox. The later displaying a 
+ * preview of the component that would be added to the workarea.
+ * 
  * @author matt
  */
 public class OptionsPanel extends JPanel{
@@ -62,7 +61,7 @@ public class OptionsPanel extends JPanel{
         labelTextbox.addActionListener(new ActionListener(){
 
             public void actionPerformed(ActionEvent e) {
-                editor.getCommandHistory().doCommand(new EditLabelCommand(sc, labelTextbox.getText()));
+                editor.getActiveCircuit().getCommandHistory().doCommand(new EditLabelCommand(sc, labelTextbox.getText()));
             }
             
         });
@@ -71,7 +70,7 @@ public class OptionsPanel extends JPanel{
             public void focusGained(FocusEvent e) {}
 
             public void focusLost(FocusEvent e) {
-                editor.getCommandHistory().doCommand(new EditLabelCommand(sc, labelTextbox.getText()));
+                editor.getActiveCircuit().getCommandHistory().doCommand(new EditLabelCommand(sc, labelTextbox.getText()));
             }
             
         });
@@ -127,37 +126,27 @@ public class OptionsPanel extends JPanel{
         
     }
 
-    public JTextField getLabelTextbox() {
-        return labelTextbox;
+    /**
+     * Reset the value of the Component Label Textbox
+     */
+    public void resetLabel(){
+        labelTextbox.setText("");
     }
     
-    public void setComponent(SelectableComponent sc){
-        this.sc = sc;
-        setVisible(true);
-        sc.setRotation(rotation);
-        titleLabel.setText(titleOld);
-        typeLabel.setText(sc.getName());
-        labelTextbox.setText(sc.getLabel());
-        labelLabel.setEnabled(true);
-        labelTextbox.setEnabled(true);
-        
-        if(sc instanceof LED){
-            ledColours.setSelectedItem(((LED) sc).getColour());
-        }
-        if(sc instanceof Input){
-            sourceIsOn.setSelected(((Input) sc).isOn());
-        }
-        if(sc instanceof Wire){
-            labelLabel.setEnabled(false);
-            labelTextbox.setEnabled(false);
-        }
-        
-        Preview.setComponent(sc);
-        setLayoutManager();
-        this.repaint();
-        editor.getActiveCircuit().repaint();
+    /**
+     * Return the current value of the Component Label Textbox
+     * 
+     * @return The String of labelTextbox
+     */
+    public String getCurrentLabel(){
+        return labelTextbox.getText();
     }
-
+    
+    /**
+     * Get the component which this options panel displays.
+     * 
+     * @return
+     */
     public SelectableComponent getSelectableComponent(){
         if(componentName!=null){
             setComponentByName(componentName);
@@ -170,9 +159,54 @@ public class OptionsPanel extends JPanel{
         
     }
     
+    /**
+     * Set the component which this panel shows. This component has already been
+     * created and will normally come from a selection in the circuit workarea.
+     * 
+     * @param sc
+     */
+    public void setComponent(SelectableComponent sc){
+        this.sc = sc;
+        
+        // Update the values in different parts of the form
+        setVisible(true);
+        sc.setRotation(rotation);
+        titleLabel.setText(titleOld);
+        typeLabel.setText(sc.getName());
+        labelTextbox.setText(sc.getLabel());
+        labelLabel.setEnabled(true);
+        labelTextbox.setEnabled(true);
+        
+        // Display component specific layout options
+        if(sc instanceof LED){
+            ledColours.setSelectedItem(((LED) sc).getColour());
+        }
+        if(sc instanceof Input){
+            sourceIsOn.setSelected(((Input) sc).isOn());
+        }
+        if(sc instanceof Wire){
+            labelLabel.setEnabled(false);
+            labelTextbox.setEnabled(false);
+        }
+        
+        // Cascade changes to the preview window itself
+        Preview.setComponent(sc);
+        setLayoutManager();
+        this.repaint();
+        editor.getActiveCircuit().repaint();
+    }
+    
+    /** 
+     * Set the component which this panel shows. The component is created from 
+     * the netlists associated with the editor from the componentName parameter,
+     * which is the netlist key.
+     * 
+     * @param componentName
+     */
     public void setComponentByName(String componentName){
         this.componentName = componentName;      
         
+        // Create the component from the componentName key
         if(componentName!=null && editor!=null){
             try {
                 if(editor.isNetlistComponent(componentName)){
@@ -180,21 +214,12 @@ public class OptionsPanel extends JPanel{
                 } else {
                     sc = editor.getDefaultNetlistComponent(componentName);
                 }
-            } catch (InstantiationException ex) {
-                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalArgumentException ex) {
-                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InvocationTargetException ex) {
-                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NoSuchMethodException ex) {
-                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SecurityException ex) {
-                Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex){
+                ErrorHandler.newError(new ui.error.Error("Component Creation Error","Please select a component from the selection box.", ex));
             }
         }
 
+        // Update the values in different parts of the form
         sc.setRotation(rotation);
         titleLabel.setText(titleNew);
         typeLabel.setText(sc.getName());
@@ -204,6 +229,7 @@ public class OptionsPanel extends JPanel{
         labelLabel.setEnabled(true);
         labelTextbox.setEnabled(true);
                
+        // Display component specific layout options
         if(sc instanceof LED){
             ((LED) sc).setValue(true);
             ((LED) sc).setColour((String) ledColours.getSelectedItem());
@@ -216,25 +242,40 @@ public class OptionsPanel extends JPanel{
             labelTextbox.setEnabled(false);
         }
         
+        // Cascade changes to the preview window itself
         Preview.setComponent(sc);
         setLayoutManager();
     }
 
+    /**
+     * Rotate the component that is displayed in this options panel, also force
+     * repaints as necessary. Changes to the component here are reflected in the 
+     * unfixed component in the workarea.
+     * 
+     * @param d
+     */
     public void setComponentRotation(double d) {
         this.rotation = d;
         if(sc != null){
             sc.setRotation(rotation);
             Preview.setComponent(sc);
             Preview.repaint();
+            
+            // Make the changes to the active circuit also
             editor.getActiveCircuit().removeUnFixedComponents();
             editor.getActiveCircuit().addComponent(sc);
         }
         
     }
     
+    /**
+     * Layout the Panel. Dependant upon the current component.
+     */
     private void setLayoutManager(){      
-                org.jdesktop.layout.GroupLayout OptionsLayout = new org.jdesktop.layout.GroupLayout(this);
+        org.jdesktop.layout.GroupLayout OptionsLayout = new org.jdesktop.layout.GroupLayout(this);
+        
         setLayout(OptionsLayout);
+        
         OptionsLayout.setHorizontalGroup(
             OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, OptionsLayout.createSequentialGroup()
@@ -258,6 +299,7 @@ public class OptionsPanel extends JPanel{
                         .add(labelTextbox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 130)))
                      .addContainerGap())
         );
+        
         OptionsLayout.setVerticalGroup(
             OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(OptionsLayout.createSequentialGroup()

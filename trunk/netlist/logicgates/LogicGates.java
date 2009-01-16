@@ -3,7 +3,9 @@ package netlist.logicgates;
 import netlist.*;
 
 /**
- *
+ * This netlist provides basic boolean Logic Gate components.
+ * 
+ * 
  * @author matt
  */
 public class LogicGates extends Netlist{

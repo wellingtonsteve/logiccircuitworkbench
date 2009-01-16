@@ -27,22 +27,22 @@ public class FixComponentCommand extends Command {
     protected void perform(Editor editor) {
         if(activeCircuit != null){
             sc.moveTo(endPoint, true);
-            sc.setLabel(editor.getOptionsPanel().getLabelTextbox().getText());
+            sc.setLabel(editor.getOptionsPanel().getCurrentLabel());
             editor.repaint();
             editor.getOptionsPanel().repaint();
-            canUndo = true;
+            //canUndo = true;
         }
     }
     
-    @Override
-    protected void undoEffect(Editor editor) {
-        if(activeCircuit != null){
-            sc.moveTo(endPoint, false);
-            editor.repaint();
-            editor.getOptionsPanel().repaint();
-            canUndo = false;
-        }
-    }
+//    @Override
+//    protected void undoEffect(Editor editor) {
+//        if(activeCircuit != null){
+//            sc.moveTo(endPoint, false);
+//            editor.repaint();
+//            editor.getOptionsPanel().repaint();
+//            canUndo = false;
+//        }
+//    }
 
     @Override
     public String toString() {

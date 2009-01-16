@@ -11,11 +11,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Enumeration;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
@@ -32,7 +29,7 @@ import ui.command.*;
 import ui.error.Error;
 import ui.error.ErrorListener;
 import netlist.Netlist;
-import ui.grid.Pin;
+import ui.error.ErrorHandler;
 import ui.tools.ImageSelectableComponent;
 import ui.tools.SelectableComponent;
 import ui.tools.SelectionState;
@@ -47,6 +44,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     private Image offscreenImage;
     private Graphics offscreenGraphics;
     private boolean drawDirect = false;
+    private int untitledIndex = 1;
     
     /** Creates new form FrameMain */
     public Editor() {        
@@ -92,7 +90,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Wire = new javax.swing.JButton();
         InsertSubComponent = new javax.swing.JButton();
         RotateLeft = new javax.swing.JButton();
-        RotateRght = new javax.swing.JButton();
+        RotateRight = new javax.swing.JButton();
         InsertComponent = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         ComponentSelectionTree = new javax.swing.JTree();
@@ -255,7 +253,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
                 UndoButtonMouseClicked(evt);
             }
         });
-        cmdHist.addUndoEmptyListener(UndoButton);
         Toolbar.add(UndoButton);
 
         RedoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-redo.png"))); // NOI18N
@@ -269,7 +266,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
                 RedoButtonMouseClicked(evt);
             }
         });
-        cmdHist.addRedoEmptyListener(RedoButton);
         Toolbar.add(RedoButton);
         Toolbar.add(jSeparator6);
 
@@ -413,17 +409,17 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         });
         jPanel4.add(RotateLeft);
 
-        RotateRght.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
-        RotateRght.setText(bundle.getString("Editor.RotateRght.text")); // NOI18N
-        RotateRght.setFocusable(false);
-        RotateRght.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        RotateRght.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        RotateRght.addMouseListener(new java.awt.event.MouseAdapter() {
+        RotateRight.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
+        RotateRight.setText(bundle.getString("Editor.RotateRight.text")); // NOI18N
+        RotateRight.setFocusable(false);
+        RotateRight.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        RotateRight.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        RotateRight.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                RotateRghtMouseClicked(evt);
+                RotateRightMouseClicked(evt);
             }
         });
-        jPanel4.add(RotateRght);
+        jPanel4.add(RotateRight);
 
         InsertComponent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-object.png"))); // NOI18N
         InsertComponent.setText(bundle.getString("Editor.InsertComponent.text")); // NOI18N
@@ -531,7 +527,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
             }
         });
         Edit.add(Undo);
-        cmdHist.addUndoEmptyListener(Undo);
 
         Redo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
         Redo.setText(bundle.getString("Editor.Redo.text")); // NOI18N
@@ -541,7 +536,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
                 RedoActionPerformed(evt);
             }
         });
-        cmdHist.addRedoEmptyListener(Redo);
         Edit.add(Redo);
         Edit.add(jSeparator1);
 
@@ -628,12 +622,12 @@ private void SelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WireMouseClicked
     toggleToolboxButton(Wire);
     getActiveCircuit().selectTool("Standard.Wire");
-    RotateRght.setEnabled(false);
+    RotateRight.setEnabled(false);
     RotateLeft.setEnabled(false);
 }//GEN-LAST:event_WireMouseClicked
 
 private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeValueChanged
-    RotateRght.setEnabled(true);
+    RotateRight.setEnabled(true);
     RotateLeft.setEnabled(true);
     
     TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
@@ -649,7 +643,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
         if(isValidComponent(componentName)){
             // Set Options panel (Preview, Component Specific Options etc.)
             ((OptionsPanel) Options).setComponentByName(componentName);
-            ((OptionsPanel) Options).getLabelTextbox().setText(""); // Assume user wants a different name for a different component
+            ((OptionsPanel) Options).resetLabel(); // Assume user wants a different name for a different component
             Options.setVisible(true);
             Options.repaint();
 
@@ -667,23 +661,23 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
 }//GEN-LAST:event_ComponentSelectionTreeValueChanged
 
 private void UndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UndoActionPerformed
-    cmdHist.undo();
+    getActiveCircuit().getCommandHistory().undo();
 }//GEN-LAST:event_UndoActionPerformed
 
 private void RedoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RedoActionPerformed
-    cmdHist.redo();
+    getActiveCircuit().getCommandHistory().redo();
 }//GEN-LAST:event_RedoActionPerformed
 
 private void CutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CutActionPerformed
-    cmdHist.doCommand(new SelectionCutCommand());    
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionCutCommand());    
 }//GEN-LAST:event_CutActionPerformed
 
 private void CopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CopyActionPerformed
-    cmdHist.doCommand(new SelectionCopyCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionCopyCommand());
 }//GEN-LAST:event_CopyActionPerformed
 
 private void PasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasteActionPerformed
-    cmdHist.doCommand(new SelectionPasteCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionPasteCommand());
 }//GEN-LAST:event_PasteActionPerformed
 
 private void SelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectAllActionPerformed
@@ -696,55 +690,55 @@ private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
 }//GEN-LAST:event_ExitActionPerformed
 
 private void ClearCircuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClearCircuitMouseClicked
-    cmdHist.doCommand(new ClearCircuitCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new ClearCircuitCommand());
 }//GEN-LAST:event_ClearCircuitMouseClicked
 
 private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
-    cmdHist.doCommand(new FileOpenCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new FileOpenCommand());
 }//GEN-LAST:event_OpenActionPerformed
 
 private void SaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveAsActionPerformed
-    cmdHist.doCommand(new FileSaveAsCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new FileSaveAsCommand());
 }//GEN-LAST:event_SaveAsActionPerformed
 
 private void UndoButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UndoButtonMouseClicked
-    cmdHist.undo();
+    getActiveCircuit().getCommandHistory().undo();
 }//GEN-LAST:event_UndoButtonMouseClicked
 
 private void RedoButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RedoButtonMouseClicked
-    cmdHist.redo();
+    getActiveCircuit().getCommandHistory().redo();
 }//GEN-LAST:event_RedoButtonMouseClicked
 
 private void RotateLeftMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateLeftMouseClicked
-    cmdHist.doCommand(new RotateLeftCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new RotateLeftCommand());
 }//GEN-LAST:event_RotateLeftMouseClicked
 
-private void RotateRghtMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateRghtMouseClicked
-    cmdHist.doCommand(new RotateRightCommand());
-}//GEN-LAST:event_RotateRghtMouseClicked
+private void RotateRightMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateRightMouseClicked
+    getActiveCircuit().getCommandHistory().doCommand(new RotateRightCommand());
+}//GEN-LAST:event_RotateRightMouseClicked
 
 private void DeleteSelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DeleteSelectionMouseClicked
-    cmdHist.doCommand(new SelectionDeleteCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionDeleteCommand());
 }//GEN-LAST:event_DeleteSelectionMouseClicked
 
 private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
-    cmdHist.doCommand(new SelectionDeleteCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionDeleteCommand());
 }//GEN-LAST:event_DeleteActionPerformed
 
 private void OpenFileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_OpenFileButtonMouseClicked
-    cmdHist.doCommand(new FileOpenCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new FileOpenCommand());
 }//GEN-LAST:event_OpenFileButtonMouseClicked
 
 private void SaveAsButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveAsButtonMouseClicked
-    cmdHist.doCommand(new FileSaveAsCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new FileSaveAsCommand());
 }//GEN-LAST:event_SaveAsButtonMouseClicked
 
 private void SaveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveButtonMouseClicked
-    cmdHist.doCommand(new FileSaveCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new FileSaveCommand());
 }//GEN-LAST:event_SaveButtonMouseClicked
 
 private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
-    cmdHist.doCommand(new FileSaveCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new FileSaveCommand());
 }//GEN-LAST:event_SaveActionPerformed
 
 private void AboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AboutActionPerformed
@@ -770,7 +764,7 @@ private void AboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
 }//GEN-LAST:event_AboutActionPerformed
 
 private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NewButtonMouseClicked
-    cmdHist.doCommand(new NewCircuitCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new NewCircuitCommand());
 }//GEN-LAST:event_NewButtonMouseClicked
 
 private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertComponentMouseClicked
@@ -779,39 +773,39 @@ private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-F
 }//GEN-LAST:event_InsertComponentMouseClicked
 
 private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertSubComponentMouseClicked
-    cmdHist.doCommand(new InsertSubcomponentCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new InsertSubcomponentCommand());
 }//GEN-LAST:event_InsertSubComponentMouseClicked
 
 private void MakeImageButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MakeImageButtonMouseClicked
-    cmdHist.doCommand(new MakeImageCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new MakeImageCommand());
 }//GEN-LAST:event_MakeImageButtonMouseClicked
 
 private void RecordButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RecordButtonMouseClicked
-    cmdHist.doCommand(new SimulationRecordCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand());
 }//GEN-LAST:event_RecordButtonMouseClicked
 
 private void StopButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StopButtonMouseClicked
-    cmdHist.doCommand(new SimulationStopCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SimulationStopCommand());
 }//GEN-LAST:event_StopButtonMouseClicked
 
 private void PauseButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PauseButtonMouseClicked
-    cmdHist.doCommand(new SimulationPauseCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SimulationPauseCommand());
 }//GEN-LAST:event_PauseButtonMouseClicked
 
 private void StartButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StartButtonMouseClicked
-    cmdHist.doCommand(new SimulationStartCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand());
 }//GEN-LAST:event_StartButtonMouseClicked
 
 private void CutButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CutButtonMouseClicked
-    cmdHist.doCommand(new SelectionCutCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionCutCommand());
 }//GEN-LAST:event_CutButtonMouseClicked
 
 private void PasteButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PasteButtonMouseClicked
-    cmdHist.doCommand(new SelectionPasteCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionPasteCommand());
 }//GEN-LAST:event_PasteButtonMouseClicked
 
 private void CopyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CopyButtonMouseClicked
-    cmdHist.doCommand(new SelectionCopyCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionCopyCommand());
 }//GEN-LAST:event_CopyButtonMouseClicked
 
 private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeFocusGained
@@ -859,27 +853,73 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         }
     }
 
-    public CircuitPanel getActiveCircuit() {
-        return circuitPanel;
-    }
-
-    public CircuitPanel newCircuit() {
-        CircuitFrame cir = new CircuitFrame(this);
+    /**
+     * Create a new empty circuit and open it in the Desktop Window Pane.
+     * 
+     * @return The new circuit
+     */
+    public CircuitPanel createBlankCircuit() {
+        // Construct the containing frame
+        CircuitFrame cir = new CircuitFrame(this, untitledIndex++);
+        if(getActiveCircuit() != null){
+            cir.setBounds(getActiveCircuit().getParentFrame().getBounds().x+20,
+                    getActiveCircuit().getParentFrame().getBounds().y+20,
+                    cir.getWidth(),
+                    cir.getHeight());
+        }
+        
+        // Add the new frame to the list of windows and to the Desktop Window Pane
         circuitwindows.add(cir);
-        DesktopPane.add(cir, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        DesktopPane.add(cir, DesktopPane.lowestLayer());
+        
+        // Make the new circuit active
         setActiveCircuit(cir.getCircuitPanel());
+        
+        // Register the Command History components with the new circuits Command History
+        cir.getCircuitPanel().getCommandHistory().addUndoEmptyListener(UndoButton);
+        cir.getCircuitPanel().getCommandHistory().addRedoEmptyListener(RedoButton);
+        cir.getCircuitPanel().getCommandHistory().addUndoEmptyListener(Undo);
+        cir.getCircuitPanel().getCommandHistory().addRedoEmptyListener(Redo);
         
         // Populate Windows menu
         refreshWindowsMenu();
         
-        return circuitPanel;
+        return getActiveCircuit();
         
     }
+    
+    /**
+     * Get the currently selected active circuit panel workarea. 
+     * 
+     * @return
+     */
+    public CircuitPanel getActiveCircuit() {
+        return circuitPanel;
+    }
 
+    /**
+     * Make the specified circuit active
+     * 
+     * @param circuit
+     */
     public void setActiveCircuit(CircuitPanel circuit) {
-        circuitPanel = circuit;
-        this.setTitle("Logic Circuit Workbench - " + circuitPanel.getFilename());
-        circuitPanel.getParentFrame().moveToFront();
+        if(circuitwindows.contains(circuit.getParentFrame())){
+            // Set application's title
+            setTitle("Logic Circuit Workbench - " + circuit.getParentFrame().getTitle());
+
+            // Make the circuit active in the Desktop Window Pane
+            this.circuitPanel = circuit;
+            DesktopPane.setLayer(circuit, DesktopPane.lowestLayer());
+
+            // Set the appropriate state for all command history buttons
+            UndoButton.setEnabled(circuitPanel.getCommandHistory().canUndo());
+            RedoButton.setEnabled(circuitPanel.getCommandHistory().canRedo());
+            Undo.setEnabled(circuitPanel.getCommandHistory().canUndo());
+            Redo.setEnabled(circuitPanel.getCommandHistory().canRedo());
+            
+        } else {
+            ErrorHandler.newError("Editor Error","Error whilst setting an active circuit. \n Please close and reopen all open circuits.");
+        }
               
     }
 
@@ -927,13 +967,28 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         return new DefaultTreeModel(rootNode);
     }
     
+    /**
+     * Register a new Component Netlist with the editor. All component in the netlist 
+     * will be made available in the toolbox for use in circuits.
+     * 
+     * @param nl The netlist to add.
+     */
     public void addNetlist(Netlist nl){
         if(!nl.keySet().isEmpty()){
             netlists.add(nl);
+            
+            // Repopulate the Component tree
+            ComponentSelectionTree.setModel(getTreeValues());
         }
-        ComponentSelectionTree.setModel(getTreeValues());
     }
     
+    /**
+     * Checks whether a the key identifies a valid implementation of a Selectable
+     * Component which can be drawn on the circuit.
+     * 
+     * @param key
+     * @return
+     */
     public boolean isNetlistComponent(String key){
         //Remove "Components." from begining
         if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
@@ -947,17 +1002,30 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         return false;
     }
     
+    /**
+     * Checks whether a the key identifies either a valid implementation of a Selectable
+     * Component which can be drawn on the circuit or a component which has a logical 
+     * implementation but no visual representation. Components without a valid visual
+     * (Selectable Component) representation are drawn dynamically from the properties of 
+     * the logical component.
+     * 
+     * @param key
+     * @return
+     */
     public boolean isValidComponent(String key){
         //Remove "Components." from begining
         if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
             key = key.substring(11); 
         }
+        
+        // Check Selectable Component mappings
         for(Netlist nl: netlists){
             if(nl.containsKey(key)){
                 return true;
             }
         }        
         
+        // Check Logical Component mappings
         for(Netlist nl: netlists){
             if(nl.containsLogicKey(key)){
                 return true;
@@ -966,7 +1034,14 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         return false;
     }
     
-    private sim.SimItem simitem;
+    /**
+     * Create a drawable component dynamically from an existing logical implementation
+     * only. This should only be used when a concrete drawable implementation of the 
+     * component does not exist. Drawable implementations should be specified in the 
+     * netlist for each component.
+     * 
+     * @param key
+     */    
     public SelectableComponent getDefaultNetlistComponent(String key){
         //Remove "Components." from begining
         if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
@@ -975,34 +1050,30 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         
         for(Netlist nl: netlists){
             if(nl.containsLogicKey(key)){
-            // Component not found, revert to default component created from Logic Class data
-            
+           
                 try {
                     simitem = nl.getLogicClass(key).getConstructor(sim.Simulator.class).newInstance(getActiveCircuit().getSimulator());
                     ImageSelectableComponentImpl sc = new ImageSelectableComponentImpl(getActiveCircuit(), new Point(0,0),key);
                     return sc;
                                 
-                } catch (InstantiationException ex) {
-                    Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalAccessException ex) {
-                    Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalArgumentException ex) {
-                    Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InvocationTargetException ex) {
-                    Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (NoSuchMethodException ex) {
-                    Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SecurityException ex) {
-                    Logger.getLogger(OptionsPanel.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception e){
+                    ErrorHandler.newError(new Error("Editor Error","An error occured whilst trying to create a "+ key + "\n dynamically from it's properties." +
+                            " \n\n It is recommended that you create a concrete drawable implementation of this component.", e));
                 }
 
             }
         }
+        
+        ErrorHandler.newError(new Error("Editor Error",key + " is not a valid key for a logical component."));
         return null;
-    }
+    } 
     
-    
-    @SuppressWarnings("unchecked")
+    /**
+     * Find the first drawable component class associated the key the netlists 
+     * registered with the editor.
+     * 
+     * @param key
+     */
     public Class<? extends SelectableComponent> getNetlistComponent(String key){
         //Remove "Components." from begining
         if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
@@ -1014,21 +1085,28 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
             }
         }
         
+        ErrorHandler.newError(new Error("Editor Error",key + " is not a valid key for a drawable component."));
         return null;
     }
     
     /**
-     * Get the current selection from the options panel and add the component to the current active circuit
+     * Get the current selection from the options panel and add the component to 
+     * the current active circuit.
      */
-    public void makeToolSelection(String tool){
+    private void makeToolSelection(String tool){
         if(circuitPanel != null){
             circuitPanel.removeUnFixedComponents();
             circuitPanel.selectTool(tool);
-            cmdHist.doCommand(new AddComponentCommand(((OptionsPanel) Options).getSelectableComponent()));
+            getActiveCircuit().getCommandHistory().doCommand(new AddComponentCommand(((OptionsPanel) Options).getSelectableComponent()));
         }
     }
     
+    /**
+     * Select the component specified in the Selection tree and add the component
+     * to the current active circuit.
+     */
     public void makeToolSelection(){
+        // Create the component key from the selection tree path
         TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
         if(currentSelection != null){
             Object[] nameArray = currentSelection.getPath();
@@ -1037,7 +1115,8 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
                 componentName += nameArray[i] + ".";
             }
             componentName = componentName.substring(0, componentName.length() - 1);
-
+            
+            // Make the actual selection
             if(isValidComponent(componentName)){
                 makeToolSelection(componentName);
             }     
@@ -1050,17 +1129,13 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
      * @param endPoint  the point at which to fix the component
      */
     public void fixSelection(SelectableComponent old, Point endPoint) {
-        cmdHist.doCommand(new FixComponentCommand(old, endPoint));
+        getActiveCircuit().getCommandHistory().doCommand(new FixComponentCommand(old, endPoint));
     }
     
     public OptionsPanel getOptionsPanel(){
         return (OptionsPanel) Options;
     }
     
-    public CommandHistory getCommandHistory() {
-        return cmdHist;
-    }
-
     public Graphics getOffscreenGraphics() {
         return offscreenGraphics;
     }
@@ -1108,7 +1183,7 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
 
           // Paint patterns directly to the screen, but only for 500 milliseconds
           while ((end-start) < 500) {
-               paintDetectDesign(g);
+               paintDetectionDesign(g);
                end = System.currentTimeMillis();
                directCount++;
           }
@@ -1122,7 +1197,7 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
 
           // Paint patterns to the offscreen graphics, but only for 500 milliseconds
           while ((end-start) < 500) {
-               paintDetectDesign(offscreenGraphics);
+               paintDetectionDesign(offscreenGraphics);
                end = System.currentTimeMillis();
                bufferedCount++;
           }
@@ -1148,11 +1223,11 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
           }
     }
 
-    /** paintDetectDesign performs some graphical operations to gauge the time
+    /** paintDetectionDesign performs some graphical operations to gauge the time
      * it takes to paint either directly or to an offscreen area. It just draws
      * some lines, boxes and ovals a number of times and then returns.
      */
-     protected void paintDetectDesign(Graphics g)
+     protected void paintDetectionDesign(Graphics g)
      {
           for (int i=0; i < 10; i++) {
                g.drawLine(0, 0, 100, 100);
@@ -1161,93 +1236,35 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
           }
      }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-       // TODO case analysis for non-windows environments
-        try {
-           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-        } 
-        catch (Exception e) {
-           e.printStackTrace();
-        }
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Editor().setVisible(true);
+     /**
+      * Display any reported errors to the user. Using a Message Dialog, the easily 
+      * readable message is always shown and is and Exception is associated with 
+      * the error, it is displayed in a scrollable text box below the message.
+      * 
+      * @param error
+      */
+     public void reportError(Error error) {
+
+        Object[] dialogContent;
+        
+        if(error.hasException()){
+            javax.swing.JScrollPane exceptionPane = new javax.swing.JScrollPane();
+            javax.swing.JTextArea exceptionTextArea = new javax.swing.JTextArea();
+            exceptionTextArea.setText(error.getException().toString() + "\n");
+            StackTraceElement[] stacktrace = error.getException().getStackTrace();
+            for(int i = 0; i<stacktrace.length; i++){
+                exceptionTextArea.append("   " + stacktrace[i].toString() + "\n");
             }
-        });
-    }
-    
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem About;
-    private javax.swing.JButton ClearCircuit;
-    private javax.swing.JTree ComponentSelectionTree;
-    private javax.swing.JMenuItem Copy;
-    private javax.swing.JButton CopyButton;
-    private javax.swing.JMenuItem Cut;
-    private javax.swing.JButton CutButton;
-    private javax.swing.JMenuItem Delete;
-    private javax.swing.JButton DeleteSelection;
-    private javax.swing.JDesktopPane DesktopPane;
-    private javax.swing.JMenu Edit;
-    private javax.swing.JMenuItem Exit;
-    private javax.swing.JMenu File;
-    private javax.swing.JMenu Help;
-    private javax.swing.JButton InsertComponent;
-    private javax.swing.JButton InsertSubComponent;
-    private javax.swing.JScrollPane MainScrollPane;
-    private javax.swing.JButton MakeImageButton;
-    private javax.swing.JMenuBar MenuBar;
-    private javax.swing.JButton NewButton;
-    private javax.swing.JMenuItem Open;
-    private javax.swing.JButton OpenFileButton;
-    private javax.swing.JPanel Options;
-    private javax.swing.JMenuItem Paste;
-    private javax.swing.JButton PasteButton;
-    private javax.swing.JButton PauseButton;
-    private javax.swing.JButton RecordButton;
-    private javax.swing.JMenuItem Redo;
-    private javax.swing.JButton RedoButton;
-    private javax.swing.JButton RotateLeft;
-    private javax.swing.JButton RotateRght;
-    private javax.swing.JMenuItem Save;
-    private javax.swing.JMenuItem SaveAs;
-    private javax.swing.JButton SaveAsButton;
-    private javax.swing.JButton SaveButton;
-    private javax.swing.JMenuItem SelectAll;
-    private javax.swing.JButton Selection;
-    private javax.swing.JMenu Simulation;
-    private javax.swing.JButton StartButton;
-    private javax.swing.JButton StopButton;
-    private javax.swing.JToolBar Toolbar;
-    private javax.swing.JInternalFrame Toolbox;
-    private javax.swing.JMenuItem Undo;
-    private javax.swing.JButton UndoButton;
-    private javax.swing.JMenu Window;
-    private javax.swing.JButton Wire;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JToolBar.Separator jSeparator3;
-    private javax.swing.JToolBar.Separator jSeparator5;
-    private javax.swing.JToolBar.Separator jSeparator6;
-    private javax.swing.JSlider jSlider1;
-    // End of variables declaration//GEN-END:variables
-
-    private javax.swing.JDialog aboutDialog = null;
-    private javax.swing.JPanel aboutContentPane = null;
-    private javax.swing.JLabel aboutVersionLabel = null;
-    
-    private CommandHistory cmdHist = new CommandHistory(this);
-    private LinkedList<JInternalFrame> circuitwindows = new LinkedList<JInternalFrame>();
-
-    public void reportError(Error error) {
-        JOptionPane.showMessageDialog(this,error.getMessage(), error.getTitle(), JOptionPane.ERROR_MESSAGE);
+            exceptionPane.getViewport().setViewPosition(new Point(0,0));
+            exceptionTextArea.setColumns(20);
+            exceptionTextArea.setRows(5);
+            exceptionPane.setViewportView(exceptionTextArea);
+            dialogContent = new Object[]{error.getMessage() + "\n", exceptionPane};
+        } else {
+            dialogContent = new Object[]{error.getMessage() + "\n"};
+        }
+        
+        JOptionPane.showMessageDialog(this, dialogContent, error.getTitle(), JOptionPane.ERROR_MESSAGE);
     }
 
     private class ImageSelectableComponentImpl extends ImageSelectableComponent {
@@ -1371,5 +1388,90 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
             activeBi = null;
         }
     }
+     
+     
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+       // TODO case analysis for non-windows environments
+        try {
+           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+        } 
+        catch (Exception e) {
+           e.printStackTrace();
+        }
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Editor().setVisible(true);
+            }
+        });
+    }
+    
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem About;
+    private javax.swing.JButton ClearCircuit;
+    private javax.swing.JTree ComponentSelectionTree;
+    private javax.swing.JMenuItem Copy;
+    private javax.swing.JButton CopyButton;
+    private javax.swing.JMenuItem Cut;
+    private javax.swing.JButton CutButton;
+    private javax.swing.JMenuItem Delete;
+    private javax.swing.JButton DeleteSelection;
+    private javax.swing.JDesktopPane DesktopPane;
+    private javax.swing.JMenu Edit;
+    private javax.swing.JMenuItem Exit;
+    private javax.swing.JMenu File;
+    private javax.swing.JMenu Help;
+    private javax.swing.JButton InsertComponent;
+    private javax.swing.JButton InsertSubComponent;
+    private javax.swing.JScrollPane MainScrollPane;
+    private javax.swing.JButton MakeImageButton;
+    private javax.swing.JMenuBar MenuBar;
+    private javax.swing.JButton NewButton;
+    private javax.swing.JMenuItem Open;
+    private javax.swing.JButton OpenFileButton;
+    private javax.swing.JPanel Options;
+    private javax.swing.JMenuItem Paste;
+    private javax.swing.JButton PasteButton;
+    private javax.swing.JButton PauseButton;
+    private javax.swing.JButton RecordButton;
+    private javax.swing.JMenuItem Redo;
+    private javax.swing.JButton RedoButton;
+    private javax.swing.JButton RotateLeft;
+    private javax.swing.JButton RotateRight;
+    private javax.swing.JMenuItem Save;
+    private javax.swing.JMenuItem SaveAs;
+    private javax.swing.JButton SaveAsButton;
+    private javax.swing.JButton SaveButton;
+    private javax.swing.JMenuItem SelectAll;
+    private javax.swing.JButton Selection;
+    private javax.swing.JMenu Simulation;
+    private javax.swing.JButton StartButton;
+    private javax.swing.JButton StopButton;
+    private javax.swing.JToolBar Toolbar;
+    private javax.swing.JInternalFrame Toolbox;
+    private javax.swing.JMenuItem Undo;
+    private javax.swing.JButton UndoButton;
+    private javax.swing.JMenu Window;
+    private javax.swing.JButton Wire;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JToolBar.Separator jSeparator3;
+    private javax.swing.JToolBar.Separator jSeparator5;
+    private javax.swing.JToolBar.Separator jSeparator6;
+    private javax.swing.JSlider jSlider1;
+    // End of variables declaration//GEN-END:variables
+
+    private javax.swing.JDialog aboutDialog = null;
+    private javax.swing.JPanel aboutContentPane = null;
+    private javax.swing.JLabel aboutVersionLabel = null;    
+    private LinkedList<JInternalFrame> circuitwindows = new LinkedList<JInternalFrame>();
+    private sim.SimItem simitem;  
     
 }
