@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import ui.file.FileCreator;
@@ -29,6 +27,8 @@ import ui.grid.Grid;
 import ui.tools.SelectableComponent;
 import ui.tools.SelectionState;
 import netlist.standard.Wire;
+import ui.command.CommandHistory;
+import ui.error.ErrorHandler;
 
 /**
  *
@@ -54,6 +54,7 @@ public class CircuitPanel extends JPanel {
     private Editor editor;
     private final Grid grid = new Grid();
     private Point previousPoint = new Point(0,0);
+    private CommandHistory cmdHist;
 
     public CircuitPanel(){
         frameOriginX = this.getX();
@@ -239,17 +240,13 @@ public class CircuitPanel extends JPanel {
                     } 
                     repaint();
                 }     
-                 
-                
-            };
-            public void mouseEntered(MouseEvent e) {}
+                                 
+            };            public void mouseEntered(MouseEvent e) {}
             public void mouseExited(MouseEvent e) {}
 
             public void mousePressed(MouseEvent e) {                                                
-
                 startPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));  
                 currentPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
-
             }
 
             public void mouseReleased(MouseEvent e) {
@@ -286,8 +283,7 @@ public class CircuitPanel extends JPanel {
                     // Update the current selection options panel
                     if(activeComponents.size()==1){
                         editor.getOptionsPanel().setComponent(activeComponents.get(0));
-                    }
-                    
+                    }                    
                     
                     multipleSelection = false;
 
@@ -312,19 +308,12 @@ public class CircuitPanel extends JPanel {
                             w.setEndPoint(endPoint);
                             w.translate(0, 0, true);
                             drawnComponents.push(new Wire(CircuitPanel.this));
-                        }
-                           
-                        
-                    }
-                    
+                        }                                                   
+                    }                    
                 }               
-
                 repaint();
-
-            }
-            
+            }            
         });
-        
     }
     
     public Grid getGrid() {
@@ -577,7 +566,7 @@ public class CircuitPanel extends JPanel {
     }
     
     public String getFilename(){
-        return (filename==null)?"Untitled":filename;
+        return (filename==null)?"Untitled"+getParentFrame().getUntitledIndex():filename;
     }
             
     public void addComponentList(List<SelectableComponent> list){
@@ -596,13 +585,17 @@ public class CircuitPanel extends JPanel {
         try {
             ImageIO.write(bi, "jpg", new File(filename));
         } catch (IOException ex) {
-            Logger.getLogger(CircuitPanel.class.getName()).log(Level.SEVERE, null, ex);
+            ErrorHandler.newError("Image Creation Error","Please refer to the system output below.",ex);
         }
         
     }
 
     public sim.Simulator getSimulator(){
         return null;
+    }
+    
+    public CommandHistory getCommandHistory(){
+        return cmdHist;
     }
     
     public CircuitFrame getParentFrame() {
@@ -616,5 +609,6 @@ public class CircuitPanel extends JPanel {
     public void setParentFrame(CircuitFrame parentFrame) {
         this.parentFrame = parentFrame;
         editor = ((CircuitFrame) this.getParentFrame()).getEditor();
+        cmdHist = new CommandHistory(editor);
     }
 }

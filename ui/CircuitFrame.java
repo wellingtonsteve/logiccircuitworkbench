@@ -14,19 +14,18 @@ import javax.swing.JScrollPane;
  */
 public class CircuitFrame extends JInternalFrame{
 
-    private CircuitPanel circuitPanel = new CircuitPanel();
+    private CircuitPanel circuitPanel;
     private JScrollPane jScrollPane2 = new JScrollPane();
     private Editor editor;
-
-    public Editor getEditor() {
-        return editor;
-    }
+    private int untitledIndex;
     
-    public CircuitFrame(final Editor editor){
+    public CircuitFrame(final Editor editor, int untitledIndex){
         
         super();
         
         this.editor = editor;
+        this.untitledIndex = untitledIndex;
+        this.circuitPanel = new CircuitPanel();
 
         setClosable(true);
 
@@ -44,7 +43,7 @@ public class CircuitFrame extends JInternalFrame{
 
         setVisible(true);
         
-        setTitle("Untitled");
+        setTitle("Untitled"+untitledIndex);
 
         circuitPanel.setParentFrame(this);
         circuitPanel.setMinimumSize(new java.awt.Dimension(1000, 800));
@@ -85,13 +84,18 @@ public class CircuitFrame extends JInternalFrame{
         });
         
         setBounds(180, 0, 780, 600);
-        
-        //setBounds(170, 0, 780, 600);
-        //DesktopPane.add(circuitFrame, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
     }
     
     public CircuitPanel getCircuitPanel(){
         return circuitPanel;
+    }
+    
+    public int getUntitledIndex() {
+        return untitledIndex;
+    }
+
+    public Editor getEditor() {
+        return editor;
     }
 }

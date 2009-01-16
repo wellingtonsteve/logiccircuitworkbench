@@ -11,8 +11,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
@@ -57,7 +55,8 @@ public class LED extends ImageSelectableComponent{
             }
                     
         } catch (IOException ex) {
-            Logger.getLogger(Input.class.getName()).log(Level.SEVERE, null, ex);
+             ui.error.ErrorHandler.newError(new ui.error.Error("Initialisation Error", "Could not load \"LED On\" image.", ex));    
+             activeBi = defaultBi;
         }
     }
     
@@ -146,7 +145,7 @@ public class LED extends ImageSelectableComponent{
 
             hd.endElement("", "", "component");
         } catch (SAXException ex) {
-            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+             ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below",ex);
         }
     }
     

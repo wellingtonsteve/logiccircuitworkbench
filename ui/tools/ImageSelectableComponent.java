@@ -4,8 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -153,7 +151,7 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
             hd.startElement("", "", "component", atts);
             hd.endElement("", "", "component");
         } catch (SAXException ex) {
-            Logger.getLogger(ImageSelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+            ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below.",ex);
         }
     }
         

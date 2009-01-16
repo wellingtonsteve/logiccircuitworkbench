@@ -10,7 +10,7 @@ public class NewCircuitCommand extends Command{
     
     @Override
     protected void perform(Editor editor) {
-        editor.newCircuit();
+        editor.createBlankCircuit();
     }
 
     @Override

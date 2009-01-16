@@ -79,9 +79,9 @@ public class Grid {
                         Collection<Pin> cpBackup = cp.getConnections();
                         cp.moveWireEnds(new Point(p.x, p.y));          
                         if(!cp.getConnections().equals(cpBackup)){
-                            System.out.println("change");
+                            //System.out.println("change");
                         } else {
-                            System.out.println("nochange");
+                            //System.out.println("nochange");
                         }
                     } 
                 }   

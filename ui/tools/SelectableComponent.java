@@ -1,6 +1,5 @@
 package ui.tools;
 
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -10,8 +9,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.transform.sax.TransformerHandler;
 import sim.Component;
 import ui.CircuitPanel;
@@ -57,7 +54,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         try {
             return (SelectableComponent) this.clone();
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(SelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+            ui.error.ErrorHandler.newError("Component Copying Error","It is not possible to copy this component.",ex);
         }
         return null;
     }

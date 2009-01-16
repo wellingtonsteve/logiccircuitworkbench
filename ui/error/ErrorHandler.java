@@ -31,4 +31,12 @@ public class ErrorHandler {
         }        
     }
     
+    public static void newError(String title, String message){
+        newError(new Error(title, message));
+    }
+    
+    public static void newError(String title, String message, Exception exception){
+        newError(new Error(title, message, exception));
+    }
+    
 }
