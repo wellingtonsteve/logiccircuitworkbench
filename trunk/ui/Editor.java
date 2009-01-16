@@ -11,8 +11,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.beans.PropertyVetoException;
 import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
@@ -824,7 +827,11 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
             windowItem.setText(cf.getTitle()); 
             windowItem.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    cf2.moveToFront();
+                    try {
+                        cf2.setSelected(true);
+                    } catch (PropertyVetoException ex) {
+                        ErrorHandler.newError("Editor Error","Cannot select circuit " + cf2.getTitle() + ".", ex);
+                    }
                 }
             });
             Window.add(windowItem);
@@ -859,6 +866,7 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
      * @return The new circuit
      */
     public CircuitPanel createBlankCircuit() {
+        
         // Construct the containing frame
         CircuitFrame cir = new CircuitFrame(this, untitledIndex++);
         if(getActiveCircuit() != null){
@@ -870,7 +878,7 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         
         // Add the new frame to the list of windows and to the Desktop Window Pane
         circuitwindows.add(cir);
-        DesktopPane.add(cir, DesktopPane.lowestLayer());
+        DesktopPane.add(cir, javax.swing.JDesktopPane.DEFAULT_LAYER);
         
         // Make the new circuit active
         setActiveCircuit(cir.getCircuitPanel());
@@ -882,6 +890,7 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         cir.getCircuitPanel().getCommandHistory().addRedoEmptyListener(Redo);
         
         // Populate Windows menu
+        
         refreshWindowsMenu();
         
         return getActiveCircuit();
@@ -906,10 +915,11 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         if(circuitwindows.contains(circuit.getParentFrame())){
             // Set application's title
             setTitle("Logic Circuit Workbench - " + circuit.getParentFrame().getTitle());
-
+            
             // Make the circuit active in the Desktop Window Pane
             this.circuitPanel = circuit;
-            DesktopPane.setLayer(circuit, DesktopPane.lowestLayer());
+            try {  circuit.getParentFrame().setSelected(true);  } 
+            catch (PropertyVetoException ex) { ErrorHandler.newError("Editor Error","Cannot select circuit " + circuit.getParentFrame().getTitle() + ".", ex); }
 
             // Set the appropriate state for all command history buttons
             UndoButton.setEnabled(circuitPanel.getCommandHistory().canUndo());
