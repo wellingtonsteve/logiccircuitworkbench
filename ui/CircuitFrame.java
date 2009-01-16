@@ -7,6 +7,8 @@ package ui;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 
 /**
  *
@@ -49,9 +51,6 @@ public class CircuitFrame extends JInternalFrame{
         circuitPanel.setMinimumSize(new java.awt.Dimension(1000, 800));
         circuitPanel.setPreferredSize(new java.awt.Dimension(1000, 800));
 
-        //org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${focusable}"), circuitPanel, org.jdesktop.beansbinding.BeanProperty.create("focusable"));
-        //bindingGroup.addBinding(binding);
-
         org.jdesktop.layout.GroupLayout circuitPanelLayout = new org.jdesktop.layout.GroupLayout(circuitPanel);
         circuitPanel.setLayout(circuitPanelLayout);
         circuitPanelLayout.setHorizontalGroup(
@@ -75,12 +74,37 @@ public class CircuitFrame extends JInternalFrame{
             circuitFrameLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
         );
+        
+        addInternalFrameListener(new InternalFrameListener(){
 
-        addFocusListener(new java.awt.event.FocusAdapter() {
-            @Override
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                editor.setActiveCircuit(circuitPanel);
+            public void internalFrameOpened(InternalFrameEvent e) {
+                
             }
+
+            public void internalFrameClosing(InternalFrameEvent e) {
+                
+            }
+
+            public void internalFrameClosed(InternalFrameEvent e) {
+                
+            }
+
+            public void internalFrameIconified(InternalFrameEvent e) {
+                
+            }
+
+            public void internalFrameDeiconified(InternalFrameEvent e) {
+                
+            }
+
+            public void internalFrameActivated(InternalFrameEvent e) {
+                if(!isSelected()){ editor.setActiveCircuit(circuitPanel);}
+            }
+
+            public void internalFrameDeactivated(InternalFrameEvent e) {
+                
+            }
+            
         });
         
         setBounds(180, 0, 780, 600);

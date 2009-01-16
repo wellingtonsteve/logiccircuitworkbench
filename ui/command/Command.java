@@ -21,7 +21,6 @@ public abstract class Command implements Cloneable{
        if(!canUndo){
            activeCircuit = editor.getActiveCircuit();
            perform(editor);
-           if(activeCircuit!=null){editor.setActiveCircuit(activeCircuit);}
        }       
     }
     
@@ -40,7 +39,6 @@ public abstract class Command implements Cloneable{
     /** Undo the command */
     public final void undo(Editor editor) {
         if(canUndo){
-            editor.setActiveCircuit(activeCircuit);
             undoEffect(editor);
         }        
     }

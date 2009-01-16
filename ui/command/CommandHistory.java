@@ -107,7 +107,7 @@ public class CommandHistory {
     }
     
     /**
-     * Add a #JComponent which is can call an undo operation. Undo Listeners are
+     * Add a #JComponent which can call an undo operation. Undo Listeners are
      * disabled when there are no actions to undo.
      * 
      * @param undolistener
@@ -117,7 +117,7 @@ public class CommandHistory {
     }
     
     /**
-     * Add a #JComponent which is can call a redo operation. Redo Listeners are
+     * Add a #JComponent which can call a redo operation. Redo Listeners are
      * disabled when there are no actions to redo.
      * 
      * @param undolistener
