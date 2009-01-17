@@ -41,7 +41,6 @@ public class OptionsPanel extends JPanel{
     private SelectableComponent sc = null;
     private Editor editor;
     private String titleNew, titleOld;
-    private String componentName;
     private JLabel ledColoursLabel = new JLabel();
     private JLabel labelLabel = new JLabel();
     private double rotation = 0;
@@ -143,20 +142,12 @@ public class OptionsPanel extends JPanel{
     }
     
     /**
-     * Get the component which this options panel displays.
+     * Get a copy of the component which this options panel displays.
      * 
      * @return
      */
     public SelectableComponent getSelectableComponent(){
-        if(componentName!=null){
-            setComponentByName(componentName);
-            sc.setRotation(rotation);
-            return sc;
-        } else {
-            ErrorHandler.newError(new ui.error.Error("Component Creation Error","Please select a component from the selection box."));
-            return null;
-        }
-        
+        return sc.copy();        
     }
     
     /**
@@ -195,57 +186,6 @@ public class OptionsPanel extends JPanel{
         this.repaint();
         editor.getActiveCircuit().repaint();
     }
-    
-    /** 
-     * Set the component which this panel shows. The component is created from 
-     * the netlists associated with the editor from the componentName parameter,
-     * which is the netlist key.
-     * 
-     * @param componentName
-     */
-    public void setComponentByName(String componentName){
-        this.componentName = componentName;      
-        
-        // Create the component from the componentName key
-        if(componentName!=null && editor!=null){
-            try {
-                if(editor.isNetlistComponent(componentName)){
-                    sc = editor.getNetlistComponent(componentName).getConstructor(CircuitPanel.class, Point.class).newInstance(editor.getActiveCircuit(), new Point(0,0));
-                } else {
-                    sc = editor.getDefaultNetlistComponent(componentName);
-                }
-            } catch (Exception ex){
-                ErrorHandler.newError(new ui.error.Error("Component Creation Error","Please select a component from the selection box.", ex));
-            }
-        }
-
-        // Update the values in different parts of the form
-        sc.setRotation(rotation);
-        titleLabel.setText(titleNew);
-        typeLabel.setText(sc.getName());
-        ledColours.setVisible(sc instanceof LED);
-        ledColoursLabel.setVisible(sc instanceof LED);
-        sourceIsOn.setVisible(sc instanceof Input);
-        labelLabel.setEnabled(true);
-        labelTextbox.setEnabled(true);
-               
-        // Display component specific layout options
-        if(sc instanceof LED){
-            ((LED) sc).setValue(true);
-            ((LED) sc).setColour((String) ledColours.getSelectedItem());
-        }
-        if(sc instanceof Input){
-            ((Input) sc).setIsOn((boolean) sourceIsOn.isSelected());
-        }
-        if(sc instanceof Wire){
-            labelLabel.setEnabled(false);
-            labelTextbox.setEnabled(false);
-        }
-        
-        // Cascade changes to the preview window itself
-        Preview.setComponent(sc);
-        setLayoutManager();
-    }
 
     /**
      * Rotate the component that is displayed in this options panel, also force
@@ -269,9 +209,36 @@ public class OptionsPanel extends JPanel{
     }
     
     /**
+     * Get the current rotation of the component displayed in the panel.
+     * 
+     * @return
+     */
+    public Double getComponentRotation(){
+        return rotation;
+    }
+    
+    /**
+     * Get the current colour of the LED colours drop down box.
+     * 
+     * @return
+     */
+    public String getLEDColour(){
+        return (String) ledColours.getSelectedItem();
+    }
+    
+    /**
+     * Get the state of the Input Source.
+     * 
+     * @return
+     */
+    public boolean getInputSourceState(){
+        return sourceIsOn.isSelected();
+    }
+    
+    /**
      * Layout the Panel. Dependant upon the current component.
      */
-    private void setLayoutManager(){      
+    public void setLayoutManager(){      
         org.jdesktop.layout.GroupLayout OptionsLayout = new org.jdesktop.layout.GroupLayout(this);
         
         setLayout(OptionsLayout);

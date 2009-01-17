@@ -9,8 +9,7 @@ import ui.Editor;
  */
 public abstract class Command implements Cloneable{
     protected CircuitPanel activeCircuit;
-    protected boolean canUndo = false;
-    
+    protected boolean canUndo = false;    
     
     /**
      * Carry out the command (if we are in the correct state to do so)
@@ -23,7 +22,6 @@ public abstract class Command implements Cloneable{
            perform(editor);
        }       
     }
-    
     
     /**
      * Perform the main action of this command. This method must be overwritten

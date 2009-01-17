@@ -14,8 +14,6 @@ import java.awt.Point;
 import java.beans.PropertyVetoException;
 import java.util.Enumeration;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
@@ -334,7 +332,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Toolbar.add(StartButton);
 
         jSlider1.setMajorTickSpacing(10);
-        jSlider1.setPaintLabels(true);
         jSlider1.setPaintTicks(true);
         jSlider1.setSnapToTicks(true);
         jSlider1.setMaximumSize(new java.awt.Dimension(200, 33));
@@ -619,12 +616,37 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     
 private void SelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SelectionMouseClicked
     toggleToolboxButton(Selection);
-    getActiveCircuit().selectTool("Select");
+    getActiveCircuit().setCurrentTool("Select");
 }//GEN-LAST:event_SelectionMouseClicked
 
 private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WireMouseClicked
     toggleToolboxButton(Wire);
-    getActiveCircuit().selectTool("Standard.Wire");
+    circuitPanel.removeUnFixedComponents();
+    String componentName = "Standard.Wire";
+    
+    CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
+        componentName,                                              // properties[0] = componentName
+        ((OptionsPanel) Options).getComponentRotation(),            // properties[1] = rotation
+        new Point(0,0),                                             // properties[2] = point
+        ((OptionsPanel) Options).getCurrentLabel(),                 // properties[3] = label
+        null,                                                       // properties[4] = LED Colour
+        null                                                        // properties[5] = Input On/Off
+    });
+    getActiveCircuit().getCommandHistory().doCommand(ccc);
+
+    // Set Options panel (Preview, Component Specific Options etc.)
+    ((OptionsPanel) Options).setComponent(ccc.getComponent());
+    ((OptionsPanel) Options).resetLabel(); // Assume user wants a different name for a different component
+    ((OptionsPanel) Options).setLayoutManager();
+    
+    Options.setVisible(true);
+    Options.repaint();
+
+    // Clean up the circuit
+    if(circuitPanel != null){
+        circuitPanel.setCurrentTool(componentName);
+    }
+    getActiveCircuit().setCurrentTool(componentName);
     RotateRight.setEnabled(false);
     RotateLeft.setEnabled(false);
 }//GEN-LAST:event_WireMouseClicked
@@ -632,9 +654,11 @@ private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
 private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeValueChanged
     RotateRight.setEnabled(true);
     RotateLeft.setEnabled(true);
-    
+    toggleToolboxButton(InsertComponent);
+
     TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
     if(currentSelection != null){
+        
         // Implode from array path to string delimited by periods.
         Object[] nameArray = currentSelection.getPath();
         String componentName = new String();
@@ -644,23 +668,30 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
         componentName = componentName.substring(0, componentName.length() - 1);
         
         if(isValidComponent(componentName)){
+            circuitPanel.removeUnFixedComponents();
+            
+            CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
+                componentName,                                              // properties[0] = componentName
+                ((OptionsPanel) Options).getComponentRotation(),            // properties[1] = rotation
+                new Point(0,0),                                             // properties[2] = point
+                ((OptionsPanel) Options).getCurrentLabel(),                 // properties[3] = label
+                ((componentName.equals("Standard.LED"))?((OptionsPanel) Options).getLEDColour():null),// properties[4] = LED Colour
+                ((componentName.equals("Standard.Button Source"))?((OptionsPanel) Options).getInputSourceState():null)// properties[5] = Input On/Off
+            });
+            getActiveCircuit().getCommandHistory().doCommand(ccc);
+            
             // Set Options panel (Preview, Component Specific Options etc.)
-            ((OptionsPanel) Options).setComponentByName(componentName);
+            ((OptionsPanel) Options).setComponent(ccc.getComponent());
             ((OptionsPanel) Options).resetLabel(); // Assume user wants a different name for a different component
+            ((OptionsPanel) Options).setLayoutManager();
             Options.setVisible(true);
             Options.repaint();
 
-            // Update the circuit
-            makeToolSelection(componentName);
-
-            toggleToolboxButton(InsertComponent);
+            getActiveCircuit().setCurrentTool(componentName);
 
             repaint();
-        }
-        
-        
-    }
-    
+        }       
+    }   
 }//GEN-LAST:event_ComponentSelectionTreeValueChanged
 
 private void UndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UndoActionPerformed
@@ -730,6 +761,7 @@ private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 
 private void OpenFileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_OpenFileButtonMouseClicked
     getActiveCircuit().getCommandHistory().doCommand(new FileOpenCommand());
+    SelectionMouseClicked(null);
 }//GEN-LAST:event_OpenFileButtonMouseClicked
 
 private void SaveAsButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveAsButtonMouseClicked
@@ -968,12 +1000,9 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
                         
                     // We already have this node, move to the child
                     parent = mtn;            
-
-                }
-                    
+                }                    
             }            
         }
-
         return new DefaultTreeModel(rootNode);
     }
     
@@ -1100,46 +1129,12 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
     }
     
     /**
-     * Get the current selection from the options panel and add the component to 
-     * the current active circuit.
-     */
-    private void makeToolSelection(String tool){
-        if(circuitPanel != null){
-            circuitPanel.removeUnFixedComponents();
-            circuitPanel.selectTool(tool);
-            getActiveCircuit().getCommandHistory().doCommand(new AddComponentCommand(((OptionsPanel) Options).getSelectableComponent()));
-        }
-    }
-    
-    /**
-     * Select the component specified in the Selection tree and add the component
-     * to the current active circuit.
-     */
-    public void makeToolSelection(){
-        // Create the component key from the selection tree path
-        TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
-        if(currentSelection != null){
-            Object[] nameArray = currentSelection.getPath();
-            String componentName = new String();
-            for(int i = 0; i<nameArray.length; i++){
-                componentName += nameArray[i] + ".";
-            }
-            componentName = componentName.substring(0, componentName.length() - 1);
-            
-            // Make the actual selection
-            if(isValidComponent(componentName)){
-                makeToolSelection(componentName);
-            }     
-        }
-    }
-    
-    /**
      * Fix the current component to the circuit
      * 
      * @param endPoint  the point at which to fix the component
      */
-    public void fixSelection(SelectableComponent old, Point endPoint) {
-        getActiveCircuit().getCommandHistory().doCommand(new FixComponentCommand(old, endPoint));
+    public void fixComponent(SelectableComponent old) {
+        getActiveCircuit().getCommandHistory().doCommand(new FixComponentCommand(old));
     }
     
     public OptionsPanel getOptionsPanel(){

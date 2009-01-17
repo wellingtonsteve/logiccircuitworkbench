@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Line2D;
 import java.util.LinkedList;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
@@ -29,7 +30,7 @@ public class Wire extends SelectableComponent {
     private LinkedList<Point> waypoints = new LinkedList<Point>(); // NOTE: Waypoints are specified in Global (World) Co-ordinates
     private int x1 = 0,  y1 = 0,  x2 = 0,  y2 = 0,  x3 = 0,  y3 = 0;
     private Point hoverWaypoint;
-    private Point hoverMousePoint;
+    private Point hoverMousePoint = new Point(0,0);
 
     public Wire(CircuitPanel parent){
         super(parent, null);
@@ -136,8 +137,7 @@ public class Wire extends SelectableComponent {
             j = waypoints.lastIndexOf(ptA)-1;
             if(i < j){
                 break dups;
-            }
-  
+            }  
         }
        
         // Remove waypoints duplicate
@@ -159,8 +159,7 @@ public class Wire extends SelectableComponent {
                 drawLeg(g, current, next);
                 current = waypoint;
             }
-           drawLeg(g, next, endPoint);
-            
+           drawLeg(g, next, endPoint);            
         }
         
         // Debugging
@@ -189,7 +188,7 @@ public class Wire extends SelectableComponent {
             start = waypoints.get(len - 2);
         }
         if(start != null){
-            detectResolveWireOverlap(start, waypoints.getLast(), endPoint, isFixed());
+            removeCommonLineWaypoints(start, waypoints.getLast(), endPoint, isFixed());
         }  
     }
     
@@ -249,7 +248,7 @@ public class Wire extends SelectableComponent {
             last = waypoints.get(1);
         }
         if(last != null){
-            detectResolveWireOverlap(startPoint, waypoints.get(0), last, true);
+            removeCommonLineWaypoints(startPoint, waypoints.get(0), last, true);
         }  
         
     }
@@ -260,6 +259,49 @@ public class Wire extends SelectableComponent {
         setLocalPins();
         setGlobalPins(); 
           
+    }
+    
+    public void reportSelfCrossover(Point p){
+        
+        Point start = null;
+        Point end = null;
+        
+        if (waypoints != null) {
+            Point current = startPoint;
+            Point next = startPoint;
+            Point last = endPoint;
+            
+            for (Point waypoint : waypoints) {
+                
+                next = waypoint;
+
+                createLeg(current, next);
+                Line2D.Double l1 = new Line2D.Double(x1, y1, x2, y2);
+                Line2D.Double l2 = new Line2D.Double(x2, y2, x3, y3);
+                if(l1.ptLineDist(p)==0.0 || l2.ptLineDist(p)==0.0){
+                    if(start == null){
+                        start = current;
+                    } else {
+                        end = next;
+                        break;
+                    }
+                } 
+                
+                current = waypoint;
+                
+            }
+            
+            createLeg(next, last);
+            Line2D.Double l1 = new Line2D.Double(x1, y1, x2, y2);
+            Line2D.Double l2 = new Line2D.Double(x2, y2, x3, y3);
+            if(l1.ptLineDist(p)==0.0 || l2.ptLineDist(p)==0.0){
+                    end = last;
+            } 
+            
+            System.out.println(start + " " + end);
+        }
+        
+        
     }
 
     public void addWaypoint(Point wp) {
@@ -273,7 +315,7 @@ public class Wire extends SelectableComponent {
             start = waypoints.get(len - 2);
         }
         if(start != null){ 
-            detectResolveWireOverlap(start, waypoints.getLast(), wp, true);
+            removeCommonLineWaypoints(start, waypoints.getLast(), wp, true);
         }  
         waypoints.add(wp);
         
@@ -296,7 +338,9 @@ public class Wire extends SelectableComponent {
         createLeg(from, to);
         
         if(to.equals(hoverWaypoint)){
-            
+            if(hoverMousePoint == null){
+                hoverMousePoint = new Point(0,0);
+            }
             if (((x1 <= hoverMousePoint.x && x2 >= hoverMousePoint.x)
                     ||(x1 >= hoverMousePoint.x && x2 <= hoverMousePoint.x))
                && ((y1-UIConstants.WIRE_HOVER_THICKNESS <= hoverMousePoint.y && y2+UIConstants.WIRE_HOVER_THICKNESS >= hoverMousePoint.y)
@@ -475,7 +519,7 @@ public class Wire extends SelectableComponent {
         if(i > 0 & i < waypoints.size()-1){ 
             Point previousWaypoint = waypoints.get(i-1);
             Point nextWaypoint = waypoints.get(i+1);
-            detectResolveWireOverlap(previousWaypoint, hoverWaypoint, nextWaypoint, true);
+            removeCommonLineWaypoints(previousWaypoint, hoverWaypoint, nextWaypoint, true);
         }
     }
 
@@ -596,7 +640,7 @@ public class Wire extends SelectableComponent {
         return retval;
     }
 
-    private boolean detectResolveWireOverlap(Point last, Point current, Point next, Boolean newWaypoint) {
+    private boolean removeCommonLineWaypoints(Point last, Point current, Point next, Boolean newWaypoint) {
        
         createLeg(last, current);
         
@@ -640,5 +684,10 @@ public class Wire extends SelectableComponent {
         } catch (SAXException ex) {
             ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below",ex);
         }
+    }
+
+    @Override
+    protected void setComponentTreeName() {
+        componentTreeName = "Standard.Wire";
     }
 }
