@@ -130,7 +130,7 @@ public class LED extends ImageSelectableComponent{
     public void createXML(TransformerHandler hd) {
         try {
             AttributesImpl atts = new AttributesImpl();
-            atts.addAttribute("", "", "type", "CDATA", this.getClass().getSimpleName());
+            atts.addAttribute("", "", "type", "CDATA", getComponentTreeName());
             atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
             atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
             atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));

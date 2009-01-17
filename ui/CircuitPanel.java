@@ -28,6 +28,7 @@ import ui.tools.SelectableComponent;
 import ui.tools.SelectionState;
 import netlist.standard.Wire;
 import ui.command.CommandHistory;
+import ui.command.CreateComponentCommand;
 import ui.error.ErrorHandler;
 
 /**
@@ -86,7 +87,7 @@ public class CircuitPanel extends JPanel {
 
 
                         // Hover highlights    
-                        } else if (getCurrentTool().equals("Select")){
+                        } else if (currentTool.equals("Select")){
 
                             temporaryComponent = null;
                             if(getHighlightedComponent()!=null){getHighlightedComponent().unHover();}
@@ -104,7 +105,6 @@ public class CircuitPanel extends JPanel {
                                 setHighlightedComponent(temporaryComponent);
                                 temporaryComponent.mouseMoved(e);
                             }
-
                         }             
 
                         repaint();
@@ -131,7 +131,7 @@ public class CircuitPanel extends JPanel {
                     // Find the location in the circuit
                     endPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
 
-                    if(getCurrentTool().equals("Select")){
+                    if(currentTool.equals("Select")){
 
                         if(nowDraging){
                             for(SelectableComponent sc: activeComponents){
@@ -152,9 +152,7 @@ public class CircuitPanel extends JPanel {
                             }  
 
                             if(clickingEmptySpace){
-
                                 multipleSelection = true;
-
                             } else {
 
                                 nowDraging = true;
@@ -167,14 +165,12 @@ public class CircuitPanel extends JPanel {
                                     drawnComponents.addAll(activeComponents);
                                 }
 
-
                                 for(SelectableComponent sc: activeComponents){                
                                     if(!(sc instanceof Wire)){ 
                                         sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, false);
                                     }
                                     sc.mouseDragged(e);
                                 }
-
                             }
                         }
 
@@ -224,8 +220,18 @@ public class CircuitPanel extends JPanel {
 
                         // Fix floating selection
                         if(!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed()){
-                            editor.fixSelection(drawnComponents.peek(), endPoint);
-                            editor.makeToolSelection();
+                            editor.fixComponent(drawnComponents.peek());
+                            
+                            // Add another new component
+                            CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
+                                currentTool,                                                // properties[0] = componentName
+                                editor.getOptionsPanel().getComponentRotation(),            // properties[1] = rotation
+                                new Point(0,0),                                             // properties[2] = point
+                                editor.getOptionsPanel().getCurrentLabel(),                 // properties[3] = label
+                                ((currentTool.equals("Standard.LED"))?editor.getOptionsPanel().getLEDColour():null),// properties[4] = LED Colour
+                                ((currentTool.equals("Standard.Button Source"))?editor.getOptionsPanel().getInputSourceState():null)// properties[5] = Input On/Off
+                            });
+                            cmdHist.doCommand(ccc);
                         }                               
 
                     } else {
@@ -326,6 +332,7 @@ public class CircuitPanel extends JPanel {
     public void setFilename(String filename) {
         this.filename = filename;
         this.getParentFrame().setTitle(filename);
+        editor.setTitle("Logic Circuit Workbench - " + filename);
     }
 
     public void removeUnFixedComponents() {
@@ -460,6 +467,9 @@ public class CircuitPanel extends JPanel {
             }
         }
         
+        // Draw Connection Points 
+        grid.draw(g2);
+        
         // Draw previous components
         for(SelectableComponent sc: drawnComponents){
             
@@ -467,8 +477,7 @@ public class CircuitPanel extends JPanel {
                 g2.translate(-sc.getCentre().x, -sc.getCentre().y);
                 sc.draw(g2); 
                 g2.translate(sc.getCentre().x, sc.getCentre().y);    
-            }
-                   
+            }                   
         }
         
         if(multipleSelection){
@@ -477,28 +486,22 @@ public class CircuitPanel extends JPanel {
             g2.setStroke(UIConstants.SELECTION_BOX_STROKE);
             setSelectionBox();
             g2.drawRect(selX, selY, selWidth, selHeight);
-        }
-        
-        // Draw Connection Points 
-        grid.draw(g2);
+        }      
     }
              
-    public void selectTool(String tool){
-        
-        // Remove any temporary components left over
-        removeUnFixedComponents();
-        
-        // Create a new non-fixed component
-        if(tool.equals("Standard.Wire")){
-            drawnComponents.push(new Wire(CircuitPanel.this));
-        } 
+    public void setCurrentTool(String tool){
+                
+//        // Create a new Wire
+//        if(tool.equals("Standard.Wire")){
+//            drawnComponents.push(new Wire(CircuitPanel.this));
+//        } 
         
         this.currentTool = tool;            
         
     }
     
     public String getCurrentTool(){
-        return this.currentTool;
+        return currentTool;
     }
     
     public boolean hasActiveSelection(){
@@ -506,8 +509,7 @@ public class CircuitPanel extends JPanel {
             if(sc.getSelectionState().equals(SelectionState.ACTIVE)){
                 return true;
             }
-        }
-        
+        }        
         return false;
     }
     
@@ -574,17 +576,23 @@ public class CircuitPanel extends JPanel {
             
     public void addComponentList(List<SelectableComponent> list){
         drawnComponents.addAll(list);
+        for(SelectableComponent sc: list){
+            repaint(sc.getBoundingBox());
+        }
+        setCurrentTool(drawnComponents.peek().getComponentTreeName());
     }
     
     
      
     public void addComponent(SelectableComponent sc) {
         drawnComponents.push(sc);
+        setCurrentTool(sc.getComponentTreeName());
+        repaint(sc.getBoundingBox());
     }
 
     public void createImage(String filename) {
-        BufferedImage bi = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
-        this.paint(bi.getGraphics());      
+        BufferedImage bi = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        paint(bi.getGraphics());      
         try {
             ImageIO.write(bi, "jpg", new File(filename));
         } catch (IOException ex) {

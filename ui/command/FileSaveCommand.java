@@ -14,8 +14,7 @@ public class FileSaveCommand extends Command {
     @Override
     protected void perform(Editor editor) {
         String filename = activeCircuit.getFilename();      
-        
-        if(filename == null || filename.isEmpty()){
+        if(filename.substring(0, 8).equals("Untitled") || filename == null || filename.isEmpty()){
                     
             JFileChooser c = new JFileChooser();
             FileFilter xmlFilter = new XMLFileFilter();        

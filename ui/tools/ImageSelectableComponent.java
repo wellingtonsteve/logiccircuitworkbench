@@ -17,7 +17,6 @@ import netlist.Netlist;
 public abstract class ImageSelectableComponent extends SelectableComponent {
     
     protected Netlist nl;
-    protected String componentTreeName;
       
     public ImageSelectableComponent(CircuitPanel parent, Point point){
         super(parent, point);
@@ -143,7 +142,7 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     public void createXML(TransformerHandler hd) {
         try {
             AttributesImpl atts = new AttributesImpl();
-            atts.addAttribute("", "", "type", "CDATA", this.getClass().getSimpleName());
+            atts.addAttribute("", "", "type", "CDATA", getComponentTreeName());
             atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
             atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
             atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
@@ -156,11 +155,5 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     }
         
     protected abstract void setNetlist();
-
-    private String getComponentTreeName() {
-        return componentTreeName;
-    }
-
-    protected abstract void setComponentTreeName();
     
 }

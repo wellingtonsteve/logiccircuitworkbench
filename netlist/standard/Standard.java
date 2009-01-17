@@ -12,12 +12,13 @@ public class Standard extends Netlist{
     protected void setClassMappings() {
         putClass("Standard.Button Source",    netlist.standard.Input.class);
         putClass("Standard.LED",              netlist.standard.LED.class);
+        putClass("Standard.Wire",             netlist.standard.Wire.class);
        
     }  
     
     @Override
     protected void setImageMappings() {
-        // Active Images
+        // Default Images
         putImage("Standard.Button Source.default",   "/ui/images/components/default_input_off.png");
         putImage("Standard.LED.default",             "/ui/images/components/default_led.png");
         

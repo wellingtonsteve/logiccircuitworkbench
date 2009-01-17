@@ -36,7 +36,8 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     protected double cosTheta, sinTheta;
     protected Rectangle invalidArea = null;
     private String label = new String();
-    protected CircuitPanel parent;    
+    protected CircuitPanel parent;
+    protected String componentTreeName;
 
     public SelectableComponent(CircuitPanel parent, Point point){
         this.parent = parent;
@@ -263,7 +264,13 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     public boolean hasLabel(){
-        return !label.isEmpty() || !label.equals("");
+        return label != null && !label.isEmpty() && !label.equals("");
     }
+ 
+    public String getComponentTreeName() {
+        return componentTreeName;
+    }
+
+    protected abstract void setComponentTreeName();
     
 }

@@ -22,6 +22,10 @@ public class FileCreator {
     public FileCreator(String filename){
         
         try {
+            if(!filename.substring(filename.length()-5, filename.length()-1).equals(".xml")){
+                filename = filename + ".xml";
+            }
+            
             FileOutputStream fos = new FileOutputStream(filename);
             out = new PrintWriter(fos);
             StreamResult streamResult = new StreamResult(out);

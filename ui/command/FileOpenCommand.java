@@ -1,11 +1,12 @@
 package ui.command;
 
+import java.util.List;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 import ui.Editor;
-import ui.file.CircuitFileHandler;
+import ui.file.FileLoader;
 import ui.file.XMLFileFilter;
+import ui.tools.SelectableComponent;
 
 /**
  *
@@ -22,13 +23,24 @@ public class FileOpenCommand extends Command {
         c.setDialogType(JFileChooser.OPEN_DIALOG);
         int rVal = c.showOpenDialog(editor);
         if (rVal == JFileChooser.APPROVE_OPTION) {
-            activeCircuit = editor.createBlankCircuit();
+            
             filename = c.getSelectedFile().getAbsolutePath();
-            CircuitFileHandler cfh = new CircuitFileHandler(editor);
-            activeCircuit.addComponentList(cfh.loadFile(filename));
-            activeCircuit.setFilename(filename);
-            editor.refreshWindowsMenu();
-            activeCircuit.getParentFrame().setTitle(filename);
+            FileLoader cfh = new FileLoader(editor);
+            
+            activeCircuit = editor.createBlankCircuit();    
+            if(cfh.loadFile(filename)){
+                List<SelectableComponent> fileComponents = cfh.getStack();
+                
+                activeCircuit.addComponentList(fileComponents);
+                activeCircuit.setFilename(filename);
+                editor.refreshWindowsMenu();
+                activeCircuit.getParentFrame().setTitle(filename);
+                
+            } else {
+                //TODO: Close bad circuit!
+            } 
+            
+            
         }
     }
 

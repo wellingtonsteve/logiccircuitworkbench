@@ -36,6 +36,12 @@ public class ConnectionPoint extends GridObject {
     
     public void addConnection(Pin p){
         if(p.getParent() instanceof Wire                                // The current pin belongs to a wire
+                && !connections.isEmpty()
+                && !hasDifferentWire(p.getParent())){                    // The Same Wire
+            System.out.println(p);
+            ((Wire)p.getParent()).reportSelfCrossover(p);
+        }
+        if(p.getParent() instanceof Wire                                // The current pin belongs to a wire
                 && hasDifferentWire(p.getParent())                      // Not the same wire               
                 && !((Wire) p.getParent()).getEndPoint().equals(p)      // Not the end point of a wire
                 && !((Wire) p.getParent()).getOrigin().equals(p)){      // Not the start point of a wire
@@ -87,7 +93,7 @@ public class ConnectionPoint extends GridObject {
     
     public boolean hasDifferentWire(SelectableComponent sc){
         for(Pin p: connections){
-            if(p.getParent() instanceof Wire 
+            if(p.getParent() instanceof Wire
                     && !p.getParent().equals(sc)){
                 return true;
             }
