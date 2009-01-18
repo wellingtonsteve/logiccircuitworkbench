@@ -18,6 +18,7 @@ public class CommandHistory {
     private Stack<Command> redostack = new Stack<Command>();
     private List<JComponent> undolisteners = new LinkedList<JComponent>();
     private List<JComponent> redolisteners = new LinkedList<JComponent>();
+    private boolean isDirty = false;
     
     public CommandHistory(Editor parentEditor){
         this.parentEditor = parentEditor;
@@ -44,7 +45,17 @@ public class CommandHistory {
         redostack.clear();
         for(JComponent c: redolisteners){
             c.setEnabled(canRedo());
-        }
+        }        
+        
+        setIsDirty(true);
+    }
+
+    public boolean isDirty() {
+        return isDirty;
+    }
+    
+    public void setIsDirty(boolean isDirty) {
+        this.isDirty = isDirty;
     }
     
     /**
