@@ -18,6 +18,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import ui.CircuitPanel;
 import ui.UIConstants;
+import ui.grid.Pin;
 
 /**
  *
@@ -212,24 +213,24 @@ public class Wire extends SelectableComponent {
             
         }
         
-        // Find duplicates and remove waypoints between them
-        int i = 0, j = 0;
-        dups: for(Point ptA: waypoints){             
-            i = waypoints.indexOf(ptA);
-            j = waypoints.lastIndexOf(ptA)-1;
-            if(i < j){
-                break dups;
-            }
-  
-        }
-       
-        if(i != waypoints.size()-1){
-            for(int m = 0; m < waypoints.size(); m++){
-                if(m > i && m <= j ){
-                    waypoints.remove(m);
-                }
-            }
-        }
+//        // Find duplicates and remove waypoints between them
+//        int i = 0, j = 0;
+//        dups: for(Point ptA: waypoints){             
+//            i = waypoints.indexOf(ptA);
+//            j = waypoints.lastIndexOf(ptA)-1;
+//            if(i < j){
+//                break dups;
+//            }
+//  
+//        }
+//       
+//        if(i != waypoints.size()-1){
+//            for(int m = 0; m < waypoints.size(); m++){
+//                if(m > i && m <= j ){
+//                    waypoints.remove(m);
+//                }
+//            }
+//        }
         
         setLocalPins();
         setGlobalPins(); 
@@ -261,7 +262,7 @@ public class Wire extends SelectableComponent {
           
     }
     
-    public void reportSelfCrossover(Point p){
+    public boolean reportSelfCrossover(Point p){
         
         Point start = null;
         Point end = null;
@@ -271,8 +272,8 @@ public class Wire extends SelectableComponent {
             Point next = startPoint;
             Point last = endPoint;
             
-            for (Point waypoint : waypoints) {
-                
+            forbreak: for (Point waypoint : waypoints) {
+               
                 next = waypoint;
 
                 createLeg(current, next);
@@ -283,10 +284,14 @@ public class Wire extends SelectableComponent {
                         start = current;
                     } else {
                         end = next;
-                        break;
+                        break forbreak;
                     }
                 } 
                 
+                // Don't count connections between legs
+                if(next.equals(start)){
+                    start = null;
+                }
                 current = waypoint;
                 
             }
@@ -298,25 +303,47 @@ public class Wire extends SelectableComponent {
                     end = last;
             } 
             
-            System.out.println(start + " " + end);
+            if(start!=null && end != null && !waypoints.contains(new Point(p.x, p.y))){
+                System.out.println(start + " " + end + " " + p);
+                
+                LinkedList<Point> badWaypoints = new LinkedList<Point>();
+                boolean foundStart = false;
+                for(Point wp: waypoints){
+                    if(wp.equals(end)){
+                        break;
+                    }
+                    if(foundStart){
+                        badWaypoints.add(wp);
+                    }                    
+                    if(wp.equals(start)){
+                        foundStart = true;
+                    }                    
+                }
+                
+                waypoints.removeAll(badWaypoints);
+                waypoints.add(waypoints.indexOf(start)+1, p);
+                
+                return true;
+            }
         }
+        return false;
         
         
     }
 
     public void addWaypoint(Point wp) {
                
-        // Detect and resolve wire overlaps
-        int len = waypoints.size();
-        Point start = null;
-        if(len == 1){
-            start = startPoint;
-        } else if (len > 1){
-            start = waypoints.get(len - 2);
-        }
-        if(start != null){ 
-            removeCommonLineWaypoints(start, waypoints.getLast(), wp, true);
-        }  
+//        // Detect and resolve wire overlaps
+//        int len = waypoints.size();
+//        Point start = null;
+//        if(len == 1){
+//            start = startPoint;
+//        } else if (len > 1){
+//            start = waypoints.get(len - 2);
+//        }
+//        if(start != null){ 
+//            removeCommonLineWaypoints(start, waypoints.getLast(), wp, true);
+//        }  
         waypoints.add(wp);
         
     }
@@ -581,6 +608,42 @@ public class Wire extends SelectableComponent {
             setPinsOnLeg(next, last);
         }
 
+    }
+    
+    @Override
+    protected void setGlobalPins(){
+        for(Pin p: globalPins){
+            parent.getGrid().removePin(p);
+        }         
+        
+        globalPins.clear();
+        
+        cosTheta = Math.cos(rotation);
+        sinTheta = Math.sin(rotation);
+        
+        LinkedList<Point> oldwaypoints = new LinkedList<Point>();
+        oldwaypoints.addAll(waypoints);
+        
+        for(Point p: getLocalPins()){
+            Point rotP = rotate(p); 
+            Pin pin = new Pin(this, rotP.x +getOrigin().x-getCentre().x,rotP.y +getOrigin().y-getCentre().x);
+            globalPins.add(pin);
+            if(isFixed()){ 
+                parent.getGrid().addPin(pin);
+            }
+        }
+        
+        boolean waypointsHaveChanged = false;
+        for(Point p: oldwaypoints){
+            if(!waypoints.contains(p)){
+                waypointsHaveChanged = true;
+            }
+        }
+        if(waypointsHaveChanged){
+            setLocalPins();
+            setGlobalPins();
+        }
+        
     }
     
     @Override

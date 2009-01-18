@@ -5,10 +5,14 @@
 
 package ui;
 
+import java.beans.PropertyVetoException;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+import ui.command.FileSaveCommand;
+import ui.error.ErrorHandler;
 
 /**
  *
@@ -31,7 +35,7 @@ public class CircuitFrame extends JInternalFrame{
 
         setClosable(true);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
         setIconifiable(true);
 
@@ -77,33 +81,36 @@ public class CircuitFrame extends JInternalFrame{
         
         addInternalFrameListener(new InternalFrameListener(){
 
-            public void internalFrameOpened(InternalFrameEvent e) {
-                
-            }
+            public void internalFrameOpened(InternalFrameEvent e) {}
 
             public void internalFrameClosing(InternalFrameEvent e) {
+                int ans = JOptionPane.showConfirmDialog(editor, 
+                    "Do you want to save changes to \""+getTitle()+"\" before closing it?");
+                try {
+                    if(ans == JOptionPane.YES_OPTION){
+                       circuitPanel.getCommandHistory().doCommand(new FileSaveCommand());
+                    } else if(ans == JOptionPane.NO_OPTION){
+                        dispose();
+                    } else if(ans == JOptionPane.CANCEL_OPTION){
+                        setClosed(false);
+                    }
+                } catch (PropertyVetoException ex) {
+                    ErrorHandler.newError("Circuit Close Error","An error occured whilst trying to close the circuit. \nPlease see the system output below.", ex);
+                }
                 
             }
 
-            public void internalFrameClosed(InternalFrameEvent e) {
-                
-            }
+            public void internalFrameClosed(InternalFrameEvent e) {}
 
-            public void internalFrameIconified(InternalFrameEvent e) {
-                
-            }
+            public void internalFrameIconified(InternalFrameEvent e) {}
 
-            public void internalFrameDeiconified(InternalFrameEvent e) {
-                
-            }
+            public void internalFrameDeiconified(InternalFrameEvent e) {}
 
             public void internalFrameActivated(InternalFrameEvent e) {
                 if(!isSelected()){ editor.setActiveCircuit(circuitPanel);}
             }
 
-            public void internalFrameDeactivated(InternalFrameEvent e) {
-                
-            }
+            public void internalFrameDeactivated(InternalFrameEvent e) {}
             
         });
         
