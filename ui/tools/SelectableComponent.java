@@ -9,6 +9,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import javax.xml.transform.sax.TransformerHandler;
 import sim.Component;
 import ui.CircuitPanel;
@@ -30,8 +31,8 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     protected Rectangle boundingBox = null;
     protected boolean fixed = false, wasEverFixed = false; // fixed describes the current state, wasEverFixed indicates whether fixed has ever been true i.e. whether this is a brand new piece or not
     private Point point;
-    protected Collection<Point> localPins = new HashSet<Point>();
-    protected Collection<Pin> globalPins = new HashSet<Pin>();
+    protected Collection<Point> localPins = new LinkedList<Point>();
+    protected Collection<Pin> globalPins = new LinkedList<Pin>();
     protected double rotation = 0; // Rotation in degrees, with 0 being with inputs on left, output on right of standard and-gate
     protected double cosTheta, sinTheta;
     protected Rectangle invalidArea = null;
@@ -225,7 +226,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         return selBox.contains(getInvalidAreas());
     }
 
-    private Point rotate(Point p) {
+    protected Point rotate(Point p) {
         Point transP = new Point(p.x - getCentre().x, p.y - getCentre().y);
         Point rotP = new Point((int) ((transP.x * cosTheta) - (transP.y * sinTheta)), (int) ((transP.y * cosTheta) + (transP.x * sinTheta)));
         Point ansP = new Point(rotP.x + getCentre().x, rotP.y + getCentre().y);

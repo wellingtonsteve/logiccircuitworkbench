@@ -11,6 +11,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -50,7 +52,26 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     /** Creates new form FrameMain */
     public Editor() {        
         initComponents();
-        setIconImage(new javax.swing.ImageIcon(this.getClass().getResource("/ui/images/buttons/toolbar/led.png")).getImage());       
+        setIconImage(new javax.swing.ImageIcon(this.getClass().getResource("/ui/images/buttons/toolbar/led.png")).getImage());      
+        this.addWindowListener(new WindowListener(){
+
+            public void windowOpened(WindowEvent e) {}
+
+            public void windowClosing(WindowEvent e) {
+                ExitActionPerformed(null);
+            }
+
+            public void windowClosed(WindowEvent e) {}
+
+            public void windowIconified(WindowEvent e) {}
+
+            public void windowDeiconified(WindowEvent e) {}
+
+            public void windowActivated(WindowEvent e) {}
+
+            public void windowDeactivated(WindowEvent e) {}
+            
+        });
     }
 
     /** This method is called from within the constructor to
@@ -117,7 +138,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Help = new javax.swing.JMenu();
         About = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
         setTitle(bundle.getString("Editor.title")); // NOI18N
         setBounds(new java.awt.Rectangle(0, 0, 985, 750));
@@ -332,8 +353,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Toolbar.add(StartButton);
 
         jSlider1.setMajorTickSpacing(10);
-        jSlider1.setPaintTicks(true);
-        jSlider1.setSnapToTicks(true);
         jSlider1.setMaximumSize(new java.awt.Dimension(200, 33));
         Toolbar.add(jSlider1);
 
@@ -719,8 +738,16 @@ private void SelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_SelectAllActionPerformed
 
 private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
-    // TODO: check do we want to save?
+    int ans = JOptionPane.showConfirmDialog(this, 
+            "Are you sure that you want to close Logic Circuit Workbench?\n\n" +
+            "All unsaved circuits will be lost.");
+    if(ans == JOptionPane.YES_OPTION){
+        for(JInternalFrame jif: circuitwindows){
+            jif.doDefaultCloseAction();
+        }
+    }   
     System.exit(0);
+
 }//GEN-LAST:event_ExitActionPerformed
 
 private void ClearCircuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClearCircuitMouseClicked
@@ -1392,6 +1419,10 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         protected void setActiveImage() {
             activeBi = null;
         }
+    }
+
+    public void removeCircuitFrame(CircuitFrame cf) {
+        circuitwindows.remove(cf);
     }
      
      

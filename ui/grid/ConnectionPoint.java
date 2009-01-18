@@ -34,12 +34,15 @@ public class ConnectionPoint extends GridObject {
         }
     }
     
-    public void addConnection(Pin p){
+    public void addConnection(Pin p){      
         if(p.getParent() instanceof Wire                                // The current pin belongs to a wire
-                && !connections.isEmpty()
-                && !hasDifferentWire(p.getParent())){                    // The Same Wire
-            System.out.println(p);
-            ((Wire)p.getParent()).reportSelfCrossover(p);
+                && !((Wire) p.getParent()).getEndPoint().equals(p)      // Not the end point of a wire
+                && !((Wire) p.getParent()).getOrigin().equals(p)        // Not the start point of a wire
+                && hasSameComponent(p.getParent())){                    // The Same Wire
+            if(((Wire)p.getParent()).reportSelfCrossover(p)){
+               this.setActive(true); 
+            }
+            
         }
         if(p.getParent() instanceof Wire                                // The current pin belongs to a wire
                 && hasDifferentWire(p.getParent())                      // Not the same wire               
@@ -72,17 +75,20 @@ public class ConnectionPoint extends GridObject {
         return (Collection<Pin>) connections.clone();
     }
     
-    public void moveWireEnds(Point newPoint){
+    public void moveWireEnds(Point newPoint){        
         for(Pin pin: connections){
             if(pin.getParent() instanceof Wire){
                 Wire w = (Wire) pin.getParent();
-                if(w.getEndPoint().equals(this)){
-                    w.moveEndPoint(newPoint);
-                    break;
-                } else if(w.getOrigin().equals(this)){
-                    w.moveStartPoint(newPoint);
-                    break;
-                }                
+                if(w.isFixed()){
+                    if(w.getEndPoint().equals(this)){
+                        w.moveEndPoint(newPoint);
+                        break;
+                    } else if(w.getOrigin().equals(this)){
+                        w.moveStartPoint(newPoint);
+                        break;
+                    }     
+                }
+                               
             } 
         } 
     }
@@ -91,10 +97,19 @@ public class ConnectionPoint extends GridObject {
         return !connections.isEmpty();
     }
     
-    public boolean hasDifferentWire(SelectableComponent sc){
+    public boolean hasDifferentWire(SelectableComponent wire){
         for(Pin p: connections){
             if(p.getParent() instanceof Wire
-                    && !p.getParent().equals(sc)){
+                    && !p.getParent().equals(wire)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean hasSameComponent(SelectableComponent sc){
+        for(Pin p: connections){
+            if(p.getParent().equals(sc)){
                 return true;
             }
         }
@@ -126,7 +141,7 @@ public class ConnectionPoint extends GridObject {
         
         if(!isCrossover){
         
-            if(noOfConnections() > 1){
+            if(noOfDifferentConnections() > 1){
                  g2.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
                  g2.drawOval(x-2, y-2, 5, 5);
                  g2.fillOval(x-2, y-2, 5, 5);
@@ -175,6 +190,16 @@ public class ConnectionPoint extends GridObject {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+    private int noOfDifferentConnections() {
+        LinkedList<SelectableComponent> found = new LinkedList<SelectableComponent>();
+        for(Pin p: connections){
+            if(!found.contains(p.getParent())){
+                found.add(p.getParent());
+            }
+        }        
+        return found.size();
     }
         
 }

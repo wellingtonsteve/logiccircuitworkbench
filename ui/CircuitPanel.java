@@ -180,7 +180,9 @@ public class CircuitPanel extends JPanel {
                             && !drawnComponents.isEmpty()){
 
                         Wire w = (Wire) drawnComponents.peek();
-                        w.setStartPoint(startPoint);                    
+                        if(w.getOrigin().equals(new Point(0,0))){
+                            w.setStartPoint(startPoint);
+                        }                    
                         w.setEndPoint(endPoint);
                         if(grid.isConnectionPoint(endPoint)){
                             grid.setActivePoint(endPoint, true);
@@ -247,7 +249,9 @@ public class CircuitPanel extends JPanel {
                     repaint();
                 }     
                                  
-            };            public void mouseEntered(MouseEvent e) {}
+            };
+            
+            public void mouseEntered(MouseEvent e) {}
             public void mouseExited(MouseEvent e) {}
 
             public void mousePressed(MouseEvent e) {                                                
@@ -471,8 +475,7 @@ public class CircuitPanel extends JPanel {
         grid.draw(g2);
         
         // Draw previous components
-        for(SelectableComponent sc: drawnComponents){
-            
+        for(SelectableComponent sc: drawnComponents){            
             if(sc.isFixed() || (endPoint != null && contains(endPoint))){ // Don't draw the temp component, when mouse is outside viewable area.
                 g2.translate(-sc.getCentre().x, -sc.getCentre().y);
                 sc.draw(g2); 
@@ -480,8 +483,7 @@ public class CircuitPanel extends JPanel {
             }                   
         }
         
-        if(multipleSelection){
-                        
+        if(multipleSelection){                        
             g2.setColor(UIConstants.SELECTION_BOX_COLOUR);
             g2.setStroke(UIConstants.SELECTION_BOX_STROKE);
             setSelectionBox();
@@ -489,15 +491,8 @@ public class CircuitPanel extends JPanel {
         }      
     }
              
-    public void setCurrentTool(String tool){
-                
-//        // Create a new Wire
-//        if(tool.equals("Standard.Wire")){
-//            drawnComponents.push(new Wire(CircuitPanel.this));
-//        } 
-        
-        this.currentTool = tool;            
-        
+    public void setCurrentTool(String tool){      
+        this.currentTool = tool;                    
     }
     
     public String getCurrentTool(){
@@ -545,13 +540,13 @@ public class CircuitPanel extends JPanel {
     public String resetCircuit(){
         drawnComponents.clear();
         activeComponents.clear();
+        highlightedComponent = null;
         temporaryComponent = null;
         nowDraging = false;
         multipleSelection = false;
         grid.clear();
-        
-        repaint();
-        
+
+        repaint();      
         return "Circuit cleared.";
     }    
     
