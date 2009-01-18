@@ -563,6 +563,7 @@ public class CircuitPanel extends JPanel {
             }
         }
         fc.write();
+        cmdHist.setIsDirty(false);
     }
     
     public String getFilename(){

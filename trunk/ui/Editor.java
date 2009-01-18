@@ -745,8 +745,9 @@ private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
         for(JInternalFrame jif: circuitwindows){
             jif.doDefaultCloseAction();
         }
+        System.exit(0);
     }   
-    System.exit(0);
+    
 
 }//GEN-LAST:event_ExitActionPerformed
 

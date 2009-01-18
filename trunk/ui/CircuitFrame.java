@@ -84,20 +84,21 @@ public class CircuitFrame extends JInternalFrame{
             public void internalFrameOpened(InternalFrameEvent e) {}
 
             public void internalFrameClosing(InternalFrameEvent e) {
-                int ans = JOptionPane.showConfirmDialog(editor, 
-                    "Do you want to save changes to \""+getTitle()+"\" before closing it?");
-                try {
-                    if(ans == JOptionPane.YES_OPTION){
-                       circuitPanel.getCommandHistory().doCommand(new FileSaveCommand());
-                    } else if(ans == JOptionPane.NO_OPTION){
-                        dispose();
-                    } else if(ans == JOptionPane.CANCEL_OPTION){
-                        setClosed(false);
+                if(isDirty()){
+                    int ans = JOptionPane.showConfirmDialog(editor, 
+                        "Do you want to save changes to \""+getTitle()+"\" before closing it?");
+                    try {
+                        if(ans == JOptionPane.YES_OPTION){
+                           circuitPanel.getCommandHistory().doCommand(new FileSaveCommand());
+                        } else if(ans == JOptionPane.NO_OPTION){
+                            dispose();
+                        } else if(ans == JOptionPane.CANCEL_OPTION){
+                            setClosed(false);
+                        }
+                    } catch (PropertyVetoException ex) {
+                        ErrorHandler.newError("Circuit Close Error","An error occured whilst trying to close the circuit. \nPlease see the system output below.", ex);
                     }
-                } catch (PropertyVetoException ex) {
-                    ErrorHandler.newError("Circuit Close Error","An error occured whilst trying to close the circuit. \nPlease see the system output below.", ex);
-                }
-                
+                }                
             }
 
             public void internalFrameClosed(InternalFrameEvent e) {}
@@ -129,4 +130,9 @@ public class CircuitFrame extends JInternalFrame{
     public Editor getEditor() {
         return editor;
     }
+    
+    public boolean isDirty(){
+        return circuitPanel.getCommandHistory().isDirty();
+    }
 }
+
