@@ -66,6 +66,10 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         return super.clone();
     }
    
+    public CircuitPanel getParent() {
+        return parent;
+    }
+    
     public double getRotation() {
        return this.rotation;
     }
@@ -237,6 +241,8 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     public void setRotation(double rotation) {
         this.rotation = rotation;
+        setLocalPins();
+        setGlobalPins();
     }
 
     protected void setBoundingBox() {

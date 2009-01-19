@@ -21,8 +21,6 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     public ImageSelectableComponent(CircuitPanel parent, Point point){
         super(parent, point);
         
-        setRotation(0);
-        
         setComponentTreeName();
         setNetlist();
         

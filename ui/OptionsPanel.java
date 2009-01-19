@@ -7,13 +7,11 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemListener;
 import javax.swing.JCheckBox;
 import ui.command.EditLabelCommand;
-import ui.error.ErrorHandler;
 import netlist.standard.Input;
 import netlist.standard.LED;
 import netlist.standard.Wire;
@@ -161,8 +159,8 @@ public class OptionsPanel extends JPanel{
         
         // Update the values in different parts of the form
         setVisible(true);
-        sc.setRotation(rotation);
-        titleLabel.setText(titleOld);
+        
+        titleLabel.setText((editor.getActiveCircuit().getActiveComponents().contains(sc))?titleOld:titleNew);
         typeLabel.setText(sc.getName());
         labelTextbox.setText(sc.getLabel());
         labelLabel.setEnabled(true);

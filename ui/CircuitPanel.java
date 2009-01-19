@@ -231,7 +231,8 @@ public class CircuitPanel extends JPanel {
                                 new Point(0,0),                                             // properties[2] = point
                                 editor.getOptionsPanel().getCurrentLabel(),                 // properties[3] = label
                                 ((currentTool.equals("Standard.LED"))?editor.getOptionsPanel().getLEDColour():null),// properties[4] = LED Colour
-                                ((currentTool.equals("Standard.Button Source"))?editor.getOptionsPanel().getInputSourceState():null)// properties[5] = Input On/Off
+                                ((currentTool.equals("Standard.Button Source"))?editor.getOptionsPanel().getInputSourceState():null),// properties[5] = Input On/Off
+                                CircuitPanel.this                                           // properties[6] = Active Circuit
                             });
                             cmdHist.doCommand(ccc);
                         }                               
@@ -342,7 +343,8 @@ public class CircuitPanel extends JPanel {
     public void removeUnFixedComponents() {
         Stack<SelectableComponent> stack2 = new Stack<SelectableComponent>();
         for(SelectableComponent sc: drawnComponents){
-            if(sc.isFixed()){
+            //&& sc.getParent().equals(this) fixes ghost component on new circuit creation.
+            if(sc.isFixed() && sc.getParent().equals(this)){
                 stack2.push(sc);
             }
         }
@@ -474,9 +476,9 @@ public class CircuitPanel extends JPanel {
         // Draw Connection Points 
         grid.draw(g2);
         
-        // Draw previous components
-        for(SelectableComponent sc: drawnComponents){            
-            if(sc.isFixed() || (endPoint != null && contains(endPoint))){ // Don't draw the temp component, when mouse is outside viewable area.
+        // Draw components
+        for(SelectableComponent sc: drawnComponents){//sc.getParent().equals(this) && 
+            if((sc.isFixed() || (endPoint != null && contains(endPoint)))){ // Don't draw the temp component, when mouse is outside viewable area.
                 g2.translate(-sc.getCentre().x, -sc.getCentre().y);
                 sc.draw(g2); 
                 g2.translate(sc.getCentre().x, sc.getCentre().y);    
@@ -583,6 +585,7 @@ public class CircuitPanel extends JPanel {
     public void addComponent(SelectableComponent sc) {
         drawnComponents.push(sc);
         setCurrentTool(sc.getComponentTreeName());
+
         repaint(sc.getBoundingBox());
     }
 

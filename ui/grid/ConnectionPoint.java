@@ -40,7 +40,7 @@ public class ConnectionPoint extends GridObject {
                 && !((Wire) p.getParent()).getOrigin().equals(p)        // Not the start point of a wire
                 && hasSameComponent(p.getParent())){                    // The Same Wire
             if(((Wire)p.getParent()).reportSelfCrossover(p)){
-               this.setActive(true); 
+               //this.setActive(true); 
             }
             
         }

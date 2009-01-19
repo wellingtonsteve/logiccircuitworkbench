@@ -20,6 +20,7 @@ import ui.tools.SelectableComponent;
  */
 public class CreateComponentCommand extends Command {
     private SelectableComponent sc;
+    private CircuitPanel parentCircuit;
     private Object[] properties;
         /* Properties Format
          *      properties[0] = componentName
@@ -28,6 +29,7 @@ public class CreateComponentCommand extends Command {
          *      properties[3] = label
          *      properties[4] = LED Colour
          *      properties[5] = Input On/Off
+         *      properties[6] = activeCircuit
          */
 
     public CreateComponentCommand(Object[] properties){
@@ -36,10 +38,15 @@ public class CreateComponentCommand extends Command {
     
     @Override
     protected void perform(Editor editor) {
-        if(activeCircuit != null){
+        if(properties.length < 7 || properties[6] == null){
+            parentCircuit = activeCircuit;
+        } else {
+            parentCircuit = (CircuitPanel) properties[6];
+        }
+        if(parentCircuit != null){
             try {
                 if(editor.isNetlistComponent((String) properties[0])){
-                    sc = editor.getNetlistComponent((String) properties[0]).getConstructor(CircuitPanel.class, Point.class).newInstance(editor.getActiveCircuit(), (Point) properties[2]);
+                    sc = editor.getNetlistComponent((String) properties[0]).getConstructor(CircuitPanel.class, Point.class).newInstance(parentCircuit, (Point) properties[2]);
                 } else {
                     sc = editor.getDefaultNetlistComponent((String) properties[0]);
                 }
@@ -58,7 +65,7 @@ public class CreateComponentCommand extends Command {
                     }
                 }
                 
-                activeCircuit.addComponent(sc);
+                parentCircuit.addComponent(sc);
                 canUndo = true;
                 
             } catch (Exception ex){
@@ -81,7 +88,7 @@ public class CreateComponentCommand extends Command {
     @Override
     protected void undoEffect(Editor editor) {
         canUndo = false;
-        activeCircuit.removeComponent(sc);
+        parentCircuit.removeComponent(sc);
     }
 
     @Override
