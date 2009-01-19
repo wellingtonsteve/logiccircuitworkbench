@@ -12,6 +12,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
+import java.util.Iterator;
 import java.util.LinkedList;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
@@ -45,6 +46,12 @@ public class Wire extends SelectableComponent {
     public String getName(){
         return "Wire";
     }
+    
+    
+    @Override
+    protected void setComponentTreeName() {
+        componentTreeName = "Standard.Wire";
+    }
 
     @Override
     public int getWidth() {
@@ -56,56 +63,18 @@ public class Wire extends SelectableComponent {
         return Math.abs(startPoint.y - endPoint.y);
     }
 
+    /**
+     * Do nothing, we don't want to rotate wires
+     * 
+     * @param rotation
+     */
     @Override
-    public boolean containsPoint(Point point) {
-        boolean retval = false; 
-        Point current = startPoint, next = startPoint;
-        for (Point waypoint : waypoints) {
-            next = waypoint;
-
-            createLeg(current, next);
-            retval = ((point.x >= x1 && point.x <= x2) &&
-                    (point.y >= y1 && point.y <= y2)) ||
-                    ((point.x >= x2 && point.x <= x3) &&
-                    (point.y >= y2 && point.y <= y3)) ||
-                    ((point.x <= x1 && point.x >= x2) &&
-                    (point.y <= y1 && point.y >= y2)) ||
-                    ((point.x <= x2 && point.x >= x3) &&
-                    (point.y <= y2 && point.y >= y3));
-
-            current = next;
-            if(retval){
-                break;
-            }
-        }
-        if(retval){
-            hoverWaypoint = current;
-            return retval;
-        }
-        
-        createLeg(next, endPoint);
-        retval = ((point.x >= x1 && point.x <= x2) &&
-                (point.y >= y1 && point.y <= y2)) ||
-                ((point.x >= x2 && point.x <= x3) &&
-                (point.y >= y2 && point.y <= y3)) ||
-                ((point.x <= x1 && point.x >= x2) &&
-                (point.y <= y1 && point.y >= y2)) ||
-                ((point.x <= x2 && point.x >= x3) &&
-                (point.y <= y2 && point.y >= y3));
-
-        if(retval){
-            hoverWaypoint = endPoint;
-        } else {
-            hoverWaypoint = null;
-        }
-        
-        return retval;
-    }
-
-    @Override
+    public void setRotation(double rotation){}
+   
     /**
      * Origin = Start point for a wire
      */
+    @Override
     public Point getOrigin() {
         return startPoint;
     }
@@ -128,51 +97,6 @@ public class Wire extends SelectableComponent {
         
     }
 
-    @Override
-    public void draw(Graphics2D g) {
-        
-        // Find duplicate waypoints
-        int i = 0, j = 0;
-        dups: for(Point ptA: waypoints){             
-            i = waypoints.indexOf(ptA);
-            j = waypoints.lastIndexOf(ptA)-1;
-            if(i < j){
-                break dups;
-            }  
-        }
-       
-        // Remove waypoints duplicate
-        if(i != waypoints.size()-1){
-            for(int m = 0; m < waypoints.size(); m++){
-                if(m > i && m <= j ){
-                    waypoints.remove(m);
-                }
-            }
-        }
-
-        // If not default values
-        if (!startPoint.equals(new Point(0, 0)) && !endPoint.equals(new Point(0, 0))) {
-            
-            // Draw each leg along waypoints         
-            Point current = startPoint, next = startPoint;
-            for (Point waypoint : waypoints) {
-                next = waypoint;
-                drawLeg(g, current, next);
-                current = waypoint;
-            }
-           drawLeg(g, next, endPoint);            
-        }
-        
-        // Debugging
-        if(UIConstants.SHOW_WIRE_WAYPOINTS){
-            for(Point p: waypoints){
-                g.setColor(UIConstants.WIRE_WAYPOINT_COLOUR);
-                g.drawOval(p.x-1, p.y-1, 3, 3);
-            }           
-        }
-
-    }
-
     public Point getEndPoint() {
         return endPoint;
     }
@@ -180,17 +104,18 @@ public class Wire extends SelectableComponent {
     public void setEndPoint(Point endPoint) {
         this.endPoint = endPoint;      
         
-        // Detect and resolve wire overlaps
-        int len = waypoints.size();
-        Point start = null;
-        if(len == 1){
-            start = startPoint;
-        } else if (len > 1){
-            start = waypoints.get(len - 2);
-        }
-        if(start != null){
-            removeCommonLineWaypoints(start, waypoints.getLast(), endPoint, isFixed());
-        }  
+//        // Detect and resolve wire overlaps
+//        int len = waypoints.size();
+//        Point start = null;
+//        if(len == 1){
+//            start = startPoint;
+//        } else if (len > 1){
+//            start = waypoints.get(len - 2);
+//        }
+//        if(start != null){
+//            removeCommonLineWaypoints(start, waypoints.getLast(), endPoint, isFixed());
+//        }  
+        //removeCommonLineWaypoints();
     }
     
     public void moveEndPoint(Point p) {        
@@ -213,24 +138,7 @@ public class Wire extends SelectableComponent {
             
         }
         
-//        // Find duplicates and remove waypoints between them
-//        int i = 0, j = 0;
-//        dups: for(Point ptA: waypoints){             
-//            i = waypoints.indexOf(ptA);
-//            j = waypoints.lastIndexOf(ptA)-1;
-//            if(i < j){
-//                break dups;
-//            }
-//  
-//        }
-//       
-//        if(i != waypoints.size()-1){
-//            for(int m = 0; m < waypoints.size(); m++){
-//                if(m > i && m <= j ){
-//                    waypoints.remove(m);
-//                }
-//            }
-//        }
+        removeDuplicateWaypoints();
         
         setLocalPins();
         setGlobalPins(); 
@@ -262,17 +170,308 @@ public class Wire extends SelectableComponent {
           
     }
     
-    public boolean reportSelfCrossover(Point p){
-        
+    @Override
+    public Point getCentre() {
+        return new Point(0, 0);
+    }
+    
+    /**
+     * Append a waypoint to the end of the waypoint list for this wire.
+     * 
+     * @param wp The waypoint to add
+     */
+    public void addWaypoint(Point wp) {
+               
+        // Set start equal to the penultimate waypoint (possibly the start point)
+        int len = waypoints.size();
         Point start = null;
-        Point end = null;
+        if(len == 1){
+            start = startPoint;
+        } else if (len > 1){
+            start = waypoints.get(len - 2);
+        }
         
+        // Remove waypoints that lie on the same line
+        if(start != null){ 
+            removeCommonLineWaypoints(start, waypoints.getLast(), wp, true);
+        }  
+            
+        waypoints.add(wp);
+        
+    }
+    
+    @Override
+    public void setLocalPins() {
+        localPins.clear();
         if (waypoints != null) {
             Point current = startPoint;
             Point next = startPoint;
             Point last = endPoint;
             
-            forbreak: for (Point waypoint : waypoints) {
+            for (Point waypoint : waypoints) {                
+                next = waypoint;
+                setPinsOnLeg(current, next);
+                current = waypoint;
+            }
+            setPinsOnLeg(next, last);
+        }
+    }
+    
+    @Override
+    protected void setGlobalPins(){
+        for(Pin p: globalPins){
+            parent.getGrid().removePin(p);
+        }         
+        
+        globalPins.clear();
+        
+        cosTheta = Math.cos(rotation);
+        sinTheta = Math.sin(rotation);
+        
+        LinkedList<Point> oldwaypoints = new LinkedList<Point>();
+        oldwaypoints.addAll(waypoints);
+        
+        for(Point p: getLocalPins()){
+            Point rotP = rotate(p); 
+            Pin pin = new Pin(this, rotP.x +getOrigin().x-getCentre().x,rotP.y +getOrigin().y-getCentre().x);
+            globalPins.add(pin);
+            if(isFixed()){ 
+                parent.getGrid().addPin(pin);
+            }
+        }
+        
+        // If waypoints have changed, we need to reset the local, and global pins again
+        boolean waypointsHaveChanged = false;
+        for(Point p: oldwaypoints){
+            if(!waypoints.contains(p)){
+                waypointsHaveChanged = true;
+            }
+        }
+        if(waypointsHaveChanged){
+            setLocalPins();
+            setGlobalPins();
+        }        
+    }
+    
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        setSelectionState(SelectionState.ACTIVE);
+        parent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+        
+        // Moving a segment of the wire
+        if(hoverWaypoint!=null && !hoverWaypoint.equals(endPoint)){
+            int i = waypoints.indexOf(hoverWaypoint);
+            Point p = parent.getGrid().snapPointToGrid(e.getPoint());
+            
+            // We have more that one waypoint, let's get the i-1 th waypoint and move the right part of the wire
+            if(i > 0){ 
+                Point previousWaypoint = waypoints.get(i-1);
+                // There is no intermeditate point in the joining wire between the two waypoints
+                if(previousWaypoint.x == hoverWaypoint.x){ 
+                    previousWaypoint.x = p.x;
+                    hoverWaypoint.x = p.x;
+                } else
+                // There is no intermeditate point in the joining wire between the two waypoints
+                if(previousWaypoint.y == hoverWaypoint.y){ 
+                    previousWaypoint.y = p.y;
+                    hoverWaypoint.y = p.y;
+                } else
+                // Just move the horizontal part of the wire leg
+                if(previousWaypoint.y == hoverMousePoint.y){ 
+                    previousWaypoint.y = p.y;
+                    hoverMousePoint.y = p.y;
+                } else
+                // Just move the vertical part of the wire leg
+                if(hoverWaypoint.x == hoverMousePoint.x){ 
+                    hoverMousePoint.x = p.x;
+                    hoverWaypoint.x = p.x;
+                }
+            // We only have one waypoint, just move it
+            } else { 
+                hoverWaypoint.x = p.x;
+                hoverWaypoint.y = p.y;
+            }            
+        }        
+    }
+
+    public void mouseDraggedDropped(MouseEvent e) {
+        setSelectionState(selectionState.ACTIVE);
+        parent.setCursor(Cursor.getDefaultCursor());
+        
+//        // Remove uneeded waypoints introduced by dragging
+//        int i = waypoints.indexOf(hoverWaypoint);
+//        if(i > 0 & i < waypoints.size()-1){ 
+//            Point previousWaypoint = waypoints.get(i-1);
+//            Point nextWaypoint = waypoints.get(i+1);
+//            removeCommonLineWaypoints(previousWaypoint, hoverWaypoint, nextWaypoint, false);
+//        }
+        
+        removeCommonLineWaypoints();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        if (!isFixed() && !getSelectionState().equals(SelectionState.ACTIVE)) {
+            setSelectionState(SelectionState.DEFAULT);
+        }
+        hoverMousePoint = parent.getGrid().snapPointToGrid(e.getPoint());
+        
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (isFixed()) {
+            if (getSelectionState().equals(SelectionState.ACTIVE)) {
+                setSelectionState(SelectionState.HOVER);
+
+            } else {
+                setSelectionState(SelectionState.ACTIVE);
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        setSelectionState(SelectionState.ACTIVE);
+    }
+
+    public void mouseEntered(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void mouseExited(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * Detect whether the mid points in two line legs lie on the same line. If so
+     * remove the mid waypoint as it is unneeded. 
+     */
+    private void removeCommonLineWaypoints() {
+        if (waypoints != null && isFixed()) {
+            Point previous = startPoint;
+            Point current = startPoint;
+            Point next = startPoint;
+            Point last = endPoint;
+            
+            int len = waypoints.size();
+            if(len == 1){
+                removeCommonLineWaypoints(previous, waypoints.get(0), last, true);
+            } else if (len > 1){
+                int i=0;               
+                while(i<len){
+                    if(i > 0){                       
+                        previous = waypoints.get(i-1);
+                    }
+                    
+                    current = waypoints.get(i);
+                    
+                    if(i==(len-1)){
+                        next = last;
+                    } else {    
+                        next = waypoints.get(i+1);
+                    }
+                    
+                    removeCommonLineWaypoints(previous, current, next, true);
+                    len = waypoints.size(); // Bug fix: Index out of bounds after deleting waypoints                    
+                    i++;
+                }
+            }
+        }
+    }
+    
+    /**
+     * Detect whether the mid points in two line legs lie on the same line. If so
+     * remove the mid waypoint as it is unneeded. 
+     * 
+     * @param last    - The waypoint at position i-1
+     * @param current - The waypoint at position i
+     * @param next    - The waypoint at position i+1
+     * @param deleteWaypoint - Should we delete or just move the waypoint?
+     * @return Were waypoints removed?
+     */
+    private boolean removeCommonLineWaypoints(Point last, Point current, Point next, Boolean deleteWaypoint) {
+       
+        createLeg(last, current);
+        
+        int l_x2 = x2;
+        int l_y2 = y2;
+
+        createLeg(current, next);
+        
+        if((x2 == l_x2 || y2 == l_y2)){
+            if(deleteWaypoint && (current.x == next.x || current.y == next.y)){
+                waypoints.remove(current);   
+            } else {
+                current.x = x2; current.y = y2;
+            }    
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Remove points that occur in the waypoint list more than once
+     */
+    private void removeDuplicateWaypoints() {
+        // Find waypoints
+        int i = 0;
+        int j = 0;
+        dups:
+        for (Point ptA : waypoints) {
+            i = waypoints.indexOf(ptA);
+            j = waypoints.lastIndexOf(ptA) - 1;
+            if (i < j) {
+                break dups;
+            }
+        }
+
+        // Remove waypoints duplicate
+        if (i != waypoints.size() - 1) {
+            for (int m = 0; m < waypoints.size(); m++) {
+                if (m > i && m <= j) {
+                    waypoints.remove(m);
+                }
+            }
+        }
+        
+        // Are waypoints duplicating the start or end points
+        if(waypoints.contains(startPoint)){
+            waypoints.remove(startPoint);
+        }
+        if(waypoints.contains(endPoint)){
+            waypoints.remove(endPoint);
+        }
+    }
+    
+    /**
+     * Called by the Grid object that underlies each circuit. It can detect when 
+     * a pin is added to a connection point that already has a pin belonging to 
+     * the same parent. This method then finds the preceding and succeeding 
+     * waypoints of the crossover point p and removes all waypoints between them.
+     * A waypoint is then added at point p.
+     * 
+     * @param p The crossover point
+     * @return Was a change actually made?
+     */
+    public boolean reportSelfCrossover(Point p){
+        
+        Point start = null; // The start of the crossover
+        Point end = null; // The end of the crossover
+        
+        if (waypoints != null) {
+            Point current = startPoint;
+            Point next = startPoint;
+            Point last = endPoint;
+        
+            // Find the start point
+            for (Point waypoint : waypoints) {
                
                 next = waypoint;
 
@@ -280,74 +479,98 @@ public class Wire extends SelectableComponent {
                 Line2D.Double l1 = new Line2D.Double(x1, y1, x2, y2);
                 Line2D.Double l2 = new Line2D.Double(x2, y2, x3, y3);
                 if(l1.ptLineDist(p)==0.0 || l2.ptLineDist(p)==0.0){
-                    if(start == null){
-                        start = current;
-                    } else {
-                        end = next;
-                        break forbreak;
-                    }
+                    start = current;
+                    break;
                 } 
                 
-                // Don't count connections between legs
-                if(next.equals(start)){
-                    start = null;
-                }
                 current = waypoint;
                 
             }
             
-            createLeg(next, last);
-            Line2D.Double l1 = new Line2D.Double(x1, y1, x2, y2);
-            Line2D.Double l2 = new Line2D.Double(x2, y2, x3, y3);
-            if(l1.ptLineDist(p)==0.0 || l2.ptLineDist(p)==0.0){
-                    end = last;
-            } 
+            // Don't count connections between legs (i.e. where the end point
+            // of one leg is the start of another)
+            if(next.equals(start)){
+                start = null;
+            }
             
-            if(start!=null && end != null && !waypoints.contains(new Point(p.x, p.y))){
-                System.out.println(start + " " + end + " " + p);
+            
+            // Find the end point
+            if(start != null){
                 
-                LinkedList<Point> badWaypoints = new LinkedList<Point>();
-                boolean foundStart = false;
-                for(Point wp: waypoints){
-                    if(wp.equals(end)){
+                current = endPoint;
+                next = endPoint;
+            
+                Iterator<Point> waypointReverse = waypoints.descendingIterator();
+                while (waypointReverse.hasNext()) {
+               
+                    next = waypointReverse.next();
+
+                    createLeg(current, next);
+                    Line2D.Double l1 = new Line2D.Double(x1, y1, x2, y2);
+                    Line2D.Double l2 = new Line2D.Double(x2, y2, x3, y3);
+                    if(l1.ptLineDist(p)==0.0 || l2.ptLineDist(p)==0.0){
+                        end = current;
                         break;
-                    }
-                    if(foundStart){
-                        badWaypoints.add(wp);
-                    }                    
-                    if(wp.equals(start)){
-                        foundStart = true;
-                    }                    
+                    } 
+
+                    current = next;
+
                 }
+
+//                if(end == null){
+//                    createLeg(next, last);
+//                    Line2D.Double l1 = new Line2D.Double(x1, y1, x2, y2);
+//                    Line2D.Double l2 = new Line2D.Double(x2, y2, x3, y3);
+//                    if(l1.ptLineDist(p)==0.0 || l2.ptLineDist(p)==0.0){
+//                            end = last;
+//                    } 
+//                }                
                 
-                waypoints.removeAll(badWaypoints);
-                waypoints.add(waypoints.indexOf(start)+1, p);
-                
-                return true;
+                // Don't count connections between legs (i.e. where the end point
+                // of one leg is the start of another)
+                if(next.equals(end)){
+                    end = null;
+                }    
+            }
+            
+            if(start != null && end != null && !waypoints.contains(new Point(p.x, p.y))){
+                   System.out.println(start + " " + end);
+              parent.getGrid().getConnectionPoint(start).setActive(true);
+              parent.getGrid().getConnectionPoint(end).setActive(true);
+//            // Remove Unneeded Waypoints
+//            if(start!=null && end != null && !waypoints.contains(new Point(p.x, p.y))){                
+//                LinkedList<Point> badWaypoints = new LinkedList<Point>();
+//                boolean foundStart = false;
+//                for(Point wp: waypoints){
+//                    if(wp.equals(end)){
+//                        break;
+//                    }
+//                    if(foundStart){
+//                        badWaypoints.add(wp);
+//                    }                    
+//                    if(wp.equals(start)){
+//                        foundStart = true;
+//                    }                    
+//                }
+//                
+//                waypoints.removeAll(badWaypoints);
+//                waypoints.add(waypoints.indexOf(start)+1, p);
+//                removeCommonLineWaypoints();
+//                removeDuplicateWaypoints();
+                return true;                
             }
         }
         return false;
         
         
     }
-
-    public void addWaypoint(Point wp) {
-               
-//        // Detect and resolve wire overlaps
-//        int len = waypoints.size();
-//        Point start = null;
-//        if(len == 1){
-//            start = startPoint;
-//        } else if (len > 1){
-//            start = waypoints.get(len - 2);
-//        }
-//        if(start != null){ 
-//            removeCommonLineWaypoints(start, waypoints.getLast(), wp, true);
-//        }  
-        waypoints.add(wp);
-        
-    }
-
+    
+    /**
+     * Set the co-ordinates of the start, mid and endpoints of the current leg.
+     * 
+     * @param from
+     * @param to
+     */
     private void createLeg(Point from, Point to) {
 
         x1 = from.x;
@@ -360,6 +583,14 @@ public class Wire extends SelectableComponent {
         y3 = to.y;
     }
 
+    /**
+     * Draw a leg (an L-shaped section between two waypoints)
+     * Also draw the dragging handle in the middle of a horizontal or vertical section.
+     * 
+     * @param g - The Graphics object on which to draw
+     * @param from - the start Point
+     * @param to - the end Point
+     */
     private void drawLeg(Graphics2D g, Point from, Point to) {
 
         createLeg(from, to);
@@ -454,9 +685,38 @@ public class Wire extends SelectableComponent {
         g.drawLine(x2, y2, x3, y3);
 
     }
+    
+    @Override
+    public void draw(Graphics2D g) {
+
+        // Find duplicate waypoints
+        //removeDuplicateWaypoints();
+
+        // If not default values
+        if (!startPoint.equals(new Point(0, 0)) && !endPoint.equals(new Point(0, 0))) {
+            
+            // Draw each leg along waypoints         
+            Point current = startPoint, next = startPoint;
+            for (Point waypoint : waypoints) {
+                next = waypoint;
+                drawLeg(g, current, next);
+                current = waypoint;
+            }
+           drawLeg(g, next, endPoint);            
+        }
+        
+        // Debugging
+        if(UIConstants.SHOW_WIRE_WAYPOINTS){
+            for(Point p: waypoints){
+                g.setColor(UIConstants.WIRE_WAYPOINT_COLOUR);
+                g.drawOval(p.x-1, p.y-1, 3, 3);
+            }           
+        }
+
+    }
 
     /*
-     * sets the localPins, in thier correct object co-ordinates 
+     * Sets the localPins, in thier object co-ordinate position
      */
     private void setPinsOnLeg(Point from, Point to) {
 
@@ -467,183 +727,28 @@ public class Wire extends SelectableComponent {
         createLeg(from, to);
 
         if (x2 - x1 > 0) {
-            for (int x = 0; x <= x2 - x1; x += UIConstants.GRID_DOT_SPACING) {
+            for (int x = 0; x < x2 - x1; x += UIConstants.GRID_DOT_SPACING) {
                 p = new Point(x + dx, dy);
                 localPins.add(p);               
             }
         } else {
-            for (int x = 0; x <= x1 - x2; x += UIConstants.GRID_DOT_SPACING) {
+            for (int x = 0; x < x1 - x2; x += UIConstants.GRID_DOT_SPACING) {
                 p = new Point(-x + dx, dy);
                 localPins.add(p);
             }
         }
         if (y3 - y2 > 0) {
-            for (int y = 0; y <= y3 - y2; y += UIConstants.GRID_DOT_SPACING) {
+            for (int y = 0; y < y3 - y2; y += UIConstants.GRID_DOT_SPACING) {
                 p = new Point(x2 - x1 + dx, y + dy);
                 localPins.add(p);
             }
         } else {
-            for (int y = 0; y <= y2 - y3; y += UIConstants.GRID_DOT_SPACING) {
+            for (int y = 0; y < y2 - y3; y += UIConstants.GRID_DOT_SPACING) {
                 p = new Point(x2 - x1 + dx, -y + dy);
                 localPins.add(p);
             }
         }
 
-    }
-
-    @Override
-    public Point getCentre() {
-        return new Point(0, 0);
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        setSelectionState(SelectionState.ACTIVE);
-        parent.getParentFrame().getEditor().setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-        
-        // Moving a segment of the wire
-        if(hoverWaypoint!=null && !hoverWaypoint.equals(endPoint)){
-            int i = waypoints.indexOf(hoverWaypoint);
-            Point p = parent.getGrid().snapPointToGrid(e.getPoint());
-            
-            // We have more that one waypoint, let's get the i-1 th waypoint and move the right part of the wire
-            if(i > 0){ 
-                Point previousWaypoint = waypoints.get(i-1);
-                // There is no intermeditate point in the joining wire between the two waypoints
-                if(previousWaypoint.x == hoverWaypoint.x){ 
-                    previousWaypoint.x = p.x;
-                    hoverWaypoint.x = p.x;
-                } else
-                // There is no intermeditate point in the joining wire between the two waypoints
-                if(previousWaypoint.y == hoverWaypoint.y){ 
-                    previousWaypoint.y = p.y;
-                    hoverWaypoint.y = p.y;
-                } else
-                // Just move the horizontal part of the wire leg
-                if(previousWaypoint.y == hoverMousePoint.y){ 
-                    previousWaypoint.y = p.y;
-                    hoverMousePoint.y = p.y;
-                } else
-                // Just move the vertical part of the wire leg
-                if(hoverWaypoint.x == hoverMousePoint.x){ 
-                    hoverMousePoint.x = p.x;
-                    hoverWaypoint.x = p.x;
-                }
-            // We only have one waypoint, just move it
-            } else { 
-                hoverWaypoint.x = p.x;
-                hoverWaypoint.y = p.y;
-            }            
-        }        
-    }
-
-    public void mouseDraggedDropped(MouseEvent e) {
-        setSelectionState(selectionState.ACTIVE);
-        parent.getParentFrame().getEditor().setCursor(Cursor.getDefaultCursor());
-        
-        // Remove uneeded waypoints introduced by dragging
-        int i = waypoints.indexOf(hoverWaypoint);
-        if(i > 0 & i < waypoints.size()-1){ 
-            Point previousWaypoint = waypoints.get(i-1);
-            Point nextWaypoint = waypoints.get(i+1);
-            removeCommonLineWaypoints(previousWaypoint, hoverWaypoint, nextWaypoint, true);
-        }
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        if (!isFixed() && !getSelectionState().equals(SelectionState.ACTIVE)) {
-            setSelectionState(SelectionState.DEFAULT);
-        }
-        hoverMousePoint = parent.getGrid().snapPointToGrid(e.getPoint());
-        
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        if (isFixed()) {
-            if (getSelectionState().equals(SelectionState.ACTIVE)) {
-                setSelectionState(SelectionState.HOVER);
-
-            } else {
-                setSelectionState(SelectionState.ACTIVE);
-            }
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        setSelectionState(SelectionState.ACTIVE);
-    }
-
-    public void mouseEntered(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void mouseExited(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void setLocalPins() {
-        localPins.clear();
-        if (waypoints != null) {
-            Point current = startPoint;
-            Point next = startPoint;
-            Point last = endPoint;
-            
-            for (Point waypoint : waypoints) {
-                
-                next = waypoint;
-                setPinsOnLeg(current, next);
-                current = waypoint;
-                
-            }
-
-            setPinsOnLeg(next, last);
-        }
-
-    }
-    
-    @Override
-    protected void setGlobalPins(){
-        for(Pin p: globalPins){
-            parent.getGrid().removePin(p);
-        }         
-        
-        globalPins.clear();
-        
-        cosTheta = Math.cos(rotation);
-        sinTheta = Math.sin(rotation);
-        
-        LinkedList<Point> oldwaypoints = new LinkedList<Point>();
-        oldwaypoints.addAll(waypoints);
-        
-        for(Point p: getLocalPins()){
-            Point rotP = rotate(p); 
-            Pin pin = new Pin(this, rotP.x +getOrigin().x-getCentre().x,rotP.y +getOrigin().y-getCentre().x);
-            globalPins.add(pin);
-            if(isFixed()){ 
-                parent.getGrid().addPin(pin);
-            }
-        }
-        
-        boolean waypointsHaveChanged = false;
-        for(Point p: oldwaypoints){
-            if(!waypoints.contains(p)){
-                waypointsHaveChanged = true;
-            }
-        }
-        if(waypointsHaveChanged){
-            setLocalPins();
-            setGlobalPins();
-        }
-        
     }
     
     @Override
@@ -682,6 +787,52 @@ public class Wire extends SelectableComponent {
     }
     
     @Override
+    public boolean containsPoint(Point point) {
+        boolean retval = false; 
+        Point current = startPoint, next = startPoint;
+        for (Point waypoint : waypoints) {
+            next = waypoint;
+
+            createLeg(current, next);
+            retval = ((point.x >= x1 && point.x <= x2) &&
+                    (point.y >= y1 && point.y <= y2)) ||
+                    ((point.x >= x2 && point.x <= x3) &&
+                    (point.y >= y2 && point.y <= y3)) ||
+                    ((point.x <= x1 && point.x >= x2) &&
+                    (point.y <= y1 && point.y >= y2)) ||
+                    ((point.x <= x2 && point.x >= x3) &&
+                    (point.y <= y2 && point.y >= y3));
+
+            current = next;
+            if(retval){
+                break;
+            }
+        }
+        if(retval){
+            hoverWaypoint = current;
+            return retval;
+        }
+        
+        createLeg(next, endPoint);
+        retval = ((point.x >= x1 && point.x <= x2) &&
+                (point.y >= y1 && point.y <= y2)) ||
+                ((point.x >= x2 && point.x <= x3) &&
+                (point.y >= y2 && point.y <= y3)) ||
+                ((point.x <= x1 && point.x >= x2) &&
+                (point.y <= y1 && point.y >= y2)) ||
+                ((point.x <= x2 && point.x >= x3) &&
+                (point.y <= y2 && point.y >= y3));
+
+        if(retval){
+            hoverWaypoint = endPoint;
+        } else {
+            hoverWaypoint = null;
+        }
+        
+        return retval;
+    }
+    
+    @Override
     public boolean containedIn(Rectangle selBox) {
         boolean retval = false;
         Point current = startPoint, next = startPoint;
@@ -701,27 +852,6 @@ public class Wire extends SelectableComponent {
                 selBox.contains(x3, y3));
 
         return retval;
-    }
-
-    private boolean removeCommonLineWaypoints(Point last, Point current, Point next, Boolean newWaypoint) {
-       
-        createLeg(last, current);
-        
-        int l_x2 = x2;
-        int l_y2 = y2;
-
-        createLeg(current, next);
-        
-        if((x2 == l_x2 || y2 == l_y2)){
-            if(newWaypoint && (current.x == next.x || current.y == next.y)){
-                waypoints.remove(current);   
-            } else {
-                current.x = x2; current.y = y2;
-            }            
-            return true;
-        }
-        
-        return false;
     }
     
     public void createXML(TransformerHandler hd) {
@@ -749,8 +879,4 @@ public class Wire extends SelectableComponent {
         }
     }
 
-    @Override
-    protected void setComponentTreeName() {
-        componentTreeName = "Standard.Wire";
-    }
 }

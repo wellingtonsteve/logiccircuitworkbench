@@ -90,6 +90,7 @@ public class CircuitFrame extends JInternalFrame{
                     try {
                         if(ans == JOptionPane.YES_OPTION){
                            circuitPanel.getCommandHistory().doCommand(new FileSaveCommand());
+                           dispose();
                         } else if(ans == JOptionPane.NO_OPTION){
                             dispose();
                         } else if(ans == JOptionPane.CANCEL_OPTION){

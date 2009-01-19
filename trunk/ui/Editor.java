@@ -687,7 +687,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
         componentName = componentName.substring(0, componentName.length() - 1);
         
         if(isValidComponent(componentName)){
-            circuitPanel.removeUnFixedComponents();
+            getActiveCircuit().removeUnFixedComponents();
             
             CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
                 componentName,                                              // properties[0] = componentName
@@ -738,16 +738,26 @@ private void SelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_SelectAllActionPerformed
 
 private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
-    int ans = JOptionPane.showConfirmDialog(this, 
-            "Are you sure that you want to close Logic Circuit Workbench?\n\n" +
-            "All unsaved circuits will be lost.");
-    if(ans == JOptionPane.YES_OPTION){
-        for(JInternalFrame jif: circuitwindows){
-            jif.doDefaultCloseAction();
-        }
-        System.exit(0);
-    }   
     
+    // Clean up already closed windows
+    for(JInternalFrame jif: DesktopPane.getAllFrames()){
+            if(jif.isClosed()) {
+                circuitwindows.remove(jif);
+            }
+    }    
+    
+    // Perform close action for each window
+    for(JInternalFrame jif: circuitwindows){
+            jif.doDefaultCloseAction();
+            if(jif.isClosed()) {
+                DesktopPane.remove(jif);
+            }
+    }
+    
+    int openCircuits = DesktopPane.getAllFrames().length - 1;  // Ignore the toolbox
+    if(openCircuits == 0){
+        System.exit(0);
+    }
 
 }//GEN-LAST:event_ExitActionPerformed
 
@@ -909,6 +919,8 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         Selection.setSelected(false);
         Wire.setSelected(false);
         InsertComponent.setSelected(false);
+        RotateRight.setEnabled(true);
+        RotateLeft.setEnabled(true);
 
         // Select this button
         button.setSelected(true);
@@ -927,7 +939,7 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
      */
     public CircuitPanel createBlankCircuit() {
         
-        // Construct the containing frame
+        // Construct the containing frame, also set position
         CircuitFrame cir = new CircuitFrame(this, untitledIndex++);
         if(getActiveCircuit() != null){
             cir.setBounds(getActiveCircuit().getParentFrame().getBounds().x+20,
@@ -949,8 +961,7 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
         cir.getCircuitPanel().getCommandHistory().addUndoEmptyListener(Undo);
         cir.getCircuitPanel().getCommandHistory().addRedoEmptyListener(Redo);
         
-        // Populate Windows menu
-        
+        // Populate Windows menu       
         refreshWindowsMenu();
         
         return getActiveCircuit();
