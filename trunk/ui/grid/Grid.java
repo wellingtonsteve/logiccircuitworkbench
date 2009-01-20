@@ -34,7 +34,6 @@ public class Grid {
     
     public  ConnectionPoint getConnectionPoint(Point p){
         GridObject go = getGridObjectAt(p);
-        System.out.println(go);
         if(go != null && go instanceof ConnectionPoint){
             return (ConnectionPoint) go;
         } else {
@@ -126,7 +125,6 @@ public class Grid {
         }
         
         if(go instanceof ConnectionPoint){       
-            System.out.println(go);
             ((ConnectionPoint) go).addConnection(p);
             return true;
         } else {

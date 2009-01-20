@@ -39,10 +39,7 @@ public class ConnectionPoint extends GridObject {
                 && !((Wire) p.getParent()).getEndPoint().equals(p)      // Not the end point of a wire
                 && !((Wire) p.getParent()).getOrigin().equals(p)        // Not the start point of a wire
                 && hasSameComponent(p.getParent())){                    // The Same Wire
-            if(((Wire)p.getParent()).reportSelfCrossover(p)){
-               //this.setActive(true); 
-            }
-            
+            ((Wire)p.getParent()).reportSelfCrossover(p);
         }
         if(p.getParent() instanceof Wire                                // The current pin belongs to a wire
                 && hasDifferentWire(p.getParent())                      // Not the same wire               

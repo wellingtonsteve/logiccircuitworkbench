@@ -99,7 +99,9 @@ public class CircuitFrame extends JInternalFrame{
                     } catch (PropertyVetoException ex) {
                         ErrorHandler.newError("Circuit Close Error","An error occured whilst trying to close the circuit. \nPlease see the system output below.", ex);
                     }
-                }                
+                } else {
+                    dispose();
+                }              
             }
 
             public void internalFrameClosed(InternalFrameEvent e) {}
