@@ -145,7 +145,7 @@ public class OptionsPanel extends JPanel{
      * @return
      */
     public SelectableComponent getSelectableComponent(){
-        return sc.copy();        
+        return (sc!=null)?sc.copy():null;        
     }
     
     /**
