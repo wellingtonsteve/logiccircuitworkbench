@@ -8,6 +8,7 @@ package ui;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
+import netlist.standard.Wire;
 import ui.tools.SelectableComponent;
 import ui.tools.SelectionState;
 
@@ -24,18 +25,20 @@ public class PreviewPanel extends JPanel{
     }
     
     @Override
-    public void paintComponent(Graphics g){
+    public void paintComponent(Graphics g){      
         super.paintComponent(g);
-     
-        g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-        g.fillRect(0, 0, getWidth(), getHeight());
-        g.translate(-sc.getOrigin().x, -sc.getOrigin().y);
-        g.translate((int)(getWidth() - sc.getWidth())/2, (int)(getHeight() - sc.getHeight())/2);
+        
+        if(!(sc instanceof Wire)){
+            g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+            g.fillRect(0, 0, getWidth(), getHeight());
+            g.translate(-sc.getOrigin().x, -sc.getOrigin().y);
+            g.translate((int)(getWidth() - sc.getWidth())/2, (int)(getHeight() - sc.getHeight())/2);
 
-        sc.draw((Graphics2D) g);
+            sc.draw((Graphics2D) g);
 
-        g.translate(-(int)(getWidth() - sc.getWidth())/2, (int)-(getHeight() - sc.getHeight())/2);
-        g.translate(sc.getOrigin().x, sc.getOrigin().y);
+            g.translate(-(int)(getWidth() - sc.getWidth())/2, (int)-(getHeight() - sc.getHeight())/2);
+            g.translate(sc.getOrigin().x, sc.getOrigin().y);
+        }
     }
 
     public void setComponent(SelectableComponent sc) {
