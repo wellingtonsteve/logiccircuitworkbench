@@ -12,10 +12,7 @@ public class Main {
 
     public static void main(String[] args){
         try {
-           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
            
             SplashDialog splash = new SplashDialog();
             splash.setVisible(true);

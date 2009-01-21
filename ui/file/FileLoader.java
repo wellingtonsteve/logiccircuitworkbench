@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Stack;
+import netlist.standard.Wire;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -25,6 +26,7 @@ public class FileLoader extends DefaultHandler{
     private Stack<SelectableComponent> stack;
     private Editor editor;
     private boolean successful = true;
+    private Wire lastWire = null;
     
     public FileLoader(Editor editor){
         this.editor = editor;
@@ -108,14 +110,14 @@ public class FileLoader extends DefaultHandler{
                 int starty = Integer.parseInt(attribs.getValue("starty"));
                 int endx = Integer.parseInt(attribs.getValue("endx"));
                 int endy = Integer.parseInt(attribs.getValue("endy"));
-
+                
                 netlist.standard.Wire w = new netlist.standard.Wire(editor.getActiveCircuit());
 
                 w.setStartPoint(new Point(startx, starty));
-                w.setEndPoint(new Point(endx, endy));
-                w.translate(0, 0, true);
+                w.setEndPoint(new Point(endx, endy));                
 
                 stack.push(w);
+                lastWire = w;
 
             } else if(qName.equals("attr")){    
 
@@ -148,6 +150,15 @@ public class FileLoader extends DefaultHandler{
                 }
             }
         }        
+    }
+
+    @Override
+    public void endElement(String uri, String localName, String qName) throws SAXException {
+        if(successful && qName.equals("wire")){
+            if(lastWire != null){
+                lastWire.translate(0, 0, true);
+                lastWire = null;
+            }
+        }
     }    
-    
 }
