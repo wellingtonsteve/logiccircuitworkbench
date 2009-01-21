@@ -17,7 +17,7 @@ public class OutputPin extends Pin
         this.value = value;
         for (OutputValueListener listener : this.listeners)
         {
-            listener.outputValueChanged();
+            listener.outputValueChanged(value);
         }
     }
 
