@@ -72,6 +72,8 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
             public void windowDeactivated(WindowEvent e) {}
             
         });
+        
+        
     }
 
     /** This method is called from within the constructor to
@@ -82,6 +84,8 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     @SuppressWarnings("unchecked")
     private void initComponents() {//GEN-BEGIN:initComponents
 
+        Toolbox = new javax.swing.JInternalFrame();
+        jSplitPane1 = new javax.swing.JSplitPane();
         Toolbar = new javax.swing.JToolBar();
         NewButton = new javax.swing.JButton();
         OpenFileButton = new javax.swing.JButton();
@@ -103,9 +107,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         PauseButton = new javax.swing.JButton();
         StartButton = new javax.swing.JButton();
         jSlider1 = new javax.swing.JSlider();
-        MainScrollPane = new javax.swing.JScrollPane();
-        DesktopPane = new ScrollableDesktop();
-        Toolbox = new javax.swing.JInternalFrame();
+        Toolbox2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         Selection = new javax.swing.JButton();
         Wire = new javax.swing.JButton();
@@ -116,6 +118,8 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         jScrollPane1 = new javax.swing.JScrollPane();
         ComponentSelectionTree = new javax.swing.JTree();
         Options = new OptionsPanel(this);
+        MainScrollPane = new javax.swing.JScrollPane();
+        DesktopPane = new ScrollableDesktop();
         MenuBar = new javax.swing.JMenuBar();
         File = new javax.swing.JMenu();
         New = new javax.swing.JMenuItem();
@@ -134,17 +138,32 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         jSeparator2 = new javax.swing.JSeparator();
         Delete = new javax.swing.JMenuItem();
         Simulation = new javax.swing.JMenu();
+        Run = new javax.swing.JMenuItem();
+        Stop = new javax.swing.JMenuItem();
+        Record = new javax.swing.JMenuItem();
         Window = new javax.swing.JMenu();
         Help = new javax.swing.JMenu();
         About = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        Toolbox.setClosable(true);
+        Toolbox.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        Toolbox.setIconifiable(true);
+        Toolbox.setMaximizable(true);
+        Toolbox.setResizable(true);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
+        Toolbox.setTitle(bundle.getString("Editor.Toolbox.title")); // NOI18N
+        Toolbox.setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/system-run.png"))); // NOI18N
+        Toolbox.setPreferredSize(new java.awt.Dimension(163, 600));
+        Toolbox.setVisible(true);
+        Toolbox.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jSplitPane1.setDividerSize(0);
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(bundle.getString("Editor.title")); // NOI18N
         setBounds(new java.awt.Rectangle(0, 0, 985, 750));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setMinimumSize(new java.awt.Dimension(985, 750));
-        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
+        setMinimumSize(new java.awt.Dimension(750, 750));
 
         Toolbar.setFloatable(false);
         Toolbar.setRollover(true);
@@ -356,24 +375,9 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         jSlider1.setMaximumSize(new java.awt.Dimension(200, 33));
         Toolbar.add(jSlider1);
 
-        getContentPane().add(Toolbar);
+        getContentPane().add(Toolbar, java.awt.BorderLayout.NORTH);
 
-        MainScrollPane.setPreferredSize(new java.awt.Dimension(750, 550));
-
-        DesktopPane.setBackground(javax.swing.UIManager.getDefaults().getColor("Panel.background"));
-        DesktopPane.setAutoscrolls(true);
-        DesktopPane.setMinimumSize(new java.awt.Dimension(600, 400));
-
-        Toolbox.setClosable(true);
-        Toolbox.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        Toolbox.setIconifiable(true);
-        Toolbox.setMaximizable(true);
-        Toolbox.setResizable(true);
-        Toolbox.setTitle(bundle.getString("Editor.Toolbox.title")); // NOI18N
-        Toolbox.setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/system-run.png"))); // NOI18N
-        Toolbox.setPreferredSize(new java.awt.Dimension(163, 600));
-        Toolbox.setVisible(true);
-        Toolbox.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        Toolbox2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel4.setLayout(new java.awt.GridLayout(2, 3));
 
@@ -452,7 +456,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         });
         jPanel4.add(InsertComponent);
 
-        Toolbox.getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 170, 70));
+        Toolbox2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 170, 70));
 
         ComponentSelectionTree.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
@@ -468,7 +472,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         ComponentSelectionTree.setRootVisible(false);
         jScrollPane1.setViewportView(ComponentSelectionTree);
 
-        Toolbox.getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 74, 170, 250));
+        Toolbox2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 74, 170, 250));
 
         org.jdesktop.layout.GroupLayout OptionsLayout = new org.jdesktop.layout.GroupLayout(Options);
         Options.setLayout(OptionsLayout);
@@ -481,14 +485,19 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
             .add(0, 250, Short.MAX_VALUE)
         );
 
-        Toolbox.getContentPane().add(Options, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 324, 170, 250));
+        Toolbox2.add(Options, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 324, 170, 250));
 
-        Toolbox.setBounds(0, 0, 180, 600);
-        DesktopPane.add(Toolbox, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        getContentPane().add(Toolbox2, java.awt.BorderLayout.WEST);
 
+        MainScrollPane.setPreferredSize(new java.awt.Dimension(800, 600));
+
+        DesktopPane.setBackground(javax.swing.UIManager.getDefaults().getColor("Panel.background"));
+        DesktopPane.setAutoscrolls(true);
+        DesktopPane.setDragMode(javax.swing.JDesktopPane.OUTLINE_DRAG_MODE);
+        DesktopPane.setMinimumSize(new java.awt.Dimension(600, 400));
         MainScrollPane.setViewportView(DesktopPane);
 
-        getContentPane().add(MainScrollPane);
+        getContentPane().add(MainScrollPane, java.awt.BorderLayout.CENTER);
 
         File.setMnemonic('F');
         File.setText(bundle.getString("TestJFrameForm.jMenu1.text_1")); // NOI18N
@@ -548,6 +557,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Edit.setText(bundle.getString("Editor.Edit.text")); // NOI18N
 
         Undo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
+        Undo.setMnemonic('u');
         Undo.setText(bundle.getString("Editor.Undo.text")); // NOI18N
         Undo.setEnabled(false);
         Undo.addActionListener(new java.awt.event.ActionListener() {
@@ -558,6 +568,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Edit.add(Undo);
 
         Redo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
+        Redo.setMnemonic('r');
         Redo.setText(bundle.getString("Editor.Redo.text")); // NOI18N
         Redo.setEnabled(false);
         Redo.addActionListener(new java.awt.event.ActionListener() {
@@ -569,6 +580,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Edit.add(jSeparator1);
 
         Cut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
+        Cut.setMnemonic('t');
         Cut.setText(bundle.getString("Editor.Cut.text")); // NOI18N
         Cut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -578,6 +590,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Edit.add(Cut);
 
         Copy.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
+        Copy.setMnemonic('y');
         Copy.setText(bundle.getString("Editor.Copy.text")); // NOI18N
         Copy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -587,6 +600,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Edit.add(Copy);
 
         Paste.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
+        Paste.setMnemonic('p');
         Paste.setText(bundle.getString("Editor.Paste.text")); // NOI18N
         Paste.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -596,6 +610,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Edit.add(Paste);
 
         SelectAll.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
+        SelectAll.setMnemonic('a');
         SelectAll.setText(bundle.getString("Editor.SelectAll.text")); // NOI18N
         SelectAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -606,6 +621,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Edit.add(jSeparator2);
 
         Delete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
+        Delete.setMnemonic('d');
         Delete.setText(bundle.getString("Editor.Delete.text")); // NOI18N
         Delete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -618,6 +634,37 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         Simulation.setMnemonic('S');
         Simulation.setText(bundle.getString("Editor.Simulation.text")); // NOI18N
+
+        Run.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
+        Run.setMnemonic('r');
+        Run.setText(bundle.getString("Editor.Run.text_1")); // NOI18N
+        Run.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RunActionPerformed(evt);
+            }
+        });
+        Simulation.add(Run);
+
+        Stop.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_MASK));
+        Stop.setMnemonic('t');
+        Stop.setText(bundle.getString("Editor.Stop.text")); // NOI18N
+        Stop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                StopActionPerformed(evt);
+            }
+        });
+        Simulation.add(Stop);
+
+        Record.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
+        Record.setMnemonic('l');
+        Record.setText(bundle.getString("Editor.Record.text")); // NOI18N
+        Record.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RecordActionPerformed(evt);
+            }
+        });
+        Simulation.add(Record);
+
         MenuBar.add(Simulation);
 
         Window.setMnemonic('W');
@@ -899,6 +946,18 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
 private void NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewActionPerformed
     getActiveCircuit().getCommandHistory().doCommand(new NewCircuitCommand()); 
 }//GEN-LAST:event_NewActionPerformed
+
+private void RunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunActionPerformed
+    getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand());
+}//GEN-LAST:event_RunActionPerformed
+
+private void StopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopActionPerformed
+    getActiveCircuit().getCommandHistory().doCommand(new SimulationStopCommand());
+}//GEN-LAST:event_StopActionPerformed
+
+private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecordActionPerformed
+    getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand());
+}//GEN-LAST:event_RecordActionPerformed
 
     /** 
      * Repopulate the windows menu in the toolbar with the opened circuits
@@ -1501,11 +1560,13 @@ private void NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:eve
     private javax.swing.JMenuItem Paste;
     private javax.swing.JButton PasteButton;
     private javax.swing.JButton PauseButton;
+    private javax.swing.JMenuItem Record;
     private javax.swing.JButton RecordButton;
     private javax.swing.JMenuItem Redo;
     private javax.swing.JButton RedoButton;
     private javax.swing.JButton RotateLeft;
     private javax.swing.JButton RotateRight;
+    private javax.swing.JMenuItem Run;
     private javax.swing.JMenuItem Save;
     private javax.swing.JMenuItem SaveAs;
     private javax.swing.JButton SaveAsButton;
@@ -1514,9 +1575,11 @@ private void NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:eve
     private javax.swing.JButton Selection;
     private javax.swing.JMenu Simulation;
     private javax.swing.JButton StartButton;
+    private javax.swing.JMenuItem Stop;
     private javax.swing.JButton StopButton;
     private javax.swing.JToolBar Toolbar;
     private javax.swing.JInternalFrame Toolbox;
+    private javax.swing.JPanel Toolbox2;
     private javax.swing.JMenuItem Undo;
     private javax.swing.JButton UndoButton;
     private javax.swing.JMenu Window;
@@ -1529,6 +1592,7 @@ private void NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:eve
     private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JSlider jSlider1;
+    private javax.swing.JSplitPane jSplitPane1;
     // End of variables declaration//GEN-END:variables
 
     private javax.swing.JDialog aboutDialog = null;
