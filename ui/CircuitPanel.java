@@ -16,6 +16,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -27,6 +28,7 @@ import ui.grid.Grid;
 import ui.tools.SelectableComponent;
 import ui.tools.SelectionState;
 import netlist.standard.Wire;
+import sim.Simulator;
 import ui.command.CommandHistory;
 import ui.command.CreateComponentCommand;
 import ui.error.ErrorHandler;
@@ -44,7 +46,7 @@ public class CircuitPanel extends JPanel {
     private SelectableComponent temporaryComponent; // Used for reference to a selection from list of drawn components
     private SelectableComponent highlightedComponent; // The currently highlighted (SelectionState.HOVER) component 
     private List<SelectableComponent> activeComponents = new LinkedList<SelectableComponent>();       
-    private boolean nowDraging = false;
+    private boolean nowDragingComponent = false;
     private boolean multipleSelection = false;
     private int selX;
     private int selY;
@@ -61,20 +63,19 @@ public class CircuitPanel extends JPanel {
         frameOriginX = this.getX();
         frameOriginY = this.getY();               
         
-        addMouseMotionListener(new MouseMotionAdapter(){  
-            
+        addMouseMotionListener(new MouseMotionAdapter(){              
             
             @Override
             @SuppressWarnings("static-access")
             public void mouseMoved(MouseEvent e) {
                 if(editor.getActiveCircuit().equals(CircuitPanel.this)){
-                    if(!nowDraging && !currentTool.equals("Standard.Wire")){                
+                    if(!nowDragingComponent && !currentTool.equals("Standard.Wire")){                
 
                         // Find the location in the circuit
                         endPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
 
                         // Moving a new non-fixed component around
-                        if(!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed() && !nowDraging){
+                        if(!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed() && !nowDragingComponent){
                             drawnComponents.peek().moveTo(endPoint, false);
                             drawnComponents.peek().mouseMoved(e);
 
@@ -133,7 +134,7 @@ public class CircuitPanel extends JPanel {
 
                     if(currentTool.equals("Select")){
 
-                        if(nowDraging){
+                        if(nowDragingComponent){
                             for(SelectableComponent sc: activeComponents){
                                 if(!(sc instanceof Wire)){ sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, false); }
                                 sc.mouseDragged(e);
@@ -155,7 +156,7 @@ public class CircuitPanel extends JPanel {
                                 multipleSelection = true;
                             } else {
 
-                                nowDraging = true;
+                                nowDragingComponent = true;
                                 if(!activeComponents.contains(temporaryComponent)){ 
                                     resetActiveComponents();
                                     activeComponents.add(temporaryComponent); 
@@ -176,8 +177,17 @@ public class CircuitPanel extends JPanel {
 
                         repaint();
 
-                    } 
-
+                    } else if (currentTool.equals("Standard.Wire") 
+                         && !drawnComponents.isEmpty()){
+                    
+                        Wire w = (Wire) drawnComponents.peek();
+                        // Start drawing the new wire
+                        if(w.getOrigin().equals(new Point(0,0))){
+                            w.setStartPoint(startPoint);                           
+                        }
+                        w.setEndPoint(endPoint);                        
+                        repaint();
+                    }
                     currentPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
                 }       
             }
@@ -286,13 +296,14 @@ public class CircuitPanel extends JPanel {
                     endPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));  
 
                     // Drop draged components
-                    if(nowDraging){
+                    if(nowDragingComponent){
                         for(SelectableComponent sc: activeComponents){    
                             sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, true);
                             sc.mouseDraggedDropped(e);                         
-                        }
+                        }           
+                        
                         multipleSelection = false;                
-                        nowDraging = false;
+                        nowDragingComponent = false;
 
                     // Activate all components within the selection box
                     }else if(multipleSelection){
@@ -318,7 +329,30 @@ public class CircuitPanel extends JPanel {
 
                         multipleSelection = false;
 
-                    }      
+                    } else if(currentTool.equals("Standard.Wire") 
+                            && !drawnComponents.isEmpty()){
+                    
+                        Wire w = (Wire) drawnComponents.peek();
+
+                        if(w.getOrigin().equals(endPoint)){
+                            drawnComponents.pop();
+                            drawnComponents.push(new Wire(CircuitPanel.this));
+                        } else if(!w.getOrigin().equals(new Point(0,0))){  
+                            // Should we continue to draw the wire?
+                            //      Only if we have not released on a connection point                        
+                            if(!grid.isConnectionPoint(endPoint)){
+                                w.addWaypoint(endPoint);
+                            } else {
+                                w.setEndPoint(endPoint);
+                                w.translate(0, 0, true);
+                                //drawnComponents.push(new Wire(CircuitPanel.this));
+                            }                                
+                        }
+                        // Highlight connection point?
+                        if(grid.isConnectionPoint(endPoint)){
+                            grid.setActivePoint(endPoint, true);
+                        }
+                    }  
                     repaint();
                 }
             }            
@@ -539,7 +573,7 @@ public class CircuitPanel extends JPanel {
         activeComponents.clear();
         highlightedComponent = null;
         temporaryComponent = null;
-        nowDraging = false;
+        nowDragingComponent = false;
         multipleSelection = false;
         grid.clear();
 
@@ -615,5 +649,30 @@ public class CircuitPanel extends JPanel {
         this.parentFrame = parentFrame;
         editor = ((CircuitFrame) this.getParentFrame()).getEditor();
         cmdHist = new CommandHistory(editor);
+    }
+    
+    public Enumeration<SelectableComponent> getConnectedComponents(){
+        return new Enumeration<SelectableComponent>(){
+            int i = 0;
+
+            { advance(); }
+            
+            private void advance(){
+                while(hasMoreElements() && !(drawnComponents.get(i) instanceof netlist.standard.Input)){
+                    i++;
+                }
+            }
+                
+            public boolean hasMoreElements() {
+                return i<drawnComponents.size();
+            }
+
+            public SelectableComponent nextElement() {
+                SelectableComponent next = drawnComponents.get(i);
+                advance();
+                return next;
+            }
+            
+        };
     }
 }

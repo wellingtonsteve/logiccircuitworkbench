@@ -6,6 +6,7 @@ import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
 import ui.UIConstants;
@@ -191,6 +192,21 @@ public class ConnectionPoint extends GridObject {
             }
         }        
         return found.size();
+    }
+    
+    public Enumeration<SelectableComponent> getConnectedComponents(){
+        return new Enumeration<SelectableComponent>(){
+            int i = 0;
+                
+            public boolean hasMoreElements() {
+                return i<noOfConnections();
+            }
+
+            public SelectableComponent nextElement() {
+                return connections.get(i++).getParent();
+            }
+            
+        };
     }
         
 }

@@ -39,7 +39,7 @@ public class AndGate3Input extends ImageSelectableComponent{
     @Override
     public void setLocalPins() {
         Point in1 = new Point(10, 20);
-        Point in2 = new Point(10, 40);
+        Point in2 = new Point(10, 30);
         Point in3 = new Point(10, 40);
         Point out1 = new Point(60, 30);
                 

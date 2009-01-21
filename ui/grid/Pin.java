@@ -6,15 +6,18 @@
 package ui.grid;
 
 import java.awt.Point;
+import sim.OutputValueListener;
+import sim.State;
 import ui.tools.SelectableComponent;
 
 /**
  *
  * @author matt
  */
-public class Pin extends Point {
+public class Pin extends Point implements OutputValueListener {
 
     private SelectableComponent parent;
+    private State value;
 
     public Pin(SelectableComponent parent, int x, int y){
         super(x,y);
@@ -47,8 +50,9 @@ public class Pin extends Point {
         hash = 59 * hash + (this.parent != null ? this.parent.hashCode() : 0);
         return hash;
     }
-        
 
-    
+    public void outputValueChanged(State value) {
+        this.value = value;
+    }    
 }
 
