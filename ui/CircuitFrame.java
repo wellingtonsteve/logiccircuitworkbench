@@ -118,7 +118,7 @@ public class CircuitFrame extends JInternalFrame{
             
         });
         
-        setBounds(180, 0, 780, 600);
+        setBounds(0, 0, 780, 600);
 
     }
     

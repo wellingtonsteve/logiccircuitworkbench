@@ -176,19 +176,7 @@ public class CircuitPanel extends JPanel {
 
                         repaint();
 
-                    } else if(currentTool.equals("Standard.Wire") 
-                            && !drawnComponents.isEmpty()){
-
-                        Wire w = (Wire) drawnComponents.peek();
-                        if(w.getOrigin().equals(new Point(0,0))){
-                            w.setStartPoint(startPoint);
-                        }                    
-                        w.setEndPoint(endPoint);
-                        if(grid.isConnectionPoint(endPoint)){
-                            grid.setActivePoint(endPoint, true);
-                        }
-                        repaint();
-                    }
+                    } 
 
                     currentPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
                 }       
@@ -248,7 +236,20 @@ public class CircuitPanel extends JPanel {
 
                     } 
                     repaint();
-                }     
+                } else if(editor.getActiveCircuit().equals(CircuitPanel.this) 
+                         && currentTool.equals("Standard.Wire") 
+                         && !drawnComponents.isEmpty()){
+
+                        Wire w = (Wire) drawnComponents.peek();
+                        if(w.getOrigin().equals(new Point(0,0))){
+                            w.setStartPoint(startPoint);
+                        }                    
+                        w.setEndPoint(endPoint);
+                        if(grid.isConnectionPoint(endPoint)){
+                            grid.setActivePoint(endPoint, true);
+                        }
+                        repaint();
+                }   
                                  
             };
             
