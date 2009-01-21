@@ -458,6 +458,8 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         Toolbox2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 170, 70));
 
+        jScrollPane1.setAutoscrolls(true);
+
         ComponentSelectionTree.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
                 ComponentSelectionTreeValueChanged(evt);

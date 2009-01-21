@@ -48,7 +48,13 @@ public class CommandHistory {
             c.setEnabled(canRedo());
         }      
     }
-
+    
+    /**
+     * This command history is dirty if an undoable command has been done since
+     * the last save.
+     * 
+     * @return
+     */
     public boolean isDirty() {
         return isDirty;
     }

@@ -239,18 +239,35 @@ public class CircuitPanel extends JPanel {
                 } else if(editor.getActiveCircuit().equals(CircuitPanel.this) 
                          && currentTool.equals("Standard.Wire") 
                          && !drawnComponents.isEmpty()){
+                    
+                    Wire w = (Wire) drawnComponents.peek();
 
-                        Wire w = (Wire) drawnComponents.peek();
-                        if(w.getOrigin().equals(new Point(0,0))){
-                            w.setStartPoint(startPoint);
-                        }                    
-                        w.setEndPoint(endPoint);
-                        if(grid.isConnectionPoint(endPoint)){
-                            grid.setActivePoint(endPoint, true);
-                        }
-                        repaint();
-                }   
-                                 
+                    // Start drawing the new wire
+                    if(w.getOrigin().equals(new Point(0,0))){
+                        w.setStartPoint(startPoint);
+                    // The start point is the same as the end point, 
+                    // We don't want this line
+                    } else if(w.getOrigin().equals(endPoint)){
+                        drawnComponents.pop();
+                        drawnComponents.push(new Wire(CircuitPanel.this));
+                    } else if(!w.getOrigin().equals(new Point(0,0))){   
+                        // Should we continue to draw the wire?
+                        //      Only if we have not released on a connection point                        
+                        if(!grid.isConnectionPoint(endPoint)){
+                            w.addWaypoint(endPoint);
+                        } else {
+                            w.setEndPoint(endPoint);
+                            w.translate(0, 0, true);
+                            drawnComponents.push(new Wire(CircuitPanel.this));
+                        }                                
+                    }
+                    // Highlight connection point?
+                    if(grid.isConnectionPoint(endPoint)){
+                        grid.setActivePoint(endPoint, true);
+                    }
+
+                    repaint();                       
+                }                                    
             };
             
             public void mouseEntered(MouseEvent e) {}
@@ -301,30 +318,7 @@ public class CircuitPanel extends JPanel {
 
                         multipleSelection = false;
 
-                    } else if (currentTool.equals("Standard.Wire") 
-                            && !drawnComponents.isEmpty()){
-                        // Has the current wire been fixed?
-                        Wire w = (Wire) drawnComponents.peek();
-
-                        if(w.getOrigin().equals(endPoint)){
-                            // The start point is the same as the end point, 
-                            // We don't want this line
-                            drawnComponents.pop();
-                            drawnComponents.push(new Wire(CircuitPanel.this));
-
-                        } else if(!w.getOrigin().equals(new Point(0,0))){                    
-
-                            // Should we continue to draw the wire?
-                            //      Only if we have not released on a connection point                        
-                            if(!grid.isConnectionPoint(endPoint)){
-                                w.addWaypoint(endPoint);
-                            } else {
-                                w.setEndPoint(endPoint);
-                                w.translate(0, 0, true);
-                                drawnComponents.push(new Wire(CircuitPanel.this));
-                            }                                                   
-                        }                    
-                    }               
+                    }      
                     repaint();
                 }
             }            
@@ -473,18 +467,18 @@ public class CircuitPanel extends JPanel {
                 }
             }
         }
-        
-        // Draw Connection Points 
-        grid.draw(g2);
-        
+                
         // Draw components
-        for(SelectableComponent sc: drawnComponents){//sc.getParent().equals(this) && 
+        for(SelectableComponent sc: drawnComponents){
             if((sc.isFixed() || (endPoint != null && contains(endPoint)))){ // Don't draw the temp component, when mouse is outside viewable area.
                 g2.translate(-sc.getCentre().x, -sc.getCentre().y);
                 sc.draw(g2); 
                 g2.translate(sc.getCentre().x, sc.getCentre().y);    
             }                   
         }
+        
+        // Draw Connection Points 
+        grid.draw(g2);
         
         if(multipleSelection){                        
             g2.setColor(UIConstants.SELECTION_BOX_COLOUR);
