@@ -46,8 +46,7 @@ public class Wire extends SelectableComponent {
     @Override
     public String getName(){
         return "Wire";
-    }
-    
+    }    
     
     @Override
     protected void setComponentTreeName() {
@@ -118,8 +117,7 @@ public class Wire extends SelectableComponent {
         }  
     }
     
-    public void moveEndPoint(Point p) {        
-        
+    public void moveEndPoint(Point p) {   
         setEndPoint(p);
         if(!waypoints.isEmpty()){
             
@@ -138,11 +136,9 @@ public class Wire extends SelectableComponent {
             
         }
         
-        removeDuplicateWaypoints();
-        
+        removeDuplicateWaypoints();        
         setLocalPins();
-        setGlobalPins(); 
-        
+        setGlobalPins();         
     }
 
     public void setStartPoint(Point startPoint) {
@@ -158,16 +154,13 @@ public class Wire extends SelectableComponent {
         }
         if(last != null){
             removeCommonLineWaypoints(startPoint, waypoints.get(0), last, true);
-        }  
-        
+        }         
     }
     
     public void moveStartPoint(Point p) {
-
         setStartPoint(p);
         setLocalPins();
-        setGlobalPins(); 
-          
+        setGlobalPins();           
     }
     
     @Override
@@ -196,8 +189,7 @@ public class Wire extends SelectableComponent {
             removeCommonLineWaypoints(start, waypoints.getLast(), wp, true);
         }  
             
-        waypoints.add(wp);
-        
+        waypoints.add(wp);        
     }
     
     @Override
@@ -234,9 +226,7 @@ public class Wire extends SelectableComponent {
             if(waypointsHaveChanged){
                 setLocalPins();
             }        
-        }
-        
-        
+        }     
     }
     
     @Override
@@ -260,8 +250,7 @@ public class Wire extends SelectableComponent {
         }   
     }
     
-    /**
-     * 
+    /** 
      * hoverMousePoint is the current mouse point hovering over the wire
      * 
      * @param e
@@ -270,14 +259,14 @@ public class Wire extends SelectableComponent {
     public void mouseDragged(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);
         parent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+        Point p = parent.getGrid().snapPointToGrid(e.getPoint());
         
         // Moving a segment of the wire
         if(hoverWaypoint!=null && !hoverWaypoint.equals(endPoint)){
             int i = waypoints.indexOf(hoverWaypoint);
-            Point p = parent.getGrid().snapPointToGrid(e.getPoint());
             
             // We have more that one waypoint, let's get the i-1 th waypoint and move the right part of the wire
-            if(i > 0){ 
+            if(i > 0 && i < waypoints.size()){ 
                 Point previousWaypoint = waypoints.get(i-1);
                 // There is no intermeditate point in the joining wire between the two waypoints (vertical)
                 if(previousWaypoint.x == hoverWaypoint.x){ 
@@ -309,13 +298,23 @@ public class Wire extends SelectableComponent {
                     hoverMousePoint.x = p.x;
                     hoverWaypoint.x = p.x;
                 }
-            // TODO : Something cleverer here. Remember to show user that it is the waypoint moving not the handle
-            // We only have one waypoint, just move it
-            } else { 
-                hoverWaypoint.x = p.x;
-                hoverWaypoint.y = p.y;
-            }            
-        }        
+            } else if(i == 0) { 
+                createLeg(startPoint, hoverWaypoint);
+                Line2D.Double l2 = new Line2D.Double(x2, y2, x3, y3);
+                if(l2.ptLineDist(hoverMousePoint)==0.0){
+                    hoverWaypoint.x = p.x;
+                    hoverMousePoint.x = p.x;
+                }                
+            } 
+        } else if (hoverWaypoint.equals(endPoint)){
+            Point lastWaypoint = waypoints.getLast();
+            createLeg(lastWaypoint, endPoint);
+            Line2D.Double l1 = new Line2D.Double(x1, y1, x2, y2);
+            if(l1.ptLineDist(hoverMousePoint)==0.0){
+                lastWaypoint.y = p.y;
+                hoverMousePoint.y = p.y;
+            }     
+        }      
     }
 
     public void mouseDraggedDropped(MouseEvent e) {
@@ -686,11 +685,8 @@ public class Wire extends SelectableComponent {
                         break;
                     default:
                         break;
-                }   
-                              
-            } 
-            
-            
+                }                                 
+            }            
         }
         g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
         g.setStroke(new BasicStroke(1.0f));
@@ -722,7 +718,6 @@ public class Wire extends SelectableComponent {
                 g.drawOval(p.x-1, p.y-1, 3, 3);
             }           
         }
-
     }
 
     /**
@@ -774,7 +769,6 @@ public class Wire extends SelectableComponent {
                 localPins.add(p);
             }
         }
-
     }
     
     @Override
