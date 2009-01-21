@@ -34,6 +34,7 @@ public class CommandHistory {
         cmd.execute(parentEditor);
         if(cmd.canUndo()){ // Is this an undoable command?
             undostack.push(cmd);
+            setIsDirty(true);
             if(undostack.size() == 1){
                 for(JComponent c: undolisteners){
                     c.setEnabled(canUndo());
@@ -45,9 +46,7 @@ public class CommandHistory {
         redostack.clear();
         for(JComponent c: redolisteners){
             c.setEnabled(canRedo());
-        }        
-        
-        setIsDirty(true);
+        }      
     }
 
     public boolean isDirty() {
