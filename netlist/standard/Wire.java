@@ -6,7 +6,7 @@ package netlist.standard;
 
 import java.awt.BasicStroke;
 import java.awt.Cursor;
-import ui.tools.*;
+import ui.components.*;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -51,16 +51,6 @@ public class Wire extends SelectableComponent {
     @Override
     protected void setComponentTreeName() {
         componentTreeName = "Standard.Wire";
-    }
-
-    @Override
-    public int getWidth() {
-        return Math.abs(startPoint.x - endPoint.x);
-    }
-
-    @Override
-    public int getHeight() {
-        return Math.abs(startPoint.y - endPoint.y);
     }
 
     /**
@@ -897,6 +887,16 @@ public class Wire extends SelectableComponent {
         } catch (SAXException ex) {
             ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below",ex);
         }
+    }
+
+    @Override
+    public int getWidth() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getHeight() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

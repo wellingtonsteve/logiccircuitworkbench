@@ -3,7 +3,7 @@ package ui.grid;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import ui.UIConstants;
-import ui.tools.SelectableComponent;
+import ui.components.SelectableComponent;
 
 /**
  *

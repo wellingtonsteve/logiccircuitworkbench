@@ -2,7 +2,7 @@ package ui.command;
 
 import java.awt.Point;
 import ui.Editor;
-import ui.tools.SelectableComponent;
+import ui.components.SelectableComponent;
 
 /**
  *

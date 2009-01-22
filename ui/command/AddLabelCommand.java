@@ -8,8 +8,8 @@ package ui.command;
 import java.util.List;
 import javax.swing.JOptionPane;
 import ui.Editor;
-import ui.Labeled;
-import ui.tools.SelectableComponent;
+import ui.components.Labeled;
+import ui.components.SelectableComponent;
 
 /**
  *

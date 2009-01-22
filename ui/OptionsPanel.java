@@ -15,7 +15,7 @@ import ui.command.EditLabelCommand;
 import netlist.standard.Input;
 import netlist.standard.LED;
 import netlist.standard.Wire;
-import ui.tools.SelectableComponent;
+import ui.components.SelectableComponent;
 
 /**
  * This panel displays the preview of the currently selected component along with

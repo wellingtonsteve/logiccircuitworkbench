@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 import sim.SimItem;
 import ui.error.ErrorHandler;
-import ui.tools.SelectableComponent;
+import ui.components.SelectableComponent;
 
 /**
  * A netlist class is a module for adding new components to the editor. Each component

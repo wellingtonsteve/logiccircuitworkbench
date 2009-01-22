@@ -15,7 +15,7 @@ import ui.Editor;
 import ui.UIConstants;
 import ui.command.CreateComponentCommand;
 import ui.error.ErrorHandler;
-import ui.tools.*;
+import ui.components.*;
 
 /**
  *

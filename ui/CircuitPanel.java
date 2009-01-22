@@ -25,8 +25,8 @@ import javax.swing.JPanel;
 import ui.file.FileCreator;
 import ui.grid.Pin;
 import ui.grid.Grid;
-import ui.tools.SelectableComponent;
-import ui.tools.SelectionState;
+import ui.components.SelectableComponent;
+import ui.components.SelectionState;
 import netlist.standard.Wire;
 import sim.Simulator;
 import ui.command.CommandHistory;
@@ -91,7 +91,7 @@ public class CircuitPanel extends JPanel {
                         } else if (currentTool.equals("Select")){
 
                             temporaryComponent = null;
-                            if(getHighlightedComponent()!=null){getHighlightedComponent().unHover();}
+                            if(getHighlightedComponent()!=null){getHighlightedComponent().revertHoverState();}
 
                             // Determine which component the mouse lies in
                             for(SelectableComponent sc: drawnComponents){
@@ -545,10 +545,10 @@ public class CircuitPanel extends JPanel {
 
     public void setHighlightedComponent(SelectableComponent higlightedComponent) {
         if(highlightedComponent!=null){
-            this.highlightedComponent.unHover();
+            this.highlightedComponent.revertHoverState();
         }
         this.highlightedComponent = higlightedComponent;
-        this.highlightedComponent.hover();
+        this.highlightedComponent.setHoverState();
     }
     
     public void deleteActiveComponents(){

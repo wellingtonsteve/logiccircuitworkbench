@@ -6,7 +6,7 @@ import javax.swing.filechooser.FileFilter;
 import ui.Editor;
 import ui.file.FileLoader;
 import ui.file.XMLFileFilter;
-import ui.tools.SelectableComponent;
+import ui.components.SelectableComponent;
 
 /**
  *

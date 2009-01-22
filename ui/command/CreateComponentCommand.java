@@ -12,7 +12,7 @@ import netlist.standard.Wire;
 import ui.CircuitPanel;
 import ui.Editor;
 import ui.error.ErrorHandler;
-import ui.tools.SelectableComponent;
+import ui.components.SelectableComponent;
 
 /**
  *

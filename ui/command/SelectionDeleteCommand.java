@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import ui.Editor;
-import ui.tools.SelectableComponent;
+import ui.components.SelectableComponent;
 
 /**
  *
