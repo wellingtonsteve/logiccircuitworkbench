@@ -45,7 +45,7 @@ public class InputPin extends Pin implements OutputValueListener
         }
     }
 
-    public void outputValueChanged()
+    public void outputValueChanged(State value)
     {
         this.value = connectedTo.getValue();
     }

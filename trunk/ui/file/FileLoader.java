@@ -26,7 +26,6 @@ public class FileLoader extends DefaultHandler{
     private Stack<SelectableComponent> stack;
     private Editor editor;
     private boolean successful = true;
-    private Wire lastWire = null;
     
     public FileLoader(Editor editor){
         this.editor = editor;
@@ -69,56 +68,79 @@ public class FileLoader extends DefaultHandler{
         return successful;
                 
     }
-    
+    /**
+     * This method is called when the start of a new XML tag is encountered.
+     * The case analysis performs appropriate action for the creation or 
+     * modification of the components on the stack.
+     * 
+     * @param uri
+     * @param localName
+     * @param qName
+     * @param attribs
+     * @throws org.xml.sax.SAXException
+     */
     @Override
     public void startElement (String uri, String localName, String qName,
 			      Attributes attribs) throws SAXException {
+        // Check that an error has not already happened
         if(successful){
+            // Check the file version and set the other circuit parameters <circuit>
             if(qName.equals("circuit")){
                 if(!attribs.getValue("version").equals(UIConstants.FILE_FORMAT_VERSION)){
                     ErrorHandler.newError("File Load Error","Invalid File Format: Version is incorrect..."+attribs.getValue("version"));
                     successful = false;                
                 }
+            // Create a new component <component>
             } else if(qName.equals("component")){
                 
+                // Get co-ordinate attributes
                 int x = Integer.parseInt(attribs.getValue("x"));
                 int y = Integer.parseInt(attribs.getValue("y"));
                 Point p = new Point(x,y);
 
+                // Get rotation attribute
                 double rotation = Double.parseDouble(attribs.getValue("rotation"));
 
+                // Get textual attributes
                 String type = attribs.getValue("type");
                 String label = attribs.getValue("label");
                 
+                // Create a new component with the desired attributes
                 CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
                     type,                // properties[0] = componentName
                     rotation,            // properties[1] = rotation
                     p,                   // properties[2] = point
                     label,               // properties[3] = label
                     null,                // properties[4] = LED Colour
-                    null                // properties[5] = Input On/Off
+                    null                 // properties[5] = Input On/Off
                 });
                 
+                // Perform the creation
                 ccc.execute(editor);
                 
+                // Push the new component on the stack and fix it to the circuit
                 stack.push(ccc.getComponent());
                 stack.peek().translate(0, 0, true);
-
+                
+            // Create a new wire <wire>
             } else if(qName.equals("wire")){
 
+                // Get the coordinates attributes for the wire
                 int startx = Integer.parseInt(attribs.getValue("startx"));
                 int starty = Integer.parseInt(attribs.getValue("starty"));
                 int endx = Integer.parseInt(attribs.getValue("endx"));
                 int endy = Integer.parseInt(attribs.getValue("endy"));
                 
+                // Create the wire
                 netlist.standard.Wire w = new netlist.standard.Wire(editor.getActiveCircuit());
 
+                // Set the attributes
                 w.setStartPoint(new Point(startx, starty));
                 w.setEndPoint(new Point(endx, endy));                
 
                 stack.push(w);
-                lastWire = w;
 
+            // Set the attributes of a previously created component <attr>
             } else if(qName.equals("attr")){    
 
                 String attrName = attribs.getValue("name");
@@ -126,6 +148,7 @@ public class FileLoader extends DefaultHandler{
 
                 SelectableComponent top = stack.peek();
 
+                // TODO: Generalise this
                 if(top instanceof netlist.standard.LED && attrName.equals("colour")){
                     ((netlist.standard.LED) top).setColour(attrValue);
                 } else if(top instanceof netlist.standard.Input && attrName.equals("value")){
@@ -135,6 +158,7 @@ public class FileLoader extends DefaultHandler{
                     ErrorHandler.newError("File Load Error","Invalid File Format: The property \"" + attrName + "\" is not valid for a "+ top.getClass().getSimpleName() +".");
                 }
 
+            // Add a waypoint to a previously created wire <waypoint>
             } else if(qName.equals("waypoint")){    
 
                 int x = Integer.parseInt(attribs.getValue("x"));
@@ -152,13 +176,19 @@ public class FileLoader extends DefaultHandler{
         }        
     }
 
+    /**
+     * Perform closing actions on XML tags.
+     * 
+     * @param uri
+     * @param localName
+     * @param qName
+     * @throws org.xml.sax.SAXException
+     */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
+        // Fix the wire only after we've added all the waypoints
         if(successful && qName.equals("wire")){
-            if(lastWire != null){
-                lastWire.translate(0, 0, true);
-                lastWire = null;
-            }
+            ((netlist.standard.Wire) stack.peek()).translate(0, 0, true);
         }
     }    
 }

@@ -1,15 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ui.log;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 import sim.State;
 import sim.OutputPin;
@@ -34,7 +27,7 @@ public class PinLogger implements sim.OutputValueListener {
     public PinLogger(Simulator sim, OutputPin pin){
         this.sim = sim;
         this.pin = pin;
-        this.pin.addOutputValueListener(this);
+        pin.addOutputValueListener(this);
         
         // Remove these lines when complete
         testTimes.push(new Long("2600"));
@@ -46,12 +39,12 @@ public class PinLogger implements sim.OutputValueListener {
         
     }
     
-    public void outputValueChanged() {
+    public void outputValueChanged(State value) {
         // Remove this line when complete
             Long nextSimTime = testTimes.pop();
             //Long nextSimTime = sim.getSimulationTime();
         timeLog.add(nextSimTime);
-        stateLog.add(pin.getValue());
+        stateLog.add(value);
 
         if(startTime == null){
             startTime = new Long(nextSimTime);
