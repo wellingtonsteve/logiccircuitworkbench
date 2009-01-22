@@ -1412,20 +1412,34 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 
         @Override
         public String getName() {
-            return simitem.getName();
+            //return simitem.getName();
+            return componentTreeName;
         }
 
         @Override
         protected void setBoundingBox(){
             this.boundingBox = new java.awt.Rectangle(getOrigin().x-getCentre().x+10,
                     getOrigin().y-getCentre().y,
-                    50,
-                    (Math.max(simitem.getInputs().size(), simitem.getOutputs().size()) + 1) * UIConstants.GRID_DOT_SPACING);
+                    getWidth(),
+                    getHeight());
+        }
+        
+        @Override
+        public int getWidth(){
+            return 50;
         }
 
         @Override
+        public int getHeight(){
+            return (Math.max(simitem.getInputs().size(), simitem.getOutputs().size()) + 1) * UIConstants.GRID_DOT_SPACING;
+        }
+        
+        @Override
         protected void setInvalidAreas() {
-            this.invalidArea = new java.awt.Rectangle(getOrigin().x-getCentre().x+10, getOrigin().y-getCentre().y, getWidth()-UIConstants.GRID_DOT_SPACING+1, getHeight()+1);
+            this.invalidArea = new java.awt.Rectangle(getOrigin().x-getCentre().x+10, 
+                    getOrigin().y-getCentre().y, 
+                    getWidth()-UIConstants.GRID_DOT_SPACING+1, 
+                    getHeight()+1);
         }
 
         @Override
