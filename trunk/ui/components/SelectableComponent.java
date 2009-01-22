@@ -23,7 +23,7 @@ import ui.grid.Pin;
 public abstract class SelectableComponent implements MouseMotionListener, MouseListener, Labeled, Cloneable {
     
 
-    /** Set the default selection state of this logicalComponent */
+    /** Set the default selection state of this component */
     protected SelectionState selectionState = SelectionState.DEFAULT;
     
     /** To store the Selection state of the logicalComponent before it enters the hover state.*/
@@ -134,19 +134,19 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
 
     /**
-     * Get the underlying logical logicalComponent that is associated with a particular
+     * Get the underlying logical component that is associated with a particular
      * instance of this object.
      * 
-     * @return The corresponding logical logicalComponent.
+     * @return The corresponding logical Component.
      */
     public Component getLogicalComponent() {
         return logicalComponent;
     }
 
     /**
-     * Get the local origin of this logicalComponent in world co-ordinates.
+     * Get the local origin of this component in world co-ordinates.
      * 
-     * @return The logicalComponent's origin.
+     * @return The component's origin.
      */
     public Point getOrigin(){
         return origin;
@@ -155,43 +155,43 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     /**
      * Centre points of components are use as the anchor for the mouse pointer.
      * 
-     * @return The centre point of this logicalComponent.
+     * @return The centre point of this component.
      */
     public Point getCentre(){
         return new Point(getWidth()/2, getHeight()/2);
     }
     
     /**
-     * @return The width of the logicalComponent.
+     * @return The width of the component.
      */
     public abstract int getWidth();
 
     /**
-     * @return The height of the logicalComponent.
+     * @return The height of the component.
      */
     public abstract int getHeight();
     
     /**
-     * Translate this logicalComponent on the Circuit Panel. The move is first checked 
-     * to be valid and after the translation the logicalComponent is fixed/unfixed to
+     * Translate this component on the Circuit Panel. The move is first checked 
+     * to be valid and after the translation the component is fixed/unfixed to
      * the workarea as specified
      * 
      * @param dx The displacement in the x-direction.
      * @param dy The displacement in the y-direction.
-     * @param fixed Should the logicalComponent be fixed after the translation?
+     * @param fixed Should the component be fixed after the translation?
      */
     public void translate(int dx, int dy, boolean fixed) {       
 
         if(parent.getGrid().canMoveComponent(this, dx, dy, !wasEverFixed)){
             this.origin.translate(dx, dy);
             
-            // Adding this logicalComponent to the grid for the first time
+            // Adding this component to the grid for the first time
             if(!wasEverFixed && fixed){ 
                 this.fixed = fixed;
                 this.wasEverFixed = true;
                 parent.getGrid().markInvalidAreas(this);
                 setGlobalPins();
-            // About to refix the logicalComponent
+            // About to refix the component
             } else if (!this.fixed && fixed){
                 this.fixed = fixed;
                 setGlobalPins();            
@@ -209,7 +209,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         }         
         
         // Alert the user that this was an invalid move and we cannot fix the 
-        // logicalComponent here
+        // component here
         if(!this.fixed && fixed && UIConstants.DO_SYSTEM_BEEP){
             UIConstants.beep();
         }                    
@@ -217,20 +217,20 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     /**
-     * Convienience method to move the origin of the logicalComponent to a specified point
+     * Convienience method to move the origin of the component to a specified point
      * 
-     * @param point The new origin of the logicalComponent
-     * @param fixed Should the logicalComponent be fixed after the translation?
+     * @param point The new origin of the component
+     * @param fixed Should the component be fixed after the translation?
      */
     public void moveTo(Point newOrigin, boolean fixed){
         translate(newOrigin.x-origin.x, newOrigin.y-origin.y, fixed);
     }
     
     /**
-     * Is the the logicalComponent currently fixed to the parent circuit. Components are
+     * Is the the component currently fixed to the parent circuit. Components are
      * by default unfixed whilst they are being positioned/created.
      * 
-     * @return Is this logicalComponent fixed?
+     * @return Is this component fixed?
      */
     public boolean isFixed(){
         return fixed;
@@ -242,24 +242,24 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     public abstract String getName();
     
     /**
-     * Rotations of this logicalComponent are specified in radians and are rotated clockwise about
-     * the centre point of the logicalComponent. The zero radian position is the standard
+     * Rotations of this component are specified in radians and are rotated clockwise about
+     * the centre point of the component. The zero radian position is the standard
      * rotation with inputs on the left and outputs on the right (i.e. for an AND
      * gate). 
      * 
-     * @return The rotation of the logicalComponent.
+     * @return The rotation of the component.
      */
     public double getRotation() {
        return rotation;
     }
      
     /**
-     * Rotations of this logicalComponent are specified in radians and are rotated clockwise about
-     * the centre point of the logicalComponent. The zero radian position is the standard
+     * Rotations of this component are specified in radians and are rotated clockwise about
+     * the centre point of the component. The zero radian position is the standard
      * rotation with inputs on the left and outputs on the right (i.e. for an AND
      * gate). 
      * 
-     * @param rotation The new value of the rotation of this logicalComponent
+     * @param rotation The new value of the rotation of this component
      */
     public void setRotation(double rotation) {
         this.rotation = rotation;
@@ -270,10 +270,10 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
         
     /**
-     * Each logicalComponent specifies an invalid area within which no other logicalComponent, 
+     * Each component specifies an invalid area within which no other component, 
      * pin or wire may be placed.
      * 
-     * @return The Invalid Area rectangle for this logicalComponent (World Co-ordinates).
+     * @return The Invalid Area rectangle for this component (World Co-ordinates).
      */
     public Rectangle getInvalidAreas(){
         if(invalidArea == null){
@@ -283,10 +283,10 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     /**
-     * Each logicalComponent specifies an invalid area within which no other logicalComponent, 
+     * Each component specifies an invalid area within which no other component, 
      * pin or wire may be placed.
      * 
-     * The Invalid areas are set upon logicalComponent initialisation and updated dynamically
+     * The Invalid areas are set upon component initialisation and updated dynamically
      * upon translation or rotation.
      */    
     protected void setInvalidAreas(){
@@ -295,10 +295,10 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     /**
-     * The bounding box of a logicalComponent specifies the area within which mouse movements
-     * may select or activate this logicalComponent.
+     * The bounding box of a component specifies the area within which mouse movements
+     * may select or activate this component.
      * 
-     * @return The Bounding Box rectangle for this logicalComponent (World Co-ordinates).
+     * @return The Bounding Box rectangle for this component (World Co-ordinates).
      */
     public Rectangle getBoundingBox(){
         if(boundingBox == null){
@@ -308,10 +308,10 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     /**
-     * The bounding box of a logicalComponent specifies the area within which mouse movements
-     * may select or activate this logicalComponent.
+     * The bounding box of a component specifies the area within which mouse movements
+     * may select or activate this component.
      * 
-     * The Bounding box is set upon logicalComponent initialisation and updated dynamically
+     * The Bounding box is set upon component initialisation and updated dynamically
      * upon translation or rotation.
      */
     protected void setBoundingBox() {
@@ -349,10 +349,10 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
  
     /**
      * The Component Tree Name is the value that is returned from the Component Tree
-     * in the toolbox when this type of logicalComponent is selected. The name is also the
+     * in the toolbox when this type of component is selected. The name is also the
      * key for all netlist mappings.
      * 
-     * @return The logicalComponent tree name of this logicalComponent
+     * @return The component tree name of this component
      */
     public String getComponentTreeName() {
         return componentTreeName;
@@ -360,10 +360,10 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
 
     /**
      * The Component Tree Name is the value that is returned from the Component Tree
-     * in the toolbox when this type of logicalComponent is selected. The name is also the
+     * in the toolbox when this type of component is selected. The name is also the
      * key for all netlist mappings.
      * 
-     * The logicalComponent tree name must be set in all subclasses.
+     * The component tree name must be set in all subclasses.
      */
     protected abstract void setComponentTreeName();
 
@@ -393,10 +393,10 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
        
     /**
-     * Return the list of Pins (Connection Points) of this logicalComponent. The global
+     * Return the list of Pins (Connection Points) of this component. The global
      * pins are in world co-ordinates.
      * 
-     * @return a collection of the pins of this logicalComponent.
+     * @return a collection of the pins of this component.
      */
     public  Collection<Pin> getGlobalPins(){
         return globalPins;
@@ -404,7 +404,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     /**
      * Remove all old pins from the connection point grid and then recreate the 
-     * pins from the local pins of this logicalComponent, adding them back to the grid 
+     * pins from the local pins of this component, adding them back to the grid 
      * if necessary.
      */
     protected void setGlobalPins(){
@@ -430,7 +430,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     /**
-     * Return a list of the pins belonging to this logicalComponent in thier local
+     * Return a list of the pins belonging to this component in their local
      * co-ordinates. Local pins are used to do all processing (e.g. for crossovers
      * of wires) and generation of connection points before they are added to the grid.
      * 
@@ -441,7 +441,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     /**
-     * Set the pins of this logicalComponent in local co-ordinates. Local pins are used 
+     * Set the pins of this component in local co-ordinates. Local pins are used 
      * to do all processing (e.g. for crossovers of wires) and generation of 
      * connection points before they are added to the grid. All subclasses must 
      * implement this method.
@@ -457,7 +457,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     public abstract boolean containsPoint(Point point);
     
     /**
-     * Returns true if, and only if, the invalid areas of this logicalComponent lie entirely
+     * Returns true if, and only if, the invalid areas of this component lie entirely
      * within the specified rectangle. Used primarily for testing inclusion in a
      * selection box.
      * 
@@ -469,7 +469,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     /**
-     * Draw this logicalComponent to the graphics object specified.
+     * Draw this component to the graphics object specified.
      * 
      * @param g The graphics object to draw to.
      */
@@ -484,7 +484,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
 
     /**
      * Helper method to calculate the rotation of Point p about the centre Point
-     * of the logicalComponent in the clockwise direction.
+     * of the component in the clockwise direction.
      * 
      * @param p The point to rotate
      * @return The new rotated location
@@ -498,7 +498,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
 
     /**
-     * Visitor method for saving a file. Each logicalComponent is visited and must provide
+     * Visitor method for saving a file. Each component is visited and must provide
      * and XML representation of itself to the TransformerHandler.
      * 
      * @param hd The TransformerHandler which will record the XML.
@@ -523,7 +523,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * Similar to clone except that the exception is caught and the Cast to 
      * SelectableComponent is also done.
      * 
-     * @return Return an exact copy of this logicalComponent. 
+     * @return Return an exact copy of this component. 
      */
     public SelectableComponent copy(){
         try {
