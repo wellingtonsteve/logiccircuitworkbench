@@ -315,8 +315,9 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * upon translation or rotation.
      */
     protected void setBoundingBox() {
-        Point rotOrigin = rotate(getOrigin());
-        this.boundingBox = new Rectangle(rotOrigin.x,rotOrigin.y,getWidth(),getHeight());
+        boundingBox = new Rectangle(getOrigin().x-getCentre().x,getOrigin().y-getCentre().y,getWidth(),getHeight());
+        boundingBox = rotate(boundingBox);
+        
     } 
     
     /**
@@ -496,7 +497,24 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         Point ansP = new Point(rotP.x + getCentre().x, rotP.y + getCentre().y);
         return parent.getGrid().snapPointToGrid(ansP);
     }
-
+    
+    /**
+     * Helper method to calculate the rotation of Rectangle src about the centre Point
+     * of the component in the clockwise direction. Used to rotate the invalid
+     * area and bounding box rectangles.
+     * 
+     * @param src The rectangle to rotate
+     * @return The new rotated rectangle
+     */
+    protected Rectangle rotate(Rectangle src){
+        Rectangle retval;
+        java.awt.geom.AffineTransform rotationTransformation = new java.awt.geom.AffineTransform();
+        rotationTransformation.rotate(rotation, getOrigin().x, getOrigin().y);
+        retval = rotationTransformation.createTransformedShape(new Rectangle(src)).getBounds();
+        
+        return retval;
+    }
+    
     /**
      * Visitor method for saving a file. Each component is visited and must provide
      * and XML representation of itself to the TransformerHandler.

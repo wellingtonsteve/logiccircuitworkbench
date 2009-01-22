@@ -502,7 +502,15 @@ public class CircuitPanel extends JPanel {
             if((sc.isFixed() || (endPoint != null && contains(endPoint)))){ // Don't draw the temp component, when mouse is outside viewable area.
                 g2.translate(-sc.getCentre().x, -sc.getCentre().y);
                 sc.draw(g2); 
-                g2.translate(sc.getCentre().x, sc.getCentre().y);    
+                g2.translate(sc.getCentre().x, sc.getCentre().y);
+                
+                if(UIConstants.SHOW_INVALID_AREA_BOXES){
+                    g2.draw(sc.getInvalidAreas());
+                }
+        
+                if(UIConstants.SHOW_BOUNDING_BOXES){
+                    g2.draw(sc.getBoundingBox());
+                }
             }                   
         }
         

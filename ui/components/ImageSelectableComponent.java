@@ -9,6 +9,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import ui.CircuitPanel;
 import netlist.Netlist;
+import ui.UIConstants;
 
 /**
  *
@@ -137,7 +138,7 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
             
     @Override
     public boolean containsPoint(Point point) {
-        return this.getInvalidAreas().contains(point);
+        return getBoundingBox().contains(point);
     }
     
     public void createXML(TransformerHandler hd) {
