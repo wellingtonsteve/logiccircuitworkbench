@@ -10,7 +10,7 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
 import ui.UIConstants;
-import ui.tools.SelectableComponent;
+import ui.components.SelectableComponent;
 import netlist.standard.Wire;
 
 /**

@@ -2,7 +2,7 @@ package ui.grid;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
-import ui.Labeled;
+import ui.components.Labeled;
 import ui.UIConstants;
 
 /**

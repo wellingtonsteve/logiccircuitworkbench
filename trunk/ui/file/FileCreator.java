@@ -9,7 +9,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 import javax.xml.transform.sax.*;
 import ui.UIConstants;
-import ui.tools.SelectableComponent;
+import ui.components.SelectableComponent;
 /**
  *
  * @author matt

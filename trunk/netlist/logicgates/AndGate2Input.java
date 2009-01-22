@@ -1,6 +1,6 @@
 package netlist.logicgates;
 
-import ui.tools.*;
+import ui.components.*;
 import java.awt.Point;
 import java.awt.Rectangle;
 
@@ -21,7 +21,7 @@ public class AndGate2Input extends ImageSelectableComponent{
 
     @Override
     protected void setInvalidAreas(){
-        // Tight fitting box so that pins, used for hover selection of component and checking invalid areas
+        // Tight fitting box so that pins, used for setHoverState selection of logicalComponent and checking invalid areas
         this.invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+20,(int)getOrigin().getY()+20-getCentre().y,32,22);
     }
     

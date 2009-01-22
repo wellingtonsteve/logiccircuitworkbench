@@ -6,7 +6,7 @@
 package ui.command;
 
 import ui.Editor;
-import ui.Labeled;
+import ui.components.Labeled;
 
 /**
  *

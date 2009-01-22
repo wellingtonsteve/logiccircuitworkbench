@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import ui.UIConstants;
-import ui.tools.SelectableComponent;
+import ui.components.SelectableComponent;
 
 /**
  *

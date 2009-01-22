@@ -5,7 +5,7 @@
 
 package netlist.logicgates;
 
-import ui.tools.*;
+import ui.components.*;
 import java.awt.Point;
 import java.awt.Rectangle;
 
@@ -21,7 +21,7 @@ public class AndGate3Input extends ImageSelectableComponent{
     
     @Override
     public String getName(){
-        //return getComponent().getType();
+        //return getLogicalComponent().getType();
         return "And Gate (3 Input)";
     }
 

@@ -9,8 +9,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
 import netlist.standard.Wire;
-import ui.tools.SelectableComponent;
-import ui.tools.SelectionState;
+import ui.components.SelectableComponent;
+import ui.components.SelectionState;
 
 /**
  *

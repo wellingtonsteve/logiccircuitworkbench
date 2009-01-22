@@ -5,7 +5,7 @@
 
 package netlist.logicgates;
 
-import ui.tools.*;
+import ui.components.*;
 import java.awt.Point;
 import java.awt.Rectangle;
 

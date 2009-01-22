@@ -33,9 +33,9 @@ import ui.error.Error;
 import ui.error.ErrorListener;
 import netlist.Netlist;
 import ui.error.ErrorHandler;
-import ui.tools.ImageSelectableComponent;
-import ui.tools.SelectableComponent;
-import ui.tools.SelectionState;
+import ui.components.ImageSelectableComponent;
+import ui.components.SelectableComponent;
+import ui.components.SelectionState;
 
 /**
  *
@@ -714,7 +714,7 @@ private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
 
     // Set Options panel (Preview, Component Specific Options etc.)
     ((OptionsPanel) Options).setComponent(ccc.getComponent());
-    ((OptionsPanel) Options).resetLabel(); // Assume user wants a different name for a different component
+    ((OptionsPanel) Options).resetLabel(); // Assume user wants a different name for a different logicalComponent
     ((OptionsPanel) Options).setLayoutManager();
     
     Options.setVisible(true);
@@ -760,7 +760,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
             
             // Set Options panel (Preview, Component Specific Options etc.)
             ((OptionsPanel) Options).setComponent(ccc.getComponent());
-            ((OptionsPanel) Options).resetLabel(); // Assume user wants a different name for a different component
+            ((OptionsPanel) Options).resetLabel(); // Assume user wants a different name for a different logicalComponent
             ((OptionsPanel) Options).setLayoutManager();
             Options.setVisible(true);
             Options.repaint();
@@ -984,7 +984,7 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         }
     }
     
-    /** Reset selections of the component toolbox so that we only have one 
+    /** Reset selections of the logicalComponent toolbox so that we only have one 
      * button depressed at a time.
      * 
      * @param button    The button which is currently being selected
@@ -1080,7 +1080,7 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     }
 
     /**
-     * Construct the component tree from the list of netlists associated with this editor.
+     * Construct the logicalComponent tree from the list of netlists associated with this editor.
      * 
      * @return rootNode     A well-formed TreeModel for use in a JTree
      */
@@ -1121,7 +1121,7 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     }
     
     /**
-     * Register a new Component Netlist with the editor. All component in the netlist 
+     * Register a new Component Netlist with the editor. All logicalComponent in the netlist 
      * will be made available in the toolbox for use in circuits.
      * 
      * @param nl The netlist to add.
@@ -1157,10 +1157,10 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     
     /**
      * Checks whether a the key identifies either a valid implementation of a Selectable
-     * Component which can be drawn on the circuit or a component which has a logical 
+     * Component which can be drawn on the circuit or a logicalComponent which has a logical 
      * implementation but no visual representation. Components without a valid visual
      * (Selectable Component) representation are drawn dynamically from the properties of 
-     * the logical component.
+     * the logical logicalComponent.
      * 
      * @param key
      * @return
@@ -1188,10 +1188,10 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     }
     
     /**
-     * Create a drawable component dynamically from an existing logical implementation
+     * Create a drawable logicalComponent dynamically from an existing logical implementation
      * only. This should only be used when a concrete drawable implementation of the 
-     * component does not exist. Drawable implementations should be specified in the 
-     * netlist for each component.
+     * logicalComponent does not exist. Drawable implementations should be specified in the 
+     * netlist for each logicalComponent.
      * 
      * @param key
      */    
@@ -1222,7 +1222,7 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     } 
     
     /**
-     * Find the first drawable component class associated the key the netlists 
+     * Find the first drawable logicalComponent class associated the key the netlists 
      * registered with the editor.
      * 
      * @param key
@@ -1243,9 +1243,9 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     }
     
     /**
-     * Fix the current component to the circuit
+     * Fix the current logicalComponent to the circuit
      * 
-     * @param endPoint  the point at which to fix the component
+     * @param endPoint  the point at which to fix the logicalComponent
      */
     public void fixComponent(SelectableComponent old) {
         getActiveCircuit().getCommandHistory().doCommand(new FixComponentCommand(old));
@@ -1416,18 +1416,15 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         }
 
         @Override
-        public int getHeight() {
-            return (Math.max(simitem.getInputs().size(), simitem.getOutputs().size()) + 1) * UIConstants.GRID_DOT_SPACING;
-        }
-
-        @Override
-        public int getWidth() {
-            return 50;
+        protected void setBoundingBox(){
+            this.boundingBox = new java.awt.Rectangle(getOrigin().x-getCentre().x+10,
+                    getOrigin().y-getCentre().y,
+                    50,
+                    (Math.max(simitem.getInputs().size(), simitem.getOutputs().size()) + 1) * UIConstants.GRID_DOT_SPACING);
         }
 
         @Override
         protected void setInvalidAreas() {
-            // Tight fitting box so that pins, used for hover selection of component and checking invalid areas
             this.invalidArea = new java.awt.Rectangle(getOrigin().x-getCentre().x+10, getOrigin().y-getCentre().y, getWidth()-UIConstants.GRID_DOT_SPACING+1, getHeight()+1);
         }
 

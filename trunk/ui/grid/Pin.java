@@ -8,7 +8,7 @@ package ui.grid;
 import java.awt.Point;
 import sim.OutputValueListener;
 import sim.State;
-import ui.tools.SelectableComponent;
+import ui.components.SelectableComponent;
 
 /**
  *
