@@ -148,7 +148,7 @@ public class ConnectionPoint extends GridObject {
                 isActive = false;
             }
 
-            if(UIConstants.SHOW_CONNECTION_POINTS){ 
+            if(UIConstants.SHOW_GRID_OBJECTS){ 
                 g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
                 g2.drawOval(x-1, y-1, 3, 3);
                 g2.fillOval(x-1, y-1, 3, 3);

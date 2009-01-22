@@ -154,6 +154,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     /**
      * Centre points of components are use as the anchor for the mouse pointer.
+     * In local co-ordinates
      * 
      * @return The centre point of this component.
      */
@@ -262,7 +263,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * @param rotation The new value of the rotation of this component
      */
     public void setRotation(double rotation) {
-        this.rotation = rotation;
+        this.rotation = rotation % (Math.PI * 2);
         setLocalPins();
         setGlobalPins();
         setInvalidAreas();
@@ -290,8 +291,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * upon translation or rotation.
      */    
     protected void setInvalidAreas(){
-        Point rotOrigin = rotate(getOrigin());
-        this.invalidArea = new Rectangle(rotOrigin.x,rotOrigin.y,getWidth(),getHeight());   
+        this.invalidArea = new Rectangle(getOrigin().x,getOrigin().y,getWidth(),getHeight());   
     }
     
     /**

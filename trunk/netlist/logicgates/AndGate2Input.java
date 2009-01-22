@@ -21,8 +21,16 @@ public class AndGate2Input extends ImageSelectableComponent{
 
     @Override
     protected void setInvalidAreas(){
-        // Tight fitting box so that pins, used for setHoverState selection of logicalComponent and checking invalid areas
         this.invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+20,(int)getOrigin().getY()+20-getCentre().y,32,22);
+        Point rotOrigin = rotate(new Point(getOrigin().x, getOrigin().y));
+        java.awt.geom.AffineTransform test = new java.awt.geom.AffineTransform();
+        test.rotate(Math.toRadians(rotation), -rotOrigin.x, -rotOrigin.y);
+        //test.translate(getOrigin().x+getCentre().x, getOrigin().y+getCentre().y);
+        //System.out.println(test.createTransformedShape(new Rectangle(invalidArea)).getBounds().toString());
+        //Rectangle bounds = test.createTransformedShape(new Rectangle(invalidArea))..getBounds();
+        //bounds.translate(getOrigin().x, getOrigin().y);
+        //return bounds;
+        this.invalidArea = test.createTransformedShape(new Rectangle(invalidArea)).getBounds();
     }
     
     @Override
