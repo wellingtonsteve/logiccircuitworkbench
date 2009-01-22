@@ -21,16 +21,14 @@ public class AndGate2Input extends ImageSelectableComponent{
 
     @Override
     protected void setInvalidAreas(){
-        this.invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+20,(int)getOrigin().getY()+20-getCentre().y,32,22);
-        Point rotOrigin = rotate(new Point(getOrigin().x, getOrigin().y));
-        java.awt.geom.AffineTransform test = new java.awt.geom.AffineTransform();
-        test.rotate(Math.toRadians(rotation), -rotOrigin.x, -rotOrigin.y);
-        //test.translate(getOrigin().x+getCentre().x, getOrigin().y+getCentre().y);
-        //System.out.println(test.createTransformedShape(new Rectangle(invalidArea)).getBounds().toString());
-        //Rectangle bounds = test.createTransformedShape(new Rectangle(invalidArea))..getBounds();
-        //bounds.translate(getOrigin().x, getOrigin().y);
-        //return bounds;
-        this.invalidArea = test.createTransformedShape(new Rectangle(invalidArea)).getBounds();
+        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+18,(int)getOrigin().getY()+18-getCentre().y,34,24);
+        invalidArea = rotate(invalidArea);        
+    }
+    
+    @Override
+    protected void setBoundingBox(){
+        boundingBox = new Rectangle((int)getOrigin().getX()-getCentre().x+15,(int)getOrigin().getY()+15-getCentre().y,40, 30);
+        boundingBox = rotate(boundingBox);        
     }
     
     @Override

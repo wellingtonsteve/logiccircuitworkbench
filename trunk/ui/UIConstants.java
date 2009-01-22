@@ -46,7 +46,8 @@ public class UIConstants {
     public static Color LABEL_TEXT_COLOUR = Color.BLACK;
     public static boolean DO_OFFSCREEN_DRAWING_TEST = true;
     public static int WIRE_HANDLE_LENGTH = 40;
-
+    public static boolean SHOW_INVALID_AREA_BOXES = true;
+    public static boolean SHOW_BOUNDING_BOXES = true;
 
     public static void beep(){
         java.awt.Toolkit.getDefaultToolkit ().beep();

@@ -70,7 +70,9 @@ public class CreateComponentCommand extends Command {
                 canUndo = true;
                 
             } catch (Exception ex){
-                ErrorHandler.newError("Component Creation Error","An error occured whilst creating a new component.", ex);
+                // TODO: reset component selection
+                ErrorHandler.newError("Component Creation Error",
+                        "An error occured whilst creating a new component.", ex);
             }            
                         
             
