@@ -66,6 +66,7 @@ public class CreateComponentCommand extends Command {
                 }
                 
                 parentCircuit.addComponent(sc);
+                editor.getOptionsPanel().setComponent(sc);
                 canUndo = true;
                 
             } catch (Exception ex){

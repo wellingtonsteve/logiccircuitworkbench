@@ -23,6 +23,7 @@ public class RotateRightCommand extends Command {
             
             canUndo = true;
             activeCircuit.repaint();
+            
         } else if(editor.getOptionsPanel().getSelectableComponent() != null 
                 && !activeCircuit.getCurrentTool().equals("Standard.Wire") 
                 && !activeCircuit.getCurrentTool().equals("Select")){
