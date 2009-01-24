@@ -14,8 +14,10 @@ import java.awt.Point;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.Stack;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
@@ -48,6 +50,10 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     private Graphics offscreenGraphics;
     private boolean drawDirect = false;
     private int untitledIndex = 1;
+    private CommandHistory cmdHist = new CommandHistory(this);
+    private Stack<SelectableComponent> clipboard = new Stack<SelectableComponent>();
+    private Stack<Integer> clipboardPointer = new Stack<Integer>();
+    private Stack<ClipboardType> clipboardTypes = new Stack<ClipboardType>();
     
     /** Creates new form FrameMain */
     public Editor() {        
@@ -72,7 +78,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
             public void windowDeactivated(WindowEvent e) {}
             
         });
-        
+        clipboardPointer.push(0);
         
     }
 
@@ -896,7 +902,7 @@ private void AboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
 }//GEN-LAST:event_AboutActionPerformed
 
 private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NewButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new NewCircuitCommand());
+    cmdHist.doCommand(new NewCircuitCommand());
 }//GEN-LAST:event_NewButtonMouseClicked
 
 private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertComponentMouseClicked
@@ -946,7 +952,7 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
 }//GEN-LAST:event_ComponentSelectionTreeFocusGained
 
 private void NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new NewCircuitCommand()); 
+    cmdHist.doCommand(new NewCircuitCommand()); 
 }//GEN-LAST:event_NewActionPerformed
 
 private void RunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunActionPerformed
@@ -1522,7 +1528,48 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     public void removeCircuitFrame(CircuitFrame cf) {
         circuitwindows.remove(cf);
     }
-     
+    
+    /**
+     * Add a selection of components to the clipboard for later use.
+     * @param col The components to be added.
+     */
+    public void addSetToClipboard(Collection<SelectableComponent> col, ClipboardType ct){
+        clipboardPointer.push(clipboard.size());
+        clipboardTypes.push(ct);
+        clipboard.addAll(col);
+    }
+    
+    /**
+     * Add a single component to the clipboard for later use
+     * @param sc The component to add.
+     */
+    public void addSetToClipboard(SelectableComponent sc, ClipboardType ct){
+        clipboardPointer.push(clipboard.size());
+        clipboardTypes.push(ct);
+        clipboard.push(sc);        
+    }
+    
+    /**
+     * @return The last selection of items that was added to the clipboard
+     */
+    public Collection<SelectableComponent> getLastClipboardItem(){
+        Collection<SelectableComponent> retval = clipboard.subList(clipboardPointer.peek(), clipboard.size());
+        if(clipboardTypes.peek().equals(ClipboardType.Cut)){
+            removeLastClipboardItem();
+        }
+        return retval;
+    }
+    
+    /**
+     * Remove the last selection of items that was added to the clipboard. Occurs
+     * when a copy action is undone, or a cut item is pasted.
+     */
+    public void removeLastClipboardItem(){
+        Collection<SelectableComponent> lastSet = clipboard.subList(clipboardPointer.peek(), clipboard.size());
+        clipboard.removeAll(lastSet);
+        clipboardPointer.pop();
+        clipboardTypes.pop();
+    }   
      
     /**
      * @param args the command line arguments
