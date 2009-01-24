@@ -11,6 +11,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -604,7 +605,7 @@ public class CircuitPanel extends JPanel {
         return (filename==null)?"Untitled"+getParentFrame().getUntitledIndex():filename;
     }
             
-    public void addComponentList(List<SelectableComponent> list){
+    public void addComponentList(Collection<SelectableComponent> list){
         drawnComponents.addAll(list);
         for(SelectableComponent sc: list){
             repaint(sc.getBoundingBox());

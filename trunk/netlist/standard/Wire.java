@@ -891,12 +891,12 @@ public class Wire extends SelectableComponent {
 
     @Override
     public int getWidth() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return 0;
     }
 
     @Override
     public int getHeight() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return 0;
     }
 
 }
