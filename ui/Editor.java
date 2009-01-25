@@ -6,6 +6,7 @@
 
 package ui;
 
+import ui.clipboard.ClipboardType;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -34,6 +35,7 @@ import ui.command.*;
 import ui.error.Error;
 import ui.error.ErrorListener;
 import netlist.Netlist;
+import ui.clipboard.Clipboard;
 import ui.error.ErrorHandler;
 import ui.components.ImageSelectableComponent;
 import ui.components.SelectableComponent;
@@ -51,10 +53,13 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     private boolean drawDirect = false;
     private int untitledIndex = 1;
     private CommandHistory cmdHist = new CommandHistory(this);
-    private Stack<SelectableComponent> clipboard = new Stack<SelectableComponent>();
-    private Stack<Integer> clipboardPointer = new Stack<Integer>();
-    private Stack<ClipboardType> clipboardTypes = new Stack<ClipboardType>();
-    
+    private Clipboard clipboard = new Clipboard();
+    private javax.swing.JDialog aboutDialog = null;
+    private javax.swing.JPanel aboutContentPane = null;
+    private javax.swing.JLabel aboutVersionLabel = null;    
+    private LinkedList<JInternalFrame> circuitwindows = new LinkedList<JInternalFrame>();
+    private sim.SimItem simitem;
+        
     /** Creates new form FrameMain */
     public Editor() {        
         initComponents();
@@ -77,9 +82,11 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
             public void windowDeactivated(WindowEvent e) {}
             
-        });
-        clipboardPointer.push(0);
-        
+        });        
+    }
+
+    public Clipboard getClipboard() {
+        return clipboard;
     }
 
     /** This method is called from within the constructor to
@@ -1527,60 +1534,14 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 
     public void removeCircuitFrame(CircuitFrame cf) {
         circuitwindows.remove(cf);
-    }
-    
-    /**
-     * Add a selection of components to the clipboard for later use.
-     * @param col The components to be added.
-     */
-    public void addSetToClipboard(Collection<SelectableComponent> col, ClipboardType ct){
-        clipboardPointer.push(clipboard.size());
-        clipboardTypes.push(ct);
-        clipboard.addAll(col);
-    }
-    
-    /**
-     * Add a single component to the clipboard for later use
-     * @param sc The component to add.
-     */
-    public void addSetToClipboard(SelectableComponent sc, ClipboardType ct){
-        clipboardPointer.push(clipboard.size());
-        clipboardTypes.push(ct);
-        clipboard.push(sc);        
-    }
-    
-    /**
-     * @return The last selection of items that was added to the clipboard
-     */
-    public Collection<SelectableComponent> getLastClipboardItem(){
-        Collection<SelectableComponent> retval = clipboard.subList(clipboardPointer.peek(), clipboard.size());
-        if(clipboardTypes.peek().equals(ClipboardType.Cut)){
-            removeLastClipboardItem();
-        }
-        return retval;
-    }
-    
-    /**
-     * Remove the last selection of items that was added to the clipboard. Occurs
-     * when a copy action is undone, or a cut item is pasted.
-     */
-    public void removeLastClipboardItem(){
-        Collection<SelectableComponent> lastSet = clipboard.subList(clipboardPointer.peek(), clipboard.size());
-        clipboard.removeAll(lastSet);
-        clipboardPointer.pop();
-        clipboardTypes.pop();
     }   
      
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-       // TODO case analysis for non-windows environments
         try {
            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
         } 
         catch (Exception e) {
            e.printStackTrace();
@@ -1654,11 +1615,4 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private javax.swing.JSlider jSlider1;
     private javax.swing.JSplitPane jSplitPane1;
     // End of variables declaration//GEN-END:variables
-
-    private javax.swing.JDialog aboutDialog = null;
-    private javax.swing.JPanel aboutContentPane = null;
-    private javax.swing.JLabel aboutVersionLabel = null;    
-    private LinkedList<JInternalFrame> circuitwindows = new LinkedList<JInternalFrame>();
-    private sim.SimItem simitem;  
-    
 }

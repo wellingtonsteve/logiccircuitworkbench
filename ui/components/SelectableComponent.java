@@ -95,16 +95,18 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     /**
-     * The state of this logicalComponent.
+     * Note: components which are listed in circuits who are not thier parent 
+     * will not be drawn.
      * 
-     * @return SelectionState.DEFAULT - The logicalComponent is neither selected nor active
-     *          and is drawn in its default view
-     *         SelectionState.HOVER - The logicalComponent is only in this state when the 
-     *          mouse as been positioned inside the logicalComponent's bounding box and 
-     *          the logicalComponent is not already active
-     *         SelectionState.ACTIVE - The logicalComponent has been selected (clicked) and
-     *          marked as active so that it's properties can be changed in the options 
-     *          panel or so that it can be moved.
+     * @param parent The new parent Circuit
+     */
+    public void setParent(CircuitPanel parent) {
+        this.parent = parent;
+    }
+    
+    /**
+     * @see ui.components.SelectionState
+     * @return The state of this logicalComponent.
      */
     public SelectionState getSelectionState() {
         return selectionState;
@@ -113,14 +115,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     /**
      * Set the selection state of this logicalComponent.
      * 
-     * @param selectiontype SelectionState.DEFAULT - The logicalComponent is neither selected 
-     *          nor active and is drawn in its default view
-     *         SelectionState.HOVER - The logicalComponent is only in this state when the 
-     *          mouse as been positioned inside the logicalComponent's bounding box and 
-     *          the logicalComponent is not already active
-     *         SelectionState.ACTIVE - The logicalComponent has been selected (clicked) and
-     *          marked as active so that it's properties can be changed in the options 
-     *          panel or so that it can be moved.
+     * @see ui.components.SelectionState
      */
     public void setSelectionState(SelectionState selectiontype) {
         this.selectionState = selectiontype;

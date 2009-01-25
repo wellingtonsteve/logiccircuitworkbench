@@ -12,7 +12,7 @@ import ui.components.SelectableComponent;
  */
 public class SelectionDeleteCommand extends Command {
     private List<SelectableComponent> selection = new LinkedList<SelectableComponent>();
-     
+    
     protected void perform(Editor editor) {
         if(activeCircuit.hasActiveSelection()){
             int ans = JOptionPane.showConfirmDialog(editor,"Are you sure that you want to delete the selected component(s)?");
