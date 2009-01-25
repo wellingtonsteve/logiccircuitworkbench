@@ -1,7 +1,7 @@
 package ui.command;
 
 import java.util.LinkedList;
-import ui.ClipboardType;
+import ui.clipboard.ClipboardType;
 import ui.Editor;
 import ui.components.SelectableComponent;
 
@@ -15,13 +15,22 @@ public class SelectionCutCommand extends Command {
     @Override
     protected void perform(Editor editor) {
          if(activeCircuit.hasActiveSelection()){
+            activeCircuit.removeUnFixedComponents();
             selection.addAll(activeCircuit.getActiveComponents());
             activeCircuit.deleteActiveComponents();    
-            editor.addSetToClipboard(selection, ClipboardType.Cut);
-            //canUndo = true;
+            editor.getClipboard().addSetToClipboard(selection, ClipboardType.Cut);
+            canUndo = true;
         }
     }
 
+    @Override
+    protected void undoEffect(Editor editor) {
+        activeCircuit.addComponentList(selection);
+        editor.getClipboard().removeLastClipboardItem();
+        selection.clear();
+        canUndo = false;
+    }
+    
     @Override
     public String toString() {
         return "Cut";

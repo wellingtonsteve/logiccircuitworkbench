@@ -193,7 +193,8 @@ public class CircuitPanel extends JPanel {
 
             public void mouseClicked(MouseEvent e) {
 
-                 if (editor.getActiveCircuit().equals(CircuitPanel.this) && !currentTool.equals("Standard.Wire")){
+                 if (editor.getActiveCircuit().equals(CircuitPanel.this) 
+                         && !currentTool.equals("Standard.Wire")){
                      
                     // Area we clicking empty space?
                     boolean clickingEmptySpace = true;
@@ -215,20 +216,23 @@ public class CircuitPanel extends JPanel {
                         resetActiveComponents();
 
                         // Fix floating selection
-                        if(!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed()){
+                        if(!drawnComponents.isEmpty() 
+                                && !drawnComponents.peek().isFixed()){
                             editor.fixComponent(drawnComponents.peek());
                             
-                            // Add another new component
-                            CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
-                                currentTool,                                                // properties[0] = componentName
-                                editor.getOptionsPanel().getComponentRotation(),            // properties[1] = rotation
-                                new Point(0,0),                                             // properties[2] = point
-                                editor.getOptionsPanel().getCurrentLabel(),                 // properties[3] = label
-                                ((currentTool.equals("Standard.LED"))?editor.getOptionsPanel().getLEDColour():null),// properties[4] = LED Colour
-                                ((currentTool.equals("Standard.Button Source"))?editor.getOptionsPanel().getInputSourceState():null),// properties[5] = Input On/Off
-                                CircuitPanel.this                                           // properties[6] = Active Circuit
-                            });
-                            cmdHist.doCommand(ccc);
+                            if(!currentTool.equals("Select")){
+                                // Add another new component
+                                CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
+                                    currentTool,                                                // properties[0] = componentName
+                                    editor.getOptionsPanel().getComponentRotation(),            // properties[1] = rotation
+                                    new Point(0,0),                                             // properties[2] = point
+                                    editor.getOptionsPanel().getCurrentLabel(),                 // properties[3] = label
+                                    ((currentTool.equals("Standard.LED"))?editor.getOptionsPanel().getLEDColour():null),// properties[4] = LED Colour
+                                    ((currentTool.equals("Standard.Button Source"))?editor.getOptionsPanel().getInputSourceState():null),// properties[5] = Input On/Off
+                                    CircuitPanel.this                                           // properties[6] = Active Circuit
+                                });
+                                cmdHist.doCommand(ccc);
+                            }
                         }                               
 
                     } else {
@@ -610,7 +614,6 @@ public class CircuitPanel extends JPanel {
         for(SelectableComponent sc: list){
             repaint(sc.getBoundingBox());
         }
-        setCurrentTool(drawnComponents.peek().getComponentTreeName());
     }
     
     
