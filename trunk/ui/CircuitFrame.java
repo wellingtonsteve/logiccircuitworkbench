@@ -121,19 +121,37 @@ public class CircuitFrame extends JInternalFrame{
         setBounds(0, 0, 780, 600);
 
     }
-    
+    /**
+     * @return The circuit panel that this frame contains
+     */
     public CircuitPanel getCircuitPanel(){
         return circuitPanel;
     }
     
+    /**
+     * Return the number associated with this file is it is Untitled. Untitled 
+     * frames have names of the format "UntitledX", where X is a unique number
+     * assigned to this frame by the editor upon creation.
+     * 
+     * @return The untitled number of this frame.
+     */
     public int getUntitledIndex() {
         return untitledIndex;
     }
 
+    /**
+     * @return The editor that created this frame
+     */
     public Editor getEditor() {
         return editor;
     }
     
+    /**
+     * This frame (circuit) is dirty if since the last save (or creation) no new
+     * commands/actions have been performed on it.
+     * 
+     * @return Has this circuit been saved since the last change?
+     */
     public boolean isDirty(){
         return circuitPanel.getCommandHistory().isDirty();
     }
