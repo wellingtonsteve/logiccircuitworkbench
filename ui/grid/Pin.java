@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ui.grid;
 
 import java.awt.Point;
@@ -28,27 +23,19 @@ public class Pin extends Point implements OutputValueListener {
     public SelectableComponent getParent(){
         return parent;        
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
+        } else if (obj instanceof Pin){
+            Pin other = (Pin) obj;
+            return super.equals(obj) && this.getParent().equals(other.getParent());
+        } else if (obj instanceof Point){
+            return super.equals(obj);
+        } else {
+            return super.equals(obj);
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Pin other = (Pin) obj;
-        if (this.parent != other.parent && (this.parent == null || !this.parent.equals(other.parent))) {
-            return false;
-        }
-        return super.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = super.hashCode();
-        hash = 59 * hash + (this.parent != null ? this.parent.hashCode() : 0);
-        return hash;
     }
 
     public void outputValueChanged(State value) {
