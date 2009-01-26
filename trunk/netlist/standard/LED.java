@@ -67,8 +67,8 @@ public class LED extends ImageSelectableComponent{
 
     @Override
     protected void setInvalidAreas(){
-        //Tight fitting box so that pins are not selected
-        this.invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+18,(int)getOrigin().getY()-getCentre().y,14,21);
+        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+18,(int)getOrigin().getY()-getCentre().y-1,14,22);
+        invalidArea = rotate(invalidArea);   
     }
     
     @Override
@@ -78,8 +78,7 @@ public class LED extends ImageSelectableComponent{
 
     @Override
     public void setLocalPins() {
-        Point in1 = new Point(10, 20);
-             
+        Point in1 = new Point(10, 20);             
         localPins.add(in1);        
     }
         
@@ -106,7 +105,7 @@ public class LED extends ImageSelectableComponent{
                 g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
                 break;
             case HOVER:
-                g.setColor(UIConstants.HOVER_WIRE_COLOUR);   
+                g.setColor(UIConstants.HOVER_COMPONENT_COLOUR);   
                 break;
             default: 
                 g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);

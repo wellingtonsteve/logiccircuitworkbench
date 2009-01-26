@@ -16,7 +16,9 @@ public class SelectionCopyCommand extends Command {
          if(activeCircuit.hasActiveSelection()){
             activeCircuit.removeUnFixedComponents();
             LinkedList<SelectableComponent> selection = new LinkedList<SelectableComponent>();
-            selection.addAll(activeCircuit.getActiveComponents());
+            for(SelectableComponent sc: activeCircuit.getActiveComponents()){
+                selection.add(sc.copy());
+            }
             editor.getClipboard().addSetToClipboard(selection, ClipboardType.Copy);
             canUndo = true;
         }

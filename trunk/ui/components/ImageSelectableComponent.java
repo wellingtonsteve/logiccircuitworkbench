@@ -9,7 +9,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import ui.CircuitPanel;
 import netlist.Netlist;
-import ui.UIConstants;
 
 /**
  *
@@ -155,7 +154,7 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
             ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below.",ex);
         }
     }
-        
+       
     protected abstract void setNetlist();
-    
+ 
 }

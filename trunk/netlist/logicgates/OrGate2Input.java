@@ -36,8 +36,9 @@ public class OrGate2Input extends ImageSelectableComponent{
 
     @Override
     protected void setInvalidAreas(){
-        //Tight fitting box so that pins are not selected
-        this.invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+20,(int)getOrigin().getY()+20-getCentre().y,32,22);
+        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+19
+                ,(int)getOrigin().getY()+19-getCentre().y ,32 ,22);
+        invalidArea = rotate(invalidArea);   
     }
     
     @Override

@@ -26,12 +26,6 @@ public class AndGate2Input extends ImageSelectableComponent{
     }
     
     @Override
-    protected void setBoundingBox(){
-        boundingBox = new Rectangle((int)getOrigin().getX()-getCentre().x+15,(int)getOrigin().getY()+15-getCentre().y,40, 30);
-        boundingBox = rotate(boundingBox);        
-    }
-    
-    @Override
     public Point getCentre(){
         return new Point(30,30);
     }

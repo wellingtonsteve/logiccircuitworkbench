@@ -148,6 +148,16 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     /**
+     * Change the origin of this component. Use with caution, movements of the
+     * component should be done using either the moveTo() or translate() methods.
+     * 
+     * @param origin The new origin.
+     */
+    public void setOrigin(Point origin){
+        this.origin = origin;
+    }
+    
+    /**
      * Centre points of components are use as the anchor for the mouse pointer.
      * In local co-ordinates
      * 
@@ -280,7 +290,11 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     /**
      * Each component specifies an invalid area within which no other component, 
-     * pin or wire may be placed.
+     * pin or wire may be placed. It is also this area specifies the area within
+     * which mouse movements may select or activate this component. If you are 
+     * overriding this method please don't forget to use the rotate method one 
+     * you have created your rectangle to ensure that the invalid area matches
+     * the orientation of the component.
      * 
      * The Invalid areas are set upon component initialisation and updated dynamically
      * upon translation or rotation.
@@ -290,8 +304,9 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     /**
-     * The bounding box of a component specifies the area within which mouse movements
-     * may select or activate this component.
+     * The bounding box of a component that is redrawn if this component is to
+     * be repainted. The Bounding box is set upon component initialisation and updated dynamically
+     * upon translation or rotation.
      * 
      * @return The Bounding Box rectangle for this component (World Co-ordinates).
      */
@@ -303,16 +318,13 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     /**
-     * The bounding box of a component specifies the area within which mouse movements
-     * may select or activate this component.
-     * 
-     * The Bounding box is set upon component initialisation and updated dynamically
+     * The bounding box of a component that is redrawn if this component is to
+     * be repainted. The Bounding box is set upon component initialisation and updated dynamically
      * upon translation or rotation.
      */
     protected void setBoundingBox() {
         boundingBox = new Rectangle(getOrigin().x-getCentre().x,getOrigin().y-getCentre().y,getWidth(),getHeight());
-        boundingBox = rotate(boundingBox);
-        
+        boundingBox = rotate(boundingBox);        
     } 
     
     /**
@@ -540,7 +552,9 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      */
     public SelectableComponent copy(){
         try {
-            return (SelectableComponent) this.clone();
+            SelectableComponent retval = (SelectableComponent) this.clone();
+            retval.setOrigin(new Point(this.getOrigin().x,this.getOrigin().y));
+            return retval;
         } catch (CloneNotSupportedException ex) {
             ui.error.ErrorHandler.newError("Component Copying Error",
                     "It is not possible to copy this component.",ex);
