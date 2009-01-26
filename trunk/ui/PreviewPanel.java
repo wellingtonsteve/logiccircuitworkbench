@@ -8,7 +8,7 @@ package ui;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
-import netlist.standard.Wire;
+import ui.components.standard.Wire;
 import ui.components.SelectableComponent;
 import ui.components.SelectionState;
 

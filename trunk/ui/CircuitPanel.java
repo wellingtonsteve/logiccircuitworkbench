@@ -23,7 +23,7 @@ import ui.grid.Pin;
 import ui.grid.Grid;
 import ui.components.SelectableComponent;
 import ui.components.SelectionState;
-import netlist.standard.Wire;
+import ui.components.standard.Wire;
 import sim.Simulator;
 import ui.command.CommandHistory;
 import ui.command.CreateComponentCommand;
@@ -679,7 +679,7 @@ public class CircuitPanel extends JPanel {
             { advance(); }
             
             private void advance(){
-                while(hasMoreElements() && !(drawnComponents.get(i) instanceof netlist.standard.Input)){
+                while(hasMoreElements() && !(drawnComponents.get(i) instanceof ui.components.standard.Input)){
                     i++;
                 }
             }

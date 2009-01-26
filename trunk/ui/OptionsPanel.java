@@ -12,9 +12,9 @@ import java.awt.event.FocusListener;
 import java.awt.event.ItemListener;
 import javax.swing.JCheckBox;
 import ui.command.EditLabelCommand;
-import netlist.standard.Input;
-import netlist.standard.LED;
-import netlist.standard.Wire;
+import ui.components.standard.Input;
+import ui.components.standard.LED;
+import ui.components.standard.Wire;
 import ui.components.SelectableComponent;
 
 /**
