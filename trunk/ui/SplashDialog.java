@@ -19,7 +19,8 @@ public class SplashDialog extends javax.swing.JFrame {
     /** Creates new form SplashDialog */
     public SplashDialog() {
         initComponents();
-        setIconImage(new javax.swing.ImageIcon(this.getClass().getResource(java.util.ResourceBundle.getBundle("ui/Bundle").getString("Main.logo.file"))).getImage());
+        setIconImage(new javax.swing.ImageIcon(this.getClass().getResource(
+            java.util.ResourceBundle.getBundle("ui/Bundle").getString("Main.logo.file"))).getImage());
         
         // Get the current screen size
         Dimension scrnsize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -126,24 +127,6 @@ public class SplashDialog extends javax.swing.JFrame {
 
         pack();
     }//GEN-END:initComponents
-
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                SplashDialog dialog = new SplashDialog();
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     public JProgressBar getProgressBar(){
         return jProgressBar1;
