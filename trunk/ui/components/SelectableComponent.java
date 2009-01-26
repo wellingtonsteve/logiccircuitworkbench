@@ -192,22 +192,25 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
             this.origin.translate(dx, dy);
             
             // Adding this component to the grid for the first time
-            if(!fresh && fixed){ 
+            if(!fresh && fixed){ //System.out.println("new component");
                 this.fixed = fixed;
                 this.fresh = true;
                 parent.getGrid().markInvalidAreas(this);
                 setGlobalPins();
             // About to refix the component
-            } else if (!this.fixed && fixed){
+            } else if (!this.fixed && fixed){ //System.out.println("refixing component");
                 this.fixed = fixed;
                 setGlobalPins();            
+                //moveGlobalPins(dx, dy);
                 parent.getGrid().translateComponent(dx,dy,this, !fresh);
                 parent.getGrid().markInvalidAreas(this); 
             // Just moving around 
-            } else {
+            } else { //System.out.println("moving component");
+                //moveGlobalPins(dx, dy);
                 setGlobalPins();
                 this.fixed = fixed;
                 parent.getGrid().translateComponent(dx,dy,this, !fresh);
+                
             }
 
             setInvalidAreas();
@@ -438,7 +441,13 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
             if(isFixed()){ 
                 parent.getGrid().addPin(pin);
             }
-        }        
+        }    
+    }
+    
+    protected void moveGlobalPins(int dx, int dy){
+        for(Pin p: globalPins){
+            parent.getGrid().movePin(p, dx, dy);
+        }
     }
     
     /**
