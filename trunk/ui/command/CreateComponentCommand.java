@@ -6,13 +6,11 @@
 package ui.command;
 
 import java.awt.Point;
-import netlist.standard.Input;
-import netlist.standard.LED;
-import netlist.standard.Wire;
 import ui.CircuitPanel;
 import ui.Editor;
 import ui.error.ErrorHandler;
 import ui.components.SelectableComponent;
+import ui.components.standard.*;
 
 /**
  *
