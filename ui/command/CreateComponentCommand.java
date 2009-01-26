@@ -49,6 +49,7 @@ public class CreateComponentCommand extends Command {
                     sc = editor.getNetlistComponent((String) properties[0]).getConstructor(CircuitPanel.class, Point.class).newInstance(parentCircuit, (Point) properties[2]);
                 } else {
                     sc = editor.getDefaultNetlistComponent((String) properties[0]);
+                    sc.setOrigin((Point) properties[2]);
                 }
                 sc.setRotation((Double) properties[1]);
                 sc.setLabel((String) properties[3]);

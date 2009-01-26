@@ -1426,15 +1426,17 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         @Override
         public String getName() {
             //return simitem.getName();
-            return componentTreeName;
+            //return componentTreeName;
+            return " XOR";
         }
 
         @Override
         protected void setBoundingBox(){
-            this.boundingBox = new java.awt.Rectangle(getOrigin().x-getCentre().x+10,
+            boundingBox = new java.awt.Rectangle(getOrigin().x-getCentre().x,
                     getOrigin().y-getCentre().y,
-                    getWidth(),
+                    getWidth()+10,
                     getHeight());
+            boundingBox = rotate(boundingBox);
         }
         
         @Override
@@ -1449,10 +1451,11 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         
         @Override
         protected void setInvalidAreas() {
-            this.invalidArea = new java.awt.Rectangle(getOrigin().x-getCentre().x+10, 
-                    getOrigin().y-getCentre().y, 
-                    getWidth()-UIConstants.GRID_DOT_SPACING+1, 
-                    getHeight()+1);
+            invalidArea = new java.awt.Rectangle(getOrigin().x-getCentre().x+9, 
+                    getOrigin().y-getCentre().y-1, 
+                    getWidth()-UIConstants.GRID_DOT_SPACING+2, 
+                    getHeight()+2);
+            invalidArea = rotate(invalidArea);
         }
 
         @Override
@@ -1487,22 +1490,22 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
             }            
             
             g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-            g.drawString(simitem.getName(), 10, 10);
+            g.drawString(getName(), 10, 10);
             
             int inputPinNo = simitem.getInputs().size();
             int outputPinNo = simitem.getOutputs().size();
 
             for (int i = 0; i < inputPinNo; i++) {
                 Point p = new Point(0, (i + 1) * UIConstants.GRID_DOT_SPACING);
-                g.fillOval(p.x-3, p.y-3, 5, 5);
-                g.drawOval(p.x-3, p.y-3, 5, 5);
+//                g.fillOval(p.x-3, p.y-3, 5, 5);
+//                g.drawOval(p.x-3, p.y-3, 5, 5);
                 g.drawLine(p.x, p.y, p.x+UIConstants.GRID_DOT_SPACING, p.y);
             }
 
             for (int i = 0; i < outputPinNo; i++) {
                 Point p = new Point(getWidth() + UIConstants.GRID_DOT_SPACING, (i + 1) * UIConstants.GRID_DOT_SPACING);
-                g.fillOval(p.x-3, p.y-3, 5, 5);
-                g.drawOval(p.x-3, p.y-3, 5, 5);
+//                g.fillOval(p.x-3, p.y-3, 5, 5);
+//                g.drawOval(p.x-3, p.y-3, 5, 5);
                 g.drawLine(p.x, p.y, p.x-UIConstants.GRID_DOT_SPACING, p.y);
             }
 

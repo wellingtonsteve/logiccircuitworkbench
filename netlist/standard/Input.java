@@ -45,8 +45,8 @@ public class Input extends ImageSelectableComponent{
     
     @Override
     protected void setInvalidAreas(){
-        //Tight fitting box so that pins are not selected
-        this.invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x,(int)getOrigin().getY()-getCentre().y,22,22);
+        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x-1,(int)getOrigin().getY()-getCentre().y-1,22,22);
+        invalidArea = rotate(invalidArea);   
     }
     
     @Override
@@ -56,8 +56,7 @@ public class Input extends ImageSelectableComponent{
 
     @Override
     public void setLocalPins() {
-        Point out1 = new Point(30, 10);
-                
+        Point out1 = new Point(30, 10);               
         localPins.add(out1);        
     }
     
@@ -83,13 +82,13 @@ public class Input extends ImageSelectableComponent{
                 g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
                 break;
             case HOVER:
-                g.setColor(UIConstants.HOVER_WIRE_COLOUR);   
+                g.setColor(UIConstants.HOVER_COMPONENT_COLOUR);   
                 break;
             default: 
                 g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
                 break;
         }   
-        g.drawRect(invalidArea.x+3, invalidArea.y, 19, 19);
+        g.drawRect(invalidArea.x+4, invalidArea.y+1, 19, 19);
         g.translate(-getCentre().x, -getCentre().y);
         
         g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);

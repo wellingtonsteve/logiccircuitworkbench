@@ -26,7 +26,7 @@ public class UIConstants {
               /* the dash pattern */new float[] { 8.0f, 8.0f },
               /* the dash phase */0.0f); /* on 8, off 8*/
     
-    public static final boolean SHOW_GRID_OBJECTS = true;
+    public static final boolean SHOW_GRID_OBJECTS = false;
     public static final Color CONNECTION_POINT_COLOUR = Color.RED;
     public static Stroke CONNECTED_POINT_STROKE = new BasicStroke(2.0f); 
     public static final boolean DO_SYSTEM_BEEP = true;
@@ -46,8 +46,8 @@ public class UIConstants {
     public static Color LABEL_TEXT_COLOUR = Color.BLACK;
     public static boolean DO_OFFSCREEN_DRAWING_TEST = true;
     public static int WIRE_HANDLE_LENGTH = 40;
-    public static boolean SHOW_INVALID_AREA_BOXES = true;
-    public static boolean SHOW_BOUNDING_BOXES = true;
+    public static boolean SHOW_INVALID_AREA_BOXES = false;
+    public static boolean SHOW_BOUNDING_BOXES = false;
 
     public static void beep(){
         java.awt.Toolkit.getDefaultToolkit ().beep();
@@ -68,7 +68,6 @@ public class UIConstants {
     public static final int LOG_VIEWER_MARGIN = 20;
     public static final float Y_AXIS_SCALE = 0.1f; // Width of 1 nanosecond on the log graph
     public static final int LOG_HEIGHT = 30; // Height of the graph (i.e. difference between high and low values)
-    //public static final 
 
 }
 
