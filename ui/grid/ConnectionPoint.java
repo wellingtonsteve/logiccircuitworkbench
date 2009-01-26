@@ -31,7 +31,8 @@ public class ConnectionPoint extends GridObject {
             defaultCrossover = ImageIO.read(getClass().getResource("/ui/images/components/default_wire_crossover.png"));
         } catch (IOException ex) {
             defaultCrossover = new BufferedImage(0,0,BufferedImage.TYPE_INT_RGB);
-            ui.error.ErrorHandler.newError(new ui.error.Error("Initialisation Error", "Could not load \"Connection Point Crossover\" image.", ex));    
+            ui.error.ErrorHandler.newError("Initialisation Error",
+                    "Could not load \"Connection Point Crossover\" image.", ex);    
         }
     }
     
@@ -43,7 +44,6 @@ public class ConnectionPoint extends GridObject {
             isCrossover = true;
         } 
         connections.add(p);
-
     }
     
     public boolean removeConnection(Pin p){
@@ -79,8 +79,7 @@ public class ConnectionPoint extends GridObject {
                         w.moveStartPoint(newPoint);
                         break;
                     }     
-                }
-                               
+                }                               
             } 
         } 
     }
@@ -89,7 +88,17 @@ public class ConnectionPoint extends GridObject {
         return !connections.isEmpty();
     }
     
-    public boolean hasDifferentWire(SelectableComponent wire){
+    protected int noOfDifferentConnections() {
+        LinkedList<SelectableComponent> found = new LinkedList<SelectableComponent>();
+        for(Pin p: connections){
+            if(!found.contains(p.getParent())){
+                found.add(p.getParent());
+            }
+        }        
+        return found.size();
+    }
+        
+    protected boolean hasDifferentWire(SelectableComponent wire){
         for(Pin p: connections){
             if(p.getParent() instanceof Wire
                     && !p.getParent().equals(wire)){
@@ -99,7 +108,7 @@ public class ConnectionPoint extends GridObject {
         return false;
     }
     
-    public boolean hasSameComponent(SelectableComponent sc){
+    protected boolean hasSameComponent(SelectableComponent sc){
         for(Pin p: connections){
             if(p.getParent().equals(sc)){
                 return true;
@@ -108,7 +117,7 @@ public class ConnectionPoint extends GridObject {
         return false;
     }
     
-    public boolean isWire(){       
+    protected boolean hasAnyWirePins(){       
         for(Pin p: connections){
             if(p.getParent() instanceof Wire){
                 return true;
@@ -174,26 +183,6 @@ public class ConnectionPoint extends GridObject {
         return label != null || !label.equals("");
     }
     
-    @Override
-    public boolean equals(Object obj){
-        return super.equals(obj);        
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    private int noOfDifferentConnections() {
-        LinkedList<SelectableComponent> found = new LinkedList<SelectableComponent>();
-        for(Pin p: connections){
-            if(!found.contains(p.getParent())){
-                found.add(p.getParent());
-            }
-        }        
-        return found.size();
-    }
-    
     public Enumeration<SelectableComponent> getConnectedComponents(){
         return new Enumeration<SelectableComponent>(){
             int i = 0;
@@ -204,9 +193,7 @@ public class ConnectionPoint extends GridObject {
 
             public SelectableComponent nextElement() {
                 return connections.get(i++).getParent();
-            }
-            
+            }            
         };
-    }
-        
+    }        
 }

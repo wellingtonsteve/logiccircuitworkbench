@@ -17,8 +17,7 @@ public class Pin extends Point implements OutputValueListener {
     public Pin(SelectableComponent parent, int x, int y){
         super(x,y);
         this.parent = parent;
-    }
-   
+    }   
    
     public SelectableComponent getParent(){
         return parent;        

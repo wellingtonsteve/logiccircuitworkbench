@@ -15,8 +15,8 @@ import ui.UIConstants;
 import ui.grid.Pin;
 
 /**
- * SelectableComponents represent the visual components that can be place and edited on 
- * a circuit workarea. 
+ * SelectableComponents represent the visual components that can be placed
+ * and edited on a circuit workarea. 
  * 
  * @author Matt
  */
@@ -26,7 +26,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     /** Set the default selection state of this component */
     protected SelectionState selectionState = SelectionState.DEFAULT;
     
-    /** To store the Selection state of the logicalComponent before it enters the hover state.*/
+    /** To store the Selection state of the component before it enters the hover state.*/
     protected SelectionState preHoverState;
     
     /** @see getLogicalComponent() */
@@ -86,7 +86,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     /**
-     * The parent of this logicalComponent is the CircuitPanel to which the logicalComponent is drawn.
+     * The parent of this component is the CircuitPanel to which the component is drawn.
      * 
      * @return The Component's parent CircuitPanel
      */
@@ -106,14 +106,14 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     /**
      * @see ui.components.SelectionState
-     * @return The state of this logicalComponent.
+     * @return The state of this component.
      */
     public SelectionState getSelectionState() {
         return selectionState;
     }
 
     /**
-     * Set the selection state of this logicalComponent.
+     * Set the selection state of this component.
      * 
      * @see ui.components.SelectionState
      */
@@ -122,7 +122,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     /**
-     * Convenience method to return the state of this logicalComponent to it's default setting
+     * Convenience method to return the state of this component to it's default setting
      */
     public void resetDefaultState(){
         setSelectionState(SelectionState.DEFAULT);
@@ -207,10 +207,10 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
             // Just moving around 
             } else { //System.out.println("moving component");
                 //moveGlobalPins(dx, dy);
-                setGlobalPins();
+                
                 this.fixed = fixed;
                 parent.getGrid().translateComponent(dx,dy,this, !fresh);
-                
+                setGlobalPins();
             }
 
             setInvalidAreas();

@@ -6,7 +6,6 @@
 
 package ui;
 
-import ui.clipboard.ClipboardType;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,10 +14,8 @@ import java.awt.Point;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedList;
-import java.util.Stack;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
@@ -26,7 +23,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -60,7 +56,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     private LinkedList<JInternalFrame> circuitwindows = new LinkedList<JInternalFrame>();
     private sim.SimItem simitem;
         
-    /** Creates new form FrameMain */
     public Editor() {        
         initComponents();
         setIconImage(new javax.swing.ImageIcon(this.getClass().getResource("/ui/images/buttons/toolbar/led.png")).getImage());      
@@ -1538,23 +1533,6 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     public void removeCircuitFrame(CircuitFrame cf) {
         circuitwindows.remove(cf);
     }   
-     
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        try {
-           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } 
-        catch (Exception e) {
-           e.printStackTrace();
-        }
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Editor().setVisible(true);
-            }
-        });
-    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem About;
