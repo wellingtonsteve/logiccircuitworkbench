@@ -68,15 +68,12 @@ public class CreateComponentCommand extends Command {
                 
                 parentCircuit.addComponent(sc);
                 editor.getOptionsPanel().setComponent(sc);
-                canUndo = true;
                 
             } catch (Exception ex){
                 // TODO: reset component selection
                 ErrorHandler.newError("Component Creation Error",
                         "An error occured whilst creating a new component.", ex);
-            }            
-                        
-            
+            }       
         }
     }
     
@@ -87,12 +84,6 @@ public class CreateComponentCommand extends Command {
      */
     public SelectableComponent getComponent(){
         return sc;
-    }
-    
-    @Override
-    protected void undoEffect(Editor editor) {
-        canUndo = false;
-        parentCircuit.removeComponent(sc);
     }
 
     @Override

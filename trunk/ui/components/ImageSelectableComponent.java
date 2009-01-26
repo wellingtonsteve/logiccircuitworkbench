@@ -137,7 +137,7 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
             
     @Override
     public boolean containsPoint(Point point) {
-        return getBoundingBox().contains(point);
+        return getInvalidArea().contains(point);
     }
     
     public void createXML(TransformerHandler hd) {

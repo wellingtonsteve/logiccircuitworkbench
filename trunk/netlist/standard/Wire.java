@@ -80,7 +80,7 @@ public class Wire extends SelectableComponent {
         setInvalidAreas();
         this.fixed = fixed; 
         if(fixed){
-            wasEverFixed = true;
+            fresh = true;
         }
         setLocalPins();
         setGlobalPins();       
