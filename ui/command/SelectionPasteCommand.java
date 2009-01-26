@@ -16,6 +16,7 @@ public class SelectionPasteCommand extends Command {
     
     @Override
     protected void perform(Editor editor) {
+        activeCircuit.removeUnFixedComponents();
         pasted = editor.getClipboard().getLastClipboardItem();
         for(SelectableComponent sc: pasted){
             sourcePanel = sc.getParent();

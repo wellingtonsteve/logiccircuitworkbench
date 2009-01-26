@@ -42,7 +42,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     protected boolean fixed = false;    
     
     /** Indicates whether fixed has ever been true i.e. whether this is a brand new piece or not */
-    protected boolean wasEverFixed = false; // 
+    protected boolean fresh = false; // 
     
     /** @see getOrigin() */
     private Point origin;
@@ -188,26 +188,26 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      */
     public void translate(int dx, int dy, boolean fixed) {       
 
-        if(parent.getGrid().canMoveComponent(this, dx, dy, !wasEverFixed)){
+        if(parent.getGrid().canMoveComponent(this, dx, dy, !fresh)){
             this.origin.translate(dx, dy);
             
             // Adding this component to the grid for the first time
-            if(!wasEverFixed && fixed){ 
+            if(!fresh && fixed){ 
                 this.fixed = fixed;
-                this.wasEverFixed = true;
+                this.fresh = true;
                 parent.getGrid().markInvalidAreas(this);
                 setGlobalPins();
             // About to refix the component
             } else if (!this.fixed && fixed){
                 this.fixed = fixed;
                 setGlobalPins();            
-                parent.getGrid().translateComponent(dx,dy,this, !wasEverFixed);
+                parent.getGrid().translateComponent(dx,dy,this, !fresh);
                 parent.getGrid().markInvalidAreas(this); 
             // Just moving around 
             } else {
                 setGlobalPins();
                 this.fixed = fixed;
-                parent.getGrid().translateComponent(dx,dy,this, !wasEverFixed);
+                parent.getGrid().translateComponent(dx,dy,this, !fresh);
             }
 
             setInvalidAreas();
@@ -240,6 +240,10 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      */
     public boolean isFixed(){
         return fixed;
+    }
+    
+    public void setFresh(){
+        fresh = false;
     }
     
     /**
@@ -281,7 +285,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * 
      * @return The Invalid Area rectangle for this component (World Co-ordinates).
      */
-    public Rectangle getInvalidAreas(){
+    public Rectangle getInvalidArea(){
         if(invalidArea == null){
             setInvalidAreas();
         }
@@ -473,7 +477,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * @return
      */
     public boolean containedIn(Rectangle rect) {
-        return rect.contains(getInvalidAreas());
+        return rect.contains(getInvalidArea());
     }
     
     /**

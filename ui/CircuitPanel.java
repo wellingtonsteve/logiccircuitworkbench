@@ -65,10 +65,10 @@ public class CircuitPanel extends JPanel {
             @SuppressWarnings("static-access")
             public void mouseMoved(MouseEvent e) {
                 if(editor.getActiveCircuit().equals(CircuitPanel.this)){
+                    // Find the location in the circuit
+                    endPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
+                    
                     if(!nowDragingComponent && !currentTool.equals("Standard.Wire")){                
-
-                        // Find the location in the circuit
-                        endPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
 
                         // Moving a new non-fixed component around
                         if(!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed() && !nowDragingComponent){
@@ -82,7 +82,6 @@ public class CircuitPanel extends JPanel {
                                 }
                             }
 
-
                         // Hover highlights    
                         } else if (currentTool.equals("Select")){
 
@@ -91,7 +90,6 @@ public class CircuitPanel extends JPanel {
 
                             // Determine which component the mouse lies in
                             for(SelectableComponent sc: drawnComponents){
-
                                 if(sc.containsPoint(endPoint)){
                                     temporaryComponent = sc;
                                 }                            
@@ -109,7 +107,6 @@ public class CircuitPanel extends JPanel {
                     } else if(currentTool.equals("Standard.Wire") 
                             && !drawnComponents.isEmpty()
                             && drawnComponents.peek() instanceof Wire){
-                        endPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
 
                         Wire w = (Wire) drawnComponents.peek();
                         w.setEndPoint(endPoint);
@@ -117,6 +114,13 @@ public class CircuitPanel extends JPanel {
                             grid.setActivePoint(endPoint, true);
                         }
 
+                        repaint();
+                    } else if(nowDragingComponent && currentTool.equals("Select")){
+                        for(SelectableComponent sc: activeComponents){
+                            if(!(sc instanceof Wire)){ sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, false); }
+                            sc.mouseDragged(e);
+                        }
+                        currentPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
                         repaint();
                     }
                 }
@@ -510,7 +514,7 @@ public class CircuitPanel extends JPanel {
                 g2.translate(sc.getCentre().x, sc.getCentre().y);
                 
                 if(UIConstants.SHOW_INVALID_AREA_BOXES){
-                    g2.draw(sc.getInvalidAreas());
+                    g2.draw(sc.getInvalidArea());
                 }
         
                 if(UIConstants.SHOW_BOUNDING_BOXES){
@@ -611,18 +615,27 @@ public class CircuitPanel extends JPanel {
             
     public void addComponentList(Collection<SelectableComponent> list){
         drawnComponents.addAll(list);
+        activeComponents.clear();
         for(SelectableComponent sc: list){
+            if(!sc.isFixed()){
+                activeComponents.add(sc);
+                nowDragingComponent = true;
+                currentPoint = endPoint;
+            }
             repaint(sc.getBoundingBox());
         }
     }
-    
-    
      
     public void addComponent(SelectableComponent sc) {
         drawnComponents.push(sc);
+        sc.getInvalidArea();
+        sc.getBoundingBox();
         setCurrentTool(sc.getComponentTreeName());
-
         repaint(sc.getBoundingBox());
+    }
+    
+    public boolean containsComponent(SelectableComponent sc){
+        return drawnComponents.contains(sc);
     }
 
     public void createImage(String filename) {
@@ -650,6 +663,7 @@ public class CircuitPanel extends JPanel {
 
     public void removeComponent(SelectableComponent sc) {
         drawnComponents.remove(sc);
+        grid.removeComponent(sc);
     }
 
     public void setParentFrame(CircuitFrame parentFrame) {

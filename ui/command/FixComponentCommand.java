@@ -1,6 +1,5 @@
 package ui.command;
 
-import java.awt.Point;
 import ui.Editor;
 import ui.components.SelectableComponent;
 
@@ -19,8 +18,20 @@ public class FixComponentCommand extends Command {
     @Override
     protected void perform(Editor editor) {
         if(activeCircuit != null){
+            activeCircuit.removeUnFixedComponents();
+            if(!activeCircuit.containsComponent(sc)){
+                sc.setFresh();
+                activeCircuit.addComponent(sc);
+            }
             sc.translate(0, 0, true);
+            canUndo = true;
         }
+    }
+    
+    @Override
+    protected void undoEffect(Editor editor) {
+        canUndo = false;
+        sc.getParent().removeComponent(sc);
     }
     
     @Override
