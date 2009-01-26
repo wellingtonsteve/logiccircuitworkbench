@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Stack;
-import netlist.standard.Wire;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -16,6 +15,7 @@ import ui.UIConstants;
 import ui.command.CreateComponentCommand;
 import ui.error.ErrorHandler;
 import ui.components.*;
+import ui.components.standard.*;
 
 /**
  *
@@ -132,7 +132,7 @@ public class FileLoader extends DefaultHandler{
                 int endy = Integer.parseInt(attribs.getValue("endy"));
                 
                 // Create the wire
-                netlist.standard.Wire w = new netlist.standard.Wire(editor.getActiveCircuit());
+                Wire w = new Wire(editor.getActiveCircuit());
 
                 // Set the attributes
                 w.setStartPoint(new Point(startx, starty));
@@ -149,10 +149,10 @@ public class FileLoader extends DefaultHandler{
                 SelectableComponent top = stack.peek();
 
                 // TODO: Generalise this
-                if(top instanceof netlist.standard.LED && attrName.equals("colour")){
-                    ((netlist.standard.LED) top).setColour(attrValue);
-                } else if(top instanceof netlist.standard.Input && attrName.equals("value")){
-                    ((netlist.standard.Input) top).setIsOn(attrValue.equals("On"));
+                if(top instanceof LED && attrName.equals("colour")){
+                    ((LED) top).setColour(attrValue);
+                } else if(top instanceof Input && attrName.equals("value")){
+                    ((Input) top).setIsOn(attrValue.equals("On"));
                 } else {
                     successful = false;           
                     ErrorHandler.newError("File Load Error","Invalid File Format: The property \"" + attrName + "\" is not valid for a "+ top.getClass().getSimpleName() +".");
@@ -166,8 +166,8 @@ public class FileLoader extends DefaultHandler{
 
                 SelectableComponent top = stack.peek();
 
-                if(top instanceof netlist.standard.Wire){
-                    ((netlist.standard.Wire) top).addWaypoint(new Point(x,y));
+                if(top instanceof Wire){
+                    ((Wire) top).addWaypoint(new Point(x,y));
                 } else {
                     successful = false;           
                     ErrorHandler.newError("File Load Error","Invalid File Format: The element \"waypoint\" is not valid for a "+ top.getClass().getSimpleName() +".");
@@ -188,7 +188,7 @@ public class FileLoader extends DefaultHandler{
     public void endElement(String uri, String localName, String qName) throws SAXException {
         // Fix the wire only after we've added all the waypoints
         if(successful && qName.equals("wire")){
-            ((netlist.standard.Wire) stack.peek()).translate(0, 0, true);
+            ((Wire) stack.peek()).translate(0, 0, true);
         }
     }    
 }
