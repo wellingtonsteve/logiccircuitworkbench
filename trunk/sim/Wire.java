@@ -5,7 +5,8 @@ import ui.error.ErrorHandler;
 import sim.exceptions.*;
 
 /**
- *
+ * A Wire connects multiple Pins to each other.  Any number of InputPins, and at most one Output pin can be connected together
+ * 
  * @author Stephen
  */
 public class Wire {
