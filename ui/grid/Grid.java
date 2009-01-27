@@ -16,15 +16,6 @@ import ui.components.SelectableComponent;
 public class Grid {
     
     private HashMap<Point,GridObject> grid = new HashMap<Point,GridObject>();
-
-    public void clearBackups(SelectableComponent sc) {
-        for(Pin p: sc.getGlobalPins()){
-            GridObject go = grid.get(p);
-            if(go != null && go instanceof ConnectionPoint){
-                ((ConnectionPoint) go).resetBackup();
-            }
-        }
-    }
     
     public ConnectionPoint getConnectionPoint(Point p){
         GridObject go = grid.get(p);
@@ -32,113 +23,6 @@ public class Grid {
             return (ConnectionPoint) go;
         } else {
             return null;
-        }
-    }
-
-    public void movePin(Pin oldPoint, int dx, int dy) {
-        if(dx != 0 && dy != 0){
-            Point newPoint =  new Point(oldPoint.x + dx, oldPoint.y + dy);
-            GridObject oldGo = grid.get(oldPoint);
-            GridObject newGo = grid.get(newPoint);
-
-            // Is the new point uninitialised?
-            if(newGo == null){            
-                // Update other pins on same connection 
-                if(oldGo instanceof ConnectionPoint){
-                    // Get rid of old mapping
-                    grid.remove(oldPoint);
-
-                    // Move pins and add new mapping
-                    ConnectionPoint cp = (ConnectionPoint) oldGo;
-                    if(cp.hasBackup()){
-                        cp = cp.getBackup(true);
-                    }
-                    for(Pin pin: cp.getConnections()){
-                        pin.setLocation(newPoint);
-                    }     
-                    cp.setLocation(newPoint);                
-                    grid.put(newPoint, cp); 
-                } 
-            // Another pin belonging to the same component is at the target 
-            // destination. We have yet to move this pin so make a backup for later.
-            } else if(newGo instanceof ConnectionPoint 
-                    && newGo.hasParent(oldPoint.getParent())){          
-                // Update other pins on same connection 
-                if(oldGo instanceof ConnectionPoint){
-                    // Get rid of old mapping
-                    grid.remove(oldPoint);
-
-                    // Move pins and add new mapping
-                    ConnectionPoint newCp = (ConnectionPoint) oldGo;
-                    ConnectionPoint oldCp = (ConnectionPoint) oldGo;
-                    newCp.makeBackup();
-                    if(oldCp.hasBackup()){
-                        oldCp = oldCp.getBackup(true);
-                    }
-                    for(Pin pin: oldCp.getConnections()){
-                        pin.setLocation(newPoint);
-                        newCp.addConnection(pin);
-                    }    
-                    newCp.setLocation(newPoint); 
-                    grid.put(newPoint, newCp); 
-                } 
-            } else {
-                ui.error.ErrorHandler.newError("Component Translation Error",
-                        "An unknown error occured whilst trying to move the component.");
-            }
-        }
-    }
-
-    public void markInvalidAreas(SelectableComponent sc){
-        Rectangle bb = sc.getInvalidArea();
-        for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
-            for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
-                Point p = snapPointToGrid(new Point(i, j));
-                if(bb.contains(p)){
-                    grid.put(p, new InvalidPoint(p, sc));
-                }
-            }
-        }  
-    }
-    
-    public void unmarkInvalidAreas(SelectableComponent sc) {    
-        Rectangle bb = sc.getInvalidArea();
-        for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
-            for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
-                Point p = snapPointToGrid(new Point(i, j));
-                if(bb.contains(p)
-                        && grid.get(p) instanceof InvalidPoint 
-                        && ((InvalidPoint) grid.get(p)).getParent().equals(sc)){
-                    grid.remove(p);
-                }
-            }
-        }
-    }
-    
-    public void removeComponent(SelectableComponent sc){
-        for(Pin p: sc.getGlobalPins()){ 
-            if(grid.get(p) instanceof ConnectionPoint){
-                ((ConnectionPoint) grid.get(p)).removeConnection(p);
-                if(!((ConnectionPoint)grid.get(p)).isConnected()){
-                    grid.remove(p);
-                }
-            } 
-        }        
-        unmarkInvalidAreas(sc); 
-    }
-    
-    public boolean addPin(Pin p){
-        GridObject go = grid.get(p);
-        if(go==null){
-            grid.put(p.getLocation(), new ConnectionPoint(p));
-            go = grid.get(p);
-        }
-        
-        if(go instanceof ConnectionPoint){       
-            ((ConnectionPoint) go).addConnection(p);
-            return true;
-        } else {
-            return false;
         }
     }
     
@@ -175,8 +59,99 @@ public class Grid {
         return true;
     }
     
-    public boolean canMoveComponent(SelectableComponent sc, Point d, boolean fresh){
-        return canMoveComponent(sc, d.x, d.y, fresh);
+    public void removeComponent(SelectableComponent sc){
+        for(Pin p: sc.getGlobalPins()){ 
+            if(grid.get(p) instanceof ConnectionPoint){
+                ((ConnectionPoint) grid.get(p)).removeConnection(p);
+                if(!((ConnectionPoint)grid.get(p)).isConnected()){
+                    grid.remove(p);
+                }
+            } 
+        }        
+        unmarkInvalidAreas(sc); 
+    }   
+
+    public void movePin(Pin oldPoint, int dx, int dy) {
+        if(dx != 0 || dy != 0){
+            Point newPoint =  new Point(oldPoint.x + dx, oldPoint.y + dy);
+            GridObject oldGo = grid.get(oldPoint);
+            GridObject newGo = grid.get(newPoint);
+
+            // Is the new point uninitialised?
+            if(newGo == null && oldGo instanceof ConnectionPoint){
+
+                // Intialise connection point
+                grid.put(newPoint.getLocation(), new ConnectionPoint(newPoint));
+                newGo = grid.get(newPoint);
+                
+                // Move pins
+                ConnectionPoint newCp = (ConnectionPoint) newGo;
+                ConnectionPoint oldCp = (ConnectionPoint) oldGo;
+                if(oldCp.hasBackup()){
+                    oldCp = oldCp.getBackup(true);
+                }
+                for(Pin pin: oldCp.getConnections()){
+                    if(pin.equals(oldPoint)){
+                        pin.setLocation(newPoint);
+                        oldCp.removeConnection(oldPoint);
+                        newCp.addConnection(pin);
+                    }
+                }    
+                                 
+                // Get rid of old mapping
+                if(!((ConnectionPoint) oldGo).isConnected()){
+                    grid.remove(oldGo);
+                }
+                
+                // Add new mapping               
+                grid.put(newPoint, newCp); 
+                
+            // Another pin belonging to the same component is at the target 
+            // destination. We have yet to move this pin so make a backup for later.
+            } else if(newGo instanceof ConnectionPoint                             
+                    && oldGo instanceof ConnectionPoint
+                    && newGo.hasParent(oldPoint.getParent())){           
+                
+                // Move pins 
+                ConnectionPoint newCp = (ConnectionPoint) newGo;
+                ConnectionPoint oldCp = (ConnectionPoint) oldGo;
+                newCp.makeBackup();
+                if(oldCp.hasBackup()){
+                    oldCp = oldCp.getBackup(true);
+                }
+                for(Pin pin: oldCp.getConnections()){
+                    if(pin.equals(oldPoint)){
+                        pin.setLocation(newPoint);
+                        oldCp.removeConnection(oldPoint);
+                        newCp.addConnection(pin);
+                    }
+                }    
+                newCp.setLocation(newPoint); 
+                
+                // Get rid of old mapping
+                if(!((ConnectionPoint) oldGo).isConnected()){
+                    grid.remove(oldGo);
+                }
+                
+                // Add new mapping
+                grid.put(newPoint, newCp);                 
+            } 
+        }
+    }
+    
+    public boolean addPin(Pin p){
+        GridObject go = grid.get(p);
+        if(go==null){
+            grid.put(p.getLocation(), new ConnectionPoint(p));
+            go = grid.get(p);
+        }
+        
+        if(go instanceof ConnectionPoint){       
+            ((ConnectionPoint) go).addConnection(p);
+            return true;
+        } else {
+            return false;
+        }
     }
     
     public void removePin(Pin p){
@@ -190,18 +165,34 @@ public class Grid {
         } 
     }
     
-    public boolean isConnectionPoint(Point p){
-        return grid.get(p) instanceof ConnectionPoint;
+    public void markInvalidAreas(SelectableComponent sc){
+        Rectangle bb = sc.getInvalidArea();
+        for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
+            for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
+                Point p = snapPointToGrid(new Point(i, j));
+                if(bb.contains(p)){
+                    grid.put(p, new InvalidPoint(p, sc));
+                }
+            }
+        }  
     }
     
-    public void clear(){
-        grid.clear();
+    public void unmarkInvalidAreas(SelectableComponent sc) {    
+        Rectangle bb = sc.getInvalidArea();
+        for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
+            for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
+                Point p = snapPointToGrid(new Point(i, j));
+                if(bb.contains(p)
+                        && grid.get(p) instanceof InvalidPoint 
+                        && ((InvalidPoint) grid.get(p)).getParent().equals(sc)){
+                    grid.remove(p);
+                }
+            }
+        }
     }
-
-    public void setActivePoint(Point p, Boolean active) {
-        if(isConnectionPoint(p)){
-            ((ConnectionPoint) grid.get(p)).setActive(active);
-        } 
+    
+    public boolean isConnectionPoint(Point p){
+        return grid.get(p) instanceof ConnectionPoint;
     }
     
     public boolean isActivePoint(Point p) {
@@ -211,12 +202,10 @@ public class Grid {
         return false;
     }
     
-    public void draw(Graphics2D g2){
-       g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
-        
-       for(GridObject p: grid.values()){           
-           p.draw(g2);
-       }               
+    public void setActivePoint(Point p, Boolean active) {
+        if(isConnectionPoint(p)){
+            ((ConnectionPoint) grid.get(p)).setActive(active);
+        } 
     }
     
     public Point snapPointToGrid(Point old){
@@ -250,4 +239,27 @@ public class Grid {
         }        
         return false;        
     }                
+    
+    public void draw(Graphics2D g2){
+       g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
+        
+       for(GridObject p: grid.values()){           
+           p.draw(g2);
+       }               
+    }
+    
+    
+    public void clearBackups(SelectableComponent sc) {
+        for(Pin p: sc.getGlobalPins()){
+            GridObject go = grid.get(p);
+            if(go != null && go instanceof ConnectionPoint){
+                ((ConnectionPoint) go).resetBackup();
+            }
+        }
+    }
+    
+    public void clear(){
+        grid.clear();
+    }
+
 }
