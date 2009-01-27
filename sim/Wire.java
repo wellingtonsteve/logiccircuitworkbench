@@ -1,8 +1,6 @@
 package sim;
 
 import java.util.ArrayList;
-import ui.error.ErrorHandler;
-import sim.exceptions.*;
 
 /**
  * A Wire connects multiple Pins to each other.  Any number of InputPins, and at most one Output pin can be connected together
@@ -31,11 +29,7 @@ public class Wire {
             }
             return true;
         }
-        //Throw error if the pin isn't of the above two
-        else {
-            ErrorHandler.newError("Error Title","Error Message",new InvalidPinTypeException());
-            return false;
-        }
+        else return false;
     }
     
     public void disconnectPin(Pin pin){
@@ -52,10 +46,6 @@ public class Wire {
                 valueTargets.remove((InputPin) pin);
                 if(valueSource != null) ((InputPin) pin).disconnect();
             }
-        }
-        //Throw error if the pin isn't of the above two
-        else {
-            ErrorHandler.newError("Error Title","Error Message",new InvalidPinTypeException());
         }
     }
     
