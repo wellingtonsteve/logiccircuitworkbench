@@ -78,6 +78,7 @@ public class LED extends ImageSelectableComponent{
 
     @Override
     public void setLocalPins() {
+        localPins.clear();
         Point in1 = new Point(10, 20);             
         localPins.add(in1);        
     }

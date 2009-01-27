@@ -55,6 +55,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     private javax.swing.JLabel aboutVersionLabel = null;    
     private LinkedList<JInternalFrame> circuitwindows = new LinkedList<JInternalFrame>();
     private sim.SimItem simitem;
+    private boolean playPause = false;
         
     public Editor() {        
         initComponents();
@@ -111,9 +112,9 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         MakeImageButton = new javax.swing.JButton();
         jSeparator5 = new javax.swing.JToolBar.Separator();
         RecordButton = new javax.swing.JButton();
-        StopButton = new javax.swing.JButton();
-        PauseButton = new javax.swing.JButton();
         StartButton = new javax.swing.JButton();
+        StopButton = new javax.swing.JButton();
+        StepForwardButton = new javax.swing.JButton();
         jSlider1 = new javax.swing.JSlider();
         Toolbox2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
@@ -148,6 +149,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Simulation = new javax.swing.JMenu();
         Run = new javax.swing.JMenuItem();
         Stop = new javax.swing.JMenuItem();
+        StepForward = new javax.swing.JMenuItem();
         Record = new javax.swing.JMenuItem();
         Window = new javax.swing.JMenu();
         Help = new javax.swing.JMenu();
@@ -343,6 +345,18 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         });
         Toolbar.add(RecordButton);
 
+        StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png"))); // NOI18N
+        StartButton.setText(bundle.getString("Editor.StartButton.text")); // NOI18N
+        StartButton.setFocusable(false);
+        StartButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        StartButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        StartButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                StartButtonMouseClicked(evt);
+            }
+        });
+        Toolbar.add(StartButton);
+
         StopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-stop.png"))); // NOI18N
         StopButton.setText(bundle.getString("Editor.StopButton.text")); // NOI18N
         StopButton.setFocusable(false);
@@ -355,29 +369,17 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         });
         Toolbar.add(StopButton);
 
-        PauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-pause.png"))); // NOI18N
-        PauseButton.setText(bundle.getString("Editor.PauseButton.text")); // NOI18N
-        PauseButton.setFocusable(false);
-        PauseButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        PauseButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        PauseButton.addMouseListener(new java.awt.event.MouseAdapter() {
+        StepForwardButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-seek-forward.png"))); // NOI18N
+        StepForwardButton.setText(bundle.getString("Editor.StepForwardButton.text")); // NOI18N
+        StepForwardButton.setFocusable(false);
+        StepForwardButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        StepForwardButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        StepForwardButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                PauseButtonMouseClicked(evt);
+                StepForwardButtonMouseClicked(evt);
             }
         });
-        Toolbar.add(PauseButton);
-
-        StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png"))); // NOI18N
-        StartButton.setText(bundle.getString("Editor.StartButton.text")); // NOI18N
-        StartButton.setFocusable(false);
-        StartButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        StartButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        StartButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                StartButtonMouseClicked(evt);
-            }
-        });
-        Toolbar.add(StartButton);
+        Toolbar.add(StepForwardButton);
 
         jSlider1.setMajorTickSpacing(10);
         jSlider1.setMaximumSize(new java.awt.Dimension(200, 33));
@@ -665,6 +667,16 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         });
         Simulation.add(Stop);
 
+        StepForward.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
+        StepForward.setMnemonic('F');
+        StepForward.setText(bundle.getString("Editor.StepForward.text")); // NOI18N
+        StepForward.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                StepForwardActionPerformed(evt);
+            }
+        });
+        Simulation.add(StepForward);
+
         Record.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
         Record.setMnemonic('l');
         Record.setText(bundle.getString("Editor.Record.text")); // NOI18N
@@ -928,12 +940,14 @@ private void StopButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
     getActiveCircuit().getCommandHistory().doCommand(new SimulationStopCommand());
 }//GEN-LAST:event_StopButtonMouseClicked
 
-private void PauseButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PauseButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SimulationPauseCommand());
-}//GEN-LAST:event_PauseButtonMouseClicked
-
 private void StartButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StartButtonMouseClicked
     getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand());
+    if(playPause){ 
+        StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png")));
+    } else {
+        StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-pause.png")));
+    }
+    playPause = !playPause;    
 }//GEN-LAST:event_StartButtonMouseClicked
 
 private void CutButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CutButtonMouseClicked
@@ -968,6 +982,14 @@ private void StopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
 private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecordActionPerformed
     getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand());
 }//GEN-LAST:event_RecordActionPerformed
+
+private void StepForwardButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StepForwardButtonMouseClicked
+// TODO add your handling code here:
+}//GEN-LAST:event_StepForwardButtonMouseClicked
+
+private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StepForwardActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_StepForwardActionPerformed
 
     /** 
      * Repopulate the windows menu in the toolbar with the opened circuits
@@ -1403,7 +1425,8 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 
         @Override
         protected void setLocalPins() {
- 
+            localPins.clear();
+            
             int inputPinNo = simitem.getInputs().size();
             int outputPinNo = simitem.getOutputs().size();
 
@@ -1561,7 +1584,6 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private javax.swing.JPanel Options;
     private javax.swing.JMenuItem Paste;
     private javax.swing.JButton PasteButton;
-    private javax.swing.JButton PauseButton;
     private javax.swing.JMenuItem Record;
     private javax.swing.JButton RecordButton;
     private javax.swing.JMenuItem Redo;
@@ -1577,6 +1599,8 @@ private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private javax.swing.JButton Selection;
     private javax.swing.JMenu Simulation;
     private javax.swing.JButton StartButton;
+    private javax.swing.JMenuItem StepForward;
+    private javax.swing.JButton StepForwardButton;
     private javax.swing.JMenuItem Stop;
     private javax.swing.JButton StopButton;
     private javax.swing.JToolBar Toolbar;

@@ -29,5 +29,10 @@ public class InvalidPoint extends GridObject {
     public SelectableComponent getParent(){
         return parent;
     }
+    
+    @Override
+    public boolean hasParent(SelectableComponent sc){
+        return sc.equals(parent);
+    }
 
 }
