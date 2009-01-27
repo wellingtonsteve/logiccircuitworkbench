@@ -19,7 +19,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import ui.CircuitPanel;
 import ui.UIConstants;
-import ui.grid.Pin;
+import ui.grid.Pin2;
 
 /**
  *
@@ -183,7 +183,7 @@ public class Wire extends SelectableComponent {
     }
     
     @Override
-    public void setLocalPins() {
+    protected void setLocalPins() {
         localPins.clear();
         
         if (waypoints != null) {
@@ -201,7 +201,7 @@ public class Wire extends SelectableComponent {
             }
             setPinsOnLeg(next, last);
             
-            localPins.add(new Point(endPoint.x-getOrigin().x-getCentre().x,
+            localPins.add(new Pin(endPoint.x-getOrigin().x-getCentre().x,
                     endPoint.y-getOrigin().y-getCentre().y));
             
             fixSelfCrossover();
@@ -219,26 +219,26 @@ public class Wire extends SelectableComponent {
         }     
     }
     
-    @Override
-    protected void setGlobalPins(){
-        for(Pin p: globalPins){
-            parent.getGrid().removePin(p);
-        }         
-        
-        globalPins.clear();
-        
-        cosTheta = Math.cos(rotation);
-        sinTheta = Math.sin(rotation);
-                
-        for(Point p: getLocalPins()){
-            Point rotP = rotate(p); 
-            Pin pin = new Pin(this, rotP.x +getOrigin().x-getCentre().x,rotP.y +getOrigin().y-getCentre().x);
-            globalPins.add(pin);
-            if(isFixed()){ 
-                parent.getGrid().addPin(pin);
-            }
-        }   
-    }
+//    @Override
+//    protected void setGlobalPins(){
+//        for(Pin p: globalPins){
+//            parent.getGrid().removePin(p);
+//        }         
+//        
+//        globalPins.clear();
+//        
+//        cosTheta = Math.cos(rotation);
+//        sinTheta = Math.sin(rotation);
+//                
+//        for(Point p: getLocalPins()){
+//            Point rotP = rotate(p); 
+//            Pin pin = new Pin(this, rotP.x +getOrigin().x-getCentre().x,rotP.y +getOrigin().y-getCentre().x);
+//            globalPins.add(pin);
+//            if(isFixed()){ 
+//                parent.getGrid().addPin(pin);
+//            }
+//        }   
+//    }
     
     /** 
      * hoverMousePoint is the current mouse point hovering over the wire
@@ -249,7 +249,7 @@ public class Wire extends SelectableComponent {
     public void mouseDragged(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);
         parent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-        Point p = parent.getGrid().snapPointToGrid(e.getPoint());
+        Point p = parent.getGrid().snapToGrid(e.getPoint());
         
         // Moving a segment of the wire
         if(hoverWaypoint!=null && !hoverWaypoint.equals(endPoint)){
@@ -318,7 +318,7 @@ public class Wire extends SelectableComponent {
         if (!isFixed() && !getSelectionState().equals(SelectionState.ACTIVE)) {
             setSelectionState(SelectionState.DEFAULT);
         }
-        hoverMousePoint = parent.getGrid().snapPointToGrid(e.getPoint());
+        hoverMousePoint = parent.getGrid().snapToGrid(e.getPoint());
         
     }
 
@@ -721,13 +721,13 @@ public class Wire extends SelectableComponent {
 
         int dx = from.x - startPoint.x;
         int dy = from.y - startPoint.y;
-        Point p;
+        Pin p;
         
         createLeg(from, to);
 
         if (x2 - x1 > 0) {
             for (int x = 0; x < x2 - x1; x += UIConstants.GRID_DOT_SPACING) {
-                p = new Point(x + dx, dy);
+                p = new Pin(x + dx, dy);
                 if(localPins.contains(p)){
                     reportSelfCrossover(p);
                 } 
@@ -735,7 +735,7 @@ public class Wire extends SelectableComponent {
             }
         } else {
             for (int x = 0; x < x1 - x2; x += UIConstants.GRID_DOT_SPACING) {
-                p = new Point(-x + dx, dy);
+                p = new Pin(-x + dx, dy);
                 if(localPins.contains(p)){
                     reportSelfCrossover(p);
                 } 
@@ -744,7 +744,7 @@ public class Wire extends SelectableComponent {
         }
         if (y3 - y2 > 0) {
             for (int y = 0; y < y3 - y2; y += UIConstants.GRID_DOT_SPACING) {
-                p = new Point(x2 - x1 + dx, y + dy);
+                p = new Pin(x2 - x1 + dx, y + dy);
                 if(localPins.contains(p)){
                     reportSelfCrossover(p);
                 } 
@@ -752,7 +752,7 @@ public class Wire extends SelectableComponent {
             }
         } else {
             for (int y = 0; y < y2 - y3; y += UIConstants.GRID_DOT_SPACING) {
-                p = new Point(x2 - x1 + dx, -y + dy);
+                p = new Pin(x2 - x1 + dx, -y + dy);
                 if(localPins.contains(p)){
                     reportSelfCrossover(p);
                 } 

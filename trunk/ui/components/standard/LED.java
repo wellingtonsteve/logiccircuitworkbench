@@ -26,8 +26,8 @@ public class LED extends ImageSelectableComponent{
     private boolean isOn;
     private String colour = "yellow";
 
-    public LED(CircuitPanel parent, Point point) {
-        super(parent, point);
+    public LED(CircuitPanel parent, Pin Pin) {
+        super(parent, Pin);
     }
 
     @Override
@@ -72,14 +72,14 @@ public class LED extends ImageSelectableComponent{
     }
     
     @Override
-    public Point getCentre(){
-        return new Point(20,10);
+    public Pin getCentre(){
+        return new Pin(20,10);
     }
 
     @Override
     public void setLocalPins() {
         localPins.clear();
-        Point in1 = new Point(10, 20);             
+        Pin in1 = new Pin(10, 20);             
         localPins.add(in1);        
     }
         

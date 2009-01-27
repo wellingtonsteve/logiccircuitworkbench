@@ -19,7 +19,7 @@ import java.util.Stack;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import ui.file.FileCreator;
-import ui.grid.Pin;
+import ui.grid.Pin2;
 import ui.grid.Grid;
 import ui.components.SelectableComponent;
 import ui.components.SelectionState;
@@ -27,6 +27,7 @@ import ui.components.standard.Wire;
 import sim.Simulator;
 import ui.command.CommandHistory;
 import ui.command.CreateComponentCommand;
+import ui.components.SelectableComponent.Pin;
 import ui.error.ErrorHandler;
 
 /**
@@ -73,9 +74,10 @@ public class CircuitPanel extends JPanel {
     public void removeUnFixedComponents() {
         Stack<SelectableComponent> stack2 = new Stack<SelectableComponent>();
         for(SelectableComponent sc: drawnComponents){
-            //&& sc.getParent().equals(this) fixes ghost component on new circuit creation.
             if(sc.isFixed() && sc.getParent().equals(this)){
                 stack2.push(sc);
+            } else {
+                grid.removeComponent(sc);
             }
         }
         drawnComponents.clear();
@@ -468,15 +470,15 @@ public class CircuitPanel extends JPanel {
 
         public void mousePressed(MouseEvent e) {
             if (editor.getActiveCircuit().equals(CircuitPanel.this)) {
-                startPoint = grid.snapPointToGrid(new Point(e.getX() - frameOriginX, e.getY() - frameOriginY));
-                currentPoint = grid.snapPointToGrid(new Point(e.getX() - frameOriginX, e.getY() - frameOriginY));
+                startPoint = grid.snapToGrid(new Point(e.getX() - frameOriginX, e.getY() - frameOriginY));
+                currentPoint = grid.snapToGrid(new Point(e.getX() - frameOriginX, e.getY() - frameOriginY));
             }
         }
 
         public void mouseReleased(MouseEvent e) {
             if (editor.getActiveCircuit().equals(CircuitPanel.this)) {
                 // Find the location in the circuit
-                endPoint = grid.snapPointToGrid(new Point(e.getX() - frameOriginX, e.getY() - frameOriginY));
+                endPoint = grid.snapToGrid(new Point(e.getX() - frameOriginX, e.getY() - frameOriginY));
 
                 // Drop draged components
                 if (nowDragingComponent) {
@@ -549,7 +551,7 @@ public class CircuitPanel extends JPanel {
         public void mouseMoved(MouseEvent e) {
             if(editor.getActiveCircuit().equals(CircuitPanel.this)){
                 // Find the location in the circuit
-                endPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
+                endPoint = grid.snapToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
 
                 if(!nowDragingComponent && !currentTool.equals("Standard.Wire")){                
 
@@ -559,7 +561,8 @@ public class CircuitPanel extends JPanel {
                         drawnComponents.peek().mouseMoved(e);
 
                         // Activate any connection points that overlap pins on the current non-fixed component
-                        for(Pin p: drawnComponents.peek().getGlobalPins()){
+                        for(Pin local: drawnComponents.peek().getPins()){
+                            Point p = local.getGlobalLocation();
                             if(grid.isConnectionPoint(p)){
                                 grid.setActivePoint(p,true);
                             }
@@ -603,7 +606,7 @@ public class CircuitPanel extends JPanel {
                         if(!(sc instanceof Wire)){ sc.translate(endPoint.x-currentPoint.x, endPoint.y-currentPoint.y, false); }
                         sc.mouseDragged(e);
                     }
-                    currentPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
+                    currentPoint = grid.snapToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
                     repaint();
                 }
             }
@@ -613,7 +616,7 @@ public class CircuitPanel extends JPanel {
         public void mouseDragged(MouseEvent e) {
             if(editor.getActiveCircuit().equals(CircuitPanel.this)){
                 // Find the location in the circuit
-                endPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
+                endPoint = grid.snapToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
 
                 if(currentTool.equals("Select")){
 
@@ -674,7 +677,7 @@ public class CircuitPanel extends JPanel {
                     }
                     repaint();
                 }
-                currentPoint = grid.snapPointToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
+                currentPoint = grid.snapToGrid(new Point(e.getX()-frameOriginX,e.getY()-frameOriginY));
             }       
         }
     }    
