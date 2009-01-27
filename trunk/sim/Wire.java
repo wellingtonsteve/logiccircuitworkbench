@@ -22,14 +22,13 @@ public class Wire {
             else return false;
         }
         //If attempting to connect an input pin (an output of the wire)
-        else if(pin instanceof InputPin) {
+        else {
             if(!valueTargets.contains(pin) && ((InputPin) pin).getConnectedTo() == null) {
                 valueTargets.add((InputPin) pin);
                 if(valueSource != null) ((InputPin) pin).connectToOutput(valueSource);
             }
             return true;
         }
-        else return false;
     }
     
     public void disconnectPin(Pin pin){
