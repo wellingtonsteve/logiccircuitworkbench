@@ -290,10 +290,6 @@ public class CircuitPanel extends JPanel {
         return "Circuit cleared.";
     }    
     
-//    public void mouseExited(MouseEvent e){
-//        endPoint = e.getPoint();
-//    }
-    
     public void saveAs(String filename){
         this.setFilename(filename);
         FileCreator fc = new FileCreator(filename);

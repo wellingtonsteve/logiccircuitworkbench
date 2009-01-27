@@ -83,6 +83,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         }
                 
         setLocalPins();
+        setGlobalPins();
     }
     
     /**
@@ -186,39 +187,31 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * @param dy The displacement in the y-direction.
      * @param fixed Should the component be fixed after the translation?
      */
-    public void translate(int dx, int dy, boolean fixed) {       
+    public void translate(int dx, int dy, boolean fixed) {            
+        ui.grid.Grid grid = parent.getGrid();
 
-        if(parent.getGrid().canMoveComponent(this, dx, dy, fresh)){
-            this.origin.translate(dx, dy);
+        if(grid.canMoveComponent(this, dx, dy)){
             
-            // Adding this component to the grid for the first time
-            if(fresh && fixed){ //System.out.println("new component");
-                this.fixed = fixed;
-                this.fresh = false;
-                setGlobalPins();
-                parent.getGrid().markInvalidAreas(this);                
-            // About to refix the component
-            } else if (!this.fixed && fixed){ //System.out.println("refixing component");
-                this.fixed = fixed;                
-                parent.getGrid().unmarkInvalidAreas(this);
-                moveGlobalPins(dx, dy);
-                parent.getGrid().markInvalidAreas(this); 
-            // Just moving around 
-            } else { //System.out.println("moving component");
-                this.fixed = fixed;
-                parent.getGrid().unmarkInvalidAreas(this);
-                moveGlobalPins(dx, dy);      
-            }
+            grid.unmarkInvalidAreas(this);
+            this.origin.translate(dx, dy);
             setInvalidAreas();
             setBoundingBox();
-        }         
-        
+            
+            // Adding this component to the grid for the first time
+            if(fresh && fixed){
+                this.fresh = false;             
+            }
+            if (fixed){ 
+                grid.markInvalidAreas(this);                 
+            }            
+            this.fixed = fixed; 
+            moveGlobalPins(dx, dy);
+            
         // Alert the user that this was an invalid move and we cannot fix the 
         // component here
-        if(!this.fixed && fixed && UIConstants.DO_SYSTEM_BEEP){
-            UIConstants.beep();
-        }                    
-               
+        } else if(!this.fixed && fixed && UIConstants.DO_SYSTEM_BEEP){
+            UIConstants.beep();  
+        }
     }
     
     /**
@@ -433,9 +426,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
                     rotP.x +getOrigin().x-getCentre().x,
                     rotP.y +getOrigin().y-getCentre().x);
             globalPins.add(pin);
-            if(isFixed()){ 
-                parent.getGrid().addPin(pin);
-            }
+            parent.getGrid().addPin(pin);
         }    
     }
     
@@ -444,7 +435,6 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
             parent.getGrid().movePin(p, dx, dy);
         }
         parent.getGrid().clearBackups(this);
-        //System.out.println("####### " + globalPins.size());
     }
     
     /**
