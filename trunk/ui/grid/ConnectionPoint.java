@@ -23,6 +23,7 @@ public class ConnectionPoint extends GridObject {
     private boolean isCrossover = false;
     private static BufferedImage defaultCrossover;
     private String label = new String();
+    private ConnectionPoint backup;
 
     public ConnectionPoint(Point p){
         super(p);
@@ -67,7 +68,7 @@ public class ConnectionPoint extends GridObject {
         return (Collection<Pin>) connections.clone();
     }
     
-    public void moveWireEnds(Point newPoint){        
+    protected void moveWireEnds(Point newPoint){        
         for(Pin pin: connections){
             if(pin.getParent() instanceof Wire){
                 Wire w = (Wire) pin.getParent();
@@ -108,7 +109,8 @@ public class ConnectionPoint extends GridObject {
         return false;
     }
     
-    protected boolean hasSameComponent(SelectableComponent sc){
+    @Override
+    public boolean hasParent(SelectableComponent sc){
         for(Pin p: connections){
             if(p.getParent().equals(sc)){
                 return true;
@@ -195,5 +197,23 @@ public class ConnectionPoint extends GridObject {
                 return connections.get(i++).getParent();
             }            
         };
-    }        
+    }
+
+    ConnectionPoint getBackup(boolean reset) {
+        ConnectionPoint retval = backup;
+        if(reset){ resetBackup(); }
+        return retval;
+    }
+    
+    void resetBackup(){
+        backup = null;
+    }
+
+    boolean hasBackup() {
+        return backup != null;
+    }
+
+    void makeBackup() {
+        backup = (ConnectionPoint) this.clone();
+    }
 }

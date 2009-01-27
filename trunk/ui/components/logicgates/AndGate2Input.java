@@ -32,6 +32,8 @@ public class AndGate2Input extends ImageSelectableComponent{
 
     @Override
     public void setLocalPins() {
+        localPins.clear();
+        
         Point in1 = new Point(10, 20);
         Point in2 = new Point(10, 40);
         Point out1 = new Point(60, 30);

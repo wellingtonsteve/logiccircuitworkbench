@@ -30,8 +30,6 @@ public class Pin extends Point implements OutputValueListener {
         } else if (obj instanceof Pin){
             Pin other = (Pin) obj;
             return super.equals(obj) && this.getParent().equals(other.getParent());
-        } else if (obj instanceof Point){
-            return super.equals(obj);
         } else {
             return super.equals(obj);
         }
@@ -41,4 +39,3 @@ public class Pin extends Point implements OutputValueListener {
         this.value = value;
     }    
 }
-

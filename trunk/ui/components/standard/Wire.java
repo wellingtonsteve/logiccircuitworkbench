@@ -80,7 +80,7 @@ public class Wire extends SelectableComponent {
         setInvalidAreas();
         this.fixed = fixed; 
         if(fixed){
-            fresh = true;
+            fresh = false;
         }
         setLocalPins();
         setGlobalPins();       
@@ -184,8 +184,8 @@ public class Wire extends SelectableComponent {
     
     @Override
     public void setLocalPins() {
-        
         localPins.clear();
+        
         if (waypoints != null) {
             Point current = startPoint;
             Point next = startPoint;

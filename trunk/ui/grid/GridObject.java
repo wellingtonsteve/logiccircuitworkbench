@@ -4,12 +4,13 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import ui.components.Labeled;
 import ui.UIConstants;
+import ui.components.SelectableComponent;
 
 /**
  *
  * @author Matt
  */
-public abstract class GridObject extends Point implements Labeled {
+public abstract class GridObject extends Point implements Labeled, Cloneable {
     private String label = new String();
 
     public GridObject(Point p){
@@ -21,6 +22,8 @@ public abstract class GridObject extends Point implements Labeled {
             g2.drawString(getLabel(), x+UIConstants.LABEL_CONNECTION_POINT_X_OFFSET, y+UIConstants.LABEL_CONNECTION_POINT_Y_OFFSET);
         }
     }
+    
+    public abstract boolean hasParent(SelectableComponent sc);
     
     public String getLabel() {
         return label;
@@ -37,5 +40,5 @@ public abstract class GridObject extends Point implements Labeled {
     public boolean hasLabel(){
         return !label.isEmpty() || !label.equals("");
     }
-    
+
 }

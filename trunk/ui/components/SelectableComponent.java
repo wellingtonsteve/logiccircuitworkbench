@@ -41,8 +41,8 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     /** Describes the current fixed state */
     protected boolean fixed = false;    
     
-    /** Indicates whether fixed has ever been true i.e. whether this is a brand new piece or not */
-    protected boolean fresh = false; // 
+    /** Is this a fresh (new) piece? Has this ever been fixed? */
+    protected boolean fresh = true; 
     
     /** @see getOrigin() */
     private Point origin;
@@ -188,31 +188,27 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      */
     public void translate(int dx, int dy, boolean fixed) {       
 
-        if(parent.getGrid().canMoveComponent(this, dx, dy, !fresh)){
+        if(parent.getGrid().canMoveComponent(this, dx, dy, fresh)){
             this.origin.translate(dx, dy);
             
             // Adding this component to the grid for the first time
-            if(!fresh && fixed){ //System.out.println("new component");
+            if(fresh && fixed){ //System.out.println("new component");
                 this.fixed = fixed;
-                this.fresh = true;
-                parent.getGrid().markInvalidAreas(this);
+                this.fresh = false;
                 setGlobalPins();
+                parent.getGrid().markInvalidAreas(this);                
             // About to refix the component
             } else if (!this.fixed && fixed){ //System.out.println("refixing component");
-                this.fixed = fixed;
-                setGlobalPins();            
-                //moveGlobalPins(dx, dy);
-                parent.getGrid().translateComponent(dx,dy,this, !fresh);
+                this.fixed = fixed;                
+                parent.getGrid().unmarkInvalidAreas(this);
+                moveGlobalPins(dx, dy);
                 parent.getGrid().markInvalidAreas(this); 
             // Just moving around 
             } else { //System.out.println("moving component");
-                //moveGlobalPins(dx, dy);
-                
                 this.fixed = fixed;
-                parent.getGrid().translateComponent(dx,dy,this, !fresh);
-                setGlobalPins();
+                parent.getGrid().unmarkInvalidAreas(this);
+                moveGlobalPins(dx, dy);      
             }
-
             setInvalidAreas();
             setBoundingBox();
         }         
@@ -246,7 +242,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     }
     
     public void setFresh(){
-        fresh = false;
+        fresh = true;
     }
     
     /**
@@ -276,7 +272,6 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      */
     public void setRotation(double rotation) {
         this.rotation = rotation % (Math.PI * 2);
-        setLocalPins();
         setGlobalPins();
         setInvalidAreas();
         setBoundingBox();
@@ -448,6 +443,8 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         for(Pin p: globalPins){
             parent.getGrid().movePin(p, dx, dy);
         }
+        parent.getGrid().clearBackups(this);
+        //System.out.println("####### " + globalPins.size());
     }
     
     /**
@@ -465,9 +462,12 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * Set the pins of this component in local co-ordinates. Local pins are used 
      * to do all processing (e.g. for crossovers of wires) and generation of 
      * connection points before they are added to the grid. All subclasses must 
-     * implement this method.
+     * either call the super.setLocalPins() first or remember to reset the list
+     * of pins themselves.
      */
-    protected abstract void setLocalPins();
+    protected void setLocalPins(){
+        localPins.clear();
+    }
     
     /**
      * Returns true if, and only if, the specified point lies with in this point.
