@@ -17,13 +17,14 @@ public class FixComponentCommand extends Command {
     
     @Override
     protected void perform(Editor editor) {
-        if(activeCircuit != null){
+        if(activeCircuit != null){           
+            sc.translate(0, 0, true);
             activeCircuit.removeUnFixedComponents();
             if(!activeCircuit.containsComponent(sc)){
                 sc.setFresh();
                 activeCircuit.addComponent(sc);
-            }
-            sc.translate(0, 0, true);
+            }   
+            
             canUndo = true;
         }
     }

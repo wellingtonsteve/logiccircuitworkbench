@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import javax.imageio.ImageIO;
 import ui.UIConstants;
 import ui.components.SelectableComponent;
+import ui.components.SelectableComponent.Pin;
 import ui.components.standard.Wire;
 
 /**
@@ -64,8 +65,8 @@ public class ConnectionPoint extends GridObject {
     }
     
     @SuppressWarnings("unchecked")
-    public Collection<Pin> getConnections(){
-        return (Collection<Pin>) connections.clone();
+    public Collection<Pin2> getConnections(){
+        return (Collection<Pin2>) connections.clone();
     }
     
     protected void moveWireEnds(Point newPoint){        
@@ -198,22 +199,22 @@ public class ConnectionPoint extends GridObject {
             }            
         };
     }
-
-    ConnectionPoint getBackup(boolean reset) {
-        ConnectionPoint retval = backup;
-        if(reset){ resetBackup(); }
-        return retval;
-    }
-    
-    void resetBackup(){
-        backup = null;
-    }
-
-    boolean hasBackup() {
-        return backup != null;
-    }
-
-    void makeBackup() {
-        backup = (ConnectionPoint) this.clone();
-    }
+//
+//    ConnectionPoint getBackup(boolean reset) {
+//        ConnectionPoint retval = backup;
+//        if(reset){ resetBackup(); }
+//        return retval;
+//    }
+//    
+//    void resetBackup(){
+//        backup = null;
+//    }
+//
+//    boolean hasBackup() {
+//        return backup != null;
+//    }
+//
+//    void makeBackup() {
+//        backup = (ConnectionPoint) this.clone();
+//    }
 }

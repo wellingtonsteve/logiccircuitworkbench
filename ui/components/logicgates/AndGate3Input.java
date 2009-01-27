@@ -41,10 +41,10 @@ public class AndGate3Input extends ImageSelectableComponent{
     public void setLocalPins() {
         localPins.clear();
         
-        Point in1 = new Point(10, 20);
-        Point in2 = new Point(10, 30);
-        Point in3 = new Point(10, 40);
-        Point out1 = new Point(60, 30);
+        Pin in1 = new Pin(10, 20);
+        Pin in2 = new Pin(10, 30);
+        Pin in3 = new Pin(10, 40);
+        Pin out1 = new Pin(60, 30);
                 
         localPins.add(in1);
         localPins.add(in2);

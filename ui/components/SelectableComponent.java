@@ -10,9 +10,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import javax.xml.transform.sax.TransformerHandler;
 import sim.Component;
+import sim.OutputValueListener;
+import sim.State;
 import ui.CircuitPanel;
 import ui.UIConstants;
-import ui.grid.Pin;
+import ui.grid.Pin2;
 
 /**
  * SelectableComponents represent the visual components that can be placed
@@ -48,7 +50,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     private Point origin;
     
     /** @see getLocalPins() */
-    protected Collection<Point> localPins = new LinkedList<Point>();
+    protected Collection<Pin> localPins = new LinkedList<Pin>();
     
     /** @see getGlobalPins() */
     protected Collection<Pin> globalPins = new LinkedList<Pin>();
@@ -191,6 +193,9 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         ui.grid.Grid grid = parent.getGrid();
 
         if(grid.canMoveComponent(this, dx, dy)){
+            for(Pin p: localPins){
+                parent.getGrid().removePin(p);
+            } 
             
             grid.unmarkInvalidAreas(this);
             this.origin.translate(dx, dy);
@@ -205,7 +210,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
                 grid.markInvalidAreas(this);                 
             }            
             this.fixed = fixed; 
-            moveGlobalPins(dx, dy);
+            setGlobalPins();
             
         // Alert the user that this was an invalid move and we cannot fix the 
         // component here
@@ -378,8 +383,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         if(selectionState != null && !this.selectionState.equals(SelectionState.ACTIVE)){
             this.preHoverState = this.selectionState;
             setSelectionState(SelectionState.HOVER);
-        }
-        
+        }        
     }
     
     /**
@@ -401,41 +405,40 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * 
      * @return a collection of the pins of this component.
      */
-    public  Collection<Pin> getGlobalPins(){
-        return globalPins;
-    }
+//    public  Collection<Pin> getGlobalPins(){
+//        return globalPins;
+//    }
     
     /**
      * Remove all old pins from the connection point grid and then recreate the 
      * pins from the local pins of this component, adding them back to the grid 
      * if necessary.
      */
-    protected void setGlobalPins(){
-        for(Pin p: globalPins){
-            parent.getGrid().removePin(p);
-        }         
+    protected void setGlobalPins(){    
         
         globalPins.clear();
         
-        cosTheta = Math.cos(rotation);
-        sinTheta = Math.sin(rotation);
-        
-        for(Point p: getLocalPins()){
-            Point rotP = rotate(p); 
-            Pin pin = new Pin(this,
-                    rotP.x +getOrigin().x-getCentre().x,
-                    rotP.y +getOrigin().y-getCentre().x);
-            globalPins.add(pin);
-            parent.getGrid().addPin(pin);
+        for(Pin p: localPins){
+            parent.getGrid().addPin(p);
         }    
     }
     
-    protected void moveGlobalPins(int dx, int dy){
-        for(Pin p: globalPins){
-            parent.getGrid().movePin(p, dx, dy);
-        }
-        parent.getGrid().clearBackups(this);
-    }
+//    protected void moveGlobalPins(int dx, int dy){
+//        for(Pin p: globalPins){
+//            parent.getGrid().movePin(p, dx, dy);
+//        }
+//        parent.getGrid().clearBackups(this);
+//        
+//        // Check all pins are in correct places
+//        for(Point p: globalPins){
+//            Point rotP = rotate(p); 
+//            Pin pin = new Pin(this,
+//                    rotP.x +getOrigin().x-getCentre().x,
+//                    rotP.y +getOrigin().y-getCentre().x);
+//            if(localPins.contains(new Point()))
+//            
+//        }
+//    }
     
     /**
      * Return a list of the pins belonging to this component in their local
@@ -444,10 +447,12 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * 
      * @return
      */
-    protected  Collection<Point> getLocalPins(){
+    protected  Collection<Pin> getLocalPins(){
         return localPins;
     }
-    
+    public Collection<Pin> getPins(){
+        return localPins;
+    }
     /**
      * Set the pins of this component in local co-ordinates. Local pins are used 
      * to do all processing (e.g. for crossovers of wires) and generation of 
@@ -505,7 +510,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         Point rotP = new Point((int) ((transP.x * cosTheta) - (transP.y * sinTheta)),
                 (int) ((transP.y * cosTheta) + (transP.x * sinTheta)));
         Point ansP = new Point(rotP.x + getCentre().x, rotP.y + getCentre().y);
-        return parent.getGrid().snapPointToGrid(ansP);
+        return parent.getGrid().snapToGrid(ansP);
     }
     
     /**
@@ -571,5 +576,61 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     @Override
     public Object clone() throws CloneNotSupportedException{
         return super.clone();
+    }
+    
+    public class Pin extends Point implements OutputValueListener {
+
+        private SelectableComponent parent;
+        private State value;
+        private String name;
+
+        public Pin(int x, int y){
+            super(x,y);
+            this.parent = SelectableComponent.this;
+        }   
+
+        public Pin(String name, int x, int y){
+            super(x,y);
+            this.parent = SelectableComponent.this;
+            this.name = name;
+        }   
+
+        public SelectableComponent getParent(){
+            return parent;        
+        }
+
+        public String getName(){
+            return name;
+        }
+
+        public void setName(String name){
+            this.name = name;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            } else if (obj instanceof Pin){
+                Pin other = (Pin) obj;
+                return super.equals(obj) && this.getParent().equals(other.getParent());
+            } else {
+                return super.equals(obj);
+            }
+        }
+
+        public void outputValueChanged(State value) {
+            this.value = value;
+        }
+
+        public Point getGlobalLocation() {
+            cosTheta = Math.cos(rotation);
+            sinTheta = Math.sin(rotation);
+            Point rotP = rotate(this.getLocation()); 
+            Point retval = new Point(
+                        rotP.x +getOrigin().x-getCentre().x,
+                        rotP.y +getOrigin().y-getCentre().x);
+            return retval;
+        } 
     }
 }
