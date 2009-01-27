@@ -49,4 +49,9 @@ public class InputPin extends Pin implements OutputValueListener
     {
         this.value = connectedTo.getValue();
     }
+    
+    public OutputPin getConnectedTo()
+    {
+        return this.connectedTo;
+    }
 }
