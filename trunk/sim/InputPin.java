@@ -2,29 +2,11 @@ package sim;
 
 public class InputPin extends Pin implements OutputValueListener
 {
-    private State value = State.FLOATING;
     private OutputPin connectedTo;
 
     public InputPin(SimItem owner, String name)
     {
         super(owner, name);
-    }
-
-    public void setValue(State value) throws Exception
-    {
-        if (this.connectedTo != null)
-        {
-            this.value = value;
-        }
-        else
-        {
-            throw new Exception("Can set value when connected to an output");
-        }
-    }
-
-    public State getValue()
-    {
-        return this.value;
     }
 
     public void connectToOutput(OutputPin output)
@@ -47,7 +29,7 @@ public class InputPin extends Pin implements OutputValueListener
 
     public void outputValueChanged(State value)
     {
-        this.value = connectedTo.getValue();
+        this.setValue (connectedTo.getValue());
     }
     
     public OutputPin getConnectedTo()

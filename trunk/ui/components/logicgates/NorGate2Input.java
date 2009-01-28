@@ -15,8 +15,8 @@ import java.awt.Rectangle;
  */
 public class NorGate2Input extends ImageSelectableComponent{
 
-    public NorGate2Input(ui.CircuitPanel parent, Point point) {
-        super(parent, point);
+    public NorGate2Input(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
+        super(parent, point, simItem);
     }
 
     @Override

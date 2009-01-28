@@ -21,8 +21,8 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     protected BufferedImage selectedBi;
     protected BufferedImage activeBi;
       
-    public ImageSelectableComponent(CircuitPanel parent, Point point){
-        super(parent, point);
+    public ImageSelectableComponent(CircuitPanel parent, Point point, sim.SimItem logicalComponent){
+        super(parent, point, logicalComponent);
         
         setComponentTreeName();
         setNetlist();

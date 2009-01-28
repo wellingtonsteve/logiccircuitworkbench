@@ -34,11 +34,11 @@ public class Wire extends SelectableComponent {
     private Color wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
 
     public Wire(CircuitPanel parent){
-        super(parent, null);
+        super(parent, null, null);
     }
     
     public Wire(CircuitPanel parent, Point o) {
-        super(parent, null); // Ignore point, as we are going to drag to start it
+        super(parent, null, null); // Ignore point, as we are going to drag to start it
     }
     
     @Override
