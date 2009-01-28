@@ -1,24 +1,19 @@
 package sim;
 
-import java.util.Collection;
-import java.util.PriorityQueue;
-import java.util.Queue;
-
 public class Simulator {
     // The circuit we are going to simulate - created by the constructor. All 
     // SimItems (components, sub-circuits etc..) are added to this.
     private SimItem simItem;    // The time we are in nanoseconds in the simulation - will let us run the 
     // simulation for about 290 years (probably long enough!)
     private long simulationTime;
-    private Queue<SimItemEvent> eventQueue = new PriorityQueue<SimItemEvent>();
-    
-    public boolean addEvent(SimItemEvent event){
-        if(event.getTime() > this.simulationTime){
-            return this.eventQueue.offer(event);
+    private CollectionPriorityQueue<Long,SimItemEvent> eventQueue = new CollectionPriorityQueue<Long,SimItemEvent>();
+        
+    public boolean addEvent(long time,SimItemEvent event){
+        if(time > this.simulationTime){
+            eventQueue.offer(time, event);
+            return true;
         }
-        else{
-            return false;
-        }
+        else return false;
     }
     
     //some priority queue object here
