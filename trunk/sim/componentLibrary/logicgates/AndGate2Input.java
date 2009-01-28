@@ -25,9 +25,8 @@ public class AndGate2Input extends Component
             value = State.FLOATING;
         }
         
-        sim.addEvent(new SimItemEvent(sim.getSimulationTime() + propagationDelay) {
-            @Override
-            void RunEvent() {
+        sim.addEvent(sim.getSimulationTime() + propagationDelay,new SimItemEvent() {
+            public void RunEvent() {
                 output.setValue(value);
             }
         });
