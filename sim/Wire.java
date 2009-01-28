@@ -40,7 +40,7 @@ public class Wire {
             }
         }
         //If attempting to disconnect an input pin (an output of the wire)
-        else if(pin instanceof InputPin) {
+        else {
             if(valueTargets.contains(pin)) {
                 valueTargets.remove((InputPin) pin);
                 if(valueSource != null) ((InputPin) pin).disconnect();
