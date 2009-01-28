@@ -5,22 +5,27 @@
 
 package sim;
 
-import java.util.Collection;
+import java.util.*;
 
 /**
  *
  * @author Stephen
  */
 public abstract class Component implements SimItem {
-
-    public abstract String getDescription();
-
-    public abstract Collection<InputPin> getInputs();
-
-    public abstract String getName();
+    private Map<String,InputPin> inputPins = new HashMap<String, InputPin>();
+    private Map<String,OutputPin> outputPins = new HashMap<String, OutputPin>();
+ 
+    public Collection<InputPin> getInputs(){
+        return inputPins.values();
+    }
     
-    public abstract Collection<OutputPin> getOutputs();
-
-    public abstract void setDescription(String description);
+    public Collection<OutputPin> getOutputs(){
+        return outputPins.values();
+    }
+    
+    public Pin getPinByName(String name)
+    {
+        return null;
+    }
 
 }
