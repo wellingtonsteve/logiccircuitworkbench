@@ -6,6 +6,7 @@
 package ui.command;
 
 import java.awt.Point;
+import sim.SimItem;
 import ui.CircuitPanel;
 import ui.Editor;
 import ui.error.ErrorHandler;
@@ -44,7 +45,8 @@ public class CreateComponentCommand extends Command {
         if(parentCircuit != null){
             try {
                 if(editor.isNetlistComponent((String) properties[0])){
-                    sc = editor.getNetlistComponent((String) properties[0]).getConstructor(CircuitPanel.class, Point.class).newInstance(parentCircuit, (Point) properties[2]);
+                    SimItem simItem = editor.getLogicalComponent((String) properties[0]);
+                    sc = editor.getNetlistComponent((String) properties[0]).getConstructor(CircuitPanel.class, Point.class, SimItem.class).newInstance(parentCircuit, (Point) properties[2], simItem);
                 } else {
                     sc = editor.getDefaultNetlistComponent((String) properties[0]);
                     sc.setOrigin((Point) properties[2]);

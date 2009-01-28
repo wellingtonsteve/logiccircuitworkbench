@@ -27,6 +27,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import sim.SimItem;
 import ui.command.*;
 import ui.error.Error;
 import ui.error.ErrorListener;
@@ -79,10 +80,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
             public void windowDeactivated(WindowEvent e) {}
             
         });        
-    }
-
-    public Clipboard getClipboard() {
-        return clipboard;
     }
 
     /** This method is called from within the constructor to
@@ -1235,7 +1232,7 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             if(nl.containsLogicKey(key)){
            
                 try {
-                    simitem = nl.getLogicClass(key).getConstructor(sim.Simulator.class).newInstance(getActiveCircuit().getSimulator());
+                    simitem = nl.getLogicClass(key).getConstructor().newInstance();
                     ImageSelectableComponentImpl sc = new ImageSelectableComponentImpl(getActiveCircuit(), new Point(0,0),key);
                     return sc;
                                 
@@ -1252,7 +1249,7 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     } 
     
     /**
-     * Find the first drawable logicalComponent class associated the key the netlists 
+     * Find the first drawable component class associated the key the netlists 
      * registered with the editor.
      * 
      * @param key
@@ -1272,10 +1269,29 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         return null;
     }
     
+    public SimItem getLogicalComponent(String key) throws NoSuchMethodException {
+        //Remove "Components." from begining
+        if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
+            key = key.substring(11); 
+        }
+        for(Netlist nl: netlists){
+            if(nl.containsKey(key)){
+                try {
+                    return simitem = nl.getLogicClass(key).getConstructor().newInstance();                                                    
+                } catch (Exception e){
+                    ErrorHandler.newError(new Error("Editor Error","An error occured whilst trying to create a "+ key + "\n logical component." +
+                            " \n\n It is recommended that you create a concrete drawable implementation of this component.", e));
+                }
+            }
+        }
+        
+        ErrorHandler.newError(new Error("Editor Error",key + " is not a valid key for a drawable component."));
+        return null;
+    }
     /**
-     * Fix the current logicalComponent to the circuit
+     * Fix the current Component to the circuit
      * 
-     * @param endPoint  the point at which to fix the logicalComponent
+     * @param endPoint  the point at which to fix the component
      */
     public void fixComponent(SelectableComponent sc) {
         getActiveCircuit().getCommandHistory().doCommand(new FixComponentCommand(sc));
@@ -1419,7 +1435,7 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private class ImageSelectableComponentImpl extends ImageSelectableComponent {
         
         public ImageSelectableComponentImpl(CircuitPanel parent, Point point, String key) {
-            super(parent, point);
+            super(parent, point, simitem);
             this.componentTreeName = key;
         }
 
@@ -1556,6 +1572,11 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     public void removeCircuitFrame(CircuitFrame cf) {
         circuitwindows.remove(cf);
     }   
+    
+    
+    public Clipboard getClipboard() {
+        return clipboard;
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem About;

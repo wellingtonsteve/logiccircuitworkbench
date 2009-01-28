@@ -9,6 +9,12 @@ public class AndGate2Input extends Component
     private OutputPin output = new OutputPin(this, "Output");
     private int propagationDelay = 5;
 
+    public AndGate2Input(){
+        this.addPinToMap(input1);
+        this.addPinToMap(input2);
+        this.addPinToMap(output);
+    }
+    
     public void inputChanged()
     {
         final State value;

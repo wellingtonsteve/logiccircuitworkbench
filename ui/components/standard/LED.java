@@ -21,8 +21,8 @@ public class LED extends ImageSelectableComponent{
     private boolean isOn;
     private String colour = "yellow";
 
-    public LED(CircuitPanel parent, Point point) {
-        super(parent, point);
+    public LED(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
+        super(parent, point, simItem);
     }
 
     @Override

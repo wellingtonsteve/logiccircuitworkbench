@@ -9,8 +9,8 @@ import java.awt.event.MouseMotionListener;
 import java.util.Collection;
 import java.util.LinkedList;
 import javax.xml.transform.sax.TransformerHandler;
-import sim.Component;
 import sim.OutputValueListener;
+import sim.SimItem;
 import sim.State;
 import ui.CircuitPanel;
 import ui.UIConstants;
@@ -33,7 +33,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     protected SelectionState preHoverState;
     
     /** @see getLogicalComponent() */
-    protected Component logicalComponent;
+    protected SimItem logicalComponent;
     
     /** @see getBoundingBox() */
     protected Rectangle boundingBox = null;
@@ -74,8 +74,9 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * @param parent The parent circuit panel to which this component wll be drawn.
      * @param origin The initial origin of this component.
      */
-    public SelectableComponent(CircuitPanel parent, Point origin){
+    public SelectableComponent(CircuitPanel parent, Point origin, SimItem logicalComponent){
         this.parent = parent;
+        this.logicalComponent = logicalComponent;
         if(origin == null){
             this.origin = new Point(0,0);
         } else {
@@ -135,7 +136,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * 
      * @return The corresponding logical Component.
      */
-    public Component getLogicalComponent() {
+    public SimItem getLogicalComponent() {
         return logicalComponent;
     }
 
@@ -559,7 +560,6 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
 
         private SelectableComponent parent;
         private State value;
-        private String name;
         private ConnectionPoint cp;
         private sim.Pin simPin;
 
@@ -568,22 +568,15 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
             this.parent = SelectableComponent.this;
         }   
 
-        public Pin(String name, int x, int y){
+        public Pin(int x, int y, sim.Pin simPin){
             super(x,y);
             this.parent = SelectableComponent.this;
-            this.name = name;
+            this.simPin = simPin;
+            this.simPin.addOutputValueListener(this);
         }   
 
         public SelectableComponent getParent(){
             return parent;        
-        }
-
-        public String getName(){
-            return name;
-        }
-
-        public void setName(String name){
-            this.name = name;
         }
 
         @Override

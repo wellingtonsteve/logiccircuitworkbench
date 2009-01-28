@@ -19,8 +19,8 @@ import ui.UIConstants;
 public class Input extends ImageSelectableComponent{
     private boolean isOn = false;
 
-    public Input(CircuitPanel parent, Point point) {
-        super(parent, point);
+    public Input(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
+        super(parent, point, simItem);
     }
     
     @Override

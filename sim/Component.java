@@ -15,6 +15,11 @@ public abstract class Component implements SimItem {
     private Map<String, InputPin> inputPins = new HashMap<String, InputPin>();
     private Map<String, OutputPin> outputPins = new HashMap<String, OutputPin>();
     protected Simulator sim; 
+    
+    protected void addPinToMap(Pin pin){
+        if(pin instanceof InputPin) inputPins.put(pin.getName(), (InputPin)pin);
+        else outputPins.put(pin.getName(), (OutputPin)pin);
+    }
 
     public Collection<InputPin> getInputs() {
         return inputPins.values();
