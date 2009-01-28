@@ -195,13 +195,15 @@ public class OptionsPanel extends JPanel{
     public void setComponentRotation(double d) {
         this.rotation = d;
         if(sc != null){
-            sc.setRotation(rotation);
+            sc.setRotation(rotation, false);
             Preview.setComponent(sc);
             Preview.repaint();
             
-            // Make the changes to the active circuit also
-            editor.getActiveCircuit().removeUnFixedComponents();
-            editor.getActiveCircuit().addComponent(sc);
+            // Also make the changes to the active circuit
+//            if(!editor.getActiveCircuit().getCurrentTool().equals("Select")){
+//                editor.getActiveCircuit().removeUnFixedComponents();
+//                editor.getActiveCircuit().addComponent(sc);
+//            }
         }
         
     }

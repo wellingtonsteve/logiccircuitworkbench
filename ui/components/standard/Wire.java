@@ -1,10 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ui.components.standard;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Cursor;
 import ui.components.*;
 import java.awt.Graphics2D;
@@ -19,7 +16,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import ui.CircuitPanel;
 import ui.UIConstants;
-import ui.grid.Pin2;
+import ui.grid.Grid;
 
 /**
  *
@@ -34,6 +31,7 @@ public class Wire extends SelectableComponent {
     private Point hoverWaypoint;
     private Point hoverMousePoint = new Point(0,0);
     private Point reportedSelfCrossover = null;
+    private Color wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
 
     public Wire(CircuitPanel parent){
         super(parent, null);
@@ -59,7 +57,7 @@ public class Wire extends SelectableComponent {
      * @param rotation
      */
     @Override
-    public void setRotation(double rotation){}
+    public void setRotation(double rotation, boolean updateGrid){}
    
     /**
      * Origin = Start point for a wire
@@ -219,27 +217,6 @@ public class Wire extends SelectableComponent {
         }     
     }
     
-//    @Override
-//    protected void setGlobalPins(){
-//        for(Pin p: globalPins){
-//            parent.getGrid().removePin(p);
-//        }         
-//        
-//        globalPins.clear();
-//        
-//        cosTheta = Math.cos(rotation);
-//        sinTheta = Math.sin(rotation);
-//                
-//        for(Point p: getLocalPins()){
-//            Point rotP = rotate(p); 
-//            Pin pin = new Pin(this, rotP.x +getOrigin().x-getCentre().x,rotP.y +getOrigin().y-getCentre().x);
-//            globalPins.add(pin);
-//            if(isFixed()){ 
-//                parent.getGrid().addPin(pin);
-//            }
-//        }   
-//    }
-    
     /** 
      * hoverMousePoint is the current mouse point hovering over the wire
      * 
@@ -249,7 +226,7 @@ public class Wire extends SelectableComponent {
     public void mouseDragged(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);
         parent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-        Point p = parent.getGrid().snapToGrid(e.getPoint());
+        Point p = Grid.snapToGrid(e.getPoint());
         
         // Moving a segment of the wire
         if(hoverWaypoint!=null && !hoverWaypoint.equals(endPoint)){
@@ -296,7 +273,9 @@ public class Wire extends SelectableComponent {
                     hoverMousePoint.x = p.x;
                 }                
             } 
-        } else if (hoverWaypoint.equals(endPoint)){
+        } else if (hoverWaypoint!=null 
+                && hoverWaypoint.equals(endPoint) 
+                && !waypoints.isEmpty()){
             Point lastWaypoint = waypoints.getLast();
             createLeg(lastWaypoint, endPoint);
             Line2D.Double l1 = new Line2D.Double(x1, y1, x2, y2);
@@ -317,9 +296,9 @@ public class Wire extends SelectableComponent {
     public void mouseMoved(MouseEvent e) {
         if (!isFixed() && !getSelectionState().equals(SelectionState.ACTIVE)) {
             setSelectionState(SelectionState.DEFAULT);
+            wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
         }
-        hoverMousePoint = parent.getGrid().snapToGrid(e.getPoint());
-        
+        hoverMousePoint = Grid.snapToGrid(e.getPoint());
     }
 
     @Override
@@ -327,9 +306,10 @@ public class Wire extends SelectableComponent {
         if (isFixed()) {
             if (getSelectionState().equals(SelectionState.ACTIVE)) {
                 setSelectionState(SelectionState.HOVER);
-
+                wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
             } else {
                 setSelectionState(SelectionState.ACTIVE);
+                wireColour = UIConstants.ACTIVE_COMPONENT_COLOUR;
             }
         }
     }
@@ -342,6 +322,7 @@ public class Wire extends SelectableComponent {
     @Override
     public void mouseReleased(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);
+        wireColour = UIConstants.ACTIVE_COMPONENT_COLOUR;
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -350,6 +331,12 @@ public class Wire extends SelectableComponent {
 
     public void mouseExited(MouseEvent e) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void resetDefaultState() {
+        super.resetDefaultState();
+        wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
     }
 
     /**
@@ -594,7 +581,6 @@ public class Wire extends SelectableComponent {
      * @param to - the end Point
      */
     private void drawLeg(Graphics2D g, Point from, Point to) {
-
         createLeg(from, to);
         
         if(to.equals(hoverWaypoint)){
@@ -626,16 +612,19 @@ public class Wire extends SelectableComponent {
                 
                 switch (getSelectionState()) {                  
                     case ACTIVE:
-                        g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
+                        g.setColor(UIConstants.HOVER_WIRE_COLOUR);
                         g.setStroke(UIConstants.ACTIVE_WIRE_STROKE);                        
                         g.drawLine(handleX0, handleY0, handleX1, handleY1);
+                        wireColour = UIConstants.ACTIVE_COMPONENT_COLOUR;
                         break;
                     case HOVER:
                         g.setColor(UIConstants.HOVER_WIRE_COLOUR);
                         g.setStroke(UIConstants.ACTIVE_WIRE_STROKE);                        
                         g.drawLine(handleX0, handleY0, handleX1, handleY1);
+                        wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
                         break;
                     default:
+                        wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
                         break;
                 }   
                                 
@@ -664,21 +653,24 @@ public class Wire extends SelectableComponent {
                 
                 switch (getSelectionState()) {                  
                     case ACTIVE:
-                        g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
+                        g.setColor(UIConstants.HOVER_WIRE_COLOUR);
                         g.setStroke(UIConstants.ACTIVE_WIRE_STROKE);                        
                         g.drawLine(handleX0, handleY0, handleX1, handleY1);
+                        wireColour = UIConstants.ACTIVE_COMPONENT_COLOUR;
                         break;
                     case HOVER:
                         g.setColor(UIConstants.HOVER_WIRE_COLOUR);
                         g.setStroke(UIConstants.ACTIVE_WIRE_STROKE);                        
                         g.drawLine(handleX0, handleY0, handleX1, handleY1);
+                        wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
                         break;
                     default:
+                        wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
                         break;
                 }                                 
             }            
         }
-        g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
+        g.setColor(wireColour);
         g.setStroke(new BasicStroke(1.0f));
         g.drawLine(x1, y1, x2, y2); 
         g.drawLine(x2, y2, x3, y3);

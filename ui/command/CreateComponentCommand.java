@@ -49,7 +49,7 @@ public class CreateComponentCommand extends Command {
                     sc = editor.getDefaultNetlistComponent((String) properties[0]);
                     sc.setOrigin((Point) properties[2]);
                 }
-                sc.setRotation((Double) properties[1]);
+                sc.setRotation((Double) properties[1], true);
                 sc.setLabel((String) properties[3]);
                 
                 // Display component specific layout options

@@ -14,7 +14,8 @@ import sim.OutputValueListener;
 import sim.State;
 import ui.CircuitPanel;
 import ui.UIConstants;
-import ui.grid.Pin2;
+import ui.grid.ConnectionPoint;
+import ui.grid.Grid;
 
 /**
  * SelectableComponents represent the visual components that can be placed
@@ -51,10 +52,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     /** @see getLocalPins() */
     protected Collection<Pin> localPins = new LinkedList<Pin>();
-    
-    /** @see getGlobalPins() */
-    protected Collection<Pin> globalPins = new LinkedList<Pin>();
-    
+        
     /** Rotation in radians, with 0 being with inputs on left, output on right of standard and-gate */
     protected double rotation = 0; 
     
@@ -192,7 +190,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     public void translate(int dx, int dy, boolean fixed) {            
         ui.grid.Grid grid = parent.getGrid();
 
-        if(grid.canMoveComponent(this, dx, dy)){
+        if(grid.canTranslateComponent(this, dx, dy)){
             for(Pin p: localPins){
                 parent.getGrid().removePin(p);
             } 
@@ -268,11 +266,18 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * 
      * @param rotation The new value of the rotation of this component
      */
-    public void setRotation(double rotation) {
+    public void setRotation(double rotation, boolean updateGrid) {
+        for(Pin p: localPins){
+            parent.getGrid().removePin(p);
+        } 
+        parent.getGrid().unmarkInvalidAreas(this);
         this.rotation = rotation % (Math.PI * 2);
-        setGlobalPins();
         setInvalidAreas();
         setBoundingBox();
+        if(updateGrid){
+            setGlobalPins();
+            parent.getGrid().markInvalidAreas(this);
+        }        
     }
         
     /**
@@ -398,47 +403,17 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
             setSelectionState(this.preHoverState);
         }
     }
-       
-    /**
-     * Return the list of Pins (Connection Points) of this component. The global
-     * pins are in world co-ordinates.
-     * 
-     * @return a collection of the pins of this component.
-     */
-//    public  Collection<Pin> getGlobalPins(){
-//        return globalPins;
-//    }
-    
+        
     /**
      * Remove all old pins from the connection point grid and then recreate the 
      * pins from the local pins of this component, adding them back to the grid 
      * if necessary.
      */
-    protected void setGlobalPins(){    
-        
-        globalPins.clear();
-        
+    protected void setGlobalPins(){           
         for(Pin p: localPins){
             parent.getGrid().addPin(p);
         }    
     }
-    
-//    protected void moveGlobalPins(int dx, int dy){
-//        for(Pin p: globalPins){
-//            parent.getGrid().movePin(p, dx, dy);
-//        }
-//        parent.getGrid().clearBackups(this);
-//        
-//        // Check all pins are in correct places
-//        for(Point p: globalPins){
-//            Point rotP = rotate(p); 
-//            Pin pin = new Pin(this,
-//                    rotP.x +getOrigin().x-getCentre().x,
-//                    rotP.y +getOrigin().y-getCentre().x);
-//            if(localPins.contains(new Point()))
-//            
-//        }
-//    }
     
     /**
      * Return a list of the pins belonging to this component in their local
@@ -450,6 +425,8 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     protected  Collection<Pin> getLocalPins(){
         return localPins;
     }
+    
+    
     public Collection<Pin> getPins(){
         return localPins;
     }
@@ -510,7 +487,7 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         Point rotP = new Point((int) ((transP.x * cosTheta) - (transP.y * sinTheta)),
                 (int) ((transP.y * cosTheta) + (transP.x * sinTheta)));
         Point ansP = new Point(rotP.x + getCentre().x, rotP.y + getCentre().y);
-        return parent.getGrid().snapToGrid(ansP);
+        return Grid.snapToGrid(ansP);
     }
     
     /**
@@ -583,6 +560,8 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         private SelectableComponent parent;
         private State value;
         private String name;
+        private ConnectionPoint cp;
+        private sim.Pin simPin;
 
         public Pin(int x, int y){
             super(x,y);
@@ -624,13 +603,26 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
         }
 
         public Point getGlobalLocation() {
-            cosTheta = Math.cos(rotation);
-            sinTheta = Math.sin(rotation);
-            Point rotP = rotate(this.getLocation()); 
+            Point rotP;
+            if(rotation != 0.0){
+                cosTheta = Math.cos(rotation);
+                sinTheta = Math.sin(rotation);
+                rotP = rotate(getLocation()); 
+            } else {
+                rotP = getLocation();
+            }
             Point retval = new Point(
                         rotP.x +getOrigin().x-getCentre().x,
-                        rotP.y +getOrigin().y-getCentre().x);
+                        rotP.y +getOrigin().y-getCentre().y);
             return retval;
         } 
+
+        public ConnectionPoint getConnectionPoint() {
+            return cp;
+        }
+
+        public void setConnectionPoint(ConnectionPoint cp) {
+            this.cp = cp;
+        }
     }
 }

@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ui.components.standard;
 
 import ui.components.*;
@@ -24,8 +19,8 @@ import ui.UIConstants;
 public class Input extends ImageSelectableComponent{
     private boolean isOn = false;
 
-    public Input(CircuitPanel parent, Pin Pin) {
-        super(parent, Pin);
+    public Input(CircuitPanel parent, Point point) {
+        super(parent, point);
     }
     
     @Override
@@ -50,12 +45,13 @@ public class Input extends ImageSelectableComponent{
     }
     
     @Override
-    public Pin getCentre(){
-        return new Pin(10,10);
+    public Point getCentre(){
+        return new Point(10,10);
     }
 
     @Override
     public void setLocalPins() {
+        localPins.clear();
         Pin out1 = new Pin(30, 10);               
         localPins.add(out1);        
     }
@@ -133,5 +129,4 @@ public class Input extends ImageSelectableComponent{
     public void setIsOn(boolean isOn) {
         this.isOn = isOn;
     }
-
 }
