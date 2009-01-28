@@ -26,4 +26,13 @@ public class AndGate2Input extends Component
         }
         //simulator.addOutputChange(output, simulator.getSimulationTime() + this.propagationDelay, value);
     }
+
+    public String getLongName(){
+        return "And Gate with 2 Inputs";
+    }
+
+    public String getShortName()
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
