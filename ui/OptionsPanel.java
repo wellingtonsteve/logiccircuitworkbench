@@ -14,7 +14,7 @@ import javax.swing.JCheckBox;
 import ui.command.EditLabelCommand;
 import ui.components.standard.Input;
 import ui.components.standard.LED;
-import ui.components.standard.Wire;
+import ui.components.Wire;
 import ui.components.SelectableComponent;
 
 /**

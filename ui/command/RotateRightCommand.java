@@ -26,7 +26,7 @@ public class RotateRightCommand extends Command {
             activeCircuit.repaint();
             
         } else if(editor.getOptionsPanel().getSelectableComponent() != null 
-                && !activeCircuit.getCurrentTool().equals("Standard.Wire") 
+                && !activeCircuit.getCurrentTool().equals("Wire") 
                 && !activeCircuit.getCurrentTool().equals("Select")){
             editor.getOptionsPanel().setComponentRotation(editor.getOptionsPanel().getSelectableComponent().getRotation() + Math.PI/2);
             editor.getOptionsPanel().repaint();

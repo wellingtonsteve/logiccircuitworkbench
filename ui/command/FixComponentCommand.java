@@ -21,7 +21,6 @@ public class FixComponentCommand extends Command {
             sc.translate(0, 0, true);
             activeCircuit.removeUnFixedComponents();
             if(!activeCircuit.containsComponent(sc)){
-                sc.setFresh();
                 activeCircuit.addComponent(sc);
             }           
             canUndo = true;

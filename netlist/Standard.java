@@ -1,7 +1,5 @@
 package netlist;
 
-import netlist.*;
-
 /**
  *
  * @author matt
@@ -11,9 +9,7 @@ public class Standard extends Netlist{
     @Override
     protected void setClassMappings() {
         putClass("Standard.Button Source",    ui.components.standard.Input.class);
-        putClass("Standard.LED",              ui.components.standard.LED.class);
-        putClass("Standard.Wire",             ui.components.standard.Wire.class);
-       
+        putClass("Standard.LED",              ui.components.standard.LED.class);  
     }  
     
     @Override
@@ -28,8 +24,7 @@ public class Standard extends Netlist{
         
         // Selected Images
         putImage("Standard.Button Source.selected",   "/ui/images/components/default_input_off.png");
-        putImage("Standard.LED.selected",             "/ui/images/components/default_led.png");
-        
+        putImage("Standard.LED.selected",             "/ui/images/components/default_led.png");        
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ui.file;
 
+import ui.components.Wire;
 import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;

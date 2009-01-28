@@ -34,8 +34,9 @@ public class UIConstants {
     /** File Format
      *  LCW v1.0  -  Limited Component support. Case analysis on string.
      *  LCW v2.0  -  Netlist support, Component names match keys in netlists. Not backwards compatible with v1.0
+     *  LCW v2.1  -  As 2.0, "Standard.Wire" moved to "Wire", backwards compatible with renaming of wires
      */
-    public static String FILE_FORMAT_VERSION = "LCW v2.0"; 
+    public static String FILE_FORMAT_VERSION = "LCW v2.1"; 
     
     public static int LABEL_CONNECTION_POINT_X_OFFSET = -3;
     public static int LABEL_CONNECTION_POINT_Y_OFFSET = -3;
