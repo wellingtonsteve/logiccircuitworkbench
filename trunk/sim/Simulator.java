@@ -24,14 +24,11 @@ public class Simulator {
     //some priority queue object here
     public Simulator(SimItem simItem) {
         this.simItem = simItem;
+        simItem.setSimulator(this);
     }
 
     public Simulator() {
         throw new Error("Don't call this!  It's here until Steve remembers to tell Matt to change his call to this constructor in ui.log.ViewWindow");
-    }
-
-    public void addOutputChange(OutputPin output, long changeTime, State newValue) {
-        //add these details to the priority queue
     }
 
     public long getSimulationTime() {
