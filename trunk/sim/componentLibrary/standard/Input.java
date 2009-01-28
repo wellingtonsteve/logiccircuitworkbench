@@ -13,11 +13,11 @@ import sim.*;
 public class Input extends Component {
 
     public String getLongName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return "Input";
     }
 
     public String getShortName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return "Input";
     }
 
 }

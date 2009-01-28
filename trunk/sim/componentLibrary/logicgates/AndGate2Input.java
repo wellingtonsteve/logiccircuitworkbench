@@ -33,6 +33,6 @@ public class AndGate2Input extends Component
 
     public String getShortName()
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return "& 2 input";
     }
 }
