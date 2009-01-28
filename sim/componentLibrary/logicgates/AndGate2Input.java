@@ -11,7 +11,7 @@ public class AndGate2Input extends Component
 
     public void inputChanged()
     {
-        State value;
+        final State value;
         if(input1.getValue() == State.ON && input2.getValue() == State.ON)
         {
             value = State.ON;
@@ -24,7 +24,13 @@ public class AndGate2Input extends Component
         {
             value = State.FLOATING;
         }
-        //simulator.addOutputChange(output, simulator.getSimulationTime() + this.propagationDelay, value);
+        
+        sim.addEvent(new SimItemEvent(sim.getSimulationTime() + propagationDelay) {
+            @Override
+            void RunEvent() {
+                output.setValue(value);
+            }
+        });
     }
 
     public String getLongName(){

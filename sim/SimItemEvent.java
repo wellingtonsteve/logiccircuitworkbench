@@ -20,6 +20,10 @@ public abstract class SimItemEvent implements Comparable<SimItemEvent> {
     public SimItemEvent(long time) {
         this.time = time;
     }
+    
+    public SimItemEvent(){
+        
+    }
 
     public int compareTo(SimItemEvent s) {
         if(time < s.getTime()) return -1;

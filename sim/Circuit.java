@@ -3,7 +3,7 @@ package sim;
 import java.util.*;
 
 class Circuit implements SimItem {
-
+    
     public Collection<InputPin> getInputs() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -22,5 +22,9 @@ class Circuit implements SimItem {
 
     public String getShortName() {
         return "Sub-circuit";
+    }
+
+    public void setSimulator(Simulator sim) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -14,6 +14,7 @@ public abstract class Component implements SimItem {
 
     private Map<String, InputPin> inputPins = new HashMap<String, InputPin>();
     private Map<String, OutputPin> outputPins = new HashMap<String, OutputPin>();
+    protected Simulator sim; 
 
     public Collection<InputPin> getInputs() {
         return inputPins.values();
@@ -33,5 +34,9 @@ public abstract class Component implements SimItem {
         else {
             return null;
         }
+    }
+    
+    public void setSimulator(Simulator sim){
+        this.sim = sim;
     }
 }

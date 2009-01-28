@@ -9,4 +9,5 @@ public interface SimItem
     Pin getPinByName(String name);
     String getLongName();
     String getShortName();
+    void setSimulator(Simulator sim);
 }
