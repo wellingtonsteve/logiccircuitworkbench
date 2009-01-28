@@ -24,7 +24,6 @@ public class ConnectionPoint extends GridObject {
     private boolean isCrossover = false;
     private static BufferedImage defaultCrossover;
     private String label = new String();
-    private ConnectionPoint backup;
 
     public ConnectionPoint(Point p){
         super(p);
@@ -41,15 +40,19 @@ public class ConnectionPoint extends GridObject {
     public void addConnection(Pin p){      
         if(p.getParent() instanceof Wire                                // The current pin belongs to a wire
                 && hasDifferentWire(p.getParent())                      // Not the same wire               
-                && !((Wire) p.getParent()).getEndPoint().equals(p)      // Not the end point of a wire
-                && !((Wire) p.getParent()).getOrigin().equals(p)){      // Not the start point of a wire
+                && !((Wire) p.getParent()).getEndPoint().equals(p.getGlobalLocation())      // Not the end point of a wire
+                && !((Wire) p.getParent()).getOrigin().equals(p.getGlobalLocation())){      // Not the start point of a wire
             isCrossover = true;
         } 
-        connections.add(p);
+        if(!hasConnection(p)){
+            p.setConnectionPoint(this);
+            connections.add(p);
+        }
     }
     
     public boolean removeConnection(Pin p){
         boolean retval = connections.remove(p);
+        p.setConnectionPoint(null);
         if(noOfConnections() == 1)  {
             isCrossover = false;
         }
@@ -65,8 +68,8 @@ public class ConnectionPoint extends GridObject {
     }
     
     @SuppressWarnings("unchecked")
-    public Collection<Pin2> getConnections(){
-        return (Collection<Pin2>) connections.clone();
+    public Collection<Pin> getConnections(){
+        return (Collection<Pin>) connections.clone();
     }
     
     protected void moveWireEnds(Point newPoint){        
@@ -199,22 +202,5 @@ public class ConnectionPoint extends GridObject {
             }            
         };
     }
-//
-//    ConnectionPoint getBackup(boolean reset) {
-//        ConnectionPoint retval = backup;
-//        if(reset){ resetBackup(); }
-//        return retval;
-//    }
-//    
-//    void resetBackup(){
-//        backup = null;
-//    }
-//
-//    boolean hasBackup() {
-//        return backup != null;
-//    }
-//
-//    void makeBackup() {
-//        backup = (ConnectionPoint) this.clone();
-//    }
+
 }

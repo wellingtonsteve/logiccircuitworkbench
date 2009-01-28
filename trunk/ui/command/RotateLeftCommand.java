@@ -13,15 +13,15 @@ public class RotateLeftCommand extends Command {
     
     @Override
     protected void perform(Editor editor) {
-        if(activeCircuit.hasActiveSelection()){
+        if(activeCircuit.hasActiveSelection() 
+                && activeCircuit.getActiveComponents().size() == 1){
             List<SelectableComponent> selection = activeCircuit.getActiveComponents();
             item = selection.get(0);
-                       
-            item.setRotation(item.getRotation() - Math.PI/2);
+
+            item.setRotation(item.getRotation() - Math.PI/2, true);
             editor.getOptionsPanel().setComponentRotation(item.getRotation());
             editor.getOptionsPanel().repaint();
-            
-            canUndo = true;
+
             activeCircuit.repaint();
             
         } else if(editor.getOptionsPanel().getSelectableComponent() != null 
@@ -34,7 +34,7 @@ public class RotateLeftCommand extends Command {
     
     @Override
     protected void undoEffect(Editor editor) {
-        item.setRotation(item.getRotation() + Math.PI/2);
+        item.setRotation(item.getRotation() + Math.PI/2, true);
         canUndo = false;
         editor.repaint();
     }

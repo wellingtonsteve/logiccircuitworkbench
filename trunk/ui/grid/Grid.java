@@ -3,9 +3,7 @@ package ui.grid;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import ui.UIConstants;
 import ui.components.SelectableComponent;
 import ui.components.SelectableComponent.Pin;
@@ -15,19 +13,27 @@ import ui.components.SelectableComponent.Pin;
  * @author matt
  */
 public class Grid {
-    
+
+    /**
+     * The Grid represents a 2-dimensional cartesian co-ordinate space where 
+     * each point (x,y), has an associated Grid Object which is either a Connection
+     * Point or and Invalid Area. 
+     * 
+     * @see GridObject
+     * @see ConnectionPoint
+     * @see InvalidPoint
+     */
     private HashMap<Point,GridObject> grid = new HashMap<Point,GridObject>();
-    
-    public ConnectionPoint getConnectionPoint(Point p){
-        GridObject go = grid.get(p);
-        if(go != null && go instanceof ConnectionPoint){
-            return (ConnectionPoint) go;
-        } else {
-            return null;
-        }
-    }
-    
-    public boolean canMoveComponent(SelectableComponent sc, int dx, int dy){
+        
+    /**
+     * Check whether the specified translation of the component is valid.
+     * 
+     * @param sc The component to test
+     * @param dx The x-direction displacement
+     * @param dy The y-direction displacement
+     * @return Is the move valid?
+     */
+    public boolean canTranslateComponent(SelectableComponent sc, int dx, int dy){
         
         // Check each pin
         for(Pin local: sc.getPins()){
@@ -35,7 +41,8 @@ public class Grid {
             Point temp = new Point(p.x + dx, p.y + dy);
             GridObject go = grid.get(temp);  
             if(go != null 
-                    && go instanceof InvalidPoint // Pins can overlap other pins but not invalid points
+                    // Pins can overlap other pins but not invalid points
+                    && go instanceof InvalidPoint 
                     && !go.hasParent(sc)){
                 return false; 
             }           
@@ -61,6 +68,10 @@ public class Grid {
         return true;
     }
     
+    /**
+     * Remove the connections and invalid area points from the grid.
+     * @param sc The component to remove from the grid.
+     */
     public void removeComponent(SelectableComponent sc){
         for(Pin local: sc.getPins()){
             Point p = local.getGlobalLocation();
@@ -74,77 +85,14 @@ public class Grid {
         unmarkInvalidAreas(sc); 
     }   
 
-//    public void movePin(Pin2 oldPoint, int dx, int dy) {
-//        if(dx != 0 || dy != 0){
-//            Point newPoint =  new Point(oldPoint.x + dx, oldPoint.y + dy);
-//            GridObject oldGo = grid.get(oldPoint);
-//            GridObject newGo = grid.get(newPoint);
-//
-//            // Is the new point uninitialised?
-//            if(newGo == null && oldGo instanceof ConnectionPoint){
-//               
-//                // Move pins
-//                ConnectionPoint newCp = new ConnectionPoint(newPoint);
-//                ConnectionPoint oldCp = (ConnectionPoint) oldGo;
-//                if(oldCp.hasBackup()){
-//                    oldCp.removeConnection(oldPoint);
-//                    oldCp = oldCp.getBackup(true);
-//                }
-////                for(Pin pin: oldCp.getConnections()){
-////                    if(pin.equals(oldPoint)){
-////                        pin.setLocation(newPoint);
-////                        oldCp.removeConnection(oldPoint);
-////                        newCp.addConnection(pin);
-////                        break;
-////                    }
-////                }    
-//                       
-//                        oldCp.removeConnection(oldPoint);
-//                        newCp.addConnection(oldPoint); 
-//                        oldPoint.setLocation(newPoint);
-//                // Get rid of old mapping
-//                if(!((ConnectionPoint) oldGo).isConnected()){
-//                    grid.remove(oldGo);
-//                }
-//                
-//                // Add new mapping               
-//                grid.put(newPoint, newCp); 
-//                
-//            // Another pin belonging to the same component is at the target 
-//            // destination. We have yet to move this pin so make a backup for later.
-//            } else if(newGo instanceof ConnectionPoint                             
-//                    && oldGo instanceof ConnectionPoint
-//                    && newGo.hasParent(oldPoint.getParent())){           
-//                
-//                // Move pins 
-//                ConnectionPoint newCp = (ConnectionPoint) newGo;
-//                ConnectionPoint oldCp = (ConnectionPoint) oldGo;
-//                newCp.makeBackup();
-//                if(oldCp.hasBackup()){
-//                    oldCp.removeConnection(oldPoint);
-//                    oldCp = oldCp.getBackup(true);
-//                }
-////                for(Pin pin: oldCp.getConnections()){
-////                    if(pin.equals(oldPoint)){
-////                        pin.setLocation(newPoint);
-////                        oldCp.removeConnection(oldPoint);
-////                        
-////                        newCp.addConnection(pin);
-////                        break;
-////                    }
-////                }    
-//                oldCp.removeConnection(oldPoint);
-//                newCp.addConnection(oldPoint); 
-//                oldPoint.setLocation(newPoint); 
-//                
-//                // Get rid of old mapping
-//                if(!((ConnectionPoint) oldGo).isConnected()){
-//                    grid.remove(oldGo);
-//                }         
-//            } 
-//        }
-//    }
-    
+    /**
+     * Add a new pin to the grid. Not the method local.getLocation() returns the
+     * local co-ordinates of the pin, so the method local.getGlobalLocation() must
+     * be used to get the local in world (grid) co-ordinates.
+     * 
+     * @param local The pin to add.
+     * @return Was the addition successful?
+     */
     public boolean addPin(Pin local){
         Point p = local.getGlobalLocation();
         GridObject go = grid.get(p);
@@ -161,6 +109,10 @@ public class Grid {
         }
     }
     
+    /**
+     * Remove the specified pin from the grid.
+     * @param local The pin to remove.
+     */
     public void removePin(Pin local){
         Point p = local.getGlobalLocation();
         GridObject go = grid.get(p);
@@ -172,6 +124,10 @@ public class Grid {
         } 
     }
     
+    /**
+     * Set invalid areas for a specified selectable component
+     * @param sc
+     */
     public void markInvalidAreas(SelectableComponent sc){
         Rectangle bb = sc.getInvalidArea();
         for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
@@ -184,6 +140,11 @@ public class Grid {
         }  
     }
     
+    /**
+     * Remove the invalid area grid objects that were set for the specified 
+     * selectable component.
+     * @param sc
+     */
     public void unmarkInvalidAreas(SelectableComponent sc) {    
         Rectangle bb = sc.getInvalidArea();
         for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
@@ -198,24 +159,44 @@ public class Grid {
         }
     }
     
+    /**
+     * @param p The point to check
+     * @return Is the GridObject at Point p a ConnectionPoint?
+     */
     public boolean isConnectionPoint(Point p){
         return grid.get(p) instanceof ConnectionPoint;
     }
     
-    public boolean isActivePoint(Point p) {
-        if(isConnectionPoint(p)){
-            return ((ConnectionPoint) grid.get(p)).isActive();
+    /**
+     * @param p
+     * @return The connection point at p, or null if Point p is not a connection
+     * Point.
+     */
+    public ConnectionPoint getConnectionPoint(Point p){
+        if(grid.get(p) instanceof ConnectionPoint){
+            return (ConnectionPoint) grid.get(p);
+        } else {
+            return null;
         }
-        return false;
     }
     
+    /**
+     * Mark the GridPoint at p as active/unactive (draw a red box around it). Fails 
+     * silently if the point is not a connection point.
+     * @param p The point to check
+     * @param active Should we mark it as active or unactive?
+     */
     public void setActivePoint(Point p, Boolean active) {
         if(isConnectionPoint(p)){
             ((ConnectionPoint) grid.get(p)).setActive(active);
         } 
     }
     
-    public Point snapToGrid(Point old){
+    /**
+     * @param old The point to snap.
+     * @return a new point that is the nearest point on the grid to the old point.
+     */
+    public static Point snapToGrid(Point old){
         if(UIConstants.SNAP_TO_GRID){
             
             int d = UIConstants.GRID_DOT_SPACING;            
@@ -236,17 +217,11 @@ public class Grid {
             return old;
         }                
     }
-
-    public boolean areDirectlyConnected(SelectableComponent a, SelectableComponent b){        
-        Collection<Pin> bPins = b.getPins();        
-        for(Pin pinA: a.getPins()){
-            if(bPins.contains(pinA)){
-                return true;
-            }
-        }        
-        return false;        
-    }                
     
+    /**
+     * Draw the grid.
+     * @param g2 The graphics context on which to draw.
+     */
     public void draw(Graphics2D g2){
        g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
         
@@ -255,16 +230,9 @@ public class Grid {
        }               
     }   
     
-//    public void clearBackups(SelectableComponent sc) {
-//        for(Pin local: sc.getPins()){
-//            Point p = local.getGlobalLocation();
-//            GridObject go = grid.get(p);
-//            if(go != null && go instanceof ConnectionPoint){
-//                ((ConnectionPoint) go).resetBackup();
-//            }
-//        }
-//    }
-    
+    /**
+     * Clear the grid and all cached information.
+     */
     public void clear(){
         grid.clear();
     }

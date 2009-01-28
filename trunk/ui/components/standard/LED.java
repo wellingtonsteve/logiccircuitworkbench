@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ui.components.standard;
 
 import ui.components.*;
@@ -26,8 +21,8 @@ public class LED extends ImageSelectableComponent{
     private boolean isOn;
     private String colour = "yellow";
 
-    public LED(CircuitPanel parent, Pin Pin) {
-        super(parent, Pin);
+    public LED(CircuitPanel parent, Point point) {
+        super(parent, point);
     }
 
     @Override
@@ -72,14 +67,14 @@ public class LED extends ImageSelectableComponent{
     }
     
     @Override
-    public Pin getCentre(){
-        return new Pin(20,10);
+    public Point getCentre(){
+        return new Point(20,10);
     }
 
     @Override
     public void setLocalPins() {
         localPins.clear();
-        Pin in1 = new Pin(10, 20);             
+        Pin in1 = new Pin(10, 10);             
         localPins.add(in1);        
     }
         
@@ -157,7 +152,5 @@ public class LED extends ImageSelectableComponent{
     public void setColour(String colour) {
         this.colour = colour.toLowerCase();
         setActiveImage();
-    }
-    
-    
+    }    
 }
