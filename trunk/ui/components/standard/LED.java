@@ -10,7 +10,6 @@ import javax.imageio.ImageIO;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-import ui.CircuitPanel;
 import ui.UIConstants;
 
 /**

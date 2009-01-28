@@ -129,4 +129,5 @@ public class Input extends ImageSelectableComponent{
     public void setIsOn(boolean isOn) {
         this.isOn = isOn;
     }
+
 }

@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 import ui.UIConstants;
 import ui.components.SelectableComponent;
 import ui.components.SelectableComponent.Pin;
-import ui.components.standard.Wire;
+import ui.components.Wire;
 
 /**
  *

@@ -717,7 +717,7 @@ private void SelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WireMouseClicked
     toggleToolboxButton(Wire);
     circuitPanel.removeUnFixedComponents();
-    String componentName = "Standard.Wire";
+    String componentName = "Wire";
     
     CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
         componentName,                                              // properties[0] = componentName
@@ -1279,13 +1279,12 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                 try {
                     return simitem = nl.getLogicClass(key).getConstructor().newInstance();                                                    
                 } catch (Exception e){
-                    ErrorHandler.newError(new Error("Editor Error","An error occured whilst trying to create a "+ key + "\n logical component." +
-                            " \n\n It is recommended that you create a concrete drawable implementation of this component.", e));
+                    ErrorHandler.newError(new Error("Editor Error",
+                            "An error occured whilst trying to create a "+ key + " logical component.", e));
                 }
             }
         }
-        
-        ErrorHandler.newError(new Error("Editor Error",key + " is not a valid key for a drawable component."));
+       
         return null;
     }
     /**

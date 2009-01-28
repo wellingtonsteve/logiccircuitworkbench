@@ -83,10 +83,13 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     @Override
     public void mouseDragged(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);
+        draggedPoint = e.getPoint();
     }
 
+    @Override
     public void mouseDraggedDropped(MouseEvent e) {
-        setSelectionState(selectionState.ACTIVE);
+        setSelectionState(SelectionState.DEFAULT);
+        draggedPoint = new Point(0,0);
     }
     
     @Override
@@ -109,16 +112,6 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");  
-    }
-        
-    @Override
-    public void mouseExited(MouseEvent e) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

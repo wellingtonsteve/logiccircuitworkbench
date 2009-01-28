@@ -1,7 +1,5 @@
 package netlist;
 
-import netlist.*;
-
 /**
  * This netlist provides basic boolean Logic Gate components.
  * 

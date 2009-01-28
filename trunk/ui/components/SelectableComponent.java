@@ -4,8 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.Collection;
 import java.util.LinkedList;
 import javax.xml.transform.sax.TransformerHandler;
@@ -23,7 +21,7 @@ import ui.grid.Grid;
  * 
  * @author Matt
  */
-public abstract class SelectableComponent implements MouseMotionListener, MouseListener, Labeled, Cloneable {
+public abstract class SelectableComponent implements Labeled, Cloneable {
     
 
     /** Set the default selection state of this component */
@@ -43,9 +41,6 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     
     /** Describes the current fixed state */
     protected boolean fixed = false;    
-    
-    /** Is this a fresh (new) piece? Has this ever been fixed? */
-    protected boolean fresh = true; 
     
     /** @see getOrigin() */
     private Point origin;
@@ -68,6 +63,8 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
     /** @see getComponentTreeName() */
     protected String componentTreeName;
 
+    protected Point draggedPoint = new Point(0,0);
+    
     /**
      * Default constructor for a SelectableComponent. 
      * 
@@ -201,10 +198,6 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
             setInvalidAreas();
             setBoundingBox();
             
-            // Adding this component to the grid for the first time
-            if(fresh && fixed){
-                this.fresh = false;             
-            }
             if (fixed){ 
                 grid.markInvalidAreas(this);                 
             }            
@@ -222,10 +215,16 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * Convienience method to move the origin of the component to a specified point
      * 
      * @param point The new origin of the component
-     * @param fixed Should the component be fixed after the translation?
+     * @param fixed Should the component be fixed after the move?
      */
     public void moveTo(Point newOrigin, boolean fixed){
         translate(newOrigin.x-origin.x, newOrigin.y-origin.y, fixed);
+    }
+    
+    public void moveToWithDragDisplacement(Point newOrigin, boolean fixed){
+        int dx = origin.x - draggedPoint.x;
+        int dy = origin.y - draggedPoint.y;
+        translate(newOrigin.x-origin.x+dx, newOrigin.y-origin.y+dy, fixed);
     }
     
     /**
@@ -236,10 +235,6 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      */
     public boolean isFixed(){
         return fixed;
-    }
-    
-    public void setFresh(){
-        fresh = true;
     }
     
     /**
@@ -521,14 +516,18 @@ public abstract class SelectableComponent implements MouseMotionListener, MouseL
      * corresponding mouse actions being called.
      * @param e The MouseEvent of the calling action.
      */
-    public abstract void mouseDragged(MouseEvent e);
     public abstract void mouseMoved(MouseEvent e);
     public abstract void mouseClicked(MouseEvent e);
-    public abstract void mouseEntered(MouseEvent e);
-    public abstract void mouseExited(MouseEvent e);
     public abstract void mousePressed(MouseEvent e);
     public abstract void mouseReleased(MouseEvent e);
-    public abstract void mouseDraggedDropped(MouseEvent e);    
+    public void mouseDragged(MouseEvent e) {
+        setSelectionState(SelectionState.ACTIVE);
+        draggedPoint = e.getPoint();
+    }
+    public void mouseDraggedDropped(MouseEvent e) {
+        setSelectionState(SelectionState.DEFAULT);
+        draggedPoint = new Point(0,0);
+    }
     
     /**
      * Similar to clone except that the exception is caught and the Cast to 

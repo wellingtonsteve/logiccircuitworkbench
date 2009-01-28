@@ -1,4 +1,4 @@
-package ui.components.standard;
+package ui.components;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -48,7 +48,7 @@ public class Wire extends SelectableComponent {
     
     @Override
     protected void setComponentTreeName() {
-        componentTreeName = "Standard.Wire";
+        componentTreeName = "Wire";
     }
 
     /**
@@ -77,9 +77,6 @@ public class Wire extends SelectableComponent {
         }
         setInvalidAreas();
         this.fixed = fixed; 
-        if(fixed){
-            fresh = false;
-        }
         setLocalPins();
         setGlobalPins();       
         
