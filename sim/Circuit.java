@@ -1,5 +1,6 @@
 package sim;
 
+import sim.componentLibrary.logicgates.AndGate2Input;
 import java.util.*;
 import sim.componentLibrary.*;
 

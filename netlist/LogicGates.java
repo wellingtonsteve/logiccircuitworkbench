@@ -47,12 +47,12 @@ public class LogicGates extends Netlist{
 
     @Override
     protected void setLogicMappings() {
-        putLogicClass("Logic Gates.2 Input.AND",   sim.componentLibrary.AndGate2Input.class);
-        putLogicClass("Logic Gates.2 Input.OR",    sim.componentLibrary.AndGate2Input.class);
-        putLogicClass("Logic Gates.2 Input.NAND",  sim.componentLibrary.AndGate2Input.class);
-        putLogicClass("Logic Gates.2 Input.NOR",   sim.componentLibrary.AndGate2Input.class);
-        putLogicClass("Logic Gates.2 Input.XOR",   sim.componentLibrary.AndGate2Input.class);
-        putLogicClass("Logic Gates.3 Input.AND",   sim.componentLibrary.AndGate2Input.class);
+        putLogicClass("Logic Gates.2 Input.AND",   sim.componentLibrary.logicgates.AndGate2Input.class);
+        putLogicClass("Logic Gates.2 Input.OR",    sim.componentLibrary.logicgates.AndGate2Input.class);
+        putLogicClass("Logic Gates.2 Input.NAND",  sim.componentLibrary.logicgates.AndGate2Input.class);
+        putLogicClass("Logic Gates.2 Input.NOR",   sim.componentLibrary.logicgates.AndGate2Input.class);
+        putLogicClass("Logic Gates.2 Input.XOR",   sim.componentLibrary.logicgates.AndGate2Input.class);
+        putLogicClass("Logic Gates.3 Input.AND",   sim.componentLibrary.logicgates.AndGate2Input.class);
 
     }
 

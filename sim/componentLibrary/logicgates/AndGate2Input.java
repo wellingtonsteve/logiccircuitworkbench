@@ -1,4 +1,4 @@
-package sim.componentLibrary;
+package sim.componentLibrary.logicgates;
 
 import sim.*;
 import java.util.*;
