@@ -7,7 +7,7 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.LinkedList;
 import javax.xml.transform.sax.TransformerHandler;
-import sim.OutputValueListener;
+import sim.pin.*;
 import sim.SimItem;
 import sim.State;
 import ui.CircuitPanel;
@@ -583,14 +583,14 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         private SelectableComponent parent;
         private State value;
         private ConnectionPoint cp;
-        private sim.Pin simPin;
+        private sim.pin.Pin simPin;
 
         public Pin(int x, int y){
             super(x,y);
             this.parent = SelectableComponent.this;
         }   
 
-        public Pin(int x, int y, sim.Pin simPin){
+        public Pin(int x, int y, sim.pin.Pin simPin){
             super(x,y);
             this.parent = SelectableComponent.this;
             this.simPin = simPin;

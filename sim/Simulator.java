@@ -6,16 +6,16 @@ public class Simulator {
     private SimItem simItem;    // The time we are in nanoseconds in the simulation - will let us run the 
     // simulation for about 290 years (probably long enough!)
     private long simulationTime;
-    private CollectionPriorityQueue<Long,SimItemEvent> eventQueue = new CollectionPriorityQueue<Long,SimItemEvent>();
-        
-    public boolean addEvent(long time,SimItemEvent event){
-        if(time > this.simulationTime){
+    private CollectionPriorityQueue<Long, SimItemEvent> eventQueue = new CollectionPriorityQueue<Long, SimItemEvent>();
+
+    public boolean addEvent(long time, SimItemEvent event) {
+        if (time > this.simulationTime) {
             eventQueue.offer(time, event);
             return true;
+        } else {
+            return false;
         }
-        else return false;
     }
-    
     //some priority queue object here
     public Simulator(SimItem simItem) {
         this.simItem = simItem;

@@ -6,7 +6,7 @@
 
 package ui.log;
 
-import sim.OutputPin;
+import sim.pin.*;
 import sim.Simulator;
 import sim.State;
 

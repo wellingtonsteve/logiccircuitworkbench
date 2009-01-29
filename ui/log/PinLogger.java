@@ -5,14 +5,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import sim.State;
-import sim.OutputPin;
+import sim.pin.*;
 import sim.Simulator;
 
 /**
  *
  * @author matt
  */
-public class PinLogger implements sim.OutputValueListener {
+public class PinLogger implements OutputValueListener {
 
     private List<Long> timeLog = new LinkedList<Long>();
     private List<State> stateLog = new LinkedList<State>();

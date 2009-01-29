@@ -5,6 +5,7 @@
 package sim;
 
 import java.util.*;
+import sim.pin.*;
 
 /**
  *
@@ -14,11 +15,14 @@ public abstract class Component implements SimItem {
 
     private Map<String, InputPin> inputPins = new HashMap<String, InputPin>();
     private Map<String, OutputPin> outputPins = new HashMap<String, OutputPin>();
-    protected Simulator sim; 
-    
-    protected void addPinToMap(Pin pin){
-        if(pin instanceof InputPin) inputPins.put(pin.getName(), (InputPin)pin);
-        else outputPins.put(pin.getName(), (OutputPin)pin);
+    protected Simulator sim;
+
+    protected void addPinToMap(Pin pin) {
+        if (pin instanceof InputPin) {
+            inputPins.put(pin.getName(), (InputPin) pin);
+        } else {
+            outputPins.put(pin.getName(), (OutputPin) pin);
+        }
     }
 
     public Collection<InputPin> getInputs() {
@@ -30,18 +34,18 @@ public abstract class Component implements SimItem {
     }
 
     public Pin getPinByName(String name) {
-        if(inputPins.containsKey(name)){
+        if (inputPins.containsKey(name)) {
             return inputPins.get(name);
-        }
-        else if(outputPins.containsKey(name)){
-            return outputPins.get(name);
-        }
-        else {
-            return null;
+        } else {
+            if (outputPins.containsKey(name)) {
+                return outputPins.get(name);
+            } else {
+                return null;
+            }
         }
     }
-    
-    public void setSimulator(Simulator sim){
+
+    public void setSimulator(Simulator sim) {
         this.sim = sim;
     }
 }
