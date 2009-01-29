@@ -69,17 +69,31 @@ public class Wire extends SelectableComponent {
 
     @Override
     public void translate(int dx, int dy, boolean fixed) {        
-        
-        this.startPoint.translate(dx, dy);
-        this.endPoint.translate(dx, dy);
-        for (Point p : waypoints) {
-            p.translate(dx, dy);
+        ui.grid.Grid grid = parent.getGrid();
+
+        if(grid.canTranslateComponent(this, dx, dy)){
+            for(Pin p: localPins){
+                parent.getGrid().removePin(p);
+            } 
+            getParent().getGrid().unmarkInvalidAreas(this);
+            // Rememeber my position at the moment I started to move
+            if(this.fixed && !fixed){
+                unFixedPoint = startPoint.getLocation();
+            }
+            this.startPoint.translate(dx, dy);
+            this.endPoint.translate(dx, dy);
+            for (Point p : waypoints) {
+                p.translate(dx, dy);
+            }
+            setBoundingBox();
+            setInvalidAreas();
+            this.fixed = fixed; 
+            setLocalPins();
+            setGlobalPins(); 
+            if (fixed){ 
+                getParent().getGrid().markInvalidAreas(this);                 
+            }  
         }
-        setInvalidAreas();
-        this.fixed = fixed; 
-        setLocalPins();
-        setGlobalPins();       
-        
     }
 
     public Point getEndPoint() {
@@ -283,6 +297,7 @@ public class Wire extends SelectableComponent {
         }      
     }
 
+    @Override
     public void mouseDraggedDropped(MouseEvent e) {
         setSelectionState(selectionState.ACTIVE);
         parent.setCursor(Cursor.getDefaultCursor());        
@@ -752,6 +767,7 @@ public class Wire extends SelectableComponent {
     
     @Override
     protected void setInvalidAreas(){
+        // TODO: Rewrite this method properly
         int maxX = startPoint.x, minX = startPoint.x, maxY = startPoint.y, minY = startPoint.y;
         
         for (Point waypoint : waypoints) {

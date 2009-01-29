@@ -31,7 +31,8 @@ public class CreateComponentCommand extends Command {
          *      properties[6] = activeCircuit
          */
 
-    public CreateComponentCommand(Object[] properties){
+    public CreateComponentCommand(CommandHistory cmdHist, Object[] properties){
+        super(cmdHist);
         this.properties = properties;
     }
     
@@ -89,7 +90,7 @@ public class CreateComponentCommand extends Command {
     }
 
     @Override
-    public String toString() {
+    public String getName() {
         return "Add Component to Circuit";
     }
     

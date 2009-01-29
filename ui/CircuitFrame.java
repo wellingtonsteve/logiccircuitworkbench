@@ -89,7 +89,7 @@ public class CircuitFrame extends JInternalFrame{
                         "Do you want to save changes to \""+getTitle()+"\" before closing it?");
                     try {
                         if(ans == JOptionPane.YES_OPTION){
-                           circuitPanel.getCommandHistory().doCommand(new FileSaveCommand());
+                           circuitPanel.getCommandHistory().doCommand(new FileSaveCommand(circuitPanel.getCommandHistory()));
                            dispose();
                         } else if(ans == JOptionPane.NO_OPTION){
                             dispose();

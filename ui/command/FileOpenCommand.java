@@ -14,6 +14,10 @@ import ui.components.SelectableComponent;
  */
 public class FileOpenCommand extends Command {
 
+    public FileOpenCommand(CommandHistory cmdHist) {
+        super(cmdHist);
+    }
+
     @Override
     protected void perform(Editor editor) {
         String filename;                                    
@@ -35,7 +39,7 @@ public class FileOpenCommand extends Command {
                 activeCircuit.setFilename(filename);
                 editor.refreshWindowsMenu();
                 activeCircuit.getParentFrame().setTitle(filename);
-                
+                parentHistory.stageChange("message", getName() + ": " + filename);
             } else {
                 //TODO: Close bad circuit!
             } 
@@ -45,8 +49,8 @@ public class FileOpenCommand extends Command {
     }
 
     @Override
-    public String toString() {
-        return "Open Circuit File";
+    public String getName() {
+        return "Opened Circuit File";
     }
 
 }

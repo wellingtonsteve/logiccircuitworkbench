@@ -7,6 +7,10 @@ import ui.Editor;
  * @author matt
  */
 public class NewCircuitCommand extends Command{
+
+    public NewCircuitCommand(CommandHistory cmdHist) {
+        super(cmdHist);
+    }
     
     @Override
     protected void perform(Editor editor) {
@@ -14,7 +18,7 @@ public class NewCircuitCommand extends Command{
     }
 
     @Override
-    public String toString() {
+    public String getName() {
         return "Create blank circuit";
     }
 

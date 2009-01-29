@@ -11,7 +11,8 @@ public class FixComponentCommand extends Command {
     
     private SelectableComponent sc;
 
-    public FixComponentCommand(SelectableComponent sc){
+    public FixComponentCommand(CommandHistory cmdHist, SelectableComponent sc){
+        super(cmdHist);
         this.sc = sc;
     }
     
@@ -34,7 +35,7 @@ public class FixComponentCommand extends Command {
     }
     
     @Override
-    public String toString() {
+    public String getName() {
         return "Fix Component to Circuit";
     }
     

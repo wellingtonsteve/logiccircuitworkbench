@@ -18,6 +18,10 @@ import ui.components.SelectableComponent;
 public class AddLabelCommand extends Command {
     private String labelStr;
     private Labeled item;
+
+    public AddLabelCommand(CommandHistory cmdHist) {
+        super(cmdHist);
+    }
     
     @Override
     protected void perform(Editor editor) {
@@ -41,7 +45,7 @@ public class AddLabelCommand extends Command {
     }
 
     @Override
-    public String toString() {
+    public String getName() {
         return "Add label \"" + labelStr + "\"";
     } 
 

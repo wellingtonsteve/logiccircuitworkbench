@@ -6,7 +6,6 @@
 
 package ui;
 
-import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -19,10 +18,7 @@ import java.util.LinkedList;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -49,7 +45,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     private Graphics offscreenGraphics;
     private boolean drawDirect = false;
     private int untitledIndex = 1;
-    private CommandHistory cmdHist = new CommandHistory(this);
+    private CommandHistory cmdHist;
     private Clipboard clipboard = new Clipboard();
     private javax.swing.JDialog aboutDialog = null;
     private javax.swing.JPanel aboutContentPane = null;
@@ -58,7 +54,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     private sim.SimItem simitem;
     private boolean playPause = false;
         
-    public Editor() {        
+    public Editor() {    
         initComponents();
         setIconImage(new javax.swing.ImageIcon(this.getClass().getResource("/ui/images/buttons/toolbar/led.png")).getImage());      
         this.addWindowListener(new WindowListener(){
@@ -79,7 +75,9 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
             public void windowDeactivated(WindowEvent e) {}
             
-        });        
+        }); 
+        
+        cmdHist = new CommandHistory(this);
     }
 
     /** This method is called from within the constructor to
@@ -126,6 +124,11 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Options = new OptionsPanel(this);
         MainScrollPane = new javax.swing.JScrollPane();
         DesktopPane = new ScrollableDesktop();
+        statusPanel = new javax.swing.JPanel();
+        javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
+        statusMessageLabel = new javax.swing.JLabel();
+        statusAnimationLabel = new javax.swing.JLabel();
+        progressBar = new javax.swing.JProgressBar();
         MenuBar = new javax.swing.JMenuBar();
         File = new javax.swing.JMenu();
         New = new javax.swing.JMenuItem();
@@ -508,6 +511,38 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         getContentPane().add(MainScrollPane, java.awt.BorderLayout.CENTER);
 
+        statusAnimationLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+
+        progressBar.setBorder(null);
+
+        org.jdesktop.layout.GroupLayout statusPanelLayout = new org.jdesktop.layout.GroupLayout(statusPanel);
+        statusPanel.setLayout(statusPanelLayout);
+        statusPanelLayout.setHorizontalGroup(
+            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(statusPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(statusMessageLabel)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 765, Short.MAX_VALUE)
+                .add(progressBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(statusAnimationLabel)
+                .addContainerGap())
+            .add(statusPanelSeparator, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 947, Short.MAX_VALUE)
+        );
+        statusPanelLayout.setVerticalGroup(
+            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, statusPanelLayout.createSequentialGroup()
+                .add(statusPanelSeparator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(statusMessageLabel)
+                    .add(statusAnimationLabel)
+                    .add(progressBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(3, 3, 3))
+        );
+
+        getContentPane().add(statusPanel, java.awt.BorderLayout.PAGE_END);
+
         File.setMnemonic('F');
         File.setText(bundle.getString("TestJFrameForm.jMenu1.text_1")); // NOI18N
 
@@ -719,7 +754,7 @@ private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
     circuitPanel.removeUnFixedComponents();
     String componentName = "Wire";
     
-    CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
+    CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit().getCommandHistory(), new Object[]{
         componentName,                                              // properties[0] = componentName
         ((OptionsPanel) Options).getComponentRotation(),            // properties[1] = rotation
         new Point(0,0),                                             // properties[2] = point
@@ -765,7 +800,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
         if(isValidComponent(componentName)){
             getActiveCircuit().removeUnFixedComponents();
             
-            CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
+            CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit().getCommandHistory(), new Object[]{
                 componentName,                                              // properties[0] = componentName
                 ((OptionsPanel) Options).getComponentRotation(),            // properties[1] = rotation
                 new Point(0,0),                                             // properties[2] = point
@@ -798,15 +833,15 @@ private void RedoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
 }//GEN-LAST:event_RedoActionPerformed
 
 private void CutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CutActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionCutCommand());    
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionCutCommand(getActiveCircuit().getCommandHistory()));    
 }//GEN-LAST:event_CutActionPerformed
 
 private void CopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CopyActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionCopyCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionCopyCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_CopyActionPerformed
 
 private void PasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasteActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionPasteCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionPasteCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_PasteActionPerformed
 
 private void SelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectAllActionPerformed
@@ -838,15 +873,15 @@ private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
 }//GEN-LAST:event_ExitActionPerformed
 
 private void ClearCircuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClearCircuitMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new ClearCircuitCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new ClearCircuitCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_ClearCircuitMouseClicked
 
 private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new FileOpenCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new FileOpenCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_OpenActionPerformed
 
 private void SaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveAsActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new FileSaveAsCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new FileSaveAsCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_SaveAsActionPerformed
 
 private void UndoButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UndoButtonMouseClicked
@@ -858,62 +893,45 @@ private void RedoButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
 }//GEN-LAST:event_RedoButtonMouseClicked
 
 private void RotateLeftMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateLeftMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new RotateLeftCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new RotateLeftCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_RotateLeftMouseClicked
 
 private void RotateRightMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateRightMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new RotateRightCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new RotateRightCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_RotateRightMouseClicked
 
 private void DeleteSelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DeleteSelectionMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionDeleteCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionDeleteCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_DeleteSelectionMouseClicked
 
 private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionDeleteCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionDeleteCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_DeleteActionPerformed
 
 private void OpenFileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_OpenFileButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new FileOpenCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new FileOpenCommand(getActiveCircuit().getCommandHistory()));
     SelectionMouseClicked(null);
 }//GEN-LAST:event_OpenFileButtonMouseClicked
 
 private void SaveAsButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveAsButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new FileSaveAsCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new FileSaveAsCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_SaveAsButtonMouseClicked
 
 private void SaveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new FileSaveCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new FileSaveCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_SaveButtonMouseClicked
 
 private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new FileSaveCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new FileSaveCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_SaveActionPerformed
 
 private void AboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AboutActionPerformed
-    if (aboutVersionLabel == null) {
-            aboutVersionLabel = new JLabel();
-            aboutVersionLabel.setText("Version 1.0");
-            aboutVersionLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    }
-    
-    if (aboutContentPane == null) {
-        aboutContentPane = new JPanel();
-        aboutContentPane.setLayout(new BorderLayout());
-        aboutContentPane.add(aboutVersionLabel, BorderLayout.CENTER);
-    }
-    
-    if (aboutDialog == null) {
-        aboutDialog = new JDialog(Editor.this, true);
-        aboutDialog.setTitle("About");
-        aboutDialog.setContentPane(aboutContentPane);
-    }
-    aboutDialog.pack();
-    aboutDialog.setVisible(true);
+    aboutBox.setLocationRelativeTo(this);
+    aboutBox.setVisible(true);
 }//GEN-LAST:event_AboutActionPerformed
 
 private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_NewButtonMouseClicked
-    cmdHist.doCommand(new NewCircuitCommand());
+    cmdHist.doCommand(new NewCircuitCommand(cmdHist));
 }//GEN-LAST:event_NewButtonMouseClicked
 
 private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertComponentMouseClicked
@@ -922,23 +940,23 @@ private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-F
 }//GEN-LAST:event_InsertComponentMouseClicked
 
 private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertSubComponentMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new InsertSubcomponentCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new InsertSubcomponentCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_InsertSubComponentMouseClicked
 
 private void MakeImageButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MakeImageButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new MakeImageCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new MakeImageCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_MakeImageButtonMouseClicked
 
 private void RecordButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RecordButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_RecordButtonMouseClicked
 
 private void StopButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StopButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SimulationStopCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SimulationStopCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_StopButtonMouseClicked
 
 private void StartButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StartButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand(getActiveCircuit().getCommandHistory()));
     if(playPause){ 
         StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png")));
     } else {
@@ -948,15 +966,15 @@ private void StartButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
 }//GEN-LAST:event_StartButtonMouseClicked
 
 private void CutButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CutButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionCutCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionCutCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_CutButtonMouseClicked
 
 private void PasteButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PasteButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionPasteCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionPasteCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_PasteButtonMouseClicked
 
 private void CopyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CopyButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionCopyCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SelectionCopyCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_CopyButtonMouseClicked
 
 private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeFocusGained
@@ -965,19 +983,19 @@ private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {/
 }//GEN-LAST:event_ComponentSelectionTreeFocusGained
 
 private void NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewActionPerformed
-    cmdHist.doCommand(new NewCircuitCommand()); 
+    cmdHist.doCommand(new NewCircuitCommand(cmdHist)); 
 }//GEN-LAST:event_NewActionPerformed
 
 private void RunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_RunActionPerformed
 
 private void StopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new SimulationStopCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SimulationStopCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_StopActionPerformed
 
 private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecordActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand());
+    getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand(getActiveCircuit().getCommandHistory()));
 }//GEN-LAST:event_RecordActionPerformed
 
 private void StepForwardButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StepForwardButtonMouseClicked
@@ -1092,7 +1110,11 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             // Make the circuit active in the Desktop Window Pane
             this.circuitPanel = circuit;
             try {  circuit.getParentFrame().setSelected(true);  } 
-            catch (PropertyVetoException ex) { ErrorHandler.newError("Editor Error","Cannot select circuit " + circuit.getParentFrame().getTitle() + ".", ex); }
+            catch (PropertyVetoException ex) { 
+                ErrorHandler.newError("Editor Error",
+                        "Cannot select circuit " +
+                        circuit.getParentFrame().getTitle() + ".", ex); 
+            }
 
             // Set the appropriate state for all command history buttons
             UndoButton.setEnabled(circuitPanel.getCommandHistory().canUndo());
@@ -1101,38 +1123,48 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             Redo.setEnabled(circuitPanel.getCommandHistory().canRedo());
             
         } else {
-            ErrorHandler.newError("Editor Error","Error whilst setting an active circuit. \n Please close and reopen all open circuits.");
+            ErrorHandler.newError("Editor Error",
+                    "Error whilst setting an active circuit. \n " +
+                    "Please close and reopen all open circuits.");
         }
               
     }
 
     /**
-     * Construct the logicalComponent tree from the list of netlists associated with this editor.
+     * Construct the component tree from the list of netlists associated with this editor.
      * 
      * @return rootNode     A well-formed TreeModel for use in a JTree
      */
     public TreeModel getTreeValues(){
         
-        DefaultMutableTreeNode parent, rootNode = new DefaultMutableTreeNode("Components");
+        DefaultMutableTreeNode parent;
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Components");
         String[] nodes = null;
+        
         parent = rootNode;
         
         for(Netlist nl: netlists){
+            
             for(String s: nl.keySet()){
                 nodes = s.split("\\.");
                 parent = rootNode;
+                
+                // Due to structure of keys, the tree is produced depth-first
                 for(int i=0; i<nodes.length; i++){
+                    // Create a new node for this sub category
                     DefaultMutableTreeNode mtn = new DefaultMutableTreeNode(nodes[i]);
                     
-                    // This node does not exist, create a new node
+                    // Create the child nodes
                     Enumeration children = parent.children();
                     Boolean exists = false;
-                    whileBreak: while(children.hasMoreElements()){
+                    while(children.hasMoreElements()){
                         DefaultMutableTreeNode next = (DefaultMutableTreeNode) children.nextElement();
-                        if(next.getUserObject().equals(mtn.getUserObject())){ // Compare String names of the nodes
+                        
+                        // Check whether the next tree node already exists
+                        if(next.getUserObject().equals(mtn.getUserObject())){ 
                             exists = true;
                             mtn = next;
-                            break whileBreak;
+                            break;
                         }
                     }
                     if(!exists){
@@ -1229,8 +1261,7 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         }
         
         for(Netlist nl: netlists){
-            if(nl.containsLogicKey(key)){
-           
+            if(nl.containsLogicKey(key)){           
                 try {
                     simitem = nl.getLogicClass(key).getConstructor().newInstance();
                     ImageSelectableComponentImpl sc = new ImageSelectableComponentImpl(getActiveCircuit(), new Point(0,0),key);
@@ -1240,11 +1271,11 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                     ErrorHandler.newError(new Error("Editor Error","An error occured whilst trying to create a "+ key + "\n dynamically from it's properties." +
                             " \n\n It is recommended that you create a concrete drawable implementation of this component.", e));
                 }
-
+            } else {
+                ErrorHandler.newError(new Error("Editor Error",key + " is not a valid key for a logical component."));
             }
-        }
+        }        
         
-        ErrorHandler.newError(new Error("Editor Error",key + " is not a valid key for a logical component."));
         return null;
     } 
     
@@ -1293,7 +1324,7 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
      * @param endPoint  the point at which to fix the component
      */
     public void fixComponent(SelectableComponent sc) {
-        getActiveCircuit().getCommandHistory().doCommand(new FixComponentCommand(sc));
+        getActiveCircuit().getCommandHistory().doCommand(new FixComponentCommand(getActiveCircuit().getCommandHistory(), sc));
     }
     
     public OptionsPanel getOptionsPanel(){
@@ -1577,6 +1608,18 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         return clipboard;
     }
     
+    public javax.swing.JLabel getStatusAnimationLabel(){
+        return statusAnimationLabel;
+    }
+    
+    public javax.swing.JLabel getStatusMessageLabel(){
+        return statusMessageLabel;
+    }
+    
+    public javax.swing.JProgressBar getProgressBar(){
+        return progressBar;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem About;
     private javax.swing.JButton ClearCircuit;
@@ -1639,5 +1682,11 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JSlider jSlider1;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JProgressBar progressBar;
+    private javax.swing.JLabel statusAnimationLabel;
+    private javax.swing.JLabel statusMessageLabel;
+    private javax.swing.JPanel statusPanel;
     // End of variables declaration//GEN-END:variables
+
+    private JDialog aboutBox = new AboutBox(this);
 }

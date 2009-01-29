@@ -1,14 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ui.command;
 
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JOptionPane;
-import ui.CircuitPanel;
 import ui.Editor;
 import ui.components.SelectableComponent;
 
@@ -18,6 +12,10 @@ import ui.components.SelectableComponent;
  */
 public class ClearCircuitCommand extends Command {   
     private List<SelectableComponent> backup = new LinkedList<SelectableComponent>();
+
+    public ClearCircuitCommand(CommandHistory cmdHist) {
+        super(cmdHist);
+    }   
     
     @Override
     protected void perform(Editor editor) {
@@ -41,7 +39,7 @@ public class ClearCircuitCommand extends Command {
     }
 
     @Override
-    public String toString() {
+    public String getName() {
         return "Clear Circuit";
     } 
     

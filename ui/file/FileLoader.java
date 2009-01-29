@@ -107,7 +107,7 @@ public class FileLoader extends DefaultHandler{
                 String label = attribs.getValue("label");
                 
                 // Create a new component with the desired attributes
-                CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
+                CreateComponentCommand ccc = new CreateComponentCommand(editor.getActiveCircuit().getCommandHistory(), new Object[]{
                     type,                // properties[0] = componentName
                     rotation,            // properties[1] = rotation
                     p,                   // properties[2] = point

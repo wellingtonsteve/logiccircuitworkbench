@@ -2,7 +2,6 @@ package ui.components;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
@@ -78,34 +77,6 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     
     protected void setActiveImage(){
         activeBi = nl.getImage(getComponentTreeName()+".active");
-    }
-    
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        if(!isFixed() && !getSelectionState().equals(SelectionState.ACTIVE)){
-             setSelectionState(SelectionState.DEFAULT);
-        } 
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        if(isFixed()){
-            if(getSelectionState().equals(SelectionState.ACTIVE)){
-                 setSelectionState(SelectionState.HOVER);
-            } else {
-                 setSelectionState(SelectionState.ACTIVE);
-            }
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        setSelectionState(SelectionState.ACTIVE);
     }
 
     @Override

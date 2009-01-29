@@ -10,7 +10,12 @@ import ui.Editor;
 public abstract class Command implements Cloneable{
     protected CircuitPanel activeCircuit;
     protected boolean canUndo = false;    
+    protected CommandHistory parentHistory;
     
+    public Command(CommandHistory cmdHist){
+        this.parentHistory = cmdHist;
+    }
+        
     /**
      * Carry out the command (if we are in the correct state to do so)
      * 
@@ -18,8 +23,10 @@ public abstract class Command implements Cloneable{
      */
     public final void execute(Editor editor) {
        if(!canUndo){
+           parentHistory.stageChange("started", "");
            activeCircuit = editor.getActiveCircuit();
            perform(editor);
+           parentHistory.stageChange("done", "");
        }       
     }
     
@@ -42,7 +49,8 @@ public abstract class Command implements Cloneable{
     }
     
     protected void undoEffect(Editor editor) {
-        ui.error.ErrorHandler.newError(new ui.error.Error("Cannot Undo Command",this.getClass().getSimpleName() +"\nThis command cannot be undone."));
+        ui.error.ErrorHandler.newError("Cannot Undo Command",
+                this.getClass().getSimpleName() +"\nThis command cannot be undone.");
     }
     
     /** Make an independent copy of an unperformed command */
@@ -56,7 +64,6 @@ public abstract class Command implements Cloneable{
        }
     }
 
-    @Override
-    public abstract String toString();
-    
+    public abstract String getName();
+       
 }

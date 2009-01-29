@@ -10,7 +10,11 @@ import ui.Editor;
  * @author matt
  */
 public class FileSaveAsCommand extends Command {
-
+    
+    public FileSaveAsCommand(CommandHistory cmdHist) {
+        super(cmdHist);
+    }
+    
     @Override
     protected void perform(Editor editor) {
         String filename;                                    
@@ -22,12 +26,13 @@ public class FileSaveAsCommand extends Command {
         if (rVal == JFileChooser.APPROVE_OPTION) {
             filename = c.getSelectedFile().getAbsolutePath();
             activeCircuit.saveAs(filename);
+            parentHistory.stageChange("message", getName() + ": " + filename);
         }
     }
 
     @Override
-    public String toString() {
-        return "Save Circuit File As";
+    public String getName() {
+        return "Saved Circuit File As";
     }
 
 }

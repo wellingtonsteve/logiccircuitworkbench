@@ -11,6 +11,10 @@ import ui.file.XMLFileFilter;
  */
 public class FileSaveCommand extends Command {
 
+    public FileSaveCommand(CommandHistory cmdHist) {
+        super(cmdHist);
+    }
+
     @Override
     protected void perform(Editor editor) {
         String filename = activeCircuit.getFilename();      
@@ -24,16 +28,18 @@ public class FileSaveCommand extends Command {
             if (rVal == JFileChooser.APPROVE_OPTION) {
                 filename = c.getSelectedFile().getAbsolutePath();
                 activeCircuit.saveAs(filename);
+                parentHistory.stageChange("message", getName() + ": " + filename);
             }
         } else {
             activeCircuit.saveAs(filename);
+            parentHistory.stageChange("message", getName() + ": " + filename);
         }
         
     }
 
     @Override
-    public String toString() {
-        return "Save Circuit File";
+    public String getName() {
+        return "Saved Circuit File: filename";
     }
 
 }
