@@ -637,6 +637,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="StepForwardButton">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="2" name="C:\Users\Stephen\Documents\NetBeansProjects\trunk\ui\images\buttons\toolbar\media-seek-forward.png"/>
+            </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="ui/Bundle.properties" key="Editor.StepForwardButton.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
