@@ -39,4 +39,12 @@ public class ErrorHandler {
         newError(new Error(title, message, exception));
     }
     
+    public static void changeStatus(String stage, Object value){
+        if(!errorlisteners.isEmpty()){
+            for(ErrorListener el: errorlisteners){
+                el.statusChange(stage, value);
+            }
+        } 
+    }
+    
 }
