@@ -19,6 +19,7 @@ public class InputPin extends Pin implements OutputValueListener {
     public void disconnect() {
         if (this.connectedTo != null) {
             this.connectedTo.removeOutputValueListener(this);
+            
         }
     }
 
