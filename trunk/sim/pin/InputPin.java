@@ -1,4 +1,6 @@
-package sim;
+package sim.pin;
+
+import sim.*;
 
 public class InputPin extends Pin implements OutputValueListener {
 
@@ -19,7 +21,7 @@ public class InputPin extends Pin implements OutputValueListener {
     public void disconnect() {
         if (this.connectedTo != null) {
             this.connectedTo.removeOutputValueListener(this);
-            
+
         }
     }
 

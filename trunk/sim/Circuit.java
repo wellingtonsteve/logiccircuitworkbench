@@ -1,6 +1,7 @@
 package sim;
 
 import java.util.*;
+import sim.pin.*;
 
 class Circuit implements SimItem {
     
