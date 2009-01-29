@@ -1,7 +1,6 @@
 package sim.pin;
 
 import sim.*;
-
 import java.util.ArrayList;
 
 public abstract class Pin {
