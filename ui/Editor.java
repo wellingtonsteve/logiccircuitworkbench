@@ -1689,4 +1689,8 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     // End of variables declaration//GEN-END:variables
 
     private JDialog aboutBox = new AboutBox(this);
+
+    public void statusChange(String stage, Object value) {
+        cmdHist.stageChange(stage, value);
+    }
 }

@@ -184,7 +184,7 @@ public class CommandHistory {
         redolisteners.add(redolistener);
     }
     
-    void stageChange(String stage, Object value) {
+    public void stageChange(String stage, Object value) {
         if ("started".equals(stage)) {
             if (!busyIconTimer.isRunning()) {
                 statusAnimationLabel.setIcon(busyIcons[0]);
