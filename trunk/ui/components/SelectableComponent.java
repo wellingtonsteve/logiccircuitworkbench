@@ -62,8 +62,6 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     
     /** @see getComponentTreeName() */
     protected String componentTreeName;
-
-    protected Point draggedPoint = new Point(0,0);
     
     /**
      * Default constructor for a SelectableComponent. 
@@ -221,9 +219,10 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         translate(newOrigin.x-origin.x, newOrigin.y-origin.y, fixed);
     }
     
-    public void moveToWithDragDisplacement(Point newOrigin, boolean fixed){
-        int dx = origin.x - draggedPoint.x;
-        int dy = origin.y - draggedPoint.y;
+    public void moveToWithDragDisplacement(Point newOrigin, Point anchor, boolean fixed){
+        int dx = origin.x - anchor.x;
+        int dy = origin.y - anchor.y;
+        System.out.println((newOrigin.x-origin.x+dx) + " " + (newOrigin.y-origin.y+dy));
         translate(newOrigin.x-origin.x+dx, newOrigin.y-origin.y+dy, fixed);
     }
     
@@ -522,11 +521,9 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     public abstract void mouseReleased(MouseEvent e);
     public void mouseDragged(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);
-        draggedPoint = e.getPoint();
     }
     public void mouseDraggedDropped(MouseEvent e) {
         setSelectionState(SelectionState.DEFAULT);
-        draggedPoint = new Point(0,0);
     }
     
     /**

@@ -81,18 +81,6 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     }
     
     @Override
-    public void mouseDragged(MouseEvent e) {
-        setSelectionState(SelectionState.ACTIVE);
-        draggedPoint = e.getPoint();
-    }
-
-    @Override
-    public void mouseDraggedDropped(MouseEvent e) {
-        setSelectionState(SelectionState.DEFAULT);
-        draggedPoint = new Point(0,0);
-    }
-    
-    @Override
     public void mouseMoved(MouseEvent e) {
         if(!isFixed() && !getSelectionState().equals(SelectionState.ACTIVE)){
              setSelectionState(SelectionState.DEFAULT);
