@@ -451,9 +451,20 @@ public class CircuitPanel extends JPanel {
 
                 // Drop draged components
                 if (nowDragingComponent) {
-                    for (SelectableComponent sc : activeComponents) {
-                        sc.moveToWithDragDisplacement(endPoint,true);
-                        sc.mouseDraggedDropped(e);
+                    Point anchor = temporaryComponent.getOrigin();
+                    boolean canMoveAll = true;
+                    for(SelectableComponent sc: activeComponents){
+                        int dx = endPoint.x- anchor.x;
+                        int dy = endPoint.y- anchor.y;
+                        canMoveAll &= grid.canTranslateComponent(sc,dx,dy);
+                    }
+                    if(canMoveAll){
+                        for(SelectableComponent sc: activeComponents){
+                            int dx = endPoint.x- anchor.x;
+                            int dy = endPoint.y- anchor.y;
+                            sc.translate(dx, dy, true);
+                            sc.mouseDraggedDropped(e);
+                        }
                     }
                     multipleSelection = false;
                     nowDragingComponent = false;
@@ -574,14 +585,6 @@ public class CircuitPanel extends JPanel {
 
                     repaint();
                 }
-//                else if(nowDragingComponent && currentTool.equals("Select")){
-//                    for(SelectableComponent sc: activeComponents){
-//                        if(!(sc instanceof Wire)){ sc.moveTo(endPoint, false); }
-//                        sc.mouseDragged(e);
-//                    }
-//                    
-//                    repaint();
-//                }
             }
         }                   
 
@@ -594,9 +597,23 @@ public class CircuitPanel extends JPanel {
                 if(currentTool.equals("Select")){
 
                     if(nowDragingComponent){
+                        Point anchor = temporaryComponent.getOrigin();
+                        boolean canMoveAll = true;
                         for(SelectableComponent sc: activeComponents){
-                            sc.moveToWithDragDisplacement(endPoint, false);
-                            sc.mouseDragged(e);
+                            int dx = endPoint.x- anchor.x;
+                            int dy = endPoint.y- anchor.y;
+                            canMoveAll &= grid.canTranslateComponent(sc,dx,dy);
+                        }
+                        if(canMoveAll){
+                            for(SelectableComponent sc: activeComponents){
+                                int dx = endPoint.x- anchor.x;
+                                int dy = endPoint.y- anchor.y;
+                                sc.translate(dx, dy, false);
+                                sc.mouseDragged(e);
+                                if(sc.equals(temporaryComponent)){
+                                    sc.resetDefaultState();
+                                }
+                            }
                         }
                     }  else {
 
@@ -607,6 +624,7 @@ public class CircuitPanel extends JPanel {
                             if(sc.isFixed() && sc.containsPoint(startPoint)){
                                 clickingEmptySpace = false;
                                 temporaryComponent = sc;
+                                break;
                             } 
                         }  
 
@@ -626,6 +644,9 @@ public class CircuitPanel extends JPanel {
                             for(SelectableComponent sc: activeComponents){                
                                 sc.translate(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y, false);
                                 sc.mouseDragged(e);
+                                if(sc.equals(temporaryComponent)){
+                                    sc.resetDefaultState();
+                                }
                             }
                         }
                     }
