@@ -11,25 +11,25 @@ public class InputPin extends Pin implements OutputValueListener {
     }
 
     public void connectToOutput(OutputPin output) {
-        if (this.connectedTo != null) {
-            this.disconnect();
+        if (connectedTo != null) {
+            disconnect();
         }
-        this.connectedTo = output;
+        connectedTo = output;
         output.addOutputValueListener(this);
     }
 
     public void disconnect() {
-        if (this.connectedTo != null) {
-            this.connectedTo.removeOutputValueListener(this);
-
+        if (connectedTo != null) {
+            connectedTo.removeOutputValueListener(this);
+            connectedTo = null;
         }
     }
 
     public void outputValueChanged(State value) {
-        this.setValue(connectedTo.getValue());
+        setValue(connectedTo.getValue());
     }
 
     public OutputPin getConnectedTo() {
-        return this.connectedTo;
+        return connectedTo;
     }
 }
