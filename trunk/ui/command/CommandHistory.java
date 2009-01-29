@@ -1,9 +1,15 @@
 package ui.command;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import javax.swing.Icon;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
+import javax.swing.Timer;
 import ui.Editor;
 import ui.UIConstants;
 
@@ -19,11 +25,45 @@ public class CommandHistory {
     private List<JComponent> undolisteners = new LinkedList<JComponent>();
     private List<JComponent> redolisteners = new LinkedList<JComponent>();
     private boolean isDirty = false;
-    
-    public CommandHistory(Editor parentEditor){
+    private final Timer messageTimer;
+    private final Timer busyIconTimer;
+    private final Icon idleIcon;
+    private final Icon[] busyIcons = new Icon[15];
+    private int busyIconIndex = 0;
+    private final JLabel statusAnimationLabel;
+    private final JLabel statusMessageLabel;
+    private final JProgressBar progressBar;
+
+    public CommandHistory(Editor parentEditor) {
         this.parentEditor = parentEditor;
+        this.statusAnimationLabel = parentEditor.getStatusAnimationLabel();
+        this.statusMessageLabel = parentEditor.getStatusMessageLabel();
+        this.progressBar = parentEditor.getProgressBar();
+        
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
+        // status bar initialization - message timeout, idle icon and busy animation, etc
+        int messageTimeout = Integer.parseInt(bundle.getString("StatusBar.messageTimeout"));
+        messageTimer = new Timer(messageTimeout, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                statusMessageLabel.setText("");
+            }
+        });
+        messageTimer.setRepeats(false);
+        int busyAnimationRate = Integer.parseInt(bundle.getString("StatusBar.busyAnimationRate"));
+        for (int i = 0; i < busyIcons.length; i++) {
+            busyIcons[i] = new javax.swing.ImageIcon(getClass().getResource(bundle.getString("StatusBar.busyIcons[" + i + "]")));
+        }
+        busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
+                statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
+            }
+        });
+        idleIcon = new javax.swing.ImageIcon(getClass().getResource(bundle.getString("StatusBar.idleIcon")));
+        statusAnimationLabel.setIcon(idleIcon);
+        progressBar.setVisible(false);
     }
-    
+      
     /**
      * Execute a new command and if it can be undone, push it onto the undo stack
      * for later.
@@ -81,6 +121,7 @@ public class CommandHistory {
                     c.setEnabled(canRedo());
                 }
             }
+            cmd.activeCircuit.repaint();
         } else {
             UIConstants.beep();
         }
@@ -104,6 +145,7 @@ public class CommandHistory {
                     c.setEnabled(canRedo());
                 }
             }
+            cmd.activeCircuit.repaint();
         } else {
             UIConstants.beep();
         }
@@ -140,6 +182,32 @@ public class CommandHistory {
      */
     public void addRedoEmptyListener(JComponent redolistener){
         redolisteners.add(redolistener);
+    }
+    
+    void stageChange(String stage, Object value) {
+        if ("started".equals(stage)) {
+            if (!busyIconTimer.isRunning()) {
+                statusAnimationLabel.setIcon(busyIcons[0]);
+                busyIconIndex = 0;
+                busyIconTimer.start();
+            }
+            progressBar.setVisible(true);
+            progressBar.setIndeterminate(true);
+        } else if ("done".equals(stage)) {
+            busyIconTimer.stop();
+            statusAnimationLabel.setIcon(idleIcon);
+            progressBar.setVisible(false);
+            progressBar.setValue(0);
+        } else if ("message".equals(stage)) {
+            String text = (String)value;
+            statusMessageLabel.setText((text == null) ? "" : text);
+            messageTimer.restart();
+        } else if ("progress".equals(stage)) {
+            int i = (Integer)value;
+            progressBar.setVisible(true);
+            progressBar.setIndeterminate(false);
+            progressBar.setValue(i);
+        }
     }
 }
 

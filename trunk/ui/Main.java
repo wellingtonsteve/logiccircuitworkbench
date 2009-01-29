@@ -11,11 +11,11 @@ import ui.error.ErrorHandler;
 public class Main {
 
     public static void main(String[] args){
-        try {
+       try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
            
             SplashDialog splash = new SplashDialog();
-            splash.setVisible(true);
+            splash.setVisible(true);   
 
             JProgressBar loadingBar = splash.getProgressBar();
             loadingBar.setString("Loading...");
@@ -45,22 +45,17 @@ public class Main {
                 loadingBar.setString("Testing Offscreen Drawing: " + ((editor.drawDirect())?"Drawing Directly":"Drawing Offscreen"));
                 loadingBar.setValue(100);
             }
-
-            editor.setVisible(true); 
-            splash.setVisible(false);    
-           
+            
+            splash.setVisible(false);      
+            editor.setVisible(true);   
+                     
         } 
         catch (Exception e) {
            // TODO: Remove after debugging 
             e.printStackTrace();
             
             // Report unexpected errors to user
-            ErrorHandler.newError("Unknown Error","An unexpected error has occured, please see the system error below.", e);
-            
+            ErrorHandler.newError("Unknown Error","An unexpected error has occured, please see the system error below.", e);            
         }       
-                        
- 
-
     }
-
 }

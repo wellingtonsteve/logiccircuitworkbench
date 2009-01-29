@@ -58,7 +58,7 @@ public class OptionsPanel extends JPanel{
         labelTextbox.addActionListener(new ActionListener(){
 
             public void actionPerformed(ActionEvent e) {
-                editor.getActiveCircuit().getCommandHistory().doCommand(new EditLabelCommand(sc, labelTextbox.getText()));
+                editor.getActiveCircuit().getCommandHistory().doCommand(new EditLabelCommand(editor.getActiveCircuit().getCommandHistory(), sc, labelTextbox.getText()));
             }
             
         });
@@ -67,7 +67,7 @@ public class OptionsPanel extends JPanel{
             public void focusGained(FocusEvent e) {}
 
             public void focusLost(FocusEvent e) {
-                editor.getActiveCircuit().getCommandHistory().doCommand(new EditLabelCommand(sc, labelTextbox.getText()));
+                editor.getActiveCircuit().getCommandHistory().doCommand(new EditLabelCommand(editor.getActiveCircuit().getCommandHistory(), sc, labelTextbox.getText()));
             }
             
         });

@@ -63,6 +63,9 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     /** @see getComponentTreeName() */
     protected String componentTreeName;
     
+    /** Store the point at which this component was unfixed */
+    protected Point unFixedPoint;
+    
     /**
      * Default constructor for a SelectableComponent. 
      * 
@@ -154,6 +157,13 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         this.origin = origin;
     }
     
+    /** 
+     * Get the point at which this component was unfixed 
+     */
+    public Point getUnfixedOrigin(){
+        return unFixedPoint;
+    }
+    
     /**
      * Centre points of components are use as the anchor for the mouse pointer.
      * In local co-ordinates
@@ -196,6 +206,11 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
             setInvalidAreas();
             setBoundingBox();
             
+            // Rememeber my position at the moment I started to move
+            if(this.fixed && !fixed){
+                unFixedPoint = origin.getLocation();
+            }
+            
             if (fixed){ 
                 grid.markInvalidAreas(this);                 
             }            
@@ -217,13 +232,6 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      */
     public void moveTo(Point newOrigin, boolean fixed){
         translate(newOrigin.x-origin.x, newOrigin.y-origin.y, fixed);
-    }
-    
-    public void moveToWithDragDisplacement(Point newOrigin, Point anchor, boolean fixed){
-        int dx = origin.x - anchor.x;
-        int dy = origin.y - anchor.y;
-        System.out.println((newOrigin.x-origin.x+dx) + " " + (newOrigin.y-origin.y+dy));
-        translate(newOrigin.x-origin.x+dx, newOrigin.y-origin.y+dy, fixed);
     }
     
     /**
@@ -511,14 +519,32 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     public abstract void createXML(TransformerHandler hd);   
     
     /**
-     * The following methods must all change the state appropriately upon the 
+     * The following methods all change the state appropriately upon the 
      * corresponding mouse actions being called.
      * @param e The MouseEvent of the calling action.
      */
-    public abstract void mouseMoved(MouseEvent e);
-    public abstract void mouseClicked(MouseEvent e);
-    public abstract void mousePressed(MouseEvent e);
-    public abstract void mouseReleased(MouseEvent e);
+    public void mouseMoved(MouseEvent e) {
+        if(!isFixed() && !getSelectionState().equals(SelectionState.ACTIVE)){
+             setSelectionState(SelectionState.DEFAULT);
+        } 
+    }
+    public void mouseClicked(MouseEvent e) {
+        if(isFixed()){
+            if(getSelectionState().equals(SelectionState.ACTIVE)){
+                 setSelectionState(SelectionState.HOVER);
+            } else {
+                 setSelectionState(SelectionState.ACTIVE);
+            }
+        }
+    }
+    public void mousePressed(MouseEvent e) {
+        ui.error.ErrorHandler.newError("Mouse Press Error", 
+                "An action has not yet been defined to pressing the mouse on a \"" +
+                getComponentTreeName() + "\".");
+    }
+    public void mouseReleased(MouseEvent e) {
+        setSelectionState(SelectionState.ACTIVE);
+    }
     public void mouseDragged(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);
     }

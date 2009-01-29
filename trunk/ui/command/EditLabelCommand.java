@@ -17,7 +17,8 @@ public class EditLabelCommand extends Command {
     private String oldLabel;
     private Labeled item;
 
-    public EditLabelCommand(Labeled sc, String text) {
+    public EditLabelCommand(CommandHistory cmdHist, Labeled sc, String text) {
+        super(cmdHist);
         this.item = sc;
         this.labelStr = text;
         this.oldLabel = item.getLabel();
@@ -40,7 +41,7 @@ public class EditLabelCommand extends Command {
     }
 
     @Override
-    public String toString() {
+    public String getName() {
         return "Edit label \"" + labelStr + "\"";
     } 
 
