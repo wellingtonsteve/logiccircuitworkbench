@@ -578,7 +578,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         return super.clone();
     }
     
-    public class Pin extends Point implements OutputValueListener {
+    public class Pin extends Point implements ValueListener {
 
         private SelectableComponent parent;
         private State value;
@@ -594,7 +594,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
             super(x,y);
             this.parent = SelectableComponent.this;
             this.simPin = simPin;
-            this.simPin.addOutputValueListener(this);
+            this.simPin.addValueListener(this);
         }   
 
         public SelectableComponent getParent(){
@@ -613,7 +613,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
             }
         }
 
-        public void outputValueChanged(State value) {
+        public void valueChanged(State value) {
             this.value = value;
         }
 
