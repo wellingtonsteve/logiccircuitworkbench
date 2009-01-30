@@ -28,11 +28,6 @@ public class OrGate2Input extends ImageSelectableComponent{
     protected void setComponentTreeName() {
         componentTreeName = "Logic Gates.2 Input.OR";
     }
-    
-    @Override
-    public String getName(){
-        return "Or Gate";
-    }
 
     @Override
     protected void setInvalidAreas(){

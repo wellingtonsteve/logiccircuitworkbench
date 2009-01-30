@@ -13,11 +13,6 @@ public class AndGate2Input extends ImageSelectableComponent{
     public AndGate2Input(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
     }
-    
-    @Override
-    public String getName(){
-        return "And Gate (2 Input)";
-    }
 
     @Override
     protected void setInvalidAreas(){
