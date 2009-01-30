@@ -20,12 +20,6 @@ public class AndGate3Input extends ImageSelectableComponent{
     }
     
     @Override
-    public String getName(){
-        //return getLogicalComponent().getType();
-        return "And Gate (3 Input)";
-    }
-
-    @Override
     protected void setInvalidAreas(){
         invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+19
                 ,(int)getOrigin().getY()+19-getCentre().y ,32 ,22);

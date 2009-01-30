@@ -28,11 +28,6 @@ public class NorGate2Input extends ImageSelectableComponent{
     protected void setComponentTreeName() {
         componentTreeName = "Logic Gates.2 Input.NOR";
     }
-    
-    @Override
-    public String getName(){
-        return "Nor Gate";
-    }
 
     @Override
     protected void setInvalidAreas(){

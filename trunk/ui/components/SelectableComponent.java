@@ -247,8 +247,9 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     /**
      * @return Short description of the Component
      */
-    public abstract String getName();
-    
+    public String getName(){
+        return logicalComponent.getLongName();
+    }    
     /**
      * Rotations of this component are specified in radians and are rotated clockwise about
      * the centre point of the component. The zero radian position is the standard

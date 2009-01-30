@@ -1520,9 +1520,7 @@ private void ToggleGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
 
         @Override
         public String getName() {
-            //return simitem.getName();
-            //return componentTreeName;
-            return " XOR";
+            return componentTreeName;
         }
 
         @Override
@@ -1585,22 +1583,18 @@ private void ToggleGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
             }            
             
             g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-            g.drawString(getName(), 10, 10);
+            g.drawString(simitem.getShortName(), 10, 10);
             
             int inputPinNo = simitem.getInputs().size();
             int outputPinNo = simitem.getOutputs().size();
 
             for (int i = 0; i < inputPinNo; i++) {
                 Point p = new Point(0, (i + 1) * UIConstants.GRID_DOT_SPACING);
-//                g.fillOval(p.x-3, p.y-3, 5, 5);
-//                g.drawOval(p.x-3, p.y-3, 5, 5);
                 g.drawLine(p.x, p.y, p.x+UIConstants.GRID_DOT_SPACING, p.y);
             }
 
             for (int i = 0; i < outputPinNo; i++) {
                 Point p = new Point(getWidth() + UIConstants.GRID_DOT_SPACING, (i + 1) * UIConstants.GRID_DOT_SPACING);
-//                g.fillOval(p.x-3, p.y-3, 5, 5);
-//                g.drawOval(p.x-3, p.y-3, 5, 5);
                 g.drawLine(p.x, p.y, p.x-UIConstants.GRID_DOT_SPACING, p.y);
             }
 
