@@ -1,21 +1,19 @@
 package netlist;
 
 /**
- * This netlist provides basic boolean Logic Gate components.
- * 
+ * This netlist provides basic boolean Logic Gate components. 
  * 
  * @author matt
  */
 public class LogicGates extends Netlist{
 
     @Override
-    protected void setClassMappings() {
-        putClass("Logic Gates.2 Input.AND",   ui.components.logicgates.AndGate2Input.class);
-        putClass("Logic Gates.2 Input.OR",    ui.components.logicgates.OrGate2Input.class);
-        putClass("Logic Gates.2 Input.NAND",  ui.components.logicgates.NandGate2Input.class);
-        putClass("Logic Gates.2 Input.NOR",   ui.components.logicgates.NorGate2Input.class);
-        putClass("Logic Gates.3 Input.AND",   ui.components.logicgates.AndGate3Input.class);
-        
+    protected void setDrawableMappings() {
+        putDrawableClass("Logic Gates.2 Input.AND",   ui.components.logicgates.AndGate2Input.class);
+        putDrawableClass("Logic Gates.2 Input.OR",    ui.components.logicgates.OrGate2Input.class);
+        putDrawableClass("Logic Gates.2 Input.NAND",  ui.components.logicgates.NandGate2Input.class);
+        putDrawableClass("Logic Gates.2 Input.NOR",   ui.components.logicgates.NorGate2Input.class);
+        putDrawableClass("Logic Gates.3 Input.AND",   ui.components.logicgates.AndGate3Input.class);        
     }
 
     @Override
@@ -39,8 +37,7 @@ public class LogicGates extends Netlist{
         putImage("Logic Gates.2 Input.OR.selected",    "/ui/images/components/selected_2in_or.png");
         putImage("Logic Gates.2 Input.NAND.selected",  "/ui/images/components/selected_2in_nand.png");
         putImage("Logic Gates.2 Input.NOR.selected",   "/ui/images/components/selected_2in_nor.png");
-        putImage("Logic Gates.3 Input.AND.selected",   "/ui/images/components/selected_3in_and.png");
-        
+        putImage("Logic Gates.3 Input.AND.selected",   "/ui/images/components/selected_3in_and.png");        
     }
 
     @Override
@@ -51,7 +48,6 @@ public class LogicGates extends Netlist{
         putLogicClass("Logic Gates.2 Input.NOR",   sim.componentLibrary.logicgates.AndGate2Input.class);
         putLogicClass("Logic Gates.2 Input.XOR",   sim.componentLibrary.logicgates.AndGate2Input.class);
         putLogicClass("Logic Gates.3 Input.AND",   sim.componentLibrary.logicgates.AndGate2Input.class);
-
     }
 
 }

@@ -75,6 +75,8 @@ public class CommandHistory {
         if(cmd.canUndo()){ // Is this an undoable command?
             undostack.push(cmd);
             setIsDirty(true);
+            ui.CircuitFrame frame = cmd.activeCircuit.getParentFrame();
+            frame.setTitle(cmd.activeCircuit.getFilename() +  "*");
             if(undostack.size() == 1){
                 for(JComponent c: undolisteners){
                     c.setEnabled(canUndo());

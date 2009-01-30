@@ -17,14 +17,19 @@ public class FileSaveAsCommand extends Command {
     
     @Override
     protected void perform(Editor editor) {
-        String filename;                                    
+        String filename = activeCircuit.getFilename(); ;                                    
         JFileChooser c = new JFileChooser();
         FileFilter xmlFilter = new XMLFileFilter();        
         c.setFileFilter(xmlFilter);
+        c.setSelectedFile(new java.io.File(filename));
         c.setDialogType(JFileChooser.SAVE_DIALOG);
         int rVal = c.showSaveDialog(editor);
         if (rVal == JFileChooser.APPROVE_OPTION) {
             filename = c.getSelectedFile().getAbsolutePath();
+            // Forgotten Extension?
+            if(!ui.UIConstants.FILE_EXTENSION.equals(filename.substring(filename.length()-4, filename.length()))){
+                filename = filename + ui.UIConstants.FILE_EXTENSION;
+            }            
             activeCircuit.saveAs(filename);
             parentHistory.stageChange("message", getName() + ": " + filename);
         }

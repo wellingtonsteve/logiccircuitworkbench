@@ -32,20 +32,20 @@ import ui.components.SelectableComponent;
  */
 public abstract class Netlist {
     
-    protected LinkedHashMap<String, Class<? extends SelectableComponent>> classMap = new  LinkedHashMap<String, Class<? extends SelectableComponent>>();
+    protected LinkedHashMap<String, Class<? extends SelectableComponent>> drawableMap = new  LinkedHashMap<String, Class<? extends SelectableComponent>>();
     protected LinkedHashMap<String, BufferedImage> imageMap = new  LinkedHashMap<String, BufferedImage>();
     protected LinkedHashMap<String, Class<? extends SimItem>> logicMap = new LinkedHashMap<String, Class<? extends SimItem>>();    
     
     public Netlist(){
         setLogicMappings();
-        setClassMappings();
+        setDrawableMappings();
         setImageMappings();
     }
 
     /**
      * Populate the mappings upon intialisation
      */
-    protected abstract void setClassMappings();
+    protected abstract void setDrawableMappings();
     
     /**
      * Populate the image mappings upon intialisation
@@ -63,8 +63,8 @@ public abstract class Netlist {
      * @param key   The name as it will appear in the component tree
      * @param value     The canonical name of the class file
      */
-    public void putClass(String key, Class<? extends SelectableComponent> value){
-        classMap.put(key, value);
+    public void putDrawableClass(String key, Class<? extends SelectableComponent> value){
+        drawableMap.put(key, value);
     }
       
      /**
@@ -84,7 +84,7 @@ public abstract class Netlist {
             key = key.replaceAll(".selected", "");
  
             System.out.println(key);
-            classMap.remove(key);
+            drawableMap.remove(key);
             logicMap.remove(key);
             ErrorHandler.newError(new ui.error.Error("Initialisation Error", "Could not load image: \n" + value + ".\n\nComponent not loaded.", ex));    
         }        
@@ -106,8 +106,8 @@ public abstract class Netlist {
      * @param key
      * @return
      */
-    public Class<? extends SelectableComponent> getClass(String key){
-        return classMap.get(key);
+    public Class<? extends SelectableComponent> getDrawableClass(String key){
+        return drawableMap.get(key);
     }
     
     /**
@@ -144,8 +144,8 @@ public abstract class Netlist {
     /**
      * @see #java.util.Set
      */
-    public boolean containsKey(String key){
-        return classMap.containsKey(key);
+    public boolean containsDrawableKey(String key){
+        return drawableMap.containsKey(key);
     }
     
     /**

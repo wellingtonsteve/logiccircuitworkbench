@@ -24,9 +24,14 @@ public class FileSaveCommand extends Command {
             FileFilter xmlFilter = new XMLFileFilter();        
             c.setFileFilter(xmlFilter);
             c.setDialogType(JFileChooser.SAVE_DIALOG);
+            c.setSelectedFile(new java.io.File(filename));
             int rVal = c.showSaveDialog(editor);
             if (rVal == JFileChooser.APPROVE_OPTION) {
                 filename = c.getSelectedFile().getAbsolutePath();
+                // Forgotten Extension?
+                if(!ui.UIConstants.FILE_EXTENSION.equals(filename.substring(filename.length()-4, filename.length()))){
+                    filename = filename + ui.UIConstants.FILE_EXTENSION;
+                }
                 activeCircuit.saveAs(filename);
                 parentHistory.stageChange("message", getName() + ": " + filename);
             }

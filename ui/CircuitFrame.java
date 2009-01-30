@@ -49,7 +49,7 @@ public class CircuitFrame extends JInternalFrame{
 
         setVisible(true);
         
-        setTitle("Untitled"+untitledIndex);
+        setTitle("Untitled"+untitledIndex+".xml");
 
         circuitPanel.setParentFrame(this);
         circuitPanel.setMinimumSize(new java.awt.Dimension(1000, 800));
@@ -97,7 +97,9 @@ public class CircuitFrame extends JInternalFrame{
                             setClosed(false);
                         }
                     } catch (PropertyVetoException ex) {
-                        ErrorHandler.newError("Circuit Close Error","An error occured whilst trying to close the circuit. \nPlease see the system output below.", ex);
+                        ErrorHandler.newError("Circuit Close Error",
+                                "An error occured whilst trying to close the circuit. \n" +
+                                "Please see the system output below.", ex);
                     }
                 } else {
                     dispose();

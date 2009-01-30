@@ -156,7 +156,9 @@ public class FileLoader extends DefaultHandler{
                     ((Input) top).setIsOn(attrValue.equals("On"));
                 } else {
                     successful = false;           
-                    ErrorHandler.newError("File Load Error","Invalid File Format: The property \"" + attrName + "\" is not valid for a "+ top.getClass().getSimpleName() +".");
+                    ErrorHandler.newError("File Load Error",
+                            "Invalid File Format: The property \"" + attrName +
+                            "\" is not valid for a "+ top.getClass().getSimpleName() +".");
                 }
 
             // Add a waypoint to a previously created wire <waypoint>
@@ -171,7 +173,9 @@ public class FileLoader extends DefaultHandler{
                     ((Wire) top).addWaypoint(new Point(x,y));
                 } else {
                     successful = false;           
-                    ErrorHandler.newError("File Load Error","Invalid File Format: The element \"waypoint\" is not valid for a "+ top.getClass().getSimpleName() +".");
+                    ErrorHandler.newError("File Load Error",
+                            "Invalid File Format: The element \"waypoint\" " +
+                            "is not valid for a "+ top.getClass().getSimpleName() +".");
                 }
             }
         }        
