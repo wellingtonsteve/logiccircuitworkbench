@@ -70,7 +70,7 @@ public class Wire extends SelectableComponent {
     public void translate(int dx, int dy, boolean fixed) {        
         ui.grid.Grid grid = parent.getGrid();
 
-        if(grid.canTranslateComponent(this, dx, dy)){
+        if(grid.canTranslateComponent(this, dx, dy)|| (dx == 0 && dy == 0)){
             unsetGlobalPins();
             // Rememeber my position at the moment I started to move
             if(this.fixed && !fixed){
