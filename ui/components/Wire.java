@@ -3,7 +3,6 @@ package ui.components;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
-import ui.components.*;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -235,75 +234,79 @@ public class Wire extends SelectableComponent {
     @Override
     public void mouseDragged(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);
-        parent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-        Point p = Grid.snapToGrid(e.getPoint());
         
-        // Moving a segment of the wire
-        if(hoverWaypoint!=null && !hoverWaypoint.equals(endPoint)){
-            int i = waypoints.indexOf(hoverWaypoint);
-            
-            // We have more that one waypoint, let's get the i-1 th waypoint and move the right part of the wire
-            if(i > 0 && i < waypoints.size()){ 
-                Point previousWaypoint = waypoints.get(i-1);
-                // There is no intermeditate point in the joining wire between the two waypoints (vertical)
-                if(previousWaypoint.x == hoverWaypoint.x){ 
-                    createLeg(previousWaypoint, hoverWaypoint);
-                    if(previousWaypoint.equals(new Point(x2, y2))){
-                        hoverWaypoint.x = p.x;
-                    } else {
-                        previousWaypoint.x = p.x;
-                    }                    
-                    hoverMousePoint.x = p.x;
-                } else
-                // There is no intermeditate point in the joining wire between the two waypoints (horizontal)
-                if(previousWaypoint.y == hoverWaypoint.y){ 
-                    createLeg(previousWaypoint, hoverWaypoint);
-                    if(previousWaypoint.equals(new Point(x2, y2))){
-                        hoverWaypoint.y = p.y;
-                    } else {
+        if(isFixed()){
+            parent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+            Point p = Grid.snapToGrid(e.getPoint());
+            // Moving a segment of the wire
+            if(hoverWaypoint!=null && !hoverWaypoint.equals(endPoint)){
+                int i = waypoints.indexOf(hoverWaypoint);
+
+                // We have more that one waypoint, let's get the i-1 th waypoint and move the right part of the wire
+                if(i > 0 && i < waypoints.size()){ 
+                    Point previousWaypoint = waypoints.get(i-1);
+                    // There is no intermeditate point in the joining wire between the two waypoints (vertical)
+                    if(previousWaypoint.x == hoverWaypoint.x){ 
+                        createLeg(previousWaypoint, hoverWaypoint);
+                        if(previousWaypoint.equals(new Point(x2, y2))){
+                            hoverWaypoint.x = p.x;
+                        } else {
+                            previousWaypoint.x = p.x;
+                        }                    
+                        hoverMousePoint.x = p.x;
+                    } else
+                    // There is no intermeditate point in the joining wire between the two waypoints (horizontal)
+                    if(previousWaypoint.y == hoverWaypoint.y){ 
+                        createLeg(previousWaypoint, hoverWaypoint);
+                        if(previousWaypoint.equals(new Point(x2, y2))){
+                            hoverWaypoint.y = p.y;
+                        } else {
+                            previousWaypoint.y = p.y;
+                        }  
+                        hoverMousePoint.y = p.y;
+                    } else
+                    // Just move the horizontal part of the wire leg
+                    if(previousWaypoint.y == hoverMousePoint.y){ 
                         previousWaypoint.y = p.y;
-                    }  
+                        hoverMousePoint.y = p.y;
+                    } else
+                    // Just move the vertical part of the wire leg
+                    if(hoverWaypoint.x == hoverMousePoint.x){ 
+                        hoverMousePoint.x = p.x;
+                        hoverWaypoint.x = p.x;
+                    }
+                } else if(i == 0) { 
+                    createLeg(startPoint, hoverWaypoint);
+                    Line2D.Double l2 = new Line2D.Double(x2, y2, x3, y3);
+                    if(l2.ptLineDist(hoverMousePoint)==0.0){
+                        hoverWaypoint.x = p.x;
+                        hoverMousePoint.x = p.x;
+                    }                
+                } 
+            } else if (hoverWaypoint!=null 
+                    && hoverWaypoint.equals(endPoint) 
+                    && !waypoints.isEmpty()){
+                Point lastWaypoint = waypoints.getLast();
+                createLeg(lastWaypoint, endPoint);
+                Line2D.Double l1 = new Line2D.Double(x1, y1, x2, y2);
+                if(l1.ptLineDist(hoverMousePoint)==0.0){
+                    lastWaypoint.y = p.y;
                     hoverMousePoint.y = p.y;
-                } else
-                // Just move the horizontal part of the wire leg
-                if(previousWaypoint.y == hoverMousePoint.y){ 
-                    previousWaypoint.y = p.y;
-                    hoverMousePoint.y = p.y;
-                } else
-                // Just move the vertical part of the wire leg
-                if(hoverWaypoint.x == hoverMousePoint.x){ 
-                    hoverMousePoint.x = p.x;
-                    hoverWaypoint.x = p.x;
-                }
-            } else if(i == 0) { 
-                createLeg(startPoint, hoverWaypoint);
-                Line2D.Double l2 = new Line2D.Double(x2, y2, x3, y3);
-                if(l2.ptLineDist(hoverMousePoint)==0.0){
-                    hoverWaypoint.x = p.x;
-                    hoverMousePoint.x = p.x;
-                }                
-            } 
-        } else if (hoverWaypoint!=null 
-                && hoverWaypoint.equals(endPoint) 
-                && !waypoints.isEmpty()){
-            Point lastWaypoint = waypoints.getLast();
-            createLeg(lastWaypoint, endPoint);
-            Line2D.Double l1 = new Line2D.Double(x1, y1, x2, y2);
-            if(l1.ptLineDist(hoverMousePoint)==0.0){
-                lastWaypoint.y = p.y;
-                hoverMousePoint.y = p.y;
-            }     
-        }      
+                }     
+            }      
+        }
     }
 
     @Override
     public void mouseDraggedDropped(MouseEvent e) {
         setSelectionState(selectionState.ACTIVE);
-        parent.setCursor(Cursor.getDefaultCursor());
-        removeCommonLineWaypoints();      
-        unsetGlobalPins();
-        setLocalPins();
-        setGlobalPins();   
+        if(isFixed()){
+            parent.setCursor(Cursor.getDefaultCursor());
+            removeCommonLineWaypoints();      
+            unsetGlobalPins();
+            setLocalPins();
+            setGlobalPins();   
+        }
         hoverMousePoint = Grid.snapToGrid(e.getPoint());
     }
 
