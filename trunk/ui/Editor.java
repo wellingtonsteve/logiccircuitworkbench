@@ -15,8 +15,6 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
 import java.util.Enumeration;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
@@ -49,9 +47,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     private int untitledIndex = 1;
     private CommandHistory cmdHist;
     private Clipboard clipboard = new Clipboard();
-    private javax.swing.JDialog aboutDialog = null;
-    private javax.swing.JPanel aboutContentPane = null;
-    private javax.swing.JLabel aboutVersionLabel = null;    
     private LinkedList<JInternalFrame> circuitwindows = new LinkedList<JInternalFrame>();
     private sim.SimItem simitem;
     private boolean playPause = false;
@@ -78,7 +73,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
             public void windowDeactivated(WindowEvent e) {}
             
         }); 
-        
+
         cmdHist = new CommandHistory(this);
     }
 
@@ -863,21 +858,21 @@ private void SelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
     
     // Clean up already closed windows
-    for(JInternalFrame jif: DesktopPane.getAllFrames()){
-            if(jif.isClosed()) {
-                circuitwindows.remove(jif);
-            }
-    }    
+//    for(JInternalFrame jif: DesktopPane.getAllFrames()){
+//            if(jif.isClosed()) {
+//                circuitwindows.remove(jif);
+//            }
+//    }    
     
     // Perform close action for each window
-    for(JInternalFrame jif: circuitwindows){
+    for(JInternalFrame jif: DesktopPane.getAllFrames()){
             jif.doDefaultCloseAction();
-            if(jif.isClosed()) {
-                DesktopPane.remove(jif);
-            }
+//            if(jif.isClosed()) {
+//                DesktopPane.remove(jif);
+//            }
     }
     
-    int openCircuits = DesktopPane.getAllFrames().length - 1;  // Ignore the toolbox
+    int openCircuits = DesktopPane.getAllFrames().length;  // Ignore the toolbox
     if(openCircuits == 0){
         System.exit(0);
     }
@@ -1119,6 +1114,7 @@ private void ToggleGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
      * @param circuit
      */
     public void setActiveCircuit(CircuitPanel circuit) {
+//        DesktopPane.getAllFrames()
         if(circuitwindows.contains(circuit.getParentFrame())){
             // Set application's title
             setTitle("Logic Circuit Workbench - " + circuit.getParentFrame().getTitle());
@@ -1464,7 +1460,7 @@ private void ToggleGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
 
      /**
       * Display any reported errors to the user. Using a Message Dialog, the easily 
-      * readable message is always shown and is and Exception is associated with 
+      * readable message is always shown and if and Exception is associated with 
       * the error, it is displayed in a scrollable text box below the message.
       * 
       * @param error
@@ -1517,12 +1513,7 @@ private void ToggleGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
                 localPins.add(p);
             }
         }
-
-        @Override
-        public String getName() {
-            return componentTreeName;
-        }
-
+        
         @Override
         protected void setBoundingBox(){
             boundingBox = new java.awt.Rectangle(getOrigin().x-getCentre().x,
@@ -1622,12 +1613,7 @@ private void ToggleGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
         protected void setActiveImage() {
             activeBi = null;
         }
-    }
-
-    public void removeCircuitFrame(CircuitFrame cf) {
-        circuitwindows.remove(cf);
     }   
-    
     
     public Clipboard getClipboard() {
         return clipboard;
@@ -1643,6 +1629,10 @@ private void ToggleGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
     
     public javax.swing.JProgressBar getProgressBar(){
         return progressBar;
+    }
+    
+    public void statusChange(String stage, Object value) {
+        cmdHist.stageChange(stage, value);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1713,10 +1703,5 @@ private void ToggleGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
     // End of variables declaration//GEN-END:variables
-
     private JDialog aboutBox = new AboutBox(this);
-
-    public void statusChange(String stage, Object value) {
-        cmdHist.stageChange(stage, value);
-    }
 }

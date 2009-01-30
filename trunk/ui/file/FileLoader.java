@@ -1,10 +1,11 @@
 package ui.file;
 
-import ui.components.Wire;
 import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -93,7 +94,7 @@ public class FileLoader extends DefaultHandler{
                 }
             // Create a new component <component>
             } else if(qName.equals("component")){
-                
+
                 // Get co-ordinate attributes
                 int x = Integer.parseInt(attribs.getValue("x"));
                 int y = Integer.parseInt(attribs.getValue("y"));
@@ -105,7 +106,7 @@ public class FileLoader extends DefaultHandler{
                 // Get textual attributes
                 String type = attribs.getValue("type");
                 String label = attribs.getValue("label");
-                
+                                
                 // Create a new component with the desired attributes
                 CreateComponentCommand ccc = new CreateComponentCommand(editor.getActiveCircuit().getCommandHistory(), new Object[]{
                     type,                // properties[0] = componentName

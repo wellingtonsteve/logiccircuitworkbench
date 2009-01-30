@@ -161,7 +161,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * Get the point at which this component was unfixed 
      */
     public Point getUnfixedOrigin(){
-        return unFixedPoint;
+        return (unFixedPoint==null)?origin:unFixedPoint;
     }
     
     /**
@@ -196,7 +196,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     public void translate(int dx, int dy, boolean fixed) {            
         ui.grid.Grid grid = parent.getGrid();
 
-        if(grid.canTranslateComponent(this, dx, dy)){
+        if(grid.canTranslateComponent(this, dx, dy) || (dx == 0 && dy == 0)){
             for(Pin p: localPins){
                 parent.getGrid().removePin(p);
             } 

@@ -2,6 +2,7 @@ package ui.grid;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.Collection;
 import ui.components.Labeled;
 import ui.UIConstants;
 import ui.components.SelectableComponent;
@@ -25,6 +26,15 @@ public abstract class GridObject extends Point implements Labeled, Cloneable {
     
     public abstract boolean hasParent(SelectableComponent sc);
     
+    public boolean hasParentInCollection(Collection<SelectableComponent> collection) {
+        for(SelectableComponent sc: collection){
+            if(hasParent(sc)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public String getLabel() {
         return label;
     }
@@ -40,5 +50,7 @@ public abstract class GridObject extends Point implements Labeled, Cloneable {
     public boolean hasLabel(){
         return !label.isEmpty() || !label.equals("");
     }
+
+ 
 
 }

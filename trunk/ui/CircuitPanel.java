@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import ui.file.FileCreator;
@@ -442,7 +444,7 @@ public class CircuitPanel extends JPanel {
                     Wire w = (Wire) drawnComponents.peek();
                     
                     // Start drawing the new wire
-                    if(w.getOrigin().equals(new Point(0,0))){
+                    if(w.getOrigin().equals(new Point(0,0)) && grid.isConnectionPoint(endPoint)){
                         w.setStartPoint(endPoint);
                     // We have chosen the start point again, remove the wire
                     }else if (w.getOrigin().equals(endPoint)) {
@@ -581,7 +583,7 @@ public class CircuitPanel extends JPanel {
 
                     Wire w = (Wire) drawnComponents.peek();
                     // Start drawing the new wire
-                    if(w.getOrigin().equals(new Point(0,0))){
+                    if(w.getOrigin().equals(new Point(0,0)) && grid.isConnectionPoint(endPoint)){
                         w.setStartPoint(startPoint);                           
                     }
                     w.setEndPoint(endPoint);                        

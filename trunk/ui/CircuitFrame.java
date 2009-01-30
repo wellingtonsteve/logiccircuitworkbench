@@ -9,8 +9,8 @@ import java.beans.PropertyVetoException;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 import ui.command.FileSaveCommand;
 import ui.error.ErrorHandler;
 
@@ -78,11 +78,8 @@ public class CircuitFrame extends JInternalFrame{
             circuitFrameLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
         );
-        
-        addInternalFrameListener(new InternalFrameListener(){
 
-            public void internalFrameOpened(InternalFrameEvent e) {}
-
+        addInternalFrameListener(new InternalFrameAdapter(){
             public void internalFrameClosing(InternalFrameEvent e) {
                 if(isDirty()){
                     int ans = JOptionPane.showConfirmDialog(editor, 
@@ -92,7 +89,7 @@ public class CircuitFrame extends JInternalFrame{
                            circuitPanel.getCommandHistory().doCommand(new FileSaveCommand(circuitPanel.getCommandHistory()));
                            dispose();
                         } else if(ans == JOptionPane.NO_OPTION){
-                            dispose();
+                           dispose();
                         } else if(ans == JOptionPane.CANCEL_OPTION){
                             setClosed(false);
                         }
@@ -106,18 +103,9 @@ public class CircuitFrame extends JInternalFrame{
                 }              
             }
 
-            public void internalFrameClosed(InternalFrameEvent e) {}
-
-            public void internalFrameIconified(InternalFrameEvent e) {}
-
-            public void internalFrameDeiconified(InternalFrameEvent e) {}
-
             public void internalFrameActivated(InternalFrameEvent e) {
-                if(!isSelected()){ editor.setActiveCircuit(circuitPanel);}
-            }
-
-            public void internalFrameDeactivated(InternalFrameEvent e) {}
-            
+                if(!isSelected()){ editor.setActiveCircuit(circuitPanel); }
+            }            
         });
         
         setBounds(0, 0, 780, 600);

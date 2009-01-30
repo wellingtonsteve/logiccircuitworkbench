@@ -34,7 +34,6 @@ public class FileOpenCommand extends Command {
             activeCircuit = editor.createBlankCircuit();    
             if(cfh.loadFile(filename)){
                 List<SelectableComponent> fileComponents = cfh.getStack();
-                
                 activeCircuit.addComponentList(fileComponents);
                 activeCircuit.setFilename(filename);
                 editor.refreshWindowsMenu();
@@ -42,9 +41,7 @@ public class FileOpenCommand extends Command {
                 parentHistory.stageChange("message", getName() + ": " + filename);
             } else {
                 //TODO: Close bad circuit!
-            } 
-            
-            
+            }         
         }
     }
 
