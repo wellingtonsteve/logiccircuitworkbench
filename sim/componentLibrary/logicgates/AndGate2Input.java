@@ -4,16 +4,10 @@ import sim.*;
 import sim.pin.*;
 
 public class AndGate2Input extends Component {
-    private InputPin input1 = new InputPin(this, "Input 1");
-    private InputPin input2 = new InputPin(this, "Input 2");
-    private OutputPin output = new OutputPin(this, "Output");
+    private InputPin input1 = addInputPinToMap("Input 1");
+    private InputPin input2 = addInputPinToMap("Input 2");
+    private OutputPin output = addOutputPinToMap("Output");
     private int propagationDelay = 5;
-
-    public AndGate2Input() {
-        addPinToMap(input1);
-        addPinToMap(input2);
-        addPinToMap(output);
-    }
 
     public void inputChanged() {
         final State value;
