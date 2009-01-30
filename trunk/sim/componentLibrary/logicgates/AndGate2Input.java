@@ -28,7 +28,6 @@ public class AndGate2Input extends Component {
             }
         }
         sim.addEvent(sim.getSimulationTime() + propagationDelay, new SimItemEvent() {
-
             public void RunEvent() {
                 output.setValue(value);
             }

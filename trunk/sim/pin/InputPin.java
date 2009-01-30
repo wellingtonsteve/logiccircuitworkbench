@@ -2,7 +2,7 @@ package sim.pin;
 
 import sim.*;
 
-public class InputPin extends Pin implements OutputValueListener {
+public class InputPin extends Pin implements ValueListener {
 
     private OutputPin connectedTo;
 
@@ -15,17 +15,17 @@ public class InputPin extends Pin implements OutputValueListener {
             disconnect();
         }
         connectedTo = output;
-        output.addOutputValueListener(this);
+        output.addValueListener(this);
     }
 
     public void disconnect() {
         if (connectedTo != null) {
-            connectedTo.removeOutputValueListener(this);
+            connectedTo.removeValueListener(this);
             connectedTo = null;
         }
     }
 
-    public void outputValueChanged(State value) {
+    public void valueChanged(State value) {
         setValue(connectedTo.getValue());
     }
 

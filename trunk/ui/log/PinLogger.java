@@ -12,7 +12,7 @@ import sim.Simulator;
  *
  * @author matt
  */
-public class PinLogger implements OutputValueListener {
+public class PinLogger implements ValueListener {
 
     private List<Long> timeLog = new LinkedList<Long>();
     private List<State> stateLog = new LinkedList<State>();
@@ -27,7 +27,7 @@ public class PinLogger implements OutputValueListener {
     public PinLogger(Simulator sim, OutputPin pin){
         this.sim = sim;
         this.pin = pin;
-        pin.addOutputValueListener(this);
+        pin.addValueListener(this);
         
         // Remove these lines when complete
         testTimes.push(new Long("2600"));
@@ -39,7 +39,7 @@ public class PinLogger implements OutputValueListener {
         
     }
     
-    public void outputValueChanged(State value) {
+    public void valueChanged(State value) {
         // Remove this line when complete
             Long nextSimTime = testTimes.pop();
             //Long nextSimTime = sim.getSimulationTime();

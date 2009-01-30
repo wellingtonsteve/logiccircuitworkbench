@@ -7,7 +7,7 @@ public abstract class Pin {
 
     private SimItem owner;
     private String name;
-    private ArrayList<OutputValueListener> listeners = new ArrayList<OutputValueListener>();
+    private ArrayList<ValueListener> listeners = new ArrayList<ValueListener>();
     private State value = State.FLOATING;
 
     public Pin(SimItem owner, String name) {
@@ -23,11 +23,11 @@ public abstract class Pin {
         return this.name;
     }
 
-    public void addOutputValueListener(OutputValueListener listener) {
+    public void addValueListener(ValueListener listener) {
         this.listeners.add(listener);
     }
 
-    public void removeOutputValueListener(OutputValueListener listener) {
+    public void removeValueListener(ValueListener listener) {
         if (this.listeners.contains(listener)) {
             this.listeners.remove(listener);
         }
@@ -35,8 +35,8 @@ public abstract class Pin {
 
     public void setValue(State value) {
         this.value = value;
-        for (OutputValueListener listener : this.listeners) {
-            listener.outputValueChanged(value);
+        for (ValueListener listener : this.listeners) {
+            listener.valueChanged(value);
         }
     }
 
