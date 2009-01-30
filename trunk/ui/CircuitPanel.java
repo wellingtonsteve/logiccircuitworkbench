@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import ui.command.Command;
 import ui.file.FileCreator;
 import ui.grid.Grid;
 import ui.components.*;
@@ -278,13 +277,15 @@ public class CircuitPanel extends JPanel {
             if(sc.isFixed()){
                 fc.add(sc);
             }
-        }
+        }        
         fc.write();
+        CircuitFrame frame = getParentFrame();
+        frame.setTitle(filename);
         cmdHist.setIsDirty(false);
     }
     
     public String getFilename(){
-        return (filename==null)?"Untitled"+getParentFrame().getUntitledIndex():filename;
+        return (filename==null)?"Untitled"+getParentFrame().getUntitledIndex()+UIConstants.FILE_EXTENSION:filename;
     }
             
     public void addComponentList(Collection<SelectableComponent> list){
@@ -359,11 +360,7 @@ public class CircuitPanel extends JPanel {
                 }
 
                 if (clickingEmptySpace) {
-
-                    // Reset all selections
-                    for (SelectableComponent sc : drawnComponents) {
-                        sc.resetDefaultState();
-                    }
+                    
                     resetActiveComponents();
 
                     // Fix floating selection
@@ -454,7 +451,7 @@ public class CircuitPanel extends JPanel {
                     } else if (!w.getOrigin().equals(new Point(0, 0))) {
                         // Should we continue to draw the wire?
                         //      Only if we have not released on a connection point
-                        if (!grid.isConnectionPoint(endPoint)) {
+                        if (grid.getConnectionPoint(endPoint).getConnections().size() == 1) {
                             w.addWaypoint(endPoint);
                         } else {
                             w.setEndPoint(endPoint);
@@ -609,39 +606,55 @@ public class CircuitPanel extends JPanel {
      * @param finish Should we finish the drag
      */
     private void dragActiveSelection(MouseEvent e, boolean start, boolean finish) {
-        Point anchor = temporaryComponent.getOrigin().getLocation();
-        boolean canMoveAll = true;
-        for (SelectableComponent sc : activeComponents) {
-            int dx = endPoint.x - anchor.x;
-            int dy = endPoint.y - anchor.y;
-            canMoveAll &= grid.canTranslateComponent(sc, dx, dy);
-        }
-        if (canMoveAll) {
-            SelectionTranslateCommand stc = null;
-            if(finish && !start){
-                stc = new SelectionTranslateCommand(cmdHist);
+        // We don't want to translate a wire unless we are moving it with some other pieces.
+        if(activeComponents.size() == 1 && activeComponents.get(0) instanceof Wire){
+            if(finish){
+                activeComponents.get(0).mouseDraggedDropped(e);
+                nowDragingComponent = false;
+            } else {
+                activeComponents.get(0).mouseDragged(e);     
             }
+        // Translate selection
+        } else {
+            Point anchor = (temporaryComponent==null)?null:temporaryComponent.getOrigin().getLocation();
+            boolean canMoveAll = true;
             for (SelectableComponent sc : activeComponents) {
+                if(anchor==null){
+                    anchor=sc.getOrigin().getLocation();
+                }
                 int dx = endPoint.x - anchor.x;
                 int dy = endPoint.y - anchor.y;
-                if(start && !finish){
-                    sc.translate(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y, false);
-                    sc.mouseDragged(e);
-                } else if(finish && !start){
-                    stc.translate(sc, dx, dy);
-                    sc.mouseDraggedDropped(e);
-                    multipleSelection = false;
-                    nowDragingComponent = false;
-                } else if(start && finish){
-                    ErrorHandler.newError("Drag Error", 
-                            "You cannot start and finish a drag at the same time");
-                } else {
-                    sc.translate(dx, dy, false);
-                    sc.mouseDragged(e);
-                }
+                canMoveAll &= grid.canTranslateComponent(sc, dx, dy);
             }
-            if(finish && !start){
-                cmdHist.doCommand(stc);
+            if (canMoveAll) {
+                SelectionTranslateCommand stc = null;
+                if(finish && !start){
+                    stc = new SelectionTranslateCommand(cmdHist);
+                }
+                for (SelectableComponent sc : activeComponents) {
+                    int dx = endPoint.x - anchor.x;
+                    int dy = endPoint.y - anchor.y;
+                    if(start && !finish){
+                        sc.translate(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y, false);
+                        sc.mouseDragged(e);
+                    } else if(finish && !start){
+                        sc.translate(0, 0, false);
+                        stc.translate(sc, dx, dy);
+                        sc.mouseDraggedDropped(e);
+                        multipleSelection = false;
+                        nowDragingComponent = false;
+                    } else if(start && finish){
+                        ErrorHandler.newError("Drag Error", 
+                                "You cannot start and finish a drag at the same time");
+                    } else {
+                        sc.translate(dx, dy, false);
+                        sc.mouseDragged(e);
+                    }
+                }
+                if(finish && !start){
+                    cmdHist.doCommand(stc);
+                    resetActiveComponents();
+                }
             }
         }
     }

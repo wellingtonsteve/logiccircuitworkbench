@@ -7,9 +7,9 @@ package netlist;
 public class Standard extends Netlist{
 
     @Override
-    protected void setClassMappings() {
-        putClass("Standard.Button Source",    ui.components.standard.Input.class);
-        putClass("Standard.LED",              ui.components.standard.LED.class);  
+    protected void setDrawableMappings() {
+        putDrawableClass("Standard.Button Source",    ui.components.standard.Input.class);
+        putDrawableClass("Standard.LED",              ui.components.standard.LED.class);  
     }  
     
     @Override

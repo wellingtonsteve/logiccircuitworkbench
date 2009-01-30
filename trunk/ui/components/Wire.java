@@ -72,10 +72,7 @@ public class Wire extends SelectableComponent {
         ui.grid.Grid grid = parent.getGrid();
 
         if(grid.canTranslateComponent(this, dx, dy)){
-            for(Pin p: localPins){
-                parent.getGrid().removePin(p);
-            } 
-            getParent().getGrid().unmarkInvalidAreas(this);
+            unsetGlobalPins();
             // Rememeber my position at the moment I started to move
             if(this.fixed && !fixed){
                 unFixedPoint = startPoint.getLocation();
@@ -90,9 +87,6 @@ public class Wire extends SelectableComponent {
             this.fixed = fixed; 
             setLocalPins();
             setGlobalPins(); 
-            if (fixed){ 
-                getParent().getGrid().markInvalidAreas(this);                 
-            }  
         }
     }
 
@@ -102,6 +96,11 @@ public class Wire extends SelectableComponent {
 
     public void setEndPoint(Point endPoint) {
         this.endPoint = endPoint;      
+        if(!startPoint.equals(new Point(0,0))){
+            unsetGlobalPins();
+            setLocalPins();
+            setGlobalPins();
+        }
         
         // Remove Common line waypoints for tail of wire
         int len = waypoints.size();
@@ -300,8 +299,12 @@ public class Wire extends SelectableComponent {
     @Override
     public void mouseDraggedDropped(MouseEvent e) {
         setSelectionState(selectionState.ACTIVE);
-        parent.setCursor(Cursor.getDefaultCursor());        
-        removeCommonLineWaypoints();
+        parent.setCursor(Cursor.getDefaultCursor());
+        removeCommonLineWaypoints();      
+        unsetGlobalPins();
+        setLocalPins();
+        setGlobalPins();   
+        hoverMousePoint = Grid.snapToGrid(e.getPoint());
     }
 
     @Override
@@ -809,14 +812,9 @@ public class Wire extends SelectableComponent {
             next = waypoint;
 
             createLeg(current, next);
-            retval = ((point.x >= x1 && point.x <= x2) &&
-                    (point.y >= y1 && point.y <= y2)) ||
-                    ((point.x >= x2 && point.x <= x3) &&
-                    (point.y >= y2 && point.y <= y3)) ||
-                    ((point.x <= x1 && point.x >= x2) &&
-                    (point.y <= y1 && point.y >= y2)) ||
-                    ((point.x <= x2 && point.x >= x3) &&
-                    (point.y <= y2 && point.y >= y3));
+            Line2D.Double l1 = new Line2D.Double(x1, y1, x2, y2);
+            Line2D.Double l2 = new Line2D.Double(x2, y2, x3, y3);
+            retval = l1.ptLineDist(point)==0.0 || l2.ptLineDist(point)==0.0; 
 
             current = next;
             if(retval){
@@ -828,18 +826,13 @@ public class Wire extends SelectableComponent {
             return retval;
         }
         
-        createLeg(next, endPoint);
-        retval = ((point.x >= x1 && point.x <= x2) &&
-                (point.y >= y1 && point.y <= y2)) ||
-                ((point.x >= x2 && point.x <= x3) &&
-                (point.y >= y2 && point.y <= y3)) ||
-                ((point.x <= x1 && point.x >= x2) &&
-                (point.y <= y1 && point.y >= y2)) ||
-                ((point.x <= x2 && point.x >= x3) &&
-                (point.y <= y2 && point.y >= y3));
+        createLeg(next, endPoint);        
+        Line2D.Double l1 = new Line2D.Double(x1, y1, x2, y2);
+        Line2D.Double l2 = new Line2D.Double(x2, y2, x3, y3);
+        retval = l1.ptLineDist(point)==0.0 || l2.ptLineDist(point)==0.0; 
 
         if(retval){
-            hoverWaypoint = endPoint;
+            hoverWaypoint = endPoint;;
         } else {
             hoverWaypoint = null;
         }
@@ -902,6 +895,12 @@ public class Wire extends SelectableComponent {
     @Override
     public int getHeight() {
         return 0;
+    }
+
+    private void unsetGlobalPins() {
+        for (Pin p : localPins) {
+            parent.getGrid().removePin(p);
+        }
     }
 
 }

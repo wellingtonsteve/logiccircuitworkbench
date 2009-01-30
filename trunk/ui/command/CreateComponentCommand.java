@@ -45,12 +45,16 @@ public class CreateComponentCommand extends Command {
         }
         if(parentCircuit != null){
             try {
-                if(editor.isNetlistComponent((String) properties[0])){
+                if(editor.isDrawableComponent((String) properties[0])){
                     SimItem simItem = editor.getLogicalComponent((String) properties[0]);                 
-                    sc = editor.getNetlistComponent((String) properties[0]).getConstructor(CircuitPanel.class, Point.class, SimItem.class).newInstance(parentCircuit, (Point) properties[2], simItem);
+                    sc = editor.getNetlistComponent((String) properties[0]).getConstructor(
+                            CircuitPanel.class,
+                            Point.class, 
+                            SimItem.class)
+                                .newInstance(parentCircuit, (Point) properties[2], simItem);
                 } else if(properties[0].equals("Wire")){
                     sc = new ui.components.Wire(parentCircuit);
-                } else { 
+                } else if(editor.isValidComponent((String) properties[0])) { 
                     sc = editor.getDefaultNetlistComponent((String) properties[0]);
                     sc.setOrigin((Point) properties[2]);
                 }

@@ -26,7 +26,7 @@ public class UIConstants {
               /* the dash pattern */new float[] { 8.0f, 8.0f },
               /* the dash phase */0.0f); /* on 8, off 8*/
     
-    public static final boolean SHOW_GRID_OBJECTS = false;
+    public static final boolean SHOW_GRID_OBJECTS = true;
     public static final Color CONNECTION_POINT_COLOUR = Color.RED;
     public static Stroke CONNECTED_POINT_STROKE = new BasicStroke(2.0f); 
     public static final boolean DO_SYSTEM_BEEP = true;
@@ -36,7 +36,8 @@ public class UIConstants {
      *  LCW v2.0  -  Netlist support, Component names match keys in netlists. Not backwards compatible with v1.0
      *  LCW v2.1  -  As 2.0, "Standard.Wire" moved to "Wire", backwards compatible with renaming of wires
      */
-    public static String FILE_FORMAT_VERSION = "LCW v2.1"; 
+    public static String FILE_FORMAT_VERSION = "LCW v2.1";
+    public static String FILE_EXTENSION = ".xml";
     
     public static int LABEL_CONNECTION_POINT_X_OFFSET = -3;
     public static int LABEL_CONNECTION_POINT_Y_OFFSET = -3;
