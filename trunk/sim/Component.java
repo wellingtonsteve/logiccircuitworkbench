@@ -36,12 +36,10 @@ public abstract class Component implements SimItem {
     public Pin getPinByName(String name) {
         if (inputPins.containsKey(name)) {
             return inputPins.get(name);
+        } else if (outputPins.containsKey(name)) {
+            return outputPins.get(name);
         } else {
-            if (outputPins.containsKey(name)) {
-                return outputPins.get(name);
-            } else {
-                return null;
-            }
+            return null;
         }
     }
 
