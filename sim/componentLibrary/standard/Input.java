@@ -5,6 +5,7 @@
 package sim.componentLibrary.standard;
 
 import sim.*;
+import sim.pin.Pin;
 
 /**
  *
