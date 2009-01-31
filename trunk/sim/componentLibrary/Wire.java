@@ -10,8 +10,8 @@ import sim.pin.*;
  */
 public class Wire {
 
-    private OutputPin valueSource;
-    private ArrayList<InputPin> valueTargets = new ArrayList<InputPin>();
+    protected OutputPin valueSource;
+    protected ArrayList<InputPin> valueTargets = new ArrayList<InputPin>();
 
     public boolean connectPin(Pin pin) {
         //If attempting to connect an output pin (an input to the wire)
@@ -55,5 +55,41 @@ public class Wire {
                 }
             }
         }
+    }
+    
+    public static Wire mergeWires(Wire wire1, Wire wire2){
+        Wire newWire = null;
+        
+        //If both Wires are already connected to an OutputPin, give up because the merged Wire can only connect to one of them.
+        if(wire1.valueSource == null && wire2.valueSource == null){
+            newWire = new Wire();
+            //If the first Wire has an OutputPin, disconnect it and reconnect it to the new Wire.
+            if(wire1.valueSource != null){
+                OutputPin pin = wire1.valueSource;
+                wire1.disconnectPin(pin);
+                newWire.connectPin(pin);
+            }
+            //If the second Wire has an OutputPin, disconnect it and reconnect it to the new Wire.
+            else if(wire2.valueSource != null){
+                OutputPin pin = wire2.valueSource;
+                wire2.disconnectPin(pin);
+                newWire.connectPin(pin);
+            }
+            //Otherwise do nothing
+            else{ }
+            
+            //Cycle through the InputPins connected to the first Wire, disconnect them and add them to the new Wire
+            for(InputPin pin:wire1.valueTargets){
+                wire1.disconnectPin(pin);
+                newWire.connectPin(pin);
+            }
+            //Cycle through the InputPins connected to the second Wire, disconnect them and add them to the new Wire
+            for(InputPin pin:wire2.valueTargets){
+                wire2.disconnectPin(pin);
+                newWire.connectPin(pin);
+            }
+        }
+        //Return the new Wire (or null if the wires couldn't be joined)
+        return newWire;
     }
 }
