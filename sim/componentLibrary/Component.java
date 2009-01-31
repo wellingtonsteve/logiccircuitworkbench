@@ -46,4 +46,13 @@ public abstract class Component implements SimItem, ValueListener {
     
     //Input pin changed.
     public void valueChanged(Pin pin, LogicState value) { }
+    
+    public void initialize(){
+        for(OutputPin pin: outputPins.values()){
+            pin.setValue(LogicState.FLOATING);
+        }
+        for(InputPin pin: inputPins.values()){
+            pin.setValue(LogicState.FLOATING);
+        }
+    }
 }
