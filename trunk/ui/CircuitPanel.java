@@ -84,6 +84,7 @@ public class CircuitPanel extends JPanel {
             sc.resetDefaultState();
         }
         activeComponents.clear();
+        editor.getClipboard().setHasSelection(false);
     }
     public void selectAllComponents() {
         activeComponents.clear();
@@ -91,6 +92,7 @@ public class CircuitPanel extends JPanel {
             sc.mouseClicked(null);
             activeComponents.add(sc);
         }
+        editor.getClipboard().setHasSelection(false);
     }
     
     // Selection box attributes created by selecting the selection tool and dragging
@@ -248,7 +250,7 @@ public class CircuitPanel extends JPanel {
         
         drawnComponents.removeAll(activeComponents);        
         activeComponents.clear();
-
+        editor.getClipboard().setHasSelection(false);
         repaint();
 
     }
@@ -265,6 +267,7 @@ public class CircuitPanel extends JPanel {
         nowDragingComponent = false;
         multipleSelection = false;
         grid.clear();
+        editor.getClipboard().setHasSelection(false);
 
         repaint();      
         return "Circuit cleared.";
@@ -299,6 +302,7 @@ public class CircuitPanel extends JPanel {
             }
             repaint(sc.getBoundingBox());
         }
+        editor.getClipboard().setHasSelection(!activeComponents.isEmpty());
     }
      
     public void addComponent(SelectableComponent sc) {
@@ -387,7 +391,8 @@ public class CircuitPanel extends JPanel {
                     temporaryComponent.mouseClicked(e);
                     resetActiveComponents();
                     activeComponents.add(temporaryComponent);
-
+                    editor.getClipboard().setHasSelection(true);
+                    
                     // Update the current selection options panel
                     editor.getOptionsPanel().setComponent(temporaryComponent);
                 }
@@ -430,7 +435,8 @@ public class CircuitPanel extends JPanel {
                             activeComponents.add(sc);
                         }
                     }
-
+                    editor.getClipboard().setHasSelection(!activeComponents.isEmpty());
+                    
                     // Update the current selection options panel
                     if (activeComponents.size() == 1) {
                         editor.getOptionsPanel().setComponent(activeComponents.get(0));
@@ -563,6 +569,7 @@ public class CircuitPanel extends JPanel {
                             if(!activeComponents.contains(temporaryComponent)){ 
                                 resetActiveComponents();
                                 activeComponents.add(temporaryComponent); 
+                                editor.getClipboard().setHasSelection(true);
                             } else {
                                 // Move active dragged components to the top of the stack
                                 drawnComponents.removeAll(activeComponents);

@@ -869,11 +869,4 @@ public class Wire extends SelectableComponent {
     public int getHeight() {
         return 0;
     }
-
-    private void unsetGlobalPins() {
-        for (Pin p : localPins) {
-            parent.getGrid().removePin(p);
-        }
-    }
-
 }

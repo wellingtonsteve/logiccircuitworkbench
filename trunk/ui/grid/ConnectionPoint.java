@@ -6,7 +6,6 @@ import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
 import ui.UIConstants;
@@ -29,7 +28,8 @@ public class ConnectionPoint extends GridObject {
         super(p);
         
         try {
-            defaultCrossover = ImageIO.read(getClass().getResource("/ui/images/components/default_wire_crossover.png"));
+            defaultCrossover = ImageIO.read(
+                    getClass().getResource("/ui/images/components/default_wire_crossover.png"));
         } catch (IOException ex) {
             defaultCrossover = new BufferedImage(0,0,BufferedImage.TYPE_INT_RGB);
             ui.error.ErrorHandler.newError("Initialisation Error",
@@ -38,10 +38,10 @@ public class ConnectionPoint extends GridObject {
     }
     
     public void addConnection(Pin p){      
-        if(p.getParent() instanceof Wire                                // The current pin belongs to a wire
-                && hasDifferentWire(p.getParent())                      // Not the same wire               
-                && !((Wire) p.getParent()).getEndPoint().equals(p.getGlobalLocation())      // Not the end point of a wire
-                && !((Wire) p.getParent()).getOrigin().equals(p.getGlobalLocation())){      // Not the start point of a wire
+        if(p.getParent() instanceof Wire // The current pin belongs to a wire
+                && hasDifferentWire(p.getParent()) // Not the same wire               
+                && !((Wire) p.getParent()).getEndPoint().equals(p.getGlobalLocation()) // Not the end point of a wire
+                && !((Wire) p.getParent()).getOrigin().equals(p.getGlobalLocation())){ // Not the start point of a wire
             isCrossover = true;
         } 
         if(!hasConnection(p)){
@@ -144,10 +144,8 @@ public class ConnectionPoint extends GridObject {
 
     @Override
     public void draw(Graphics2D g2) {
-        super.draw(g2);
-        
-        if(!isCrossover){
-        
+        super.draw(g2);        
+        if(!isCrossover){        
             if(noOfDifferentConnections() > 1){
                  g2.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
                  g2.drawOval(x-2, y-2, 5, 5);
@@ -167,8 +165,7 @@ public class ConnectionPoint extends GridObject {
                 g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
                 g2.drawOval(x-1, y-1, 3, 3);
                 g2.fillOval(x-1, y-1, 3, 3);
-            }
-            
+            }            
         } else {
             g2.drawImage(defaultCrossover, x-9, y-10, null);
         }
@@ -188,19 +185,4 @@ public class ConnectionPoint extends GridObject {
     public boolean hasLabel(){
         return label != null || !label.equals("");
     }
-    
-    public Enumeration<SelectableComponent> getConnectedComponents(){
-        return new Enumeration<SelectableComponent>(){
-            int i = 0;
-                
-            public boolean hasMoreElements() {
-                return i<noOfConnections();
-            }
-
-            public SelectableComponent nextElement() {
-                return connections.get(i++).getParent();
-            }            
-        };
-    }
-
 }
