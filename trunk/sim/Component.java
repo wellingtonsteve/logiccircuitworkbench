@@ -11,19 +11,19 @@ import sim.pin.*;
  *
  * @author Stephen
  */
-public abstract class Component implements SimItem {
+public abstract class Component implements SimItem, ValueListener {
 
     private Map<String, InputPin> inputPins = new HashMap<String, InputPin>();
     private Map<String, OutputPin> outputPins = new HashMap<String, OutputPin>();
     protected Simulator sim;
 
-    protected OutputPin addOutputPinToMap(String name) {
+    protected OutputPin createOutputPin(String name) {
         OutputPin pin = new OutputPin(this, name);
         outputPins.put(name, pin);
         return pin;
     }
 
-    protected InputPin addInputPinToMap(String name) {
+    protected InputPin createInputPin(String name) {
         InputPin pin = new InputPin(this, name);
         inputPins.put(name, pin);
         return pin;
@@ -49,5 +49,9 @@ public abstract class Component implements SimItem {
 
     public void setSimulator(Simulator sim) {
         this.sim = sim;
+    }
+    
+    //Input pin changed.
+    public void valueChanged(Pin pin, State value) {
     }
 }

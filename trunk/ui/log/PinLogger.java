@@ -39,7 +39,7 @@ public class PinLogger implements ValueListener {
         
     }
     
-    public void valueChanged(State value) {
+    public void valueChanged(Pin pin, State value) {
         // Remove this line when complete
             Long nextSimTime = testTimes.pop();
             //Long nextSimTime = sim.getSimulationTime();

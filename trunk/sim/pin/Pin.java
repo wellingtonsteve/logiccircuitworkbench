@@ -36,7 +36,7 @@ public abstract class Pin {
     public void setValue(State value) {
         this.value = value;
         for (ValueListener listener : this.listeners) {
-            listener.valueChanged(value);
+            listener.valueChanged(this, this.value);
         }
     }
 

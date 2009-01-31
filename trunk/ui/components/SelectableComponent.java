@@ -614,7 +614,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
             }
         }
 
-        public void valueChanged(State value) {
+        public void valueChanged(sim.pin.Pin pin, State value) {
             this.value = value;
         }
 
