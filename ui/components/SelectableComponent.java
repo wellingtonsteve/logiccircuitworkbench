@@ -197,10 +197,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         ui.grid.Grid grid = parent.getGrid();
 
         if(grid.canTranslateComponent(this, dx, dy) || (dx == 0 && dy == 0)){
-            for(Pin p: localPins){
-                parent.getGrid().removePin(p);
-            } 
-            
+            unsetGlobalPins();
             grid.unmarkInvalidAreas(this);
             this.origin.translate(dx, dy);
             setInvalidAreas();
@@ -271,9 +268,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * @param rotation The new value of the rotation of this component
      */
     public void setRotation(double rotation, boolean updateGrid) {
-        for(Pin p: localPins){
-            parent.getGrid().removePin(p);
-        } 
+        unsetGlobalPins();
         parent.getGrid().unmarkInvalidAreas(this);
         this.rotation = rotation % (Math.PI * 2);
         setInvalidAreas();
@@ -410,13 +405,17 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         
     /**
      * Remove all old pins from the connection point grid and then recreate the 
-     * pins from the local pins of this component, adding them back to the grid 
-     * if necessary.
+     * pins from the local pins of this component.
      */
     protected void setGlobalPins(){           
         for(Pin p: localPins){
             parent.getGrid().addPin(p);
         }    
+    }
+    protected void unsetGlobalPins() {
+        for (Pin p : localPins) {
+            parent.getGrid().removePin(p);
+        }
     }
     
     /**
@@ -430,10 +429,14 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         return localPins;
     }
     
-    
+    /**
+     * Convience method. 
+     * @see SelectableComponent.getLocalPins()
+     */
     public Collection<Pin> getPins(){
-        return localPins;
+        return getLocalPins();
     }
+    
     /**
      * Set the pins of this component in local co-ordinates. Local pins are used 
      * to do all processing (e.g. for crossovers of wires) and generation of 

@@ -3,6 +3,7 @@ package ui.clipboard;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Stack;
+import javax.swing.JComponent;
 import ui.components.SelectableComponent;
 
 /**
@@ -14,6 +15,8 @@ public class Clipboard {
     private Stack<SelectableComponent> clipboard = new Stack<SelectableComponent>();
     private Stack<Integer> clipboardPointer = new Stack<Integer>();
     private Stack<ClipboardType> clipboardTypes = new Stack<ClipboardType>();
+    private LinkedList<JComponent> selectionlisteners = new LinkedList<JComponent>();
+    private LinkedList<JComponent> pastelisteners = new LinkedList<JComponent>();
     
     public Clipboard(){
         clipboardPointer.push(0);
@@ -21,13 +24,19 @@ public class Clipboard {
     
     /**
      * Add a selection of components to the clipboard for later use.
-     * @param col The components to be added.
+     * @param col The components to be added
+     * @parem ct The type of the clipboard action
      */
     public void addSetToClipboard(Collection<SelectableComponent> col, ClipboardType ct){
         clipboardPointer.push(clipboard.size());
         clipboardTypes.push(ct);
         for(SelectableComponent sc: col){
             clipboard.add(sc.copy());
+        }
+        if(canPaste()){
+            for(JComponent c: pastelisteners){
+                c.setEnabled(true);
+            }
         }
     }
     
@@ -57,5 +66,49 @@ public class Clipboard {
         clipboard.removeAll(lastSet);
         clipboardPointer.pop();
         clipboardTypes.pop();
+        if(!canPaste()){
+            for(JComponent c: pastelisteners){
+                c.setEnabled(false);
+            }
+        }
     }   
+    
+    /**
+     * @return true if and only if, the clipboard contains any selections.
+     */
+    private boolean canPaste(){
+        return !clipboardTypes.isEmpty();
+    }
+     
+    /**
+     * Tell the clipboard when a selection is made, so that it can enable/disable 
+     * any clipboard actions that require a selection.
+     * @param hasSelection Does the circuit have an active selection?
+     */
+    public void setHasSelection(boolean hasSelection){
+        for(JComponent c: selectionlisteners){
+            c.setEnabled(hasSelection);
+        }
+    }
+    
+    /**
+     * Add a #JComponent which can call a cut/copy/paste/delete operation. 
+     * Selection Listeners (Cut/Copy/Delete) are disabled when there is no 
+     * active selection. 
+     * 
+     * @param cutlistener
+     */
+    public void addSelectionListener(JComponent selectionlistener){
+        selectionlisteners.add(selectionlistener);
+    }
+    
+    /**
+     * Add a #JComponent which can call a paste operation. 
+     * Paste listeners are disabled when the clipboard is empty.
+     * 
+     * @param pastelistener
+     */
+    public void addPasteListener(JComponent pastelistener){
+        pastelisteners.add(pastelistener);
+    }
 }

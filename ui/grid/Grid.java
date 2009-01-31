@@ -9,20 +9,17 @@ import ui.components.SelectableComponent;
 import ui.components.SelectableComponent.Pin;
 
 /**
- * Pre-object/instance changes = rev 154
+ * The Grid represents a 2-dimensional cartesian co-ordinate space where 
+ * each point (x,y), has an associated Grid Object which is either a Connection
+ * Point or an Invalid Area. 
+ * 
+ * @see GridObject
+ * @see ConnectionPoint
+ * @see InvalidPoint
  * @author matt
  */
 public class Grid {
 
-    /**
-     * The Grid represents a 2-dimensional cartesian co-ordinate space where 
-     * each point (x,y), has an associated Grid Object which is either a Connection
-     * Point or and Invalid Area. 
-     * 
-     * @see GridObject
-     * @see ConnectionPoint
-     * @see InvalidPoint
-     */
     private HashMap<Point,GridObject> grid = new HashMap<Point,GridObject>();
         
     /**
@@ -87,7 +84,7 @@ public class Grid {
     }   
 
     /**
-     * Add a new pin to the grid. Not the method local.getLocation() returns the
+     * Add a new pin to the grid. Note: The method local.getLocation() returns the
      * local co-ordinates of the pin, so the method local.getGlobalLocation() must
      * be used to get the local in world (grid) co-ordinates.
      * 
@@ -97,6 +94,7 @@ public class Grid {
     public boolean addPin(Pin local){
         Point p = local.getGlobalLocation();
         GridObject go = grid.get(p);
+        // Create a new connection point if it doesn't exist yet
         if(go==null){
             grid.put(p.getLocation(), new ConnectionPoint(p));
             go = grid.get(p);

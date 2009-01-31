@@ -19,6 +19,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -73,8 +75,16 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
             public void windowDeactivated(WindowEvent e) {}
             
         }); 
-
+       
         cmdHist = new CommandHistory(this);
+        clipboard.addSelectionListener(Cut);
+        clipboard.addSelectionListener(Copy);
+        clipboard.addSelectionListener(Delete);
+        clipboard.addSelectionListener(CutButton);
+        clipboard.addSelectionListener(CopyButton);
+        clipboard.addSelectionListener(DeleteSelection);
+        clipboard.addPasteListener(Paste);
+        clipboard.addPasteListener(PasteButton);
     }
 
     /** This method is called from within the constructor to
@@ -108,7 +118,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         StartButton = new javax.swing.JButton();
         StopButton = new javax.swing.JButton();
         StepForwardButton = new javax.swing.JButton();
-        jSlider1 = new javax.swing.JSlider();
+        SimulatorSpeed = new javax.swing.JSlider();
         Toolbox2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         Selection = new javax.swing.JButton();
@@ -206,6 +216,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         SaveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-save.png"))); // NOI18N
         SaveButton.setText(bundle.getString("Editor.SaveButton.text")); // NOI18N
+        SaveButton.setEnabled(false);
         SaveButton.setFocusable(false);
         SaveButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         SaveButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -218,6 +229,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         SaveAsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-save-as.png"))); // NOI18N
         SaveAsButton.setText(bundle.getString("Editor.SaveAsButton.text")); // NOI18N
+        SaveAsButton.setEnabled(false);
         SaveAsButton.setFocusable(false);
         SaveAsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         SaveAsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -255,6 +267,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         PasteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/edit-paste.png"))); // NOI18N
         PasteButton.setText(bundle.getString("Editor.PasteButton.text")); // NOI18N
+        PasteButton.setEnabled(false);
         PasteButton.setFocusable(false);
         PasteButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         PasteButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -335,11 +348,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         ToggleGrid.setFocusable(false);
         ToggleGrid.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ToggleGrid.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        ToggleGrid.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ToggleGridMouseClicked(evt);
-            }
-        });
         ToggleGrid.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ToggleGridActionPerformed(evt);
@@ -396,9 +404,9 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         });
         Toolbar.add(StepForwardButton);
 
-        jSlider1.setMajorTickSpacing(10);
-        jSlider1.setMaximumSize(new java.awt.Dimension(200, 33));
-        Toolbar.add(jSlider1);
+        SimulatorSpeed.setMajorTickSpacing(10);
+        SimulatorSpeed.setMaximumSize(new java.awt.Dimension(200, 33));
+        Toolbar.add(SimulatorSpeed);
 
         getContentPane().add(Toolbar, java.awt.BorderLayout.NORTH);
 
@@ -582,6 +590,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Save.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         Save.setMnemonic('s');
         Save.setText(bundle.getString("Editor.Save.text")); // NOI18N
+        Save.setEnabled(false);
         Save.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SaveActionPerformed(evt);
@@ -592,6 +601,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         SaveAs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         SaveAs.setMnemonic('v');
         SaveAs.setText(bundle.getString("Editor.SaveAs.text")); // NOI18N
+        SaveAs.setEnabled(false);
         SaveAs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SaveAsActionPerformed(evt);
@@ -659,6 +669,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Paste.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
         Paste.setMnemonic('p');
         Paste.setText(bundle.getString("Editor.Paste.text")); // NOI18N
+        Paste.setEnabled(false);
         Paste.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PasteActionPerformed(evt);
@@ -758,124 +769,125 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
    
     
 private void SelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SelectionMouseClicked
-    toggleToolboxButton(Selection);
-    getActiveCircuit().setCurrentTool("Select");
+    if(getActiveCircuit()!=null){
+        toggleToolboxButton(Selection);
+        getActiveCircuit().setCurrentTool("Select");
+    }
 }//GEN-LAST:event_SelectionMouseClicked
 
 private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WireMouseClicked
-    toggleToolboxButton(Wire);
-    circuitPanel.removeUnFixedComponents();
-    String componentName = "Wire";
-    
-    CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit().getCommandHistory(), new Object[]{
-        componentName,                                              // properties[0] = componentName
-        ((OptionsPanel) Options).getComponentRotation(),            // properties[1] = rotation
-        new Point(0,0),                                             // properties[2] = point
-        ((OptionsPanel) Options).getCurrentLabel(),                 // properties[3] = label
-        null,                                                       // properties[4] = LED Colour
-        null                                                        // properties[5] = Input On/Off
-    });
-    getActiveCircuit().getCommandHistory().doCommand(ccc);
+    if(getActiveCircuit()!=null){ 
+        toggleToolboxButton(Wire);
+        circuitPanel.removeUnFixedComponents();
+        String componentName = "Wire";
 
-    // Set Options panel (Preview, Component Specific Options etc.)
-    ((OptionsPanel) Options).setComponent(ccc.getComponent());
-    ((OptionsPanel) Options).resetLabel(); // Assume user wants a different name for a different logicalComponent
-    ((OptionsPanel) Options).setLayoutManager();
-    
-    Options.setVisible(true);
-    Options.repaint();
+        CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit().getCommandHistory(), new Object[]{
+            componentName,                                              // properties[0] = componentName
+            ((OptionsPanel) Options).getComponentRotation(),            // properties[1] = rotation
+            new Point(0,0),                                             // properties[2] = point
+            ((OptionsPanel) Options).getCurrentLabel(),                 // properties[3] = label
+            null,                                                       // properties[4] = LED Colour
+            null                                                        // properties[5] = Input On/Off
+        });
+        getActiveCircuit().getCommandHistory().doCommand(ccc);
 
-    // Clean up the circuit
-    if(circuitPanel != null){
+        // Set Options panel (Preview, Component Specific Options etc.)
+        ((OptionsPanel) Options).setComponent(ccc.getComponent());
+        ((OptionsPanel) Options).resetLabel(); // Assume user wants a different name for a different logicalComponent
+        ((OptionsPanel) Options).setLayoutManager();
+
+        Options.setVisible(true);
+        Options.repaint();
+
         circuitPanel.setCurrentTool(componentName);
+
+        RotateRight.setEnabled(false);
+        RotateLeft.setEnabled(false);
     }
-    getActiveCircuit().setCurrentTool(componentName);
-    RotateRight.setEnabled(false);
-    RotateLeft.setEnabled(false);
 }//GEN-LAST:event_WireMouseClicked
 
 private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeValueChanged
-    RotateRight.setEnabled(true);
-    RotateLeft.setEnabled(true);
-    toggleToolboxButton(InsertComponent);
+    if(getActiveCircuit()!=null){
+        RotateRight.setEnabled(true);
+        RotateLeft.setEnabled(true);
+        toggleToolboxButton(InsertComponent);
 
-    TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
-    if(currentSelection != null){
-        
-        // Implode from array path to string delimited by periods.
-        Object[] nameArray = currentSelection.getPath();
-        String componentName = new String();
-        for(int i = 0; i<nameArray.length; i++){
-            componentName += nameArray[i] + ".";
-        }
-        componentName = componentName.substring(0, componentName.length() - 1);
-        
-        if(isValidComponent(componentName)){
-            getActiveCircuit().removeUnFixedComponents();
-            
-            CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit().getCommandHistory(), new Object[]{
-                componentName,                                              // properties[0] = componentName
-                ((OptionsPanel) Options).getComponentRotation(),            // properties[1] = rotation
-                new Point(0,0),                                             // properties[2] = point
-                ((OptionsPanel) Options).getCurrentLabel(),                 // properties[3] = label
-                ((componentName.equals("Standard.LED"))?((OptionsPanel) Options).getLEDColour():null),// properties[4] = LED Colour
-                ((componentName.equals("Standard.Button Source"))?((OptionsPanel) Options).getInputSourceState():null)// properties[5] = Input On/Off
-            });
-            getActiveCircuit().getCommandHistory().doCommand(ccc);
-            
-            // Set Options panel (Preview, Component Specific Options etc.)
-            ((OptionsPanel) Options).setComponent(ccc.getComponent());
-            ((OptionsPanel) Options).resetLabel(); // Assume user wants a different name for a different logicalComponent
-            ((OptionsPanel) Options).setLayoutManager();
-            Options.setVisible(true);
-            Options.repaint();
+        TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
+        if(currentSelection != null){
 
-            getActiveCircuit().setCurrentTool(componentName);
+            // Implode from array path to string delimited by periods.
+            Object[] nameArray = currentSelection.getPath();
+            String componentName = new String();
+            for(int i = 0; i<nameArray.length; i++){
+                componentName += nameArray[i] + ".";
+            }
+            componentName = componentName.substring(0, componentName.length() - 1);
 
-            repaint();
-        }       
-    }   
+            if(isValidComponent(componentName)){
+                getActiveCircuit().removeUnFixedComponents();
+
+                CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit().getCommandHistory(), new Object[]{
+                    componentName,                                              // properties[0] = componentName
+                    ((OptionsPanel) Options).getComponentRotation(),            // properties[1] = rotation
+                    new Point(0,0),                                             // properties[2] = point
+                    ((OptionsPanel) Options).getCurrentLabel(),                 // properties[3] = label
+                    ((componentName.equals("Standard.LED"))?((OptionsPanel) Options).getLEDColour():null),// properties[4] = LED Colour
+                    ((componentName.equals("Standard.Button Source"))?((OptionsPanel) Options).getInputSourceState():null)// properties[5] = Input On/Off
+                });
+                getActiveCircuit().getCommandHistory().doCommand(ccc);
+
+                // Set Options panel (Preview, Component Specific Options etc.)
+                ((OptionsPanel) Options).setComponent(ccc.getComponent());
+                ((OptionsPanel) Options).resetLabel(); // Assume user wants a different name for a different logicalComponent
+                ((OptionsPanel) Options).setLayoutManager();
+                Options.setVisible(true);
+                Options.repaint();
+
+                getActiveCircuit().setCurrentTool(componentName);
+
+                repaint();
+            }       
+        }   
+    }
 }//GEN-LAST:event_ComponentSelectionTreeValueChanged
 
 private void UndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UndoActionPerformed
-    getActiveCircuit().getCommandHistory().undo();
+    if(getActiveCircuit()!=null){ getActiveCircuit().getCommandHistory().undo();}
 }//GEN-LAST:event_UndoActionPerformed
 
 private void RedoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RedoActionPerformed
-    getActiveCircuit().getCommandHistory().redo();
+    if(getActiveCircuit()!=null){ getActiveCircuit().getCommandHistory().redo();}
 }//GEN-LAST:event_RedoActionPerformed
 
 private void CutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CutActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionCutCommand(getActiveCircuit().getCommandHistory()));    
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SelectionCutCommand(getActiveCircuit().getCommandHistory()));
+    }    
 }//GEN-LAST:event_CutActionPerformed
 
 private void CopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CopyActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionCopyCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SelectionCopyCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_CopyActionPerformed
 
 private void PasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasteActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionPasteCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SelectionPasteCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_PasteActionPerformed
 
 private void SelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectAllActionPerformed
-    getActiveCircuit().selectAllComponents();
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().selectAllComponents();
+    }
 }//GEN-LAST:event_SelectAllActionPerformed
 
 private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
-    
-    // Clean up already closed windows
-//    for(JInternalFrame jif: DesktopPane.getAllFrames()){
-//            if(jif.isClosed()) {
-//                circuitwindows.remove(jif);
-//            }
-//    }    
-    
+        
     // Perform close action for each window
     for(JInternalFrame jif: DesktopPane.getAllFrames()){
             jif.doDefaultCloseAction();
-//            if(jif.isClosed()) {
-//                DesktopPane.remove(jif);
-//            }
     }
     
     int openCircuits = DesktopPane.getAllFrames().length;  // Ignore the toolbox
@@ -886,56 +898,82 @@ private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
 }//GEN-LAST:event_ExitActionPerformed
 
 private void ClearCircuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClearCircuitMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new ClearCircuitCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new ClearCircuitCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_ClearCircuitMouseClicked
 
 private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new FileOpenCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new FileOpenCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_OpenActionPerformed
 
 private void SaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveAsActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new FileSaveAsCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new FileSaveAsCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_SaveAsActionPerformed
 
 private void UndoButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UndoButtonMouseClicked
-    getActiveCircuit().getCommandHistory().undo();
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().undo();
+    }
 }//GEN-LAST:event_UndoButtonMouseClicked
 
 private void RedoButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RedoButtonMouseClicked
-    getActiveCircuit().getCommandHistory().redo();
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().redo();
+    }
 }//GEN-LAST:event_RedoButtonMouseClicked
 
 private void RotateLeftMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateLeftMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new RotateLeftCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new RotateLeftCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_RotateLeftMouseClicked
 
 private void RotateRightMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateRightMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new RotateRightCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new RotateRightCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_RotateRightMouseClicked
 
 private void DeleteSelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DeleteSelectionMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionDeleteCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SelectionDeleteCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_DeleteSelectionMouseClicked
 
 private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionDeleteCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SelectionDeleteCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_DeleteActionPerformed
 
 private void OpenFileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_OpenFileButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new FileOpenCommand(getActiveCircuit().getCommandHistory()));
-    SelectionMouseClicked(null);
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new FileOpenCommand(getActiveCircuit().getCommandHistory()));
+        SelectionMouseClicked(null);
+    }    
 }//GEN-LAST:event_OpenFileButtonMouseClicked
 
 private void SaveAsButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveAsButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new FileSaveAsCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new FileSaveAsCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_SaveAsButtonMouseClicked
 
 private void SaveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new FileSaveCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new FileSaveCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_SaveButtonMouseClicked
 
 private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new FileSaveCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new FileSaveCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_SaveActionPerformed
 
 private void AboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AboutActionPerformed
@@ -948,46 +986,66 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 }//GEN-LAST:event_NewButtonMouseClicked
 
 private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertComponentMouseClicked
-    toggleToolboxButton(InsertComponent);
-    ComponentSelectionTreeFocusGained(null);
+    if(getActiveCircuit()!=null){
+        toggleToolboxButton(InsertComponent);
+        ComponentSelectionTreeFocusGained(null);
+    }
+    
 }//GEN-LAST:event_InsertComponentMouseClicked
 
 private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertSubComponentMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new InsertSubcomponentCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new InsertSubcomponentCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_InsertSubComponentMouseClicked
 
 private void MakeImageButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MakeImageButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new MakeImageCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new MakeImageCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_MakeImageButtonMouseClicked
 
 private void RecordButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RecordButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_RecordButtonMouseClicked
 
 private void StopButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StopButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SimulationStopCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SimulationStopCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_StopButtonMouseClicked
 
 private void StartButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StartButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand(getActiveCircuit().getCommandHistory()));
-    if(playPause){ 
-        StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png")));
-    } else {
-        StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-pause.png")));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand(getActiveCircuit().getCommandHistory()));
+        if(playPause){ 
+            StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png")));
+        } else {
+            StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-pause.png")));
+        }
+        playPause = !playPause;    
     }
-    playPause = !playPause;    
+    
 }//GEN-LAST:event_StartButtonMouseClicked
 
 private void CutButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CutButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionCutCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SelectionCutCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_CutButtonMouseClicked
 
 private void PasteButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PasteButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionPasteCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SelectionPasteCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_PasteButtonMouseClicked
 
 private void CopyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CopyButtonMouseClicked
-    getActiveCircuit().getCommandHistory().doCommand(new SelectionCopyCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SelectionCopyCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_CopyButtonMouseClicked
 
 private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeFocusGained
@@ -1000,28 +1058,34 @@ private void NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:eve
 }//GEN-LAST:event_NewActionPerformed
 
 private void RunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_RunActionPerformed
 
 private void StopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new SimulationStopCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SimulationStopCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_StopActionPerformed
 
 private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecordActionPerformed
-    getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand(getActiveCircuit().getCommandHistory()));
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_RecordActionPerformed
 
 private void StepForwardButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StepForwardButtonMouseClicked
-// TODO add your handling code here:
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SimulationStepCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_StepForwardButtonMouseClicked
 
 private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StepForwardActionPerformed
-// TODO add your handling code here:
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().getCommandHistory().doCommand(new SimulationStepCommand(getActiveCircuit().getCommandHistory()));
+    }
 }//GEN-LAST:event_StepForwardActionPerformed
-
-private void ToggleGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ToggleGridMouseClicked
-// TODO add your handling code here:
-}//GEN-LAST:event_ToggleGridMouseClicked
 
 private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ToggleGridActionPerformed
     UIConstants.DRAW_GRID_DOTS = !UIConstants.DRAW_GRID_DOTS;
@@ -1049,6 +1113,10 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             Window.add(windowItem);
             
         }
+        if(circuitwindows.size()==0){
+            Window.setEnabled(false);
+        } else 
+            Window.setEnabled(true);
     }
     
     /** Reset selections of the logicalComponent toolbox so that we only have one 
@@ -1089,9 +1157,21 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                     cir.getWidth(),
                     cir.getHeight());
         }
-               
+        final CircuitFrame finalCir = cir;
+         cir.addInternalFrameListener(new InternalFrameAdapter(){
+            @Override
+            public void internalFrameClosed(InternalFrameEvent e) {
+                circuitwindows.remove(finalCir);
+                if(circuitwindows.size()==0){
+                    enableToolbar(false);
+                    refreshWindowsMenu();
+                }
+            }
+         });
+        
         // Add the new frame to the list of windows and to the Desktop Window Pane
         circuitwindows.add(cir);
+        enableToolbar(true);
         DesktopPane.add(cir, javax.swing.JDesktopPane.DEFAULT_LAYER);
         
         // Make the new circuit active
@@ -1110,6 +1190,24 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         
     }
     
+    private void enableToolbar(boolean enable) {
+        Save.setEnabled(enable);
+        SaveAs.setEnabled(enable);
+        SaveButton.setEnabled(enable);
+        SaveAsButton.setEnabled(enable);
+        SelectAll.setEnabled(enable);
+        ClearCircuit.setEnabled(enable);
+        MakeImageButton.setEnabled(enable);
+        ToggleGrid.setEnabled(enable);
+        Simulation.setEnabled(enable);
+        Edit.setEnabled(enable);
+        StartButton.setEnabled(enable);
+        StopButton.setEnabled(enable);
+        StepForwardButton.setEnabled(enable);
+        RecordButton.setEnabled(enable);
+        SimulatorSpeed.setEnabled(enable);
+    }
+    
     /**
      * Get the currently selected active circuit panel workarea. 
      * 
@@ -1125,7 +1223,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
      * @param circuit
      */
     public void setActiveCircuit(CircuitPanel circuit) {
-//        DesktopPane.getAllFrames()
+
         if(circuitwindows.contains(circuit.getParentFrame())){
             // Set application's title
             setTitle("Logic Circuit Workbench - " + circuit.getParentFrame().getTitle());
@@ -1145,6 +1243,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             Undo.setEnabled(circuitPanel.getCommandHistory().canUndo());
             Redo.setEnabled(circuitPanel.getCommandHistory().canRedo());
             
+            clipboard.setHasSelection(circuitPanel.hasActiveSelection());
         } else {
             ErrorHandler.newError("Editor Error",
                     "Error whilst setting an active circuit. \n " +
@@ -1687,6 +1786,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JMenuItem SelectAll;
     private javax.swing.JButton Selection;
     private javax.swing.JMenu Simulation;
+    private javax.swing.JSlider SimulatorSpeed;
     private javax.swing.JButton StartButton;
     private javax.swing.JMenuItem StepForward;
     private javax.swing.JButton StepForwardButton;
@@ -1707,7 +1807,6 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;
-    private javax.swing.JSlider jSlider1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JLabel statusAnimationLabel;
