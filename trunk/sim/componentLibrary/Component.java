@@ -9,7 +9,6 @@ import sim.pin.*;
  * @author Stephen
  */
 public abstract class Component implements SimItem, ValueListener {
-
     private Map<String, InputPin> inputPins = new HashMap<String, InputPin>();
     private Map<String, OutputPin> outputPins = new HashMap<String, OutputPin>();
     protected Simulator sim;

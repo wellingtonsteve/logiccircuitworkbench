@@ -2,20 +2,40 @@ package sim.componentLibrary;
 
 import sim.*;
 import java.util.*;
+import java.util.ArrayList;
 import sim.pin.*;
 
 class Circuit implements SimItem {
     
-    public Collection<InputPin> getInputs() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    private ArrayList<SimItem> simItems = new ArrayList<SimItem>();
+    private Simulator sim;
+    private Map<String, InputPin> inputPins = new HashMap<String, InputPin>();
+    private Map<String, OutputPin> outputPins = new HashMap<String, OutputPin>();
+     
+    public boolean addSimItem(SimItem simItem){
+        if(!simItems.contains(simItem)){
+            simItems.add(simItem);
+            simItem.setSimulator(sim);
+            return true;
+        }
+        else{
+            return false;
+        }
     }
-
-    public Collection<OutputPin> getOutputs() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    
+    public Collection<InputPin> getInputs() { return inputPins.values(); }
+    public Collection<OutputPin> getOutputs() { return outputPins.values(); }
 
     public Pin getPinByName(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (inputPins.containsKey(name)) {
+            return inputPins.get(name);
+        }
+        else if (outputPins.containsKey(name)) {
+            return outputPins.get(name);
+        }
+        else {
+            return null;
+        }
     }
 
     public String getLongName() {
@@ -27,6 +47,14 @@ class Circuit implements SimItem {
     }
 
     public void setSimulator(Simulator sim) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        for(SimItem simItem:simItems){
+            simItem.setSimulator(sim);
+        }
+    }
+
+    public void initialize() {
+        for(SimItem simItem:simItems){
+            simItem.initialize();
+        }
     }
 }

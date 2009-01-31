@@ -19,6 +19,7 @@ public class AndGate2Input extends Component {
     public String getShortName() { return "& 2 input"; }
 
     //Input changed
+    @Override
     public void valueChanged(Pin pin, LogicState value) {
         final LogicState newOutputValue;
         if (input1.getValue() == LogicState.ON && input2.getValue() == LogicState.ON){
@@ -28,10 +29,12 @@ public class AndGate2Input extends Component {
         } else {
             newOutputValue = LogicState.FLOATING;
         }
-        sim.addEvent(sim.getSimulationTime() + propagationDelay, new SimItemEvent() {
-            public void RunEvent() {
-                output.setValue(newOutputValue);
-            }
-        });
+        if(sim != null){
+            sim.addEvent(sim.getSimulationTime() + propagationDelay, new SimItemEvent() {
+                public void RunEvent() {
+                    output.setValue(newOutputValue);
+                }
+            });
+        }
     }
 }

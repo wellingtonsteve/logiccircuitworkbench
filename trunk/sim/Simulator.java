@@ -1,5 +1,7 @@
 package sim;
 
+import java.util.ArrayList;
+
 public class Simulator {
     // The circuit we are going to simulate - created by the constructor. All 
     // SimItems (components, sub-circuits etc..) are added to this.
@@ -7,6 +9,7 @@ public class Simulator {
     // simulation for about 290 years (probably long enough!)
     private long simulationTime;
     private CollectionPriorityQueue<Long, SimItemEvent> eventQueue = new CollectionPriorityQueue<Long, SimItemEvent>();
+    private ArrayList<SimulatorStateListener> stateListeners = new ArrayList<SimulatorStateListener>();
 
     public boolean addEvent(long time, SimItemEvent event) {
         if (time > this.simulationTime) {
@@ -28,5 +31,15 @@ public class Simulator {
 
     public long getSimulationTime() {
         return simulationTime;
+    }
+    
+    public void addStateListener(SimulatorStateListener listener) {
+        this.stateListeners.add(listener);
+    }
+
+    public void removeStateListener(SimulatorStateListener listener) {
+        if (this.stateListeners.contains(listener)) {
+            this.stateListeners.remove(listener);
+        }
     }
 }
