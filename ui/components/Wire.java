@@ -773,38 +773,8 @@ public class Wire extends SelectableComponent {
     
     @Override
     protected void setInvalidAreas(){
-        // TODO: Rewrite this method properly
-        int maxX = startPoint.x, minX = startPoint.x, maxY = startPoint.y, minY = startPoint.y;
-        
-        for (Point waypoint : waypoints) {
-            if(waypoint.x > maxX){
-                maxX = waypoint.x;
-            }
-            if(waypoint.x < minX){
-                minX = waypoint.x;
-            }
-            if(waypoint.y > maxY){
-                maxY = waypoint.y;
-            }
-            if(waypoint.y < minY){
-                minY = waypoint.y;
-            }
-        }        
-             
-        if(endPoint.x > maxX){
-            maxX = endPoint.x;
-        }
-        if(endPoint.x < minX){
-            minX = endPoint.x;
-        }
-        if(endPoint.y > maxY){
-            maxY = endPoint.y;
-        }
-        if(endPoint.y < minY){
-            minY = endPoint.y;
-        }
-        
-        this.invalidArea = new Rectangle(minX, minY, maxX-minX, maxY-minY);
+        // A wire does not have any invalid areas
+        this.invalidArea = new Rectangle();
     }
     
     @Override
@@ -835,7 +805,7 @@ public class Wire extends SelectableComponent {
         retval = l1.ptLineDist(point)==0.0 || l2.ptLineDist(point)==0.0; 
 
         if(retval){
-            hoverWaypoint = endPoint;;
+            hoverWaypoint = endPoint;
         } else {
             hoverWaypoint = null;
         }

@@ -12,7 +12,7 @@ import javax.swing.filechooser.FileFilter;
  * This class represents a file filter for use by the file chooser. It limits
  * the files displayed only to those with an "xml" file extension.
  */
-public class XMLFileFilter extends FileFilter {
+public class CircuitFileFilter extends FileFilter {
         /**
          * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
          */
@@ -22,7 +22,7 @@ public class XMLFileFilter extends FileFilter {
                 }
 
                 String extension = getExtension(pathname);
-                if (extension != null && extension.equals("xml")) {
+                if (extension != null && extension.equals(ui.UIConstants.FILE_EXTENSION.substring(1))) {
                         return true;
                 } else {
                         return false;
@@ -33,7 +33,7 @@ public class XMLFileFilter extends FileFilter {
          * @see javax.swing.filechooser.FileFilter#getDescription()
          */
         public String getDescription() {
-                return "XML Circuit File (*.xml)";
+                return "Circuit File (*."+ui.UIConstants.FILE_EXTENSION.substring(1)+")";
         }
 
         /**

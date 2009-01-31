@@ -13,11 +13,11 @@ public class UIConstants {
     public static final Color CIRCUIT_BACKGROUND_COLOUR = Color.WHITE;
     public static final Color GRID_DOT_COLOUR = Color.GRAY;
     
-    public static final int GRID_DOT_SPACING = 10; // Changing this value will require substantial changes to the component images and classes
+    public static final int GRID_DOT_SPACING = 10; // Recommended only 2, 5 or 10
     public static final boolean SNAP_TO_GRID = true;
     public static final int GRID_STANDARD_WIDTH = 70;
     public static final int GRID_STANDARD_HEIGHT = 60;
-    public static boolean DRAW_GRID_DOTS = true;
+    public static boolean DRAW_GRID_DOTS = false;
 
     public static Color SELECTION_BOX_COLOUR = Color.BLACK;
     public static Stroke SELECTION_BOX_STROKE = new BasicStroke(1.0f, // line width
@@ -26,7 +26,7 @@ public class UIConstants {
               /* the dash pattern */new float[] { 8.0f, 8.0f },
               /* the dash phase */0.0f); /* on 8, off 8*/
     
-    public static final boolean SHOW_GRID_OBJECTS = true;
+    public static final boolean SHOW_GRID_OBJECTS = false;
     public static final Color CONNECTION_POINT_COLOUR = Color.RED;
     public static Stroke CONNECTED_POINT_STROKE = new BasicStroke(2.0f); 
     public static final boolean DO_SYSTEM_BEEP = true;

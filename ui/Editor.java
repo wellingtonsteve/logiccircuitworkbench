@@ -330,6 +330,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         });
         Toolbar.add(MakeImageButton);
 
+        ToggleGrid.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/grid.png"))); // NOI18N
         ToggleGrid.setText(bundle.getString("Editor.ToggleGrid.text")); // NOI18N
         ToggleGrid.setFocusable(false);
         ToggleGrid.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -337,6 +338,11 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         ToggleGrid.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ToggleGridMouseClicked(evt);
+            }
+        });
+        ToggleGrid.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ToggleGridActionPerformed(evt);
             }
         });
         Toolbar.add(ToggleGrid);
@@ -1016,6 +1022,11 @@ private void StepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 private void ToggleGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ToggleGridMouseClicked
 // TODO add your handling code here:
 }//GEN-LAST:event_ToggleGridMouseClicked
+
+private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ToggleGridActionPerformed
+    UIConstants.DRAW_GRID_DOTS = !UIConstants.DRAW_GRID_DOTS;
+    repaint();
+}//GEN-LAST:event_ToggleGridActionPerformed
 
     /** 
      * Repopulate the windows menu in the toolbar with the opened circuits
