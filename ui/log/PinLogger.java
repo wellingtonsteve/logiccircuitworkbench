@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
-import sim.State;
+import sim.LogicState;
 import sim.pin.*;
 import sim.Simulator;
 
@@ -15,7 +15,7 @@ import sim.Simulator;
 public class PinLogger implements ValueListener {
 
     private List<Long> timeLog = new LinkedList<Long>();
-    private List<State> stateLog = new LinkedList<State>();
+    private List<LogicState> stateLog = new LinkedList<LogicState>();
     
     private OutputPin pin; 
     private Simulator sim;
@@ -39,7 +39,7 @@ public class PinLogger implements ValueListener {
         
     }
     
-    public void valueChanged(Pin pin, State value) {
+    public void valueChanged(Pin pin, LogicState value) {
         // Remove this line when complete
             Long nextSimTime = testTimes.pop();
             //Long nextSimTime = sim.getSimulationTime();
@@ -52,7 +52,7 @@ public class PinLogger implements ValueListener {
         endTime = nextSimTime;
     }
     
-    public Collection<State> getValues(){
+    public Collection<LogicState> getValues(){
         return stateLog;
     }
     

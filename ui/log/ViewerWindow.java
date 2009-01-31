@@ -8,7 +8,7 @@ package ui.log;
 
 import sim.pin.*;
 import sim.Simulator;
-import sim.State;
+import sim.LogicState;
 
 /**
  *
@@ -25,15 +25,15 @@ public class ViewerWindow extends javax.swing.JFrame {
         
         PinLogger pl = new PinLogger(sim, outputpin);       
         
-        outputpin.setValue(State.ON);
-        outputpin.setValue(State.OFF);
-        outputpin.setValue(State.ON);
-        outputpin.setValue(State.OFF);
+        outputpin.setValue(LogicState.ON);
+        outputpin.setValue(LogicState.OFF);
+        outputpin.setValue(LogicState.ON);
+        outputpin.setValue(LogicState.OFF);
         
          ((Viewer) viewerpanel).addLogger(pl);  
          
-         outputpin.setValue(State.ON);
-         outputpin.setValue(State.OFF);
+         outputpin.setValue(LogicState.ON);
+         outputpin.setValue(LogicState.OFF);
          
          viewerpanel.repaint();
          

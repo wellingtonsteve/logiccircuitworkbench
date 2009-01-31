@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import javax.xml.transform.sax.TransformerHandler;
 import sim.pin.*;
 import sim.SimItem;
-import sim.State;
+import sim.LogicState;
 import ui.CircuitPanel;
 import ui.UIConstants;
 import ui.grid.ConnectionPoint;
@@ -582,7 +582,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     public class Pin extends Point implements ValueListener {
 
         private SelectableComponent parent;
-        private State value;
+        private LogicState value;
         private ConnectionPoint cp;
         private sim.pin.Pin simPin;
 
@@ -614,7 +614,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
             }
         }
 
-        public void valueChanged(sim.pin.Pin pin, State value) {
+        public void valueChanged(sim.pin.Pin pin, LogicState value) {
             this.value = value;
         }
 

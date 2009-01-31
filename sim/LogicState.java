@@ -1,6 +1,6 @@
 package sim;
 
-public enum State {
+public enum LogicState {
 
     FLOATING, ON, OFF
 }
