@@ -8,20 +8,16 @@ public abstract class Pin {
     private SimItem owner;
     private String name;
     private ArrayList<ValueListener> listeners = new ArrayList<ValueListener>();
-    private State value = State.FLOATING;
+    private LogicState value = LogicState.FLOATING;
 
     public Pin(SimItem owner, String name) {
         this.owner = owner;
         this.name = name;
     }
 
-    public SimItem getOwner() {
-        return this.owner;
-    }
+    public SimItem getOwner() { return this.owner; }
 
-    public String getName() {
-        return this.name;
-    }
+    public String getName() { return this.name; }
 
     public void addValueListener(ValueListener listener) {
         this.listeners.add(listener);
@@ -33,14 +29,12 @@ public abstract class Pin {
         }
     }
 
-    public void setValue(State value) {
+    public void setValue(LogicState value) {
         this.value = value;
         for (ValueListener listener : this.listeners) {
             listener.valueChanged(this, this.value);
         }
     }
 
-    public State getValue() {
-        return this.value;
-    }
+    public LogicState getValue() { return this.value; }
 }

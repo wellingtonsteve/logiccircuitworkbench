@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JPanel;
-import sim.State;
+import sim.LogicState;
 import ui.UIConstants;
 
 /**
@@ -63,7 +63,7 @@ public class Viewer extends JPanel {
             // Draw Values
             
                         
-            Iterator<State> states = p.getValues().iterator();
+            Iterator<LogicState> states = p.getValues().iterator();
             Iterator<Long>  times  = p.getKeys().iterator();
             
             g2.translate(xOffset, yOffset);
@@ -71,7 +71,7 @@ public class Viewer extends JPanel {
             // Do we have any values to display
             if(times.hasNext()){
 
-                State currState, prevState = states.next();
+                LogicState currState, prevState = states.next();
                 Long currTime, prevTime = times.next() - startTime;
 
                 while(times.hasNext()){
@@ -84,15 +84,15 @@ public class Viewer extends JPanel {
                     
                     // Draw Horizontal Part
                     g2.drawLine(prevTime.intValue(), 
-                                (prevState.equals(State.OFF))?UIConstants.LOG_HEIGHT:0,
+                                (prevState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0,
                                 currTime.intValue(),
-                                (prevState.equals(State.OFF))?UIConstants.LOG_HEIGHT:0);
+                                (prevState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0);
                     
                     // Draw Vertical Part (May be of zero length)
                     g2.drawLine(currTime.intValue(),
-                                (prevState.equals(State.OFF))?UIConstants.LOG_HEIGHT:0, 
+                                (prevState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0, 
                                 currTime.intValue(), 
-                                (currState.equals(State.OFF))?UIConstants.LOG_HEIGHT:0);
+                                (currState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0);
                     
                     System.out.println(currTime + " @ " + currState.toString());
                     

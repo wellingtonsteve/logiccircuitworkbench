@@ -14,22 +14,18 @@ public class AndGate2Input extends Component {
     private int propagationDelay = 5;
 
     //Names
-    public String getLongName() {
-        return "And Gate with 2 Inputs";
-    }
-    public String getShortName() {
-        return "& 2 input";
-    }
+    public String getLongName() { return "And Gate with 2 Inputs"; }
+    public String getShortName() { return "& 2 input"; }
 
     //Input changed
-    public void valueChanged(Pin pin, State value) {
-        final State newOutputValue;
-        if (input1.getValue() == State.ON && input2.getValue() == State.ON) {
-            newOutputValue = State.ON;
-        } else if (input1.getValue() == State.OFF || input2.getValue() == State.OFF) {
-            newOutputValue = State.OFF;
+    public void valueChanged(Pin pin, LogicState value) {
+        final LogicState newOutputValue;
+        if (input1.getValue() == LogicState.ON && input2.getValue() == LogicState.ON){
+            newOutputValue = LogicState.ON; 
+        } else if (input1.getValue() == LogicState.OFF || input2.getValue() == LogicState.OFF) {
+            newOutputValue = LogicState.OFF;
         } else {
-            newOutputValue = State.FLOATING;
+            newOutputValue = LogicState.FLOATING;
         }
         sim.addEvent(sim.getSimulationTime() + propagationDelay, new SimItemEvent() {
             public void RunEvent() {
