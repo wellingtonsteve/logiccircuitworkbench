@@ -69,14 +69,12 @@ public class Wire {
                 wire1.disconnectPin(pin);
                 newWire.connectPin(pin);
             }
-            //If the second Wire has an OutputPin, disconnect it and reconnect it to the new Wire.
-            else if(wire2.valueSource != null){
+            //If the second Wire has a- OutputPin, disconnect it and reconnect it to the new Wire.
+            if(wire2.valueSource != null){
                 OutputPin pin = wire2.valueSource;
                 wire2.disconnectPin(pin);
                 newWire.connectPin(pin);
             }
-            //Otherwise do nothing
-            else{ }
             
             //Cycle through the InputPins connected to the first Wire, disconnect them and add them to the new Wire
             for(InputPin pin:wire1.valueTargets){
