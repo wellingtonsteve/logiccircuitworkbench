@@ -16,7 +16,7 @@ public class AndGate2Input extends Component {
 
     //Names
     public String getLongName() { return "And Gate with 2 Inputs"; }
-    public String getShortName() { return "& 2 input"; }
+    public String getShortName() { return "&& 2 input"; }
 
     //Input changed
     @Override
