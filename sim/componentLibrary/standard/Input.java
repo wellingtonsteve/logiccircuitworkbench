@@ -9,7 +9,7 @@ import sim.pin.*;
  * @author Stephen
  */
 public class Input extends Component {
-
+    
     //Pins
     private OutputPin output = createOutputPin("Output");
     
