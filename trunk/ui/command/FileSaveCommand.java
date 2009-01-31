@@ -3,7 +3,7 @@ package ui.command;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import ui.Editor;
-import ui.file.XMLFileFilter;
+import ui.file.CircuitFileFilter;
 
 /**
  *
@@ -21,7 +21,7 @@ public class FileSaveCommand extends Command {
         if(filename.substring(0, 8).equals("Untitled") || filename == null || filename.isEmpty()){
                     
             JFileChooser c = new JFileChooser();
-            FileFilter xmlFilter = new XMLFileFilter();        
+            FileFilter xmlFilter = new CircuitFileFilter();        
             c.setFileFilter(xmlFilter);
             c.setDialogType(JFileChooser.SAVE_DIALOG);
             c.setSelectedFile(new java.io.File(filename));

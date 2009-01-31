@@ -5,7 +5,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import ui.Editor;
 import ui.file.FileLoader;
-import ui.file.XMLFileFilter;
+import ui.file.CircuitFileFilter;
 import ui.components.SelectableComponent;
 
 /**
@@ -22,7 +22,7 @@ public class FileOpenCommand extends Command {
     protected void perform(Editor editor) {
         String filename;                                    
         JFileChooser c = new JFileChooser();
-        FileFilter xmlFilter = new XMLFileFilter();        
+        FileFilter xmlFilter = new CircuitFileFilter();        
         c.setFileFilter(xmlFilter);
         c.setDialogType(JFileChooser.OPEN_DIALOG);
         int rVal = c.showOpenDialog(editor);

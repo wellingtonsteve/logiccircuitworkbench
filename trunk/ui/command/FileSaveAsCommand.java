@@ -1,6 +1,6 @@
 package ui.command;
 
-import ui.file.XMLFileFilter;
+import ui.file.CircuitFileFilter;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import ui.Editor;
@@ -19,7 +19,7 @@ public class FileSaveAsCommand extends Command {
     protected void perform(Editor editor) {
         String filename = activeCircuit.getFilename(); ;                                    
         JFileChooser c = new JFileChooser();
-        FileFilter xmlFilter = new XMLFileFilter();        
+        FileFilter xmlFilter = new CircuitFileFilter();        
         c.setFileFilter(xmlFilter);
         c.setSelectedFile(new java.io.File(filename));
         c.setDialogType(JFileChooser.SAVE_DIALOG);
