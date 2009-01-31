@@ -1,4 +1,4 @@
-package sim;
+package sim.componentLibrary;
 
 import java.util.ArrayList;
 import sim.pin.*;
