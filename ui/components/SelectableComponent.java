@@ -80,7 +80,9 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         } else {
             this.origin = origin;
         }
-                
+        if(logicalComponent!=null){
+            this.parent.getLogicalCircuit().addSimItem(logicalComponent);
+        }        
         setLocalPins();
         setGlobalPins();
     }

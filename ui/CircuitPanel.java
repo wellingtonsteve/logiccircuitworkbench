@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import sim.Simulator;
+import sim.componentLibrary.Circuit;
 import ui.file.FileCreator;
 import ui.grid.Grid;
 import ui.components.*;
@@ -48,10 +50,14 @@ public class CircuitPanel extends JPanel {
     private final Grid grid = new Grid();
     private Point previousPoint = new Point(0,0);
     private CommandHistory cmdHist;
+    private Simulator simulator;
+    private Circuit logicalCircuit;
 
     public CircuitPanel(){
         addMouseMotionListener(new CircuitPanelMouseMotionAdapter());
         addMouseListener(new CircuitPanelMouseListener());
+        this.logicalCircuit = new Circuit();
+        this.simulator = new Simulator(logicalCircuit);
     }
     
     public Grid getGrid() {
@@ -71,6 +77,7 @@ public class CircuitPanel extends JPanel {
                 fixedComponents.push(sc);
             } else {
                 grid.removeComponent(sc);
+                logicalCircuit.removeSimItem(sc.getLogicalComponent());
             }
         }
         drawnComponents.clear();
@@ -246,6 +253,7 @@ public class CircuitPanel extends JPanel {
 
         for(SelectableComponent sc: activeComponents){
             grid.removeComponent(sc);
+            logicalCircuit.removeSimItem(sc.getLogicalComponent());
         }
         
         drawnComponents.removeAll(activeComponents);        
@@ -267,6 +275,7 @@ public class CircuitPanel extends JPanel {
         nowDragingComponent = false;
         multipleSelection = false;
         grid.clear();
+        logicalCircuit.reset();
         editor.getClipboard().setHasSelection(false);
 
         repaint();      
@@ -339,6 +348,7 @@ public class CircuitPanel extends JPanel {
     public void removeComponent(SelectableComponent sc) {
         drawnComponents.remove(sc);
         grid.removeComponent(sc);
+        logicalCircuit.removeSimItem(sc.getLogicalComponent());
     }
 
     public void setParentFrame(CircuitFrame parentFrame) {
@@ -671,5 +681,13 @@ public class CircuitPanel extends JPanel {
      */
     protected boolean isActiveCircuit() {
         return editor.getActiveCircuit().equals(CircuitPanel.this);
+    }
+    
+    public Simulator getSimulator(){
+        return simulator;
+    }
+    
+    public Circuit getLogicalCircuit(){
+        return logicalCircuit;
     }
 }

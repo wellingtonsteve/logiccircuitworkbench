@@ -382,6 +382,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         StopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-stop.png"))); // NOI18N
         StopButton.setText(bundle.getString("Editor.StopButton.text")); // NOI18N
+        StopButton.setEnabled(false);
         StopButton.setFocusable(false);
         StopButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         StopButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -394,6 +395,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         StepForwardButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-seek-forward.png"))); // NOI18N
         StepForwardButton.setText(bundle.getString("Editor.StepForwardButton.text")); // NOI18N
+        StepForwardButton.setEnabled(false);
         StepForwardButton.setFocusable(false);
         StepForwardButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         StepForwardButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -776,7 +778,7 @@ private void SelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 }//GEN-LAST:event_SelectionMouseClicked
 
 private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WireMouseClicked
-    if(getActiveCircuit()!=null){ 
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){ 
         toggleToolboxButton(Wire);
         circuitPanel.removeUnFixedComponents();
         String componentName = "Wire";
@@ -898,7 +900,7 @@ private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
 }//GEN-LAST:event_ExitActionPerformed
 
 private void ClearCircuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClearCircuitMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new ClearCircuitCommand(getActiveCircuit().getCommandHistory()));
     }
 }//GEN-LAST:event_ClearCircuitMouseClicked
@@ -916,31 +918,31 @@ private void SaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 }//GEN-LAST:event_SaveAsActionPerformed
 
 private void UndoButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UndoButtonMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().undo();
     }
 }//GEN-LAST:event_UndoButtonMouseClicked
 
 private void RedoButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RedoButtonMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().redo();
     }
 }//GEN-LAST:event_RedoButtonMouseClicked
 
 private void RotateLeftMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateLeftMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new RotateLeftCommand(getActiveCircuit().getCommandHistory()));
     }
 }//GEN-LAST:event_RotateLeftMouseClicked
 
 private void RotateRightMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RotateRightMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new RotateRightCommand(getActiveCircuit().getCommandHistory()));
     }
 }//GEN-LAST:event_RotateRightMouseClicked
 
 private void DeleteSelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DeleteSelectionMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new SelectionDeleteCommand(getActiveCircuit().getCommandHistory()));
     }
 }//GEN-LAST:event_DeleteSelectionMouseClicked
@@ -952,20 +954,20 @@ private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 }//GEN-LAST:event_DeleteActionPerformed
 
 private void OpenFileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_OpenFileButtonMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new FileOpenCommand(getActiveCircuit().getCommandHistory()));
         SelectionMouseClicked(null);
     }    
 }//GEN-LAST:event_OpenFileButtonMouseClicked
 
 private void SaveAsButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveAsButtonMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new FileSaveAsCommand(getActiveCircuit().getCommandHistory()));
     }
 }//GEN-LAST:event_SaveAsButtonMouseClicked
 
 private void SaveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SaveButtonMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new FileSaveCommand(getActiveCircuit().getCommandHistory()));
     }
 }//GEN-LAST:event_SaveButtonMouseClicked
@@ -986,7 +988,7 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 }//GEN-LAST:event_NewButtonMouseClicked
 
 private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertComponentMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         toggleToolboxButton(InsertComponent);
         ComponentSelectionTreeFocusGained(null);
     }
@@ -994,56 +996,74 @@ private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-F
 }//GEN-LAST:event_InsertComponentMouseClicked
 
 private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertSubComponentMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new InsertSubcomponentCommand(getActiveCircuit().getCommandHistory()));
     }
 }//GEN-LAST:event_InsertSubComponentMouseClicked
 
 private void MakeImageButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MakeImageButtonMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new MakeImageCommand(getActiveCircuit().getCommandHistory()));
     }
 }//GEN-LAST:event_MakeImageButtonMouseClicked
 
 private void RecordButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RecordButtonMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled() && !Record.isSelected()){
         getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand(getActiveCircuit().getCommandHistory()));
+        Record.setSelected(true);
+        RecordButton.setSelected(true); 
+    } else if(evt.getComponent().isEnabled() && Record.isSelected()){
+        Record.setSelected(false);
+        RecordButton.setSelected(false); 
     }
 }//GEN-LAST:event_RecordButtonMouseClicked
 
 private void StopButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StopButtonMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new SimulationStopCommand(getActiveCircuit().getCommandHistory()));
+        StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png")));
+        playPause = false;
+        StopButton.setEnabled(false);
+        Stop.setEnabled(false);
+        RecordButton.setSelected(false);
+        StepForward.setEnabled(false);
+        StepForwardButton.setEnabled(false);
     }
 }//GEN-LAST:event_StopButtonMouseClicked
 
 private void StartButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StartButtonMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand(getActiveCircuit().getCommandHistory()));
         if(playPause){ 
             StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png")));
+            StepForward.setEnabled(false);
+            StepForwardButton.setEnabled(false);
         } else {
             StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-pause.png")));
+            StepForward.setEnabled(true);
+            StepForwardButton.setEnabled(true);
         }
+        StopButton.setEnabled(true);
+        Stop.setEnabled(true);
         playPause = !playPause;    
     }
     
 }//GEN-LAST:event_StartButtonMouseClicked
 
 private void CutButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CutButtonMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new SelectionCutCommand(getActiveCircuit().getCommandHistory()));
     }
 }//GEN-LAST:event_CutButtonMouseClicked
 
 private void PasteButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PasteButtonMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new SelectionPasteCommand(getActiveCircuit().getCommandHistory()));
     }
 }//GEN-LAST:event_PasteButtonMouseClicked
 
 private void CopyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CopyButtonMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new SelectionCopyCommand(getActiveCircuit().getCommandHistory()));
     }
 }//GEN-LAST:event_CopyButtonMouseClicked
@@ -1060,23 +1080,42 @@ private void NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:eve
 private void RunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunActionPerformed
     if(getActiveCircuit()!=null){
         getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand(getActiveCircuit().getCommandHistory()));
+        StopButton.setEnabled(true);
+        Stop.setEnabled(true);
+        StepForward.setEnabled(true);
+        StepForwardButton.setEnabled(true);
     }
 }//GEN-LAST:event_RunActionPerformed
 
 private void StopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopActionPerformed
     if(getActiveCircuit()!=null){
         getActiveCircuit().getCommandHistory().doCommand(new SimulationStopCommand(getActiveCircuit().getCommandHistory()));
+        StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png")));
+        playPause = false;
+        StopButton.setEnabled(false);
+        Stop.setEnabled(false);
+        Record.setSelected(false);
+        Record.setEnabled(true);
+        RecordButton.setSelected(true);
+        RecordButton.setEnabled(false);
+        StepForward.setEnabled(false);
+        StepForwardButton.setEnabled(false);
     }
 }//GEN-LAST:event_StopActionPerformed
 
 private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecordActionPerformed
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && !Record.isSelected()){
         getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand(getActiveCircuit().getCommandHistory()));
+        Record.setSelected(true);
+        RecordButton.setSelected(true);
+    } else if(Record.isSelected()){
+        Record.setSelected(false);
+        RecordButton.setSelected(false); 
     }
 }//GEN-LAST:event_RecordActionPerformed
 
 private void StepForwardButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StepForwardButtonMouseClicked
-    if(getActiveCircuit()!=null){
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().getCommandHistory().doCommand(new SimulationStepCommand(getActiveCircuit().getCommandHistory()));
     }
 }//GEN-LAST:event_StepForwardButtonMouseClicked
@@ -1115,8 +1154,9 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         }
         if(circuitwindows.size()==0){
             Window.setEnabled(false);
-        } else 
+        } else {
             Window.setEnabled(true);
+        }
     }
     
     /** Reset selections of the logicalComponent toolbox so that we only have one 
@@ -1202,8 +1242,6 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         Simulation.setEnabled(enable);
         Edit.setEnabled(enable);
         StartButton.setEnabled(enable);
-        StopButton.setEnabled(enable);
-        StepForwardButton.setEnabled(enable);
         RecordButton.setEnabled(enable);
         SimulatorSpeed.setEnabled(enable);
     }
