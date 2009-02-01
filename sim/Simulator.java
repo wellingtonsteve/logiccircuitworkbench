@@ -2,6 +2,7 @@ package sim;
 
 import java.util.ArrayList;
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class Simulator {
     // The circuit we are going to simulate - created by the constructor. All 
@@ -50,6 +51,12 @@ public class Simulator {
     
     private SimulatorState currentState;
     private Timer timer;
+    private Simulator thisPtr = this;
+
+    private void runUntilSimTime(long time)
+    {
+        System.out.println(time);
+    }
     
     private void setState(SimulatorState state){
         currentState = state;
@@ -69,16 +76,33 @@ public class Simulator {
         if(currentState == SimulatorState.STOPPED){
             setSimulationTime(0);
             simItem.initialize();
+            timer = new Timer();
+            timer.schedule(new TimerTask(){
+                public void run() {
+                    thisPtr.runUntilSimTime(thisPtr.currentSimulationTime+100000000);
+                }
+            }, 0, 100);
+            setState(SimulatorState.PLAYING);
             return true;
+        }
+        else{
+            return false;
         }
     }
     public boolean pause(){
-    
+        return false;
     }
     public boolean stepthrough(){
-        
+        return false;
     }
     public boolean stop(){
-        
+        if(currentState == SimulatorState.PLAYING || currentState == SimulatorState.PAUSED){
+            timer.cancel();
+            setState(SimulatorState.STOPPED);
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }
