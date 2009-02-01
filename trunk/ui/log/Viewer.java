@@ -41,33 +41,30 @@ public class Viewer extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         
         // Background Colour
-        g2.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+        g2.setColor(UIConstants.LOGGER_BACKGROUND_COLOUR);
         g2.fillRect(0, 0, this.getWidth(), this.getHeight());
         
-        // Grid Snap Dots
-        g2.setColor(UIConstants.GRID_DOT_COLOUR);
-                
+        // Draw Vertical Grid Lines
+        g2.setColor(UIConstants.LOGGER_GRID_COLOUR);
+        for(int i=0; i< getWidth(); i+=20){
+            g2.drawLine(i, 0, i, getHeight());
+        }
+                        
         float xOffset = 0f;
-        float yOffset = 2 * UIConstants.LOG_VIEWER_MARGIN;
+        float yOffset = 0.5f * UIConstants.LOG_VIEWER_MARGIN;
         
         for(PinLogger p: loggers){
             
             yOffset += UIConstants.LOG_VIEWER_MARGIN;
             
-            // Draw Borders and Margins
-            
-            
-            // Draw Axes
-            
-            
-            // Draw Values
-            
-                        
             Iterator<LogicState> states = p.getValues().iterator();
             Iterator<Long>  times  = p.getKeys().iterator();
             
             g2.translate(xOffset, yOffset);
                         
+            // Draw Graphs
+            g2.setColor(UIConstants.LOGGER_GRAPH_COLOR);
+            
             // Do we have any values to display
             if(times.hasNext()){
 
@@ -94,7 +91,7 @@ public class Viewer extends JPanel {
                                 currTime.intValue(), 
                                 (currState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0);
                     
-                    System.out.println(currTime + " @ " + currState.toString());
+                    //System.out.println(currTime + " @ " + currState.toString());
                     
                     
                     prevTime = currTime;

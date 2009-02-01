@@ -1036,12 +1036,12 @@ private void StartButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand(getActiveCircuit().getCommandHistory()));
         if(playPause){ 
             StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png")));
-            StepForward.setEnabled(false);
-            StepForwardButton.setEnabled(false);
-        } else {
-            StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-pause.png")));
             StepForward.setEnabled(true);
             StepForwardButton.setEnabled(true);
+        } else {
+            StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-pause.png")));
+            StepForward.setEnabled(false);
+            StepForwardButton.setEnabled(false);
         }
         StopButton.setEnabled(true);
         Stop.setEnabled(true);
@@ -1080,10 +1080,18 @@ private void NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:eve
 private void RunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunActionPerformed
     if(getActiveCircuit()!=null){
         getActiveCircuit().getCommandHistory().doCommand(new SimulationStartCommand(getActiveCircuit().getCommandHistory()));
+        if(playPause){ 
+            StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png")));
+            StepForward.setEnabled(true);
+            StepForwardButton.setEnabled(true);
+        } else {
+            StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-pause.png")));
+            StepForward.setEnabled(false);
+            StepForwardButton.setEnabled(false);
+        }
         StopButton.setEnabled(true);
         Stop.setEnabled(true);
-        StepForward.setEnabled(true);
-        StepForwardButton.setEnabled(true);
+        playPause = !playPause;    
     }
 }//GEN-LAST:event_RunActionPerformed
 
