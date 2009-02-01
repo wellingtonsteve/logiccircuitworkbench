@@ -18,5 +18,7 @@ public class Input extends Component {
     public String getShortName() { return "Input"; }
     
     //Set Input value
-    public void setValue(LogicState value) { output.setValue(value); }
+    public void setValue(LogicState value) {
+        output.setValue(value);
+    }
 }
