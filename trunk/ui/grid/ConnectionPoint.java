@@ -48,10 +48,12 @@ public class ConnectionPoint extends GridObject {
             p.setConnectionPoint(this);
             connections.add(p);
         }
+        // TODO: Add connections in logical circuit
     }
     
     public boolean removeConnection(Pin p){
         boolean retval = connections.remove(p);
+        // TODO: Add connections in logical circuit
         p.setConnectionPoint(null);
         if(noOfConnections() == 1)  {
             isCrossover = false;

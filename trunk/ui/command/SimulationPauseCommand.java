@@ -14,7 +14,7 @@ public class SimulationPauseCommand extends Command {
 
     @Override
     protected void perform(Editor editor) {
-        ui.error.ErrorHandler.newError(new ui.error.Error("Editor Error","Pause Simulation Action is not yet implemented"));
+        activeCircuit.getSimulator().pause();
     }
 
     @Override
