@@ -1,6 +1,7 @@
 package sim;
 
 import java.util.ArrayList;
+import java.util.Timer;
 
 public class Simulator {
     // The circuit we are going to simulate - created by the constructor. All 
@@ -48,6 +49,7 @@ public class Simulator {
     //Simulator control
     
     private SimulatorState currentState;
+    private Timer timer;
     
     private void setState(SimulatorState state){
         currentState = state;
