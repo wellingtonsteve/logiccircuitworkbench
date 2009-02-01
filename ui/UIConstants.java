@@ -48,6 +48,9 @@ public class UIConstants {
     public static int WIRE_HANDLE_LENGTH = 40;
     public static boolean SHOW_INVALID_AREA_BOXES = false;
     public static boolean SHOW_BOUNDING_BOXES = false;
+    public static Color LOGGER_BACKGROUND_COLOUR = Color.WHITE;
+    public static Color LOGGER_GRID_COLOUR = new Color(230,230,230);
+    public static Color LOGGER_GRAPH_COLOR = new Color(46,139,87);
 
     public static void beep(){
         java.awt.Toolkit.getDefaultToolkit().beep();
