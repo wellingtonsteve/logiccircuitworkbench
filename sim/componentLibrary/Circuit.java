@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.ArrayList;
 import sim.pin.*;
 
-class Circuit implements SimItem {
+public class Circuit implements SimItem {
     private ArrayList<SimItem> simItems = new ArrayList<SimItem>();
     private Simulator sim;
     private Map<String, InputPin> inputPins = new HashMap<String, InputPin>();
