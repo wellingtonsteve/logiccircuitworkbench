@@ -25,6 +25,7 @@ import ui.command.CommandHistory;
 import ui.command.CreateComponentCommand;
 import ui.command.SelectionTranslateCommand;
 import ui.error.ErrorHandler;
+import ui.log.PinLogger;
 
 /**
  *
@@ -52,6 +53,7 @@ public class CircuitPanel extends JPanel {
     private CommandHistory cmdHist;
     private Simulator simulator;
     private Circuit logicalCircuit;
+    private LinkedList<PinLogger> OuputLoggers = new LinkedList<PinLogger>();
 
     public CircuitPanel(){
         addMouseMotionListener(new CircuitPanelMouseMotionAdapter());
@@ -59,9 +61,17 @@ public class CircuitPanel extends JPanel {
         this.logicalCircuit = new Circuit();
         this.simulator = new Simulator(logicalCircuit);
     }
+
+    public void addLogger(Pin pin) {
+       OuputLoggers.add(new PinLogger(pin));
+    }
     
     public Grid getGrid() {
         return grid;
+    }
+
+    public Iterable<PinLogger> getPinLoggers() {
+        return OuputLoggers;
     }
 
     public void setFilename(String filename) {

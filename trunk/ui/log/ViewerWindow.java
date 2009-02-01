@@ -6,9 +6,7 @@
 
 package ui.log;
 
-import sim.pin.*;
-import sim.Simulator;
-import sim.LogicState;
+import ui.CircuitPanel;
 
 /**
  *
@@ -17,26 +15,18 @@ import sim.LogicState;
 public class ViewerWindow extends javax.swing.JFrame {
 
     /** Creates new form ViewerWindow */
-    public ViewerWindow() {
+    public ViewerWindow(CircuitPanel circuit) {
         initComponents();
 
-        OutputPin outputpin = new OutputPin(null, "Test");
-        
-        PinLogger pl = new PinLogger(null, outputpin);       
-        
-        outputpin.setValue(LogicState.ON);
-        outputpin.setValue(LogicState.OFF);
-        outputpin.setValue(LogicState.ON);
-        outputpin.setValue(LogicState.OFF);
-        
-         ((Viewer) viewerpanel).addLogger(pl);  
-         
-         outputpin.setValue(LogicState.ON);
-         outputpin.setValue(LogicState.OFF);
-         
-         viewerpanel.repaint();
-         
-         ((Viewer) viewerpanel).addLogger(pl);        
+        for(PinLogger pl: circuit.getPinLoggers()){        
+            ((Viewer) viewerpanel).addLogger(pl);  
+        }
+            
+    }
+    
+    public ViewerWindow(PinLogger pl){
+        initComponents();
+        ((Viewer) viewerpanel).addLogger(pl);
     }
 
     /** This method is called from within the constructor to
@@ -55,11 +45,12 @@ public class ViewerWindow extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         viewerpanel = new Viewer();
+        jScrollPane2 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/log/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
         jCheckBox11.setText(bundle.getString("ViewerWindow.jCheckBox11.text")); // NOI18N
         jCheckBox11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -127,12 +118,9 @@ public class ViewerWindow extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jCheckBox1)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jCheckBox2)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBox1)
+                    .addComponent(jCheckBox2))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -140,12 +128,14 @@ public class ViewerWindow extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addComponent(jCheckBox1)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBox2)
-                .addContainerGap(217, Short.MAX_VALUE))
+                .addContainerGap(225, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.EAST);
+        jScrollPane2.setViewportView(jPanel1);
+
+        getContentPane().add(jScrollPane2, java.awt.BorderLayout.EAST);
 
         pack();
     }//GEN-END:initComponents
@@ -171,6 +161,7 @@ private void jCheckBox2ActionPerformed1(java.awt.event.ActionEvent evt) {//GEN-F
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel viewerpanel;
