@@ -7,12 +7,12 @@ public class Simulator {
     // SimItems (components, sub-circuits etc..) are added to this.
     private SimItem simItem;    // The time we are in nanoseconds in the simulation - will let us run the 
     // simulation for about 290 years (probably long enough!)
-    private long simulationTime;
+    private long currentSimulationTime;
     private CollectionPriorityQueue<Long, SimItemEvent> eventQueue = new CollectionPriorityQueue<Long, SimItemEvent>();
     private ArrayList<SimulatorStateListener> stateListeners = new ArrayList<SimulatorStateListener>();
 
     public boolean addEvent(long time, SimItemEvent event) {
-        if (time > this.simulationTime) {
+        if (time > this.currentSimulationTime) {
             eventQueue.offer(time, event);
             return true;
         } else {
@@ -30,7 +30,7 @@ public class Simulator {
     }
 
     public long getSimulationTime() {
-        return simulationTime;
+        return currentSimulationTime;
     }
     
     public void addStateListener(SimulatorStateListener listener) {
@@ -41,5 +41,42 @@ public class Simulator {
         if (this.stateListeners.contains(listener)) {
             this.stateListeners.remove(listener);
         }
+    }
+    
+    
+    
+    //Simulator control
+    
+    private SimulatorState currentState;
+    
+    private void setState(SimulatorState state){
+        currentState = state;
+        for(SimulatorStateListener stateListener: stateListeners){
+            stateListener.SimulatorStateChanged(state);
+        }
+    }
+    
+    private void setSimulationTime(long time){
+        currentSimulationTime = time;
+        for(SimulatorStateListener stateListener : stateListeners) {
+            stateListener.SimulationTimeChanged(time);
+        }
+    }
+    
+    public boolean play(){
+        if(currentState == SimulatorState.STOPPED){
+            setSimulationTime(0);
+            simItem.initialize();
+            return true;
+        }
+    }
+    public boolean pause(){
+    
+    }
+    public boolean stepthrough(){
+        
+    }
+    public boolean stop(){
+        
     }
 }
