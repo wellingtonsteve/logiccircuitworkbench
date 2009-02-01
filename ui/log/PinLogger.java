@@ -3,55 +3,36 @@ package ui.log;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 import sim.LogicState;
-import sim.pin.*;
 import sim.Simulator;
+import sim.pin.*;
 
 /**
  *
  * @author matt
  */
-public class PinLogger implements ValueListener {
+public class PinLogger implements sim.pin.ValueListener {
 
     private List<Long> timeLog = new LinkedList<Long>();
     private List<LogicState> stateLog = new LinkedList<LogicState>();
     
-    private OutputPin pin; 
+    private Pin pin; 
+    private Long startTime = 0l;
+    private Long endTime = 0l;
     private Simulator sim;
-    private Long startTime;
-    private Long endTime;
-    // Remove this line when complete
-    Stack<Long> testTimes = new Stack<Long>();
     
-    public PinLogger(Simulator sim, OutputPin pin){
-        this.sim = sim;
+    public PinLogger(ui.components.SelectableComponent.Pin pin){
+        this.pin = (OutputPin) pin.getParent().getLogicalComponent().getPinByName("Output");
+        this.sim = pin.getParent().getParent().getSimulator();
+        this.pin.addValueListener(this);        
+    }
+    
+    public PinLogger(sim.pin.Pin pin, Simulator sim){
         this.pin = pin;
-        pin.addValueListener(this);
-        
-        // Remove these lines when complete
-        testTimes.push(new Long("2600"));
-        testTimes.push(new Long("2521"));        
-        testTimes.push(new Long("2497"));
-        testTimes.push(new Long("2430"));
-        testTimes.push(new Long("2390"));
-        testTimes.push(new Long("2356"));
-        
+        this.sim = sim;
+        this.pin.addValueListener(this);        
     }
-    
-    public void valueChanged(Pin pin, LogicState value) {
-        // Remove this line when complete
-            Long nextSimTime = testTimes.pop();
-            //Long nextSimTime = sim.getSimulationTime();
-        timeLog.add(nextSimTime);
-        stateLog.add(value);
-
-        if(startTime == null){
-            startTime = new Long(nextSimTime);
-        }
-        endTime = nextSimTime;
-    }
-    
+ 
     public Collection<LogicState> getValues(){
         return stateLog;
     }
@@ -70,5 +51,17 @@ public class PinLogger implements ValueListener {
     
     public Long getEndTime(){
         return endTime;
+    }
+
+    public void valueChanged(Pin pin, LogicState value) {
+        Long nextSimTime = sim.getSimulationTime();
+        System.out.println(nextSimTime);
+        timeLog.add(nextSimTime);
+        stateLog.add(value);
+
+        if(startTime == null){
+            startTime = new Long(nextSimTime);
+        }
+        endTime = nextSimTime;
     }
 }

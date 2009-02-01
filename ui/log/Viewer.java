@@ -10,6 +10,8 @@ import java.awt.Graphics2D;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.JPanel;
 import sim.LogicState;
 import ui.UIConstants;
@@ -24,12 +26,16 @@ public class Viewer extends JPanel {
     private Long startTime = Long.MAX_VALUE;
     
     public Viewer(){
-        
+        Timer timer = new Timer();
+            timer.schedule(new TimerTask(){
+                public void run() {
+                    Viewer.this.repaint();
+                }
+            }, 0, 10);
     }
     
     public void addLogger(PinLogger pl){
         loggers.add(pl);
-        
         if(pl.getStartTime()<startTime){
             startTime = pl.getStartTime();
         }
@@ -54,7 +60,6 @@ public class Viewer extends JPanel {
         float yOffset = 0.5f * UIConstants.LOG_VIEWER_MARGIN;
         
         for(PinLogger p: loggers){
-            
             yOffset += UIConstants.LOG_VIEWER_MARGIN;
             
             Iterator<LogicState> states = p.getValues().iterator();
@@ -80,18 +85,18 @@ public class Viewer extends JPanel {
                                      
                     
                     // Draw Horizontal Part
-                    g2.drawLine(prevTime.intValue(), 
+                    g2.drawLine((int)(prevTime.intValue()*0.000001), 
                                 (prevState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0,
-                                currTime.intValue(),
+                                (int)(currTime.intValue()*0.000001),
                                 (prevState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0);
                     
                     // Draw Vertical Part (May be of zero length)
-                    g2.drawLine(currTime.intValue(),
+                    g2.drawLine((int)(currTime.intValue()*0.000001),
                                 (prevState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0, 
-                                currTime.intValue(), 
+                                (int)(currTime.intValue()*0.000001), 
                                 (currState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0);
                     
-                    //System.out.println(currTime + " @ " + currState.toString());
+                    System.out.println(currTime + " @ " + currState.toString());
                     
                     
                     prevTime = currTime;
