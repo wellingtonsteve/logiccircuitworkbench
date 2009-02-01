@@ -1,6 +1,7 @@
 package sim;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -49,13 +50,25 @@ public class Simulator {
     
     //Simulator control
     
-    private SimulatorState currentState;
+    private SimulatorState currentState = SimulatorState.STOPPED;
     private Timer timer;
     private Simulator thisPtr = this;
 
     private void runUntilSimTime(long time)
     {
-        System.out.println(time);
+        //System.out.println(time);
+        while(time > currentSimulationTime && !eventQueue.isEmpty()){
+            long nextQueueTime = eventQueue.peekK();
+            if(nextQueueTime <= time){
+                Collection<SimItemEvent> events = eventQueue.pollV();
+                for(SimItemEvent event:events){
+                    event.RunEvent();
+                }
+                setSimulationTime(nextQueueTime);
+            }
+            else break;
+        }
+        setSimulationTime(time);
     }
     
     private void setState(SimulatorState state){
@@ -79,10 +92,14 @@ public class Simulator {
             timer = new Timer();
             timer.schedule(new TimerTask(){
                 public void run() {
+                    //System.out.println(thisPtr.currentSimulationTime+100000000);
                     thisPtr.runUntilSimTime(thisPtr.currentSimulationTime+100000000);
                 }
             }, 0, 100);
             setState(SimulatorState.PLAYING);
+            return true;
+        }
+        else if(currentState == SimulatorState.PAUSED){
             return true;
         }
         else{

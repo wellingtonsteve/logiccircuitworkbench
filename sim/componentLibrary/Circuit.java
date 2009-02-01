@@ -32,6 +32,12 @@ public class Circuit implements SimItem {
         }
     }
     
+    public void clear(){
+        simItems.clear();
+        inputPins.clear();
+        outputPins.clear();
+    }
+        
     public Collection<InputPin> getInputs() { return inputPins.values(); }
     public Collection<OutputPin> getOutputs() { return outputPins.values(); }
 
