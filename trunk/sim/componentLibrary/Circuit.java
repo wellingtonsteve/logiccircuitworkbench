@@ -22,6 +22,16 @@ public class Circuit implements SimItem {
         }
     }
     
+    public boolean removeSimItem(SimItem simItem){
+        if(simItems.contains(simItem)){
+            simItems.remove(simItem);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
     public Collection<InputPin> getInputs() { return inputPins.values(); }
     public Collection<OutputPin> getOutputs() { return outputPins.values(); }
 
