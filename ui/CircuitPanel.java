@@ -55,13 +55,15 @@ public class CircuitPanel extends JPanel {
     private Simulator simulator;
     private Circuit logicalCircuit;
     private LinkedList<PinLogger> OutputLoggers = new LinkedList<PinLogger>();
-    private ViewerWindow loggerWindow = new ViewerWindow(this);
+    private ViewerWindow loggerWindow;
 
     public CircuitPanel(){
         addMouseMotionListener(new CircuitPanelMouseMotionAdapter());
         addMouseListener(new CircuitPanelMouseListener());
         this.logicalCircuit = new Circuit();
         this.simulator = new Simulator(logicalCircuit);
+        this.loggerWindow = new ViewerWindow(this);
+        this.loggerWindow.setVisible(false);
     }
 
     public void addLogger(sim.pin.Pin pinByName, Simulator simulator) {
