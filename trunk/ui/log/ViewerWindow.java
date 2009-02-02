@@ -6,6 +6,11 @@
 
 package ui.log;
 
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+
 import ui.CircuitPanel;
 
 /**
@@ -21,12 +26,26 @@ public class ViewerWindow extends javax.swing.JFrame {
         for(PinLogger pl: circuit.getPinLoggers()){        
             ((Viewer) viewerpanel).addLogger(pl);  
         }
+        
+        viewerpanel.addComponentListener(new ComponentAdapter(){
+            @Override
+            public void componentResized(ComponentEvent e) {
+                 jScrollPane1.getViewport().setViewPosition(new Point(viewerpanel.getWidth(),0));
+            }
+        });
             
     }
     
     public ViewerWindow(PinLogger pl){
         initComponents();
         ((Viewer) viewerpanel).addLogger(pl);
+        
+      viewerpanel.addComponentListener(new ComponentAdapter(){
+            @Override
+            public void componentResized(ComponentEvent e) {
+                jScrollPane1.getViewport().setViewPosition(new Point(viewerpanel.getWidth(),0));
+            }
+        });
     }
 
     /** This method is called from within the constructor to

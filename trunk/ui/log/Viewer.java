@@ -1,15 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ui.log;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JPanel;
@@ -21,17 +19,20 @@ import ui.UIConstants;
  * @author matt
  */
 public class Viewer extends JPanel {
+    public static final double scaleFactor = 1.0E-7;
 
     private List<PinLogger> loggers = new LinkedList<PinLogger>();
     private Long startTime = Long.MAX_VALUE;
+    private Long currTime = 0l, prevTime = 0l;
     
     public Viewer(){
         Timer timer = new Timer();
             timer.schedule(new TimerTask(){
                 public void run() {
+                    //Viewer.this.repaint((int)(prevTime*scaleFactor), 0, (int)((prevTime-currTime)*scaleFactor), getHeight());
                     Viewer.this.repaint();
                 }
-            }, 0, 10);
+            }, 0, 100);
     }
     
     public void addLogger(PinLogger pl){
@@ -40,10 +41,10 @@ public class Viewer extends JPanel {
             startTime = pl.getStartTime();
         }
     }
-    
+     
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        //super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         
         // Background Colour
@@ -74,33 +75,38 @@ public class Viewer extends JPanel {
             if(times.hasNext()){
 
                 LogicState currState, prevState = states.next();
-                Long currTime, prevTime = times.next() - startTime;
+                prevTime = times.next() - startTime;
 
                 while(times.hasNext()){
                     currState = states.next();
                     currTime = times.next();
-
-                    // Offset from earliest log time shown
+                       
+                   // Offset from earliest log time shown
                     currTime -= startTime;
-                                     
+
+                    if(currTime*scaleFactor > getWidth()){
+                        Dimension b = getPreferredSize();
+                        setPreferredSize(new Dimension(b.width+(int)((currTime-prevTime)*scaleFactor), b.height));
+                        revalidate();
+                    }
                     
                     // Draw Horizontal Part
-                    g2.drawLine((int)(prevTime.intValue()*0.000001), 
+                    g2.drawLine((int)(prevTime*scaleFactor), 
                                 (prevState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0,
-                                (int)(currTime.intValue()*0.000001),
+                                (int)(currTime*scaleFactor),
                                 (prevState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0);
-                    
+
                     // Draw Vertical Part (May be of zero length)
-                    g2.drawLine((int)(currTime.intValue()*0.000001),
+                    g2.drawLine((int)(currTime*scaleFactor),
                                 (prevState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0, 
-                                (int)(currTime.intValue()*0.000001), 
+                                (int)(currTime*scaleFactor), 
                                 (currState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0);
-                    
-                    System.out.println(currTime + " @ " + currState.toString());
-                    
+
+                    //System.out.println((currTime*scaleFactor) + " @ " + currState.toString());
                     
                     prevTime = currTime;
                     prevState = currState;
+                    
                 }
             
             }
