@@ -74,7 +74,7 @@ public class CircuitPanel extends JPanel {
         return grid;
     }
 
-    public Iterable<PinLogger> getPinLoggers() {
+    public Collection<PinLogger> getPinLoggers() {
         return OutputLoggers;
     }
 

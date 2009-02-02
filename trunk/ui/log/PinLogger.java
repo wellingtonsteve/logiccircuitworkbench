@@ -19,6 +19,7 @@ public class PinLogger implements sim.pin.ValueListener {
     private Long startTime = -1l;
     private Long endTime = 0l;
     private Simulator sim;
+    private boolean enabled = true;
     
     public PinLogger(ui.components.SelectableComponent.Pin pin){
         this.pin = (OutputPin) pin.getParent().getLogicalComponent().getPinByName("Output");
@@ -41,7 +42,7 @@ public class PinLogger implements sim.pin.ValueListener {
     }
     
     public String getName(){
-        return pin.getName();
+        return toString();
     }
     
     public Long getStartTime(){
@@ -53,14 +54,16 @@ public class PinLogger implements sim.pin.ValueListener {
     }
 
     public void valueChanged(Pin pin, LogicState value) {
-        Long nextSimTime = sim.getSimulationTime();
-        timeLog.add(nextSimTime);
-        stateLog.add(value);
+        if(enabled){
+            Long nextSimTime = sim.getSimulationTime();
+            timeLog.add(nextSimTime);
+            stateLog.add(value);
 
-        if(startTime == -1l){
-            startTime = new Long(nextSimTime);
+            if(startTime == -1l){
+                startTime = new Long(nextSimTime);
+            }
+            endTime = nextSimTime;
         }
-        endTime = nextSimTime;
     }
     
     public void clear(){
@@ -68,5 +71,13 @@ public class PinLogger implements sim.pin.ValueListener {
         stateLog.clear();
         startTime = -1l;
         endTime = 0l;
+    }
+
+    public void setEnabled(boolean b) {
+        this.enabled = b;
+    }
+    
+    public boolean isEnabled(){
+        return enabled;
     }
 }
