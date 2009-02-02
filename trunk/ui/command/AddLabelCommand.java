@@ -19,10 +19,6 @@ public class AddLabelCommand extends Command {
     private String labelStr;
     private Labeled item;
 
-    public AddLabelCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
-    
     @Override
     protected void perform(Editor editor) {
         if(activeCircuit.hasActiveSelection()){

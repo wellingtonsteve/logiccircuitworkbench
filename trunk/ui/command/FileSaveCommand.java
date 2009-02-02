@@ -10,11 +10,7 @@ import ui.file.CircuitFileFilter;
  * @author matt
  */
 public class FileSaveCommand extends Command {
-
-    public FileSaveCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
-
+    
     @Override
     protected void perform(Editor editor) {
         String filename = activeCircuit.getFilename();      

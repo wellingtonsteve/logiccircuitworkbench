@@ -11,10 +11,6 @@ import ui.Editor;
  */
 public class FileSaveAsCommand extends Command {
     
-    public FileSaveAsCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
-    
     @Override
     protected void perform(Editor editor) {
         String filename = activeCircuit.getFilename(); ;                                    

@@ -5,7 +5,10 @@ import javax.swing.UIManager;
 import ui.error.ErrorHandler;
 
 /**
- *
+ * This class properly initialises all the components of the application. Setting
+ * the look and feel, opening the splash screen, loading netlists, registering error
+ * reporters, testing double buffering and opening the editor with a blank circuit
+ * 
  * @author matt
  */
 public class Main {
@@ -14,13 +17,13 @@ public class Main {
        try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
            
-            SplashDialog splash = new SplashDialog();
-            splash.setVisible(true);   
-
-            JProgressBar loadingBar = splash.getProgressBar();
+            JProgressBar loadingBar = new JProgressBar();
             loadingBar.setString("Loading...");
             loadingBar.setStringPainted(true);
             loadingBar.setMaximum(100);    
+            
+            SplashDialog splash = new SplashDialog(loadingBar);
+            splash.setVisible(true);               
 
             Editor editor = new Editor();   
             ErrorHandler.addErrorListener(editor);

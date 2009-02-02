@@ -15,8 +15,8 @@ import sim.SimulatorStateListener;
 import sim.componentLibrary.Circuit;
 import sim.componentLibrary.Wire;
 import sim.componentLibrary.standard.Input;
-import ui.log.PinLogger;
-import ui.log.ViewerWindow;
+import ui.components.standard.log.PinLogger;
+import ui.components.standard.log.ViewerWindow;
 /**
  *
  * @author Stephen

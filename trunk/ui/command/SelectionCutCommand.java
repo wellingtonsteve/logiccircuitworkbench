@@ -12,10 +12,6 @@ import ui.components.SelectableComponent;
 public class SelectionCutCommand extends Command {
     private LinkedList<SelectableComponent> selection = new LinkedList<SelectableComponent>();
 
-    public SelectionCutCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
-
     @Override
     protected void perform(Editor editor) {
          if(activeCircuit.hasActiveSelection()){

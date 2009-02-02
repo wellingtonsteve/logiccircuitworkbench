@@ -5,8 +5,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -25,8 +25,8 @@ import ui.command.CommandHistory;
 import ui.command.CreateComponentCommand;
 import ui.command.SelectionTranslateCommand;
 import ui.error.ErrorHandler;
-import ui.log.PinLogger;
-import ui.log.ViewerWindow;
+import ui.components.standard.log.PinLogger;
+import ui.components.standard.log.ViewerWindow;
 
 /**
  *
@@ -57,33 +57,21 @@ public class CircuitPanel extends JPanel {
     private LinkedList<PinLogger> OutputLoggers = new LinkedList<PinLogger>();
     private ViewerWindow loggerWindow;
 
-    public CircuitPanel(){
+    public CircuitPanel(CircuitFrame parentFrame){
         addMouseMotionListener(new CircuitPanelMouseMotionAdapter());
-        addMouseListener(new CircuitPanelMouseListener());
+        addMouseListener(new CircuitPanelMouseAdapter());
         this.logicalCircuit = new Circuit();
         this.simulator = new Simulator(logicalCircuit);
         this.loggerWindow = new ViewerWindow(this);
         this.loggerWindow.setVisible(false);
+        this.parentFrame = parentFrame;
+        this.editor = ((CircuitFrame) getParentFrame()).getEditor();
+        this.cmdHist = new CommandHistory(editor);
     }
 
-    public void addLogger(sim.pin.Pin pinByName, Simulator simulator) {
-        OutputLoggers.add(new PinLogger(pinByName, simulator));
-    }
-    
-    public Grid getGrid() {
-        return grid;
-    }
-
-    public Collection<PinLogger> getPinLoggers() {
-        return OutputLoggers;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-        this.getParentFrame().setTitle(filename);
-        editor.setTitle("Logic Circuit Workbench - " + filename);
-    }
-
+    /**
+     * Remove any components that are still floating in the workarea and have not been fixed.
+     */
     public void removeUnFixedComponents() {
         LinkedList<SelectableComponent> fixedComponents = new LinkedList<SelectableComponent>();
         for(SelectableComponent sc: drawnComponents){
@@ -99,7 +87,10 @@ public class CircuitPanel extends JPanel {
         repaint();
     }
 
-    
+    /**
+     * Unselect active selection of components. Also tell the editor so that it can 
+     * disable any actions that require an active selection.
+     */
     private void resetActiveComponents() {
         for (SelectableComponent sc : activeComponents) {
             sc.resetDefaultState();
@@ -107,16 +98,68 @@ public class CircuitPanel extends JPanel {
         activeComponents.clear();
         editor.getClipboard().setHasSelection(false);
     }
+    
+    /**
+     * Make every component in this circuit active. Also tell the editor so that it can 
+     * enable any actions that require an active selection.
+     */
     public void selectAllComponents() {
         activeComponents.clear();
         for (SelectableComponent sc : drawnComponents) {
             sc.mouseClicked(null);
             activeComponents.add(sc);
         }
-        editor.getClipboard().setHasSelection(false);
+        editor.getClipboard().setHasSelection(true);
     }
     
-    // Selection box attributes created by selecting the selection tool and dragging
+    /** @return Does this circuit has any components selected? */
+    public boolean hasActiveSelection(){
+        for(SelectableComponent sc: drawnComponents){
+            if(sc.getSelectionState().equals(SelectionState.ACTIVE)){
+                return true;
+            }
+        }        
+        return false;
+    }
+    
+    /** Delete the current selection from the circuit. */
+    public void deleteActiveComponents(){
+
+        for(SelectableComponent sc: activeComponents){
+            grid.removeComponent(sc);
+            logicalCircuit.removeSimItem(sc.getLogicalComponent());
+        }
+        
+        drawnComponents.removeAll(activeComponents);        
+        activeComponents.clear();
+        editor.getClipboard().setHasSelection(false);
+        repaint();
+
+    }
+    
+    /** @return The current selection of active components */
+    public LinkedList<SelectableComponent> getActiveComponents(){
+        return activeComponents;
+    }
+    
+    /** @return The current component which has the mouse hovering over it */
+    private SelectableComponent getHighlightedComponent() {
+        return highlightedComponent;
+    }
+
+    /** @param highlightedComponent The new component to be highlighted */ 
+    private void setHighlightedComponent(SelectableComponent higlightedComponent) {
+        if(highlightedComponent!=null){
+            this.highlightedComponent.revertHoverState();
+        }
+        this.highlightedComponent = higlightedComponent;
+        this.highlightedComponent.setHoverState();
+    }
+    
+    /** 
+     * Calculate the Bounds of the Selection box based on mouse co-ordinates at
+     * certain mouse dragging events.
+     */
     private void setSelectionBox() {
         selX = startPoint.x;
         selY = startPoint.y;
@@ -133,6 +176,10 @@ public class CircuitPanel extends JPanel {
         }
     }
     
+    /**
+     * Speedy method to repaint only those areas that have been changed since the 
+     * last movement on the workarea.
+     */
     public void repaintDirtyAreas() {              
         int dirtyX = Math.min(endPoint.x, previousPoint.x);
         int dirtyY = Math.min(endPoint.y, previousPoint.y);
@@ -155,42 +202,44 @@ public class CircuitPanel extends JPanel {
         repaint(dirtyX, dirtyY, dirtyWidth, dirtyHeight);
     }
      
+    /**
+     * Implement the buffering as required by the speed test that was performed 
+     * when the application was started.
+     * If we draw directly, we simply draw the circuit to the graphics context provided,
+     * otherwise if we're doing buffered drawing, we first draw to a clean offscreen 
+     * drawing area and then draw the completed image to intial graphics context.
+     * 
+     * @param g The original graphics context.
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
-          // If we draw direct, go ahead and call the parent update. This will
-          // clear the drawing area and then call paint. If you don't want the
-          // drawing area cleared, just change the super.update(g);
-          // to paint(g);
 
-          if (editor.drawDirect()) {
-               drawCircuit(g);
-          } else {
-               
-               // If we're doing buffered drawing, simulate the effects of the
-               // default update method by clearing the offscreen drawing area.
-               // If you don't want the drawing area cleared, remove the calls
-               // to setColor and fillRect.
+        if (editor.drawDirect()) {
+           drawCircuit(g);
+        } else {
 
-               // Clear the offscreen drawing area and set the drawing
-               // color back to foreground.
-               Graphics offscreenGraphics = editor.getOffscreenGraphics();
-               Image offscreenImage = editor.getOffscreenImage();               
-               
-               offscreenGraphics.setColor(getBackground());
-               offscreenGraphics.fillRect(0, 0, getWidth(), getHeight());
-               offscreenGraphics.setColor(getForeground());
+           // Clear the offscreen drawing area and set the drawing
+           // color back to foreground.
+           Graphics offscreenGraphics = editor.getOffscreenGraphics();
+           Image offscreenImage = editor.getOffscreenImage();               
 
-               // Paint to the offscreen image
-               drawCircuit(offscreenGraphics);
+           offscreenGraphics.setColor(getBackground());
+           offscreenGraphics.fillRect(0, 0, getWidth(), getHeight());
+           offscreenGraphics.setColor(getForeground());
 
-               // Copy the offscreen image to the screen
-               g.drawImage(offscreenImage, 0, 0, this);
-          }
-                                
+           // Paint to the offscreen image
+           drawCircuit(offscreenGraphics);
+
+           // Copy the offscreen image to the screen
+           g.drawImage(offscreenImage, 0, 0, this);
+        }                                
     }
     
+    /**
+     * Draw the components, background & grid of this circuit to the graphics context.
+     * @param g
+     */
     public void drawCircuit(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
         
@@ -226,6 +275,7 @@ public class CircuitPanel extends JPanel {
         // Draw Connection Points 
         grid.draw(g2);
         
+        // Draw Selection Box
         if(multipleSelection){                        
             g2.setColor(UIConstants.SELECTION_BOX_COLOUR);
             g2.setStroke(UIConstants.SELECTION_BOX_STROKE);
@@ -234,54 +284,21 @@ public class CircuitPanel extends JPanel {
         }      
     }
              
+    /** @param The current tool that being used to modify the circuit. */
     public void setCurrentTool(String tool){      
         this.currentTool = tool;                    
     }
     
+    /** @return The name of the tool that is currently being used to modify the circuit */
     public String getCurrentTool(){
         return currentTool;
     }
     
-    public boolean hasActiveSelection(){
-        for(SelectableComponent sc: drawnComponents){
-            if(sc.getSelectionState().equals(SelectionState.ACTIVE)){
-                return true;
-            }
-        }        
-        return false;
-    }
-    
-    public SelectableComponent getHighlightedComponent() {
-        return highlightedComponent;
-    }
-
-    public void setHighlightedComponent(SelectableComponent higlightedComponent) {
-        if(highlightedComponent!=null){
-            this.highlightedComponent.revertHoverState();
-        }
-        this.highlightedComponent = higlightedComponent;
-        this.highlightedComponent.setHoverState();
-    }
-    
-    public void deleteActiveComponents(){
-
-        for(SelectableComponent sc: activeComponents){
-            grid.removeComponent(sc);
-            logicalCircuit.removeSimItem(sc.getLogicalComponent());
-        }
-        
-        drawnComponents.removeAll(activeComponents);        
-        activeComponents.clear();
-        editor.getClipboard().setHasSelection(false);
-        repaint();
-
-    }
-    
-    public LinkedList<SelectableComponent> getActiveComponents(){
-        return activeComponents;
-    }
-    
-    public String resetCircuit(){
+    /**
+     * Clear everything associated with this circuit.
+     * @return
+     */
+    public void resetCircuit(){
         drawnComponents.clear();
         activeComponents.clear();
         highlightedComponent = null;
@@ -297,11 +314,11 @@ public class CircuitPanel extends JPanel {
         editor.getClipboard().setHasSelection(false);
 
         repaint();      
-        return "Circuit cleared.";
     }    
     
+    /** Save this circuit in the appropriate location. */
     public void saveAs(String filename){
-        this.setFilename(filename);
+        setFilename(filename);
         FileCreator fc = new FileCreator(filename);
         for(SelectableComponent sc: drawnComponents){
             if(sc.isFixed()){
@@ -314,10 +331,23 @@ public class CircuitPanel extends JPanel {
         cmdHist.setIsDirty(false);
     }
     
+    /**@return The filename of this circuit */
     public String getFilename(){
         return (filename==null)?"Untitled"+getParentFrame().getUntitledIndex()+UIConstants.FILE_EXTENSION:filename;
     }
-            
+    
+    /**
+     * Change the filename of this circuit, also cascade changes to parent frame
+     * and application window.
+     * @param filename The new filename
+     */
+    public void setFilename(String filename) {
+        this.filename = filename;
+        this.getParentFrame().setTitle(filename);
+        editor.setTitle("Logic Circuit Workbench - " + filename);
+    }
+    
+    /** Add a list of components to this circuit */
     public void addComponentList(Collection<SelectableComponent> list){
         drawnComponents.addAll(list);
         activeComponents.clear();
@@ -332,6 +362,7 @@ public class CircuitPanel extends JPanel {
         editor.getClipboard().setHasSelection(!activeComponents.isEmpty());
     }
      
+    /** Add a single component to this circuit */
     public void addComponent(SelectableComponent sc) {
         drawnComponents.push(sc);
         sc.getInvalidArea();
@@ -340,10 +371,22 @@ public class CircuitPanel extends JPanel {
         repaint(sc.getBoundingBox());
     }
     
+    /** @return Has the specified component been drawn on this circuit */
     public boolean containsComponent(SelectableComponent sc){
         return drawnComponents.contains(sc);
     }
+    
+    /** Remove the specified component from this circuit */
+    public void removeComponent(SelectableComponent sc) {
+        drawnComponents.remove(sc);
+        grid.removeComponent(sc);
+        logicalCircuit.removeSimItem(sc.getLogicalComponent());
+    }
 
+    /** Instead of drawing this circuit to the panel, create an image and draw it there.
+     * Then write the image to file.
+     * @param filename The filename for the new image.
+     */
     public void createImage(String filename) {
         BufferedImage bi = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         paint(bi.getGraphics());      
@@ -351,31 +394,71 @@ public class CircuitPanel extends JPanel {
             ImageIO.write(bi, "jpg", new File(filename));
         } catch (IOException ex) {
             ErrorHandler.newError("Image Creation Error","Please refer to the system output below.",ex);
-        }
-        
+        }        
     }
     
+    /** @return The command history associated with this circuit */
     public CommandHistory getCommandHistory(){
         return cmdHist;
     }
     
+    /** Convience method to perform (undoable/redoable) commands on this circuit */
+    public void doCommand(ui.command.Command cmd){
+        cmdHist.doCommand(cmd);
+    }
+    
+     /**
+     * Returns true if and only if this circuit is currently active in the editor.
+     */
+    protected boolean isActiveCircuit() {
+        return editor.getActiveCircuit().equals(CircuitPanel.this); 
+    }
+    
+    /**
+     * @return The connection point grid associated with this Circuit.
+     * @see ui.grid.Grid
+     */
+    public Grid getGrid() {
+        return grid;
+    }
+    
+    /** @return The simulator that calculates the logical changes for this circuit.*/
+    public Simulator getSimulator(){
+        return simulator;
+    }
+    
+    /** @return The corresponding Logical Circuit for this Visual Circuit.*/
+    public Circuit getLogicalCircuit(){
+        return logicalCircuit;
+    }
+    
+    /** @return The window that shows the graphical log of Pin Loggers in this circuit.*/
+    public ViewerWindow getLoggerWindow(){
+        return loggerWindow;
+    }
+    
+    /**
+     * Start logging the specified pin, which is associated with the specified simulator.
+     * @param pinByName
+     * @param simulator
+     */
+    public void addLogger(sim.pin.Pin pinByName, Simulator simulator) {
+        OutputLoggers.add(new PinLogger(pinByName, simulator));
+    }
+    
+    /** @return A Collection of the Pin Loggers in this circuit */
+    public Collection<PinLogger> getPinLoggers() {
+        return OutputLoggers;
+    }
+    
+    /** @return The parent CircuitFrame of this circuit (i.e. the internal window
+     * that contains this panel. */
     public CircuitFrame getParentFrame() {
         return parentFrame;
     }
 
-    public void removeComponent(SelectableComponent sc) {
-        drawnComponents.remove(sc);
-        grid.removeComponent(sc);
-        logicalCircuit.removeSimItem(sc.getLogicalComponent());
-    }
-
-    public void setParentFrame(CircuitFrame parentFrame) {
-        this.parentFrame = parentFrame;
-        editor = ((CircuitFrame) this.getParentFrame()).getEditor();
-        cmdHist = new CommandHistory(editor);
-    }
-    
-    private class CircuitPanelMouseListener implements MouseListener {
+    /** This inner class handles all MouseListener events */
+    private class CircuitPanelMouseAdapter extends MouseAdapter {
 
         public void mouseClicked(MouseEvent e) {
             if (isActiveCircuit() && !currentTool.equals("Wire")) {
@@ -401,7 +484,7 @@ public class CircuitPanel extends JPanel {
 
                         if (!currentTool.equals("Select")) {
                             // Add another new component
-                            CreateComponentCommand ccc = new CreateComponentCommand(cmdHist,
+                            CreateComponentCommand ccc = new CreateComponentCommand(
                             new Object[]{
                                 currentTool,
                                 editor.getOptionsPanel().getComponentRotation(),
@@ -427,10 +510,6 @@ public class CircuitPanel extends JPanel {
                 repaint();
             } 
         }
-            
-        public void mouseEntered(MouseEvent e) {}
-
-        public void mouseExited(MouseEvent e) {}
 
         public void mousePressed(MouseEvent e) {
             if (isActiveCircuit()) {
@@ -664,7 +743,7 @@ public class CircuitPanel extends JPanel {
             if (canMoveAll) {
                 SelectionTranslateCommand stc = null;
                 if(finish && !start){
-                    stc = new SelectionTranslateCommand(cmdHist);
+                    stc = new SelectionTranslateCommand();
                 }
                 for (SelectableComponent sc : activeComponents) {
                     int dx = endPoint.x - anchor.x;
@@ -692,24 +771,5 @@ public class CircuitPanel extends JPanel {
                 }
             }
         }
-    }
-    
-    /**
-     * Returns true if and only if this circuit is currently active in the editor.
-     */
-    protected boolean isActiveCircuit() {
-        return editor.getActiveCircuit().equals(CircuitPanel.this);
-    }
-    
-    public Simulator getSimulator(){
-        return simulator;
-    }
-    
-    public Circuit getLogicalCircuit(){
-        return logicalCircuit;
-    }
-    
-    public ViewerWindow getLoggerWindow(){
-        return loggerWindow;
     }
 }

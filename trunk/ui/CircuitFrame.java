@@ -1,9 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package ui;
+ package ui;
 
 import java.beans.PropertyVetoException;
 import javax.swing.JInternalFrame;
@@ -15,7 +10,10 @@ import ui.command.FileSaveCommand;
 import ui.error.ErrorHandler;
 
 /**
- *
+ * A CircuitFrame contains a #CircuitPanel one which the visual circuit is actually
+ * drawn. The circuit frame is responsible for scrolling, closing operations and
+ * the naming of unnamed circuits.
+ * 
  * @author matt
  */
 public class CircuitFrame extends JInternalFrame{
@@ -26,32 +24,21 @@ public class CircuitFrame extends JInternalFrame{
     private int untitledIndex;
     
     public CircuitFrame(final Editor editor, int untitledIndex){
-        
         super();
         
         this.editor = editor;
         this.untitledIndex = untitledIndex;
-        this.circuitPanel = new CircuitPanel();
+        this.circuitPanel = new CircuitPanel(this);
 
         setClosable(true);
-
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-
         setIconifiable(true);
-
         setMaximizable(true);
-
         setResizable(true);
-
         setFrameIcon(null);
-
         setPreferredSize(new java.awt.Dimension(600, 450));
-
-        setVisible(true);
-        
+        setVisible(true);        
         setTitle("Untitled"+untitledIndex+".xml");
-
-        circuitPanel.setParentFrame(this);
         circuitPanel.setMinimumSize(new java.awt.Dimension(1000, 800));
         circuitPanel.setPreferredSize(new java.awt.Dimension(1000, 800));
 
@@ -86,7 +73,7 @@ public class CircuitFrame extends JInternalFrame{
                         "Do you want to save changes to \""+getTitle()+"\" before closing it?");
                     try {
                         if(ans == JOptionPane.YES_OPTION){
-                           circuitPanel.getCommandHistory().doCommand(new FileSaveCommand(circuitPanel.getCommandHistory()));
+                           circuitPanel.doCommand(new FileSaveCommand());
                            dispose();
                         } else if(ans == JOptionPane.NO_OPTION){
                            dispose();

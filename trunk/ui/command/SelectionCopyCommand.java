@@ -11,10 +11,6 @@ import ui.components.SelectableComponent;
  */
 public class SelectionCopyCommand extends Command {
 
-    public SelectionCopyCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
-
     @Override
     protected void perform(Editor editor) {
          if(activeCircuit.hasActiveSelection()){

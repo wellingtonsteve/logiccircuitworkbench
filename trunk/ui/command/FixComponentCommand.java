@@ -11,8 +11,7 @@ public class FixComponentCommand extends Command {
     
     private SelectableComponent sc;
 
-    public FixComponentCommand(CommandHistory cmdHist, SelectableComponent sc){
-        super(cmdHist);
+    public FixComponentCommand(SelectableComponent sc){
         this.sc = sc;
     }
     

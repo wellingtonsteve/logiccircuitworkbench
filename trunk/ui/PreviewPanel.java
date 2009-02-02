@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ui;
 
 import java.awt.Graphics;
@@ -13,7 +8,9 @@ import ui.components.SelectableComponent;
 import ui.components.SelectionState;
 
 /**
- *
+ * This panel is simply responsible for displaying a preview of a new component
+ * or a currently selected component in an active circuit.
+ * 
  * @author matt
  */
 public class PreviewPanel extends JPanel{

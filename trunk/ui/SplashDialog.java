@@ -11,20 +11,20 @@ import java.awt.Toolkit;
 import javax.swing.JProgressBar;
 
 /**
- *
+ * A simple Splash that shows the logo along with a progress bar for initialising the application.
  * @author  matt
  */
 public class SplashDialog extends javax.swing.JFrame {
 
     /** Creates new form SplashDialog */
-    public SplashDialog() {
+    public SplashDialog(JProgressBar jProgressBar1){
+        this.jProgressBar1 = jProgressBar1;
         initComponents();
         setIconImage(new javax.swing.ImageIcon(this.getClass().getResource(
             java.util.ResourceBundle.getBundle("ui/Bundle").getString("Main.logo.file"))).getImage());
         
-        // Get the current screen size
+        // Move the splash page to the centre of the screen
         Dimension scrnsize = Toolkit.getDefaultToolkit().getScreenSize();
-
         setBounds((scrnsize.width - getWidth())/2, (scrnsize.height - getHeight())/2, getWidth(), getHeight());
     }
 
@@ -113,10 +113,6 @@ public class SplashDialog extends javax.swing.JFrame {
 
         pack();
     }//GEN-END:initComponents
-
-    public JProgressBar getProgressBar(){
-        return jProgressBar1;
-    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
@@ -126,5 +122,4 @@ public class SplashDialog extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JProgressBar jProgressBar1;
     // End of variables declaration//GEN-END:variables
-
 }

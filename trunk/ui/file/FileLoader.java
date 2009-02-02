@@ -4,8 +4,6 @@ import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -108,7 +106,7 @@ public class FileLoader extends DefaultHandler{
                 String label = attribs.getValue("label");
                                 
                 // Create a new component with the desired attributes
-                CreateComponentCommand ccc = new CreateComponentCommand(editor.getActiveCircuit().getCommandHistory(), new Object[]{
+                CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
                     type,                // properties[0] = componentName
                     rotation,            // properties[1] = rotation
                     p,                   // properties[2] = point

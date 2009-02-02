@@ -8,10 +8,6 @@ import ui.Editor;
  */
 public class SimulationStepCommand extends Command {
 
-    public SimulationStepCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
-
     @Override
     protected void perform(Editor editor) {
         activeCircuit.getSimulator().stepthrough();

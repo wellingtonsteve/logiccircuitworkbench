@@ -7,11 +7,7 @@ import ui.Editor;
  * @author matt
  */
 public class SimulationStopCommand extends Command {
-
-    public SimulationStopCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
-
+    
     @Override
     protected void perform(Editor editor) {
         activeCircuit.getSimulator().stop();

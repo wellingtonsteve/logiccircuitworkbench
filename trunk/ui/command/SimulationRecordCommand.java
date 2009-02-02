@@ -1,18 +1,14 @@
 package ui.command;
 
 import ui.Editor;
-import ui.log.ViewerWindow;
+import ui.components.standard.log.ViewerWindow;
 
 /**
  *
  * @author matt
  */
 public class SimulationRecordCommand extends Command {
-    ViewerWindow logger;
-
-    public SimulationRecordCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
+    private ViewerWindow logger;
 
     @Override
     protected void perform(Editor editor) {

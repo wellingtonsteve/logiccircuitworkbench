@@ -1,4 +1,4 @@
-package ui.log;
+package ui.components.standard.log;
 
 import java.util.Collection;
 import java.util.LinkedList;

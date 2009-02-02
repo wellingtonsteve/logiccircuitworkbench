@@ -4,7 +4,7 @@
  * Created on 26 December 2008, 17:17
  */
 
-package ui.log;
+package ui.components.standard.log;
 
 import java.awt.Point;
 import java.awt.event.ComponentAdapter;
@@ -50,7 +50,7 @@ public class ViewerWindow extends javax.swing.JFrame {
     
     public void addPinLoggers(Collection<PinLogger> cpl){
         int yOffset = 0;
-        int count = 0;
+        int count = 1;
         for(final PinLogger pl: cpl){  
             ((Viewer) viewerpanel).addLogger(pl); 
             

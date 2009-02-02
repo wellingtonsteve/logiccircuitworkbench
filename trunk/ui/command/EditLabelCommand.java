@@ -17,8 +17,7 @@ public class EditLabelCommand extends Command {
     private String oldLabel;
     private Labeled item;
 
-    public EditLabelCommand(CommandHistory cmdHist, Labeled sc, String text) {
-        super(cmdHist);
+    public EditLabelCommand(Labeled sc, String text) {
         this.item = sc;
         this.labelStr = text;
         this.oldLabel = item.getLabel();
