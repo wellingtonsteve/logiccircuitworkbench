@@ -10,21 +10,15 @@ import ui.log.ViewerWindow;
 public class SimulationRecordCommand extends Command {
     ViewerWindow logger;
 
-    public SimulationRecordCommand(CommandHistory cmdHist, ViewerWindow loggerWindow) {
+    public SimulationRecordCommand(CommandHistory cmdHist) {
         super(cmdHist);
-        logger = loggerWindow;
-        logger.setLocationRelativeTo(activeCircuit);        
     }
 
     @Override
-    protected void perform(Editor editor) {        
-        if(logger.isShowing()){
-            logger.setVisible(false);
-            logger.dispose();
-        } else {
-            logger.setLocationRelativeTo(activeCircuit);   
-            logger.setVisible(true);
-        }
+    protected void perform(Editor editor) {
+        this.logger = activeCircuit.getLoggerWindow();
+        logger.setLocationRelativeTo(activeCircuit);
+        logger.setVisible(!logger.isVisible());
     }
 
     @Override
