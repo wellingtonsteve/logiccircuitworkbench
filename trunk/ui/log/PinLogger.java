@@ -62,4 +62,11 @@ public class PinLogger implements sim.pin.ValueListener {
         }
         endTime = nextSimTime;
     }
+    
+    public void clear(){
+        timeLog.clear();
+        stateLog.clear();
+        startTime = -1l;
+        endTime = 0l;
+    }
 }

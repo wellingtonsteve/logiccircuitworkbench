@@ -67,7 +67,7 @@ public class CreateComponentCommand extends Command {
                         ((Input) sc).setIsOn((Boolean) properties[5]);
                     }
                 }
-                
+
                 parentCircuit.addComponent(sc);
                 editor.getOptionsPanel().setComponent(sc);
                 

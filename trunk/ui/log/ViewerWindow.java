@@ -7,7 +7,6 @@
 package ui.log;
 
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -77,7 +76,7 @@ public class ViewerWindow extends javax.swing.JFrame {
             }
         });
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(bundle.getString("ViewerWindow.title")); // NOI18N
 
         jToolBar1.setRollover(true);
