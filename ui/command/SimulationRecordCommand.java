@@ -1,23 +1,30 @@
 package ui.command;
 
 import ui.Editor;
+import ui.log.ViewerWindow;
 
 /**
  *
  * @author matt
  */
 public class SimulationRecordCommand extends Command {
-    ui.log.ViewerWindow logger;
+    ViewerWindow logger;
 
-    public SimulationRecordCommand(CommandHistory cmdHist) {
+    public SimulationRecordCommand(CommandHistory cmdHist, ViewerWindow loggerWindow) {
         super(cmdHist);
-        logger = new ui.log.ViewerWindow(activeCircuit);
-        logger.setLocationRelativeTo(activeCircuit);
+        logger = loggerWindow;
+        logger.setLocationRelativeTo(activeCircuit);        
     }
 
     @Override
     protected void perform(Editor editor) {        
-        logger.setVisible(true);
+        if(logger.isShowing()){
+            logger.setVisible(false);
+            logger.dispose();
+        } else {
+            logger.setLocationRelativeTo(activeCircuit);   
+            logger.setVisible(true);
+        }
     }
 
     @Override

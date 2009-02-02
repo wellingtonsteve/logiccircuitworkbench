@@ -1009,7 +1009,7 @@ private void MakeImageButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-F
 
 private void RecordButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RecordButtonMouseClicked
     if(getActiveCircuit()!=null && evt.getComponent().isEnabled() && !Record.isSelected()){
-        getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand(getActiveCircuit().getCommandHistory()));
+        getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand(getActiveCircuit().getCommandHistory(),getActiveCircuit().getLoggerWindow()));
         Record.setSelected(true);
         RecordButton.setSelected(true); 
     } else if(evt.getComponent().isEnabled() && Record.isSelected()){
@@ -1113,7 +1113,7 @@ private void StopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
 
 private void RecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecordActionPerformed
     if(getActiveCircuit()!=null && !Record.isSelected()){
-        getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand(getActiveCircuit().getCommandHistory()));
+        getActiveCircuit().getCommandHistory().doCommand(new SimulationRecordCommand(getActiveCircuit().getCommandHistory(),getActiveCircuit().getLoggerWindow()));
         Record.setSelected(true);
         RecordButton.setSelected(true);
     } else if(Record.isSelected()){

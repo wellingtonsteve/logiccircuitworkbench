@@ -5,6 +5,8 @@
 
 package sim.testing;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sim.LogicState;
 import sim.SimItem;
 import sim.Simulator;
@@ -78,8 +80,7 @@ public static void main(String[] args){
  
     PinLogger pl = new PinLogger(out.getPinByName("Input"), sim);
     new ViewerWindow(pl).setVisible(true);
-    
-    
+        
 }
     
 }

@@ -9,11 +9,11 @@ import java.awt.Rectangle;
  * @author Matt
  */
 public class Logger extends ImageSelectableComponent{
-    private Pin in1 = new Pin(30, 70);
+    private Pin in1;
 
     public Logger(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
-        parent.addLogger(in1);
+        parent.addLogger(simItem.getPinByName("Input"), parent.getSimulator());
     }
 
     @Override
@@ -45,7 +45,8 @@ public class Logger extends ImageSelectableComponent{
 
     @Override
     public void setLocalPins() {
-        localPins.clear();             
+        localPins.clear(); 
+        in1 = new Pin(30, 70);
         localPins.add(in1);        
     }
             

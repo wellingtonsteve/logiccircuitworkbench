@@ -26,6 +26,7 @@ import ui.command.CreateComponentCommand;
 import ui.command.SelectionTranslateCommand;
 import ui.error.ErrorHandler;
 import ui.log.PinLogger;
+import ui.log.ViewerWindow;
 
 /**
  *
@@ -53,7 +54,8 @@ public class CircuitPanel extends JPanel {
     private CommandHistory cmdHist;
     private Simulator simulator;
     private Circuit logicalCircuit;
-    private LinkedList<PinLogger> OuputLoggers = new LinkedList<PinLogger>();
+    private LinkedList<PinLogger> OutputLoggers = new LinkedList<PinLogger>();
+    private ViewerWindow loggerWindow = new ViewerWindow(this);
 
     public CircuitPanel(){
         addMouseMotionListener(new CircuitPanelMouseMotionAdapter());
@@ -62,8 +64,8 @@ public class CircuitPanel extends JPanel {
         this.simulator = new Simulator(logicalCircuit);
     }
 
-    public void addLogger(Pin pin) {
-       OuputLoggers.add(new PinLogger(pin));
+    public void addLogger(sim.pin.Pin pinByName, Simulator simulator) {
+        OutputLoggers.add(new PinLogger(pinByName, simulator));
     }
     
     public Grid getGrid() {
@@ -71,7 +73,7 @@ public class CircuitPanel extends JPanel {
     }
 
     public Iterable<PinLogger> getPinLoggers() {
-        return OuputLoggers;
+        return OutputLoggers;
     }
 
     public void setFilename(String filename) {
@@ -285,7 +287,11 @@ public class CircuitPanel extends JPanel {
         nowDragingComponent = false;
         multipleSelection = false;
         grid.clear();
-        logicalCircuit.reset();
+        logicalCircuit.clear();
+        for(PinLogger pl: OutputLoggers){
+            pl.clear();
+        }
+        OutputLoggers.clear();
         editor.getClipboard().setHasSelection(false);
 
         repaint();      
@@ -699,5 +705,9 @@ public class CircuitPanel extends JPanel {
     
     public Circuit getLogicalCircuit(){
         return logicalCircuit;
+    }
+    
+    public ViewerWindow getLoggerWindow(){
+        return loggerWindow;
     }
 }
