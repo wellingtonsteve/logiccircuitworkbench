@@ -21,7 +21,7 @@ public class Circuit implements SimItem {
             return false;
         }
     }
-    
+         
     public boolean removeSimItem(SimItem simItem){
         if(simItems.contains(simItem)){
             simItems.remove(simItem);
