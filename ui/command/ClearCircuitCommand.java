@@ -12,10 +12,6 @@ import ui.components.SelectableComponent;
  */
 public class ClearCircuitCommand extends Command {   
     private List<SelectableComponent> backup = new LinkedList<SelectableComponent>();
-
-    public ClearCircuitCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }   
     
     @Override
     protected void perform(Editor editor) {

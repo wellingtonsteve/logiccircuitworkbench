@@ -10,11 +10,7 @@ import ui.components.SelectableComponent;
  */
 public class RotateLeftCommand extends Command {
     private SelectableComponent item;
-
-    public RotateLeftCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
-    
+            
     @Override
     protected void perform(Editor editor) {
         if(activeCircuit.hasActiveSelection() 

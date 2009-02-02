@@ -1,4 +1,4 @@
-package ui.log;
+package ui.components.standard.log;
 
 import java.awt.Dimension;
 import java.awt.Graphics;

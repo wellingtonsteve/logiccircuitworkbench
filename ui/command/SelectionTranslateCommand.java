@@ -14,10 +14,6 @@ public class SelectionTranslateCommand extends Command {
     private LinkedList<SelectableComponent> selection = new LinkedList<SelectableComponent>();
     private boolean first = true;
     
-    public SelectionTranslateCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
-    
     public void translate(SelectableComponent sc, int dx, int dy){
         selection.add(sc);
         dxs.add(dx);

@@ -8,10 +8,6 @@ import ui.Editor;
  */
 public class SimulationPauseCommand extends Command {
 
-    public SimulationPauseCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
-
     @Override
     protected void perform(Editor editor) {
         activeCircuit.getSimulator().pause();

@@ -12,10 +12,6 @@ import ui.components.SelectableComponent;
  */
 public class SelectionDeleteCommand extends Command {
     private List<SelectableComponent> selection = new LinkedList<SelectableComponent>();
-
-    public SelectionDeleteCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
     
     protected void perform(Editor editor) {
         if(activeCircuit.hasActiveSelection()){

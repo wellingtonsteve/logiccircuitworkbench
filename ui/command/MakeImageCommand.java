@@ -17,10 +17,6 @@ import ui.file.JPGFileFilter;
  */
 public class MakeImageCommand extends Command {
 
-    public MakeImageCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
-
     @Override
     protected void perform(Editor editor) {
         String filename;                                    

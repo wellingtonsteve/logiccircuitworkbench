@@ -13,10 +13,6 @@ import ui.components.SelectableComponent;
 public class SelectionPasteCommand extends Command {
     private Collection<SelectableComponent> pasted = new LinkedList<SelectableComponent>();
     private CircuitPanel sourcePanel = null;
-
-    public SelectionPasteCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
     
     @Override
     protected void perform(Editor editor) {

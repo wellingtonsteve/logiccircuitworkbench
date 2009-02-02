@@ -26,8 +26,7 @@ public class CreateComponentCommand extends Command {
          *      properties[6] = activeCircuit
          */
 
-    public CreateComponentCommand(CommandHistory cmdHist, Object[] properties){
-        super(cmdHist);
+    public CreateComponentCommand(Object[] properties){
         this.properties = properties;
     }
     

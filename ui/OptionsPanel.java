@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusListener;
+import java.awt.event.FocusAdapter;
 import java.awt.event.ItemListener;
 import javax.swing.JCheckBox;
 import ui.command.EditLabelCommand;
@@ -56,20 +56,14 @@ public class OptionsPanel extends JPanel{
         labelTextbox.setText(bundle.getString("OptionsPanel.jTextField1.text")); // NOI18N
         labelTextbox.setPreferredSize(new java.awt.Dimension(50, 20));
         labelTextbox.addActionListener(new ActionListener(){
-
             public void actionPerformed(ActionEvent e) {
-                editor.getActiveCircuit().getCommandHistory().doCommand(new EditLabelCommand(editor.getActiveCircuit().getCommandHistory(), sc, labelTextbox.getText()));
-            }
-            
+                editor.getActiveCircuit().doCommand(new EditLabelCommand(sc, labelTextbox.getText()));
+            }            
         });
-        labelTextbox.addFocusListener(new FocusListener(){
-
-            public void focusGained(FocusEvent e) {}
-
+        labelTextbox.addFocusListener(new FocusAdapter(){
             public void focusLost(FocusEvent e) {
-                editor.getActiveCircuit().getCommandHistory().doCommand(new EditLabelCommand(editor.getActiveCircuit().getCommandHistory(), sc, labelTextbox.getText()));
-            }
-            
+                editor.getActiveCircuit().doCommand(new EditLabelCommand(sc, labelTextbox.getText()));
+            }            
         });
                         
         labelLabel.setText(bundle.getString("OptionsPanel.labelLabel.text"));
@@ -77,7 +71,6 @@ public class OptionsPanel extends JPanel{
 
         ledColours.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yellow","Red","Green" }));
         ledColours.addItemListener(new ItemListener(){
-
             public void itemStateChanged(ItemEvent e) {
                 if(sc instanceof LED){
                     ((LED) sc).setValue(true);
@@ -85,8 +78,7 @@ public class OptionsPanel extends JPanel{
                     Preview.setComponent(sc);
                     repaint();
                 }
-            }
-            
+            }           
         });
         ledColoursLabel.setText(bundle.getString("OptionsPanel.ledColoursLabel.text"));
         
@@ -198,14 +190,7 @@ public class OptionsPanel extends JPanel{
             sc.setRotation(rotation, false);
             Preview.setComponent(sc);
             Preview.repaint();
-            
-            // Also make the changes to the active circuit
-//            if(!editor.getActiveCircuit().getCurrentTool().equals("Select")){
-//                editor.getActiveCircuit().removeUnFixedComponents();
-//                editor.getActiveCircuit().addComponent(sc);
-//            }
-        }
-        
+        }        
     }
     
     /**
@@ -287,7 +272,5 @@ public class OptionsPanel extends JPanel{
                 .add(Preview, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-    }
-      
-    
+    }   
 }

@@ -12,22 +12,24 @@ public abstract class Command implements Cloneable{
     protected boolean canUndo = false;    
     protected CommandHistory parentHistory;
     
-    public Command(CommandHistory cmdHist){
-        this.parentHistory = cmdHist;
-    }
-        
+    
     /**
      * Carry out the command (if we are in the correct state to do so)
      * 
      * @param editor The #Editor executing this command
      */
     public final void execute(Editor editor) {
-       if(!canUndo){
-           parentHistory.stageChange("started", "");
-           activeCircuit = editor.getActiveCircuit();
-           perform(editor);
-           parentHistory.stageChange("done", "");
-       }       
+        if(!canUndo){
+            activeCircuit = editor.getActiveCircuit();
+            if(parentHistory==null && activeCircuit != null){
+               parentHistory = activeCircuit.getCommandHistory();
+            } else {
+                parentHistory = editor.getCommandHistory();
+            }      
+            parentHistory.stageChange("started", "");           
+            perform(editor);            
+            parentHistory.stageChange("done", "");
+        }       
     }
     
     /**
@@ -48,6 +50,7 @@ public abstract class Command implements Cloneable{
         }        
     }
     
+    /** The actual changes caused by the undo method.  */
     protected void undoEffect(Editor editor) {
         ui.error.ErrorHandler.newError("Cannot Undo Command",
                 this.getClass().getSimpleName() +"\nThis command cannot be undone.");

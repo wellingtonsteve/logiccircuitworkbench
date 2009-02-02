@@ -14,10 +14,6 @@ import ui.components.SelectableComponent;
  */
 public class FileOpenCommand extends Command {
 
-    public FileOpenCommand(CommandHistory cmdHist) {
-        super(cmdHist);
-    }
-
     @Override
     protected void perform(Editor editor) {
         String filename;                                    
