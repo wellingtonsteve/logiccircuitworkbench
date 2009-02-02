@@ -13,10 +13,6 @@ import sim.SimulatorStateListener;
 import sim.componentLibrary.Circuit;
 import sim.componentLibrary.Wire;
 import sim.componentLibrary.standard.Input;
-import sim.pin.InputPin;
-import sim.pin.OutputPin;
-import sim.pin.Pin;
-import sim.pin.ValueListener;
 import ui.log.PinLogger;
 import ui.log.ViewerWindow;
 /**
@@ -46,19 +42,13 @@ public static void main(String[] args){
     wire2.connectPin(and1.getPinByName("Input 2"));
     Wire wire3 = new Wire();
     wire3.connectPin(out.getPinByName("Input"));
-    wire3.connectPin(and1.getPinByName("Output"));
-    
-    
-    //((InputPin)(and1.getPinByName("Input 1"))).connectToOutput((OutputPin)(in1.getPinByName("Output")));
-    //((InputPin)(and1.getPinByName("Input 1"))).connectToOutput((OutputPin)(in1.getPinByName("Output")));
-    //((InputPin)(out.getPinByName("Input"))).connectToOutput((OutputPin)(and1.getPinByName("Output")));
+    wire3.connectPin(and1.getPinByName("Output"));    
      
     final Input in1copy = (Input) in1;
     final Input in2copy = (Input) in2;
     sim.addStateListener(new SimulatorStateListener() {
 
             public void SimulatorStateChanged(SimulatorState state) {
-                System.out.println(state.toString());
             }
 
             public void SimulationTimeChanged(long time) {
@@ -69,22 +59,25 @@ public static void main(String[] args){
                     else{
                         in1copy.setValue(LogicState.ON);
                     }
-                }
+                } else if(time % 700000000 == 0){
+                    if(in2copy.getPinByName("Output").getValue() == LogicState.ON){
+                        in2copy.setValue(LogicState.OFF);
+                    }
+                    else{
+                        in2copy.setValue(LogicState.ON);
+                    }
+                }             
                 
-                if(time == 3000000000l)  
+                if(time == 3000000000l)  {
                     in2copy.setValue(LogicState.OFF);
+                }
             }
         });
     
-    if(sim.play()){
-        System.out.println("Yes");
-    }
-    else{
-        System.out.println("No");
-    }
-        
-            PinLogger pl = new PinLogger(out.getPinByName("Input"), sim);
-        new ViewerWindow(pl).setVisible(true);
+    sim.play();
+ 
+    PinLogger pl = new PinLogger(out.getPinByName("Input"), sim);
+    new ViewerWindow(pl).setVisible(true);
     
     
 }
