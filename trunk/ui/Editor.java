@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
@@ -52,6 +53,10 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     private LinkedList<JInternalFrame> circuitwindows = new LinkedList<JInternalFrame>();
     private sim.SimItem simitem;
     private boolean playPause = false;
+    private WindowListener loggerWindowListener = new WindowAdapter(){
+        public void windowClosed(WindowEvent e) {RecordButton.setSelected(getActiveCircuit().getLoggerWindow().isShowing()); }
+    };
+    private JDialog aboutBox = new AboutBox(this);
         
     public Editor() {    
         initComponents();
@@ -992,16 +997,11 @@ private void MakeImageButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-F
 }//GEN-LAST:event_MakeImageButtonMouseClicked
 
 private void RecordButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RecordButtonMouseClicked
-    if(getActiveCircuit()!=null){
-        getActiveCircuit().doCommand(new SimulationRecordCommand());
-        if(evt.getComponent().isEnabled() && !Record.isSelected()){                        
-            Record.setSelected(true);
-            RecordButton.setSelected(true); 
-        } else if(evt.getComponent().isEnabled() && Record.isSelected()){
-            Record.setSelected(false);
-            RecordButton.setSelected(false);
-        }
-    }        
+    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
+        getActiveCircuit().doCommand(new SimulationRecordCommand());    
+        getActiveCircuit().getLoggerWindow().addWindowListener(loggerWindowListener);
+        RecordButton.setSelected(getActiveCircuit().getLoggerWindow().isShowing()); 
+    }
 }//GEN-LAST:event_RecordButtonMouseClicked
 
 private void StopButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StopButtonMouseClicked
@@ -1352,7 +1352,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
      * Component which can be drawn on the circuit.
      * 
      * @param key
-     * @return
+     * @return is there a class matching the key for drawable components
      */
     public boolean isDrawableComponent(String key){
         //Remove "Components." from begining
@@ -1375,7 +1375,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
      * the logical logicalComponent.
      * 
      * @param key
-     * @return
+     * @return is key a valid netlist key?
      */
     public boolean isValidComponent(String key){
         //Remove "Components." from begining
@@ -1487,9 +1487,9 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     }
     
     /**
-     * Fix the current Component to the circuit
+     * Fix a Component to the circuit
      * 
-     * @param endPoint  the point at which to fix the component
+     * @param sc The component to fix
      */
     public void fixComponent(SelectableComponent sc) {
         getActiveCircuit().doCommand(
@@ -1510,19 +1510,18 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     }
     
     /**
-     * Query the result of the fastest place to draw
-     * 
-     * @return
+     * @return  the result of the fastest place to draw
      */
     public boolean drawDirect() {
         return drawDirect;
     }
         
-    /** From: Expert Solutions by Mark Wutka, et. al. (http://www.webbasedprogramming.com/Java-Expert-Solutions/)
-     * doAutoDetect performs tries drawing to the screen and to a
+    /** 
+     * Tries drawing to the screen and to a
      * buffer. Whichever one takes the least time (actually, whichever
      * one it can do the most times within a set time constraint) is
      * the one that is best.
+     * From: Expert Solutions by Mark Wutka, et. al. (http://www.webbasedprogramming.com/Java-Expert-Solutions/)
      */
      public void doAutoDetect()
      {
@@ -1850,5 +1849,4 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
     // End of variables declaration//GEN-END:variables
-    private JDialog aboutBox = new AboutBox(this);
 }

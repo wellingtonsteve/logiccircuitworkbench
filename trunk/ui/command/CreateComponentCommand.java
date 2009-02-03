@@ -79,9 +79,7 @@ public class CreateComponentCommand extends Command {
     }
     
     /**
-     * Return the component created by this command.
-     * 
-     * @return
+     * @return the component created by this command.
      */
     public SelectableComponent getComponent(){
         return sc;

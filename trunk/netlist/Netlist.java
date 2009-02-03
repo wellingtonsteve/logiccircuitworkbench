@@ -102,18 +102,16 @@ public abstract class Netlist {
     }
     
     /**
-     * Get the class associated with the <code>key</code>
      * @param key
-     * @return
+     * @return the class associated with the <code>key</code>
      */
     public Class<? extends SelectableComponent> getDrawableClass(String key){
         return drawableMap.get(key);
     }
     
     /**
-     * Get the class associated with the <code>key</code>
      * @param key
-     * @return
+     * @return the class associated with the <code>key</code>
      */
     public BufferedImage getImage(String key){
         if(imageMap.containsKey(key)){
@@ -126,30 +124,29 @@ public abstract class Netlist {
     }
   
     /**
-     * Get the class associated with the <code>key</code>
      * @param key
-     * @return
+     * @return the class associated with the <code>key</code>
      */
     public Class<? extends SimItem> getLogicClass(String key){
         return logicMap.get(key);
     }
     
     /**
-     * @see #java.util.Set
+     * @see java.util.Set
      */
     public Set<String> keySet(){
         return logicMap.keySet();
     }
     
     /**
-     * @see #java.util.Set
+     * @see java.util.Set
      */
     public boolean containsDrawableKey(String key){
         return drawableMap.containsKey(key);
     }
     
     /**
-     * @see #java.util.Set
+     * @see java.util.Set
      */
     public boolean containsLogicKey(String key){
         return logicMap.containsKey(key);

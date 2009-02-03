@@ -132,9 +132,7 @@ public class OptionsPanel extends JPanel{
     }
     
     /**
-     * Get a copy of the component which this options panel displays.
-     * 
-     * @return
+     * @return a copy of the component which this options panel displays.
      */
     public SelectableComponent getSelectableComponent(){
         return (sc!=null)?sc.copy():null;        
@@ -194,27 +192,21 @@ public class OptionsPanel extends JPanel{
     }
     
     /**
-     * Get the current rotation of the component displayed in the panel.
-     * 
-     * @return
+     * @return the current rotation of the component displayed in the panel.
      */
     public Double getComponentRotation(){
         return rotation;
     }
     
     /**
-     * Get the current colour of the LED colours drop down box.
-     * 
-     * @return
+     * @return the current colour of the LED colours drop down box.
      */
     public String getLEDColour(){
         return (String) ledColours.getSelectedItem();
     }
     
     /**
-     * Get the state of the Input Source.
-     * 
-     * @return
+     * @return The state of the Input Source.
      */
     public boolean getInputSourceState(){
         return sourceIsOn.isSelected();
