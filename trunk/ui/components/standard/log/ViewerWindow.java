@@ -89,7 +89,7 @@ public class ViewerWindow extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         CheckboxPanel = new javax.swing.JPanel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
         setTitle(bundle.getString("ViewerWindow.title")); // NOI18N
 
