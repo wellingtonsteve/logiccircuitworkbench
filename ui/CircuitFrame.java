@@ -10,7 +10,7 @@ import ui.command.FileSaveCommand;
 import ui.error.ErrorHandler;
 
 /**
- * A CircuitFrame contains a #CircuitPanel one which the visual circuit is actually
+ * A CircuitFrame contains a CircuitPanel on which the visual circuit is actually
  * drawn. The circuit frame is responsible for scrolling, closing operations and
  * the naming of unnamed circuits.
  * 

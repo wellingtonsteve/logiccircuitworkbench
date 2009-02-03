@@ -284,7 +284,7 @@ public class CircuitPanel extends JPanel {
         }      
     }
              
-    /** @param The current tool that being used to modify the circuit. */
+    /** @param tool The current tool that being used to modify the circuit. */
     public void setCurrentTool(String tool){      
         this.currentTool = tool;                    
     }
@@ -296,7 +296,6 @@ public class CircuitPanel extends JPanel {
     
     /**
      * Clear everything associated with this circuit.
-     * @return
      */
     public void resetCircuit(){
         drawnComponents.clear();

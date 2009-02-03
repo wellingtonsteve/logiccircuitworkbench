@@ -95,7 +95,7 @@ public class CommandHistory {
      * This command history is dirty if an undoable command has been done since
      * the last save.
      * 
-     * @return
+     * @return Is this command history dirty?
      */
     public boolean isDirty() {
         return isDirty;
@@ -180,7 +180,7 @@ public class CommandHistory {
      * Add a #JComponent which can call a redo operation. Redo Listeners are
      * disabled when there are no actions to redo.
      * 
-     * @param undolistener
+     * @param redolistener
      */
     public void addRedoEmptyListener(JComponent redolistener){
         redolisteners.add(redolistener);

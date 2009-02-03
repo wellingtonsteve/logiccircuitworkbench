@@ -30,22 +30,22 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     /** To store the Selection state of the component before it enters the hover state.*/
     protected SelectionState preHoverState;
     
-    /** @see getLogicalComponent() */
+    /** @see #getLogicalComponent() */
     protected SimItem logicalComponent;
     
-    /** @see getBoundingBox() */
+    /** @see #getBoundingBox() */
     protected Rectangle boundingBox = null;
     
-    /** @see getInvalidArea() */
+    /** @see #getInvalidArea() */
     protected Rectangle invalidArea = null;
     
     /** Describes the current fixed state */
     protected boolean fixed = false;    
     
-    /** @see getOrigin() */
+    /** @see #getOrigin() */
     private Point origin;
     
-    /** @see getLocalPins() */
+    /** @see #getLocalPins() */
     protected Collection<Pin> localPins = new LinkedList<Pin>();
         
     /** Rotation in radians, with 0 being with inputs on left, output on right of standard and-gate */
@@ -54,13 +54,13 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     /** Precompute the values of Math.cos(rotation) and Math.cos(rotation) */
     protected double cosTheta, sinTheta;
 
-    /** @see getLabel() */
+    /** @see #getLabel() */
     private String label = "";
     
-    /** @see getParent() */
+    /** @see #getParent() */
     protected CircuitPanel parent;
     
-    /** @see getComponentTreeName() */
+    /** @see #getComponentTreeName() */
     protected String componentTreeName;
     
     /** Store the point at which this component was unfixed */
@@ -226,7 +226,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     /**
      * Convienience method to move the origin of the component to a specified point
      * 
-     * @param point The new origin of the component
+     * @param newOrigin The new origin of the component
      * @param fixed Should the component be fixed after the move?
      */
     public void moveTo(Point newOrigin, boolean fixed){
@@ -421,11 +421,11 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     }
     
     /**
-     * Return a list of the pins belonging to this component in their local
-     * co-ordinates. Local pins are used to do all processing (e.g. for crossovers
+     * Local pins are used to do all processing (e.g. for crossovers
      * of wires) and generation of connection points before they are added to the grid.
      * 
-     * @return
+     * @return a list of the pins belonging to this component in their local
+     * co-ordinates.
      */
     protected  Collection<Pin> getLocalPins(){
         return localPins;
@@ -433,7 +433,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     
     /**
      * Convience method. 
-     * @see SelectableComponent.getLocalPins()
+     * @see ui.components.SelectableComponent#getLocalPins()
      */
     public Collection<Pin> getPins(){
         return getLocalPins();
@@ -451,10 +451,8 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     }
     
     /**
-     * Returns true if, and only if, the specified point lies with in this point.
-     * 
      * @param point The point to test.
-     * @return
+     * @return true if, and only if, the specified point lies with in this point.
      */
     public abstract boolean containsPoint(Point point);
     
@@ -464,7 +462,6 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * selection box.
      * 
      * @param rect The rectangle to test for inclusion in
-     * @return
      */
     public boolean containedIn(Rectangle rect) {
         return rect.contains(getInvalidArea());

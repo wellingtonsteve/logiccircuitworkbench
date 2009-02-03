@@ -25,7 +25,7 @@ public class Clipboard {
     /**
      * Add a selection of components to the clipboard for later use.
      * @param col The components to be added
-     * @parem ct The type of the clipboard action
+     * @param ct The type of the clipboard action
      */
     public void addSetToClipboard(Collection<SelectableComponent> col, ClipboardType ct){
         clipboardPointer.push(clipboard.size());
@@ -96,7 +96,7 @@ public class Clipboard {
      * Selection Listeners (Cut/Copy/Delete) are disabled when there is no 
      * active selection. 
      * 
-     * @param cutlistener
+     * @param selectionlistener
      */
     public void addSelectionListener(JComponent selectionlistener){
         selectionlisteners.add(selectionlistener);
