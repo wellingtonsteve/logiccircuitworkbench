@@ -37,7 +37,7 @@ public class SplashDialog extends javax.swing.JFrame {
     private void initComponents() {//GEN-BEGIN:initComponents
 
         jPanel2 = new javax.swing.JPanel();
-        jProgressBar1 = new javax.swing.JProgressBar();
+        jProgressBar1 = jProgressBar1;
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -52,7 +52,7 @@ public class SplashDialog extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 24));
         jLabel1.setText(bundle.getString("Main.ApplicationTitle")); // NOI18N
 
         jLabel2.setText(bundle.getString("Main.Authors")); // NOI18N
