@@ -55,10 +55,10 @@ public class Viewer extends JPanel {
         }
                         
         float xOffset = 0f;
-        float yOffset = 0.5f * UIConstants.LOG_VIEWER_MARGIN;
+        float yOffset = 0.5f * UIConstants.LOGGER_VIEWER_MARGIN;
         
         for(PinLogger p: loggers){
-            yOffset += UIConstants.LOG_VIEWER_MARGIN;
+            yOffset += UIConstants.LOGGER_VIEWER_MARGIN;
             
             Iterator<LogicState> states = p.getValues().iterator();
             Iterator<Long>  times  = p.getKeys().iterator();
@@ -89,15 +89,15 @@ public class Viewer extends JPanel {
                     
                     // Draw Horizontal Part
                     g2.drawLine((int)(prevTime*scaleFactor), 
-                                (prevState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0,
+                                (prevState.equals(LogicState.OFF))?UIConstants.LOGGER_HEIGHT:0,
                                 (int)(currTime*scaleFactor),
-                                (prevState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0);
+                                (prevState.equals(LogicState.OFF))?UIConstants.LOGGER_HEIGHT:0);
 
                     // Draw Vertical Part (May be of zero length)
                     g2.drawLine((int)(currTime*scaleFactor),
-                                (prevState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0, 
+                                (prevState.equals(LogicState.OFF))?UIConstants.LOGGER_HEIGHT:0, 
                                 (int)(currTime*scaleFactor), 
-                                (currState.equals(LogicState.OFF))?UIConstants.LOG_HEIGHT:0);
+                                (currState.equals(LogicState.OFF))?UIConstants.LOGGER_HEIGHT:0);
 
                     //System.out.println((currTime*scaleFactor) + " @ " + currState.toString());
                     
@@ -111,7 +111,7 @@ public class Viewer extends JPanel {
             g2.translate(-xOffset, -yOffset);
 
             // Move down to next pin logger
-            yOffset += UIConstants.LOG_VIEWER_MARGIN+UIConstants.LOG_HEIGHT;
+            yOffset += UIConstants.LOGGER_VIEWER_MARGIN+UIConstants.LOGGER_HEIGHT;
             
         }        
         

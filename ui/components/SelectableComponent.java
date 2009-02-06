@@ -466,7 +466,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     public boolean containedIn(Rectangle rect) {
         return rect.contains(getInvalidArea());
     }
-    
+        
     /**
      * Draw this component to the graphics object specified.
      * 
