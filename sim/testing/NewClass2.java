@@ -13,7 +13,7 @@ import sim.Simulator;
 import sim.SimulatorState;
 import sim.SimulatorStateListener;
 import sim.componentLibrary.Circuit;
-import sim.componentLibrary.Wire;
+import sim.pin.Wire;
 import sim.componentLibrary.standard.Input;
 import ui.components.standard.log.PinLogger;
 import ui.components.standard.log.ViewerWindow;
@@ -36,15 +36,25 @@ public static void main(String[] args){
     circuit.addSimItem(out);
     Simulator sim = new Simulator(circuit);
         
+//    Wire wire1 = new Wire();
+//    wire1.connectPin(in1.getPinByName("Output"));
+//    wire1.connectPin(and1.getPinByName("Input 1"));
+//    Wire wire2 = new Wire();
+//    wire2.connectPin(in2.getPinByName("Output"));
+//    wire2.connectPin(and1.getPinByName("Input 2"));
+//    Wire wire3 = new Wire();
+//    wire3.connectPin(out.getPinByName("Input"));
+//    wire3.connectPin(and1.getPinByName("Output"));
+
     Wire wire1 = new Wire();
-    wire1.connectPin(in1.getPinByName("Output"));
-    wire1.connectPin(and1.getPinByName("Input 1"));
+    wire1.connect(in1.getPinByName("Output"));
+    wire1.connect(and1.getPinByName("Input 1"));
     Wire wire2 = new Wire();
-    wire2.connectPin(in2.getPinByName("Output"));
-    wire2.connectPin(and1.getPinByName("Input 2"));
+    wire2.connect(in2.getPinByName("Output"));
+    wire2.connect(and1.getPinByName("Input 2"));
     Wire wire3 = new Wire();
-    wire3.connectPin(out.getPinByName("Input"));
-    wire3.connectPin(and1.getPinByName("Output"));    
+    wire3.connect(out.getPinByName("Input"));
+    wire3.connect(and1.getPinByName("Output"));
      
     final Input in1copy = (Input) in1;
     final Input in2copy = (Input) in2;
