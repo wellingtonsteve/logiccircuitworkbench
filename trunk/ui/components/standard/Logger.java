@@ -46,7 +46,7 @@ public class Logger extends ImageSelectableComponent{
     @Override
     public void setLocalPins() {
         localPins.clear(); 
-        in1 = new Pin(30, 70);
+        in1 = new Pin(30, 70, logicalComponent.getPinByName("Input"));
         localPins.add(in1);        
     }
             

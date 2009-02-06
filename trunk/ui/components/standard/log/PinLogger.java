@@ -80,4 +80,5 @@ public class PinLogger implements sim.pin.ValueListener {
     public boolean isEnabled(){
         return enabled;
     }
+    
 }

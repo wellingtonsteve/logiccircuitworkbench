@@ -62,6 +62,7 @@ public class Circuit implements SimItem {
     }
 
     public void setSimulator(Simulator sim) {
+        this.sim = sim;
         for(SimItem simItem:simItems){
             simItem.setSimulator(sim);
         }

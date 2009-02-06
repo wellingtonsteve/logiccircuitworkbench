@@ -1,5 +1,7 @@
 package ui.components.standard;
 
+import sim.LogicState;
+import sim.pin.Pin;
 import ui.components.*;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -16,12 +18,13 @@ import ui.UIConstants;
  *
  * @author Matt
  */
-public class LED extends ImageSelectableComponent{
+public class LED extends ImageSelectableComponent implements sim.pin.ValueListener{
     private boolean isOn;
     private String colour = "yellow";
 
     public LED(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
+        logicalComponent.getPinByName("Input").addValueListener(this);
     }
 
     @Override
@@ -73,7 +76,7 @@ public class LED extends ImageSelectableComponent{
     @Override
     public void setLocalPins() {
         localPins.clear();
-        Pin in1 = new Pin(10, 10);             
+        Pin in1 = new Pin(10, 10, logicalComponent.getPinByName("Input"));             
         localPins.add(in1);        
     }
         
@@ -151,5 +154,11 @@ public class LED extends ImageSelectableComponent{
     public void setColour(String colour) {
         this.colour = colour.toLowerCase();
         setActiveImage();
-    }    
+    }
+
+    public void valueChanged(sim.pin.Pin pin, LogicState value) {
+        setValue(value.equals(sim.LogicState.ON));
+        // TODO, repaint somewhere more sensible
+        parent.repaint();
+    }
 }

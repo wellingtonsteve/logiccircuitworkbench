@@ -31,7 +31,7 @@ import ui.grid.Grid;
  *  
  * @author Matt
  * @see Grid
- * @see sim.componentLibrary.Wire
+ * @see sim.pin.Wire
  */
 public class Wire extends SelectableComponent {
 
@@ -43,11 +43,15 @@ public class Wire extends SelectableComponent {
     private Point hoverMousePoint = new Point(0,0);
     private Point reportedSelfCrossover = null;
     private Color wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
-    //private sim.componentLibrary.Wire logicalWire = new sim.componentLibrary.Wire();
+    private sim.pin.Wire logicalWire;
+
+    public sim.pin.Wire getLogicalWire() {
+        return logicalWire;
+    }
 
     public Wire(CircuitPanel parent){
         super(parent, null, null);
-        //logicalWire = new sim.componentLibrary.Wire();
+        logicalWire = new sim.pin.Wire();
     }
     
     public Wire(CircuitPanel parent, Point o) {

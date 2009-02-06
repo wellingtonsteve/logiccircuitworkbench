@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-import ui.CircuitPanel;
 import ui.UIConstants;
 
 /**
@@ -52,14 +51,22 @@ public class Input extends ImageSelectableComponent{
     @Override
     public void setLocalPins() {
         localPins.clear();
-        Pin out1 = new Pin(30, 10);               
+        Pin out1 = new Pin(30, 10, logicalComponent.getPinByName("Output"));               
         localPins.add(out1);        
     }
     
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
-        if(e != null) { isOn = !isOn; } // To check that this is an activation due to a click, not a selection
+        // To check that this is an activation due to a click, not a selection
+        if(e != null) { 
+            if(isOn){
+                ((sim.componentLibrary.standard.Input) logicalComponent).setValue(sim.LogicState.OFF);
+            } else {
+                ((sim.componentLibrary.standard.Input) logicalComponent).setValue(sim.LogicState.ON);
+            }
+            isOn = !isOn; 
+        } 
     }
     
     @Override

@@ -44,11 +44,24 @@ public class ConnectionPoint extends GridObject {
                 && !((Wire) p.getParent()).getOrigin().equals(p.getGlobalLocation())){ // Not the start point of a wire
             isCrossover = true;
         } 
+        // TODO: Add connections in logical circuit
+        if(isConnected()
+                && p.getParent() instanceof Wire 
+                && p.getParent().isFixed()
+                && (((Wire) p.getParent()).getOrigin().equals(p.getGlobalLocation())
+                    || ((Wire) p.getParent()).getEndPoint().equals(p.getGlobalLocation()))){
+            
+             Wire w = (Wire) p.getParent();
+             if(w.getLogicalWire().connect(connections.get(0).getJoinable())){
+                 //System.out.println("Successful connection");
+             }    else {
+                // System.out.println("bugger!");
+             }
+        }
         if(!hasConnection(p)){
             p.setConnectionPoint(this);
             connections.add(p);
         }
-        // TODO: Add connections in logical circuit
     }
     
     public boolean removeConnection(Pin p){

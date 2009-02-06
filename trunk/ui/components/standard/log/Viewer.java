@@ -33,9 +33,11 @@ public class Viewer extends JPanel {
     }
     
     public void addLogger(PinLogger pl){
-        loggers.add(pl);
-        if(pl.getStartTime()<startTime){
-            startTime = pl.getStartTime();
+        if(!loggers.contains(pl)){
+            loggers.add(pl);
+            if(pl.getStartTime()<startTime){
+                startTime = pl.getStartTime();
+            }
         }
     }
      

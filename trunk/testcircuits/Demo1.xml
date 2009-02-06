@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<circuit description="get some value here" author="matt" createdOn="06 February 2009, 15:21" name="test1" version="LCW v2.1">
+    <components>
+        <component type="Standard.Output Logger" x="280" y="310" rotation="0.0"/>
+        <component type="Logic Gates.2 Input.AND" x="110" y="300" rotation="0.0"/>
+        <component type="Standard.LED" x="210" y="200" rotation="0.0">
+            <attr name="colour" value="yellow"/>
+        </component>
+        <component type="Logic Gates.2 Input.OR" x="110" y="200" rotation="0.0"/>
+        <component type="Standard.Button Source" x="50" y="330" rotation="0.0">
+            <attr name="value" value="Off"/>
+        </component>
+        <component type="Standard.Button Source" x="50" y="220" rotation="0.0">
+            <attr name="value" value="Off"/>
+        </component>
+        <component type="Standard.Button Source" x="50" y="80" rotation="0.0">
+            <attr name="value" value="Off"/>
+        </component>
+        <component type="Standard.Button Source" x="50" y="40" rotation="0.0">
+            <attr name="value" value="Off"/>
+        </component>
+        <component type="Standard.Button Source" x="50" y="170" rotation="0.0">
+            <attr name="value" value="Off"/>
+        </component>
+        <component type="Standard.Button Source" x="50" y="290" rotation="0.0">
+            <attr name="value" value="Off"/>
+        </component>
+        <component type="Logic Gates.2 Input.AND" x="100" y="60" rotation="0.0"/>
+        <component type="Standard.LED" x="210" y="60" rotation="0.0">
+            <attr name="colour" value="yellow"/>
+        </component>
+        <component type="Standard.Button Source" x="50" y="370" rotation="0.0">
+            <attr name="value" value="Off"/>
+        </component>
+        <component type="Logic Gates.2 Input.OR" x="180" y="350" rotation="0.0"/>
+        <wire startx="70" starty="40" endx="80" endy="50"/>
+        <wire startx="80" starty="70" endx="70" endy="80">
+            <waypoint x="80" y="80"/>
+        </wire>
+        <wire startx="130" starty="60" endx="200" endy="60"/>
+        <wire startx="200" starty="200" endx="140" endy="200"/>
+        <wire startx="90" starty="210" endx="70" endy="220">
+            <waypoint x="90" y="220"/>
+        </wire>
+        <wire startx="70" starty="170" endx="90" endy="190"/>
+        <wire startx="90" starty="290" endx="70" endy="290"/>
+        <wire startx="70" starty="330" endx="90" endy="310"/>
+        <wire startx="70" starty="370" endx="160" endy="360"/>
+        <wire startx="160" starty="340" endx="140" endy="300">
+            <waypoint x="160" y="300"/>
+        </wire>
+        <wire startx="210" starty="350" endx="280" endy="350"/>
+    </components>
+</circuit>
