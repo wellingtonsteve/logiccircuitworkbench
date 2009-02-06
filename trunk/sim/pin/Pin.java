@@ -3,7 +3,7 @@ package sim.pin;
 import sim.*;
 import java.util.ArrayList;
 
-public abstract class Pin {
+public abstract class Pin implements Joinable {
 
     private SimItem owner;
     private String name;
