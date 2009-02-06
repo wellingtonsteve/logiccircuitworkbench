@@ -28,10 +28,6 @@ public class Simulator {
         simItem.setSimulator(this);
     }
 
-    public Simulator() {
-        throw new Error("Don't call this!  It's here until Steve remembers to tell Matt to change his call to this constructor in ui.log.ViewWindow");
-    }
-
     public long getSimulationTime() {
         return currentSimulationTime;
     }
@@ -80,6 +76,7 @@ public class Simulator {
     
     private void setSimulationTime(long time){
         currentSimulationTime = time;
+        System.out.println(time);
         for(SimulatorStateListener stateListener : stateListeners) {
             stateListener.SimulationTimeChanged(time);
         }

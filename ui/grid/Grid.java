@@ -7,6 +7,7 @@ import java.util.HashMap;
 import ui.UIConstants;
 import ui.components.SelectableComponent;
 import ui.components.SelectableComponent.Pin;
+import ui.components.Wire;
 
 /**
  * The Grid represents a 2-dimensional cartesian co-ordinate space where 
@@ -100,7 +101,7 @@ public class Grid {
             go = grid.get(p);
         }
         
-        if(go instanceof ConnectionPoint){       
+        if(go instanceof ConnectionPoint){                 
             ((ConnectionPoint) go).addConnection(local);
             return true;
         } else {

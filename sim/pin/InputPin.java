@@ -26,7 +26,7 @@ public class InputPin extends Pin implements ValueListener {
     }
 
     public void valueChanged(Pin pin, LogicState value) {
-        setValue(connectedTo.getValue());
+        setValue(value);
     }
 
     public OutputPin getConnectedTo() {

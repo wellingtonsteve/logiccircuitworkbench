@@ -591,6 +591,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         public Pin(int x, int y){
             super(x,y);
             this.parent = SelectableComponent.this;
+            //throw new Error("Change all components to use the other Pin contructor!");
         }   
 
         public Pin(int x, int y, sim.pin.Pin simPin){
@@ -641,6 +642,11 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
 
         public void setConnectionPoint(ConnectionPoint cp) {
             this.cp = cp;
+        }
+        
+        // TODO: Unhack
+        public sim.pin.Joinable getJoinable(){
+            return simPin;
         }
     }
 }
