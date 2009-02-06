@@ -3,11 +3,9 @@ package ui.components.standard.log;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JPanel;
@@ -27,12 +25,11 @@ public class Viewer extends JPanel {
     
     public Viewer(){
         Timer timer = new Timer();
-            timer.schedule(new TimerTask(){
-                public void run() {
-                    //Viewer.this.repaint((int)(prevTime*scaleFactor), 0, (int)((prevTime-currTime)*scaleFactor), getHeight());
-                    Viewer.this.repaint();
-                }
-            }, 0, 100);
+        timer.schedule(new TimerTask(){
+            public void run() {
+                Viewer.this.repaint();
+            }
+        }, 0, 100);
     }
     
     public void addLogger(PinLogger pl){
