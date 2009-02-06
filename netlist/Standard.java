@@ -1,7 +1,7 @@
 package netlist;
 
 /**
- *
+ * Netlist of standard components. Inputs, Outputs, Pin Loggers  etc.
  * @author matt
  */
 public class Standard extends Netlist{

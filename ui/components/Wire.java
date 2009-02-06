@@ -6,6 +6,7 @@ import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.util.Iterator;
@@ -18,7 +19,7 @@ import ui.UIConstants;
 import ui.grid.Grid;
 
 /**
- *
+ * 
  * @author Matt
  */
 public class Wire extends SelectableComponent {
@@ -31,7 +32,7 @@ public class Wire extends SelectableComponent {
     private Point hoverMousePoint = new Point(0,0);
     private Point reportedSelfCrossover = null;
     private Color wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
-    private sim.componentLibrary.Wire logicalWire;
+    private sim.componentLibrary.Wire logicalWire = new sim.componentLibrary.Wire();
 
     public Wire(CircuitPanel parent){
         super(parent, null, null);
@@ -42,11 +43,13 @@ public class Wire extends SelectableComponent {
         this(parent);
     }
     
+    /** {@inheritDoc} */
     @Override
     public String getName(){
         return "Wire";
     }    
     
+    /** {@inheritDoc} */
     @Override
     protected void setComponentTreeName() {
         componentTreeName = "Wire";
@@ -61,13 +64,15 @@ public class Wire extends SelectableComponent {
     public void setRotation(double rotation, boolean updateGrid){}
    
     /**
-     * Origin = Start point for a wire
+     * {@inheritDoc}
+     * @return The Start point of a wire
      */
     @Override
     public Point getOrigin() {
         return startPoint;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void translate(int dx, int dy, boolean fixed) {        
         ui.grid.Grid grid = parent.getGrid();
@@ -91,10 +96,16 @@ public class Wire extends SelectableComponent {
         }
     }
 
+    /** @return The last point of the wire. */
     public Point getEndPoint() {
         return endPoint;
     }
 
+    /**
+     * Change the endpoint of a wire. Once the end point has been set, 
+     * the #moveEndPoint() should be used instead.
+     * @param endPoint The new end point
+     */
     public void setEndPoint(Point endPoint) {
         this.endPoint = endPoint;      
         if(!startPoint.equals(new Point(0,0))){
@@ -116,6 +127,10 @@ public class Wire extends SelectableComponent {
         }  
     }
     
+    /**
+     * Move the end point but also update the waypoints if appropriate.
+     * @param p The new end point.
+     */
     public void moveEndPoint(Point p) {   
         setEndPoint(p);
         if(!waypoints.isEmpty()){
@@ -140,6 +155,11 @@ public class Wire extends SelectableComponent {
         setGlobalPins();         
     }
 
+    /**
+     * Change the start point of a wire. Once the start point has been set, 
+     * the #moveStartPoint() should be used instead.
+     * @param startPoint The new start point
+     */
     public void setStartPoint(Point startPoint) {
         this.startPoint = startPoint;
         
@@ -156,12 +176,17 @@ public class Wire extends SelectableComponent {
         }         
     }
     
+    /**
+     * Move the start point but also update the waypoints if appropriate.
+     * @param p The new start point.
+     */
     public void moveStartPoint(Point p) {
         setStartPoint(p);
         setLocalPins();
         setGlobalPins();           
     }
     
+    /** {@inheritDoc} */
     @Override
     public Point getCentre() {
         return new Point(0, 0);
@@ -191,6 +216,7 @@ public class Wire extends SelectableComponent {
         waypoints.add(wp);        
     }
     
+    /** {@inheritDoc} */
     @Override
     protected void setLocalPins() {
         localPins.clear();
@@ -240,12 +266,32 @@ public class Wire extends SelectableComponent {
         if(isFixed()){
             parent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
             Point p = Grid.snapToGrid(e.getPoint());
-            // Moving a segment of the wire
-            if(hoverWaypoint!=null && !hoverWaypoint.equals(endPoint)){
-                int i = waypoints.indexOf(hoverWaypoint);
+            
+            Rectangle startPointRectangle = new Rectangle(getOrigin().x-UIConstants.WIRE_HOVER_THICKNESS,
+                getOrigin().y-UIConstants.WIRE_HOVER_THICKNESS,
+                2*UIConstants.WIRE_HOVER_THICKNESS,
+                2*UIConstants.WIRE_HOVER_THICKNESS);
+            Rectangle endPointRectangle = new Rectangle(getEndPoint().x-UIConstants.WIRE_HOVER_THICKNESS,
+                    getEndPoint().y-UIConstants.WIRE_HOVER_THICKNESS,
+                    2*UIConstants.WIRE_HOVER_THICKNESS,
+                    2*UIConstants.WIRE_HOVER_THICKNESS);
+            boolean isOverStartPoint = startPointRectangle.contains(hoverMousePoint);
+            boolean isOverEndPoint = endPointRectangle.contains(hoverMousePoint);
 
+            if(isOverStartPoint){
+                moveStartPoint(p);
+                hoverMousePoint = p;
+            } else if (isOverEndPoint){
+                moveEndPoint(p);
+                hoverMousePoint = p;
+                
+            // Moving a segment of the wire
+            } else if(hoverWaypoint!=null && !hoverWaypoint.equals(endPoint)){
+                int i = waypoints.indexOf(hoverWaypoint);
+                
                 // We have more that one waypoint, let's get the i-1 th waypoint and move the right part of the wire
                 if(i > 0 && i < waypoints.size()){ 
+                                    
                     Point previousWaypoint = waypoints.get(i-1);
                     // There is no intermeditate point in the joining wire between the two waypoints (vertical)
                     if(previousWaypoint.x == hoverWaypoint.x){ 
@@ -284,7 +330,8 @@ public class Wire extends SelectableComponent {
                         hoverWaypoint.x = p.x;
                         hoverMousePoint.x = p.x;
                     }                
-                } 
+                }
+            // Special Case for horizonal section of last leg
             } else if (hoverWaypoint!=null 
                     && hoverWaypoint.equals(endPoint) 
                     && !waypoints.isEmpty()){
@@ -299,6 +346,7 @@ public class Wire extends SelectableComponent {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void mouseDraggedDropped(MouseEvent e) {
         setSelectionState(selectionState.ACTIVE);
@@ -311,7 +359,7 @@ public class Wire extends SelectableComponent {
         }
         hoverMousePoint = Grid.snapToGrid(e.getPoint());
     }
-
+    /** {@inheritDoc} */
     @Override
     public void mouseMoved(MouseEvent e) {
         if (!isFixed() && !getSelectionState().equals(SelectionState.ACTIVE)) {
@@ -320,7 +368,7 @@ public class Wire extends SelectableComponent {
         }
         hoverMousePoint = Grid.snapToGrid(e.getPoint());
     }
-
+    /** {@inheritDoc} */
     @Override
     public void mouseClicked(MouseEvent e) {
         if (isFixed()) {
@@ -333,26 +381,19 @@ public class Wire extends SelectableComponent {
             }
         }
     }
-
+    /** {@inheritDoc} */
     @Override
     public void mousePressed(MouseEvent e) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    /** {@inheritDoc} */
     @Override
     public void mouseReleased(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);
         wireColour = UIConstants.ACTIVE_COMPONENT_COLOUR;
     }
 
-    public void mouseEntered(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void mouseExited(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    /** {@inheritDoc} */
     @Override
     public void resetDefaultState() {
         super.resetDefaultState();
@@ -603,14 +644,55 @@ public class Wire extends SelectableComponent {
     private void drawLeg(Graphics2D g, Point from, Point to) {
         createLeg(from, to);
         
-        if(to.equals(hoverWaypoint)){
-            if(hoverMousePoint == null){
-                hoverMousePoint = new Point(0,0);
-            }
-            if (((x1 <= hoverMousePoint.x && x2 >= hoverMousePoint.x)
-                    ||(x1 >= hoverMousePoint.x && x2 <= hoverMousePoint.x))
-               && ((y1-UIConstants.WIRE_HOVER_THICKNESS <= hoverMousePoint.y && y2+UIConstants.WIRE_HOVER_THICKNESS >= hoverMousePoint.y)
-                    ||(y1+UIConstants.WIRE_HOVER_THICKNESS >= hoverMousePoint.y && y2-UIConstants.WIRE_HOVER_THICKNESS <= hoverMousePoint.y))){
+        Rectangle horizontalHoverRectangle = new Rectangle(Math.min(x1,x2),
+                Math.min(y1,y2)-UIConstants.WIRE_HOVER_THICKNESS,
+                Math.abs(x2-x1),
+                2*UIConstants.WIRE_HOVER_THICKNESS);
+        Rectangle verticalHoverRectangle = new Rectangle(Math.min(x2,x3)-UIConstants.WIRE_HOVER_THICKNESS,
+                Math.min(y2,y3),
+                2*UIConstants.WIRE_HOVER_THICKNESS,
+                Math.abs(y3-y2));
+        Rectangle startPointRectangle = new Rectangle(getOrigin().x-UIConstants.WIRE_HOVER_THICKNESS,
+                getOrigin().y-UIConstants.WIRE_HOVER_THICKNESS,
+                2*UIConstants.WIRE_HOVER_THICKNESS,
+                2*UIConstants.WIRE_HOVER_THICKNESS);
+        Rectangle endPointRectangle = new Rectangle(getEndPoint().x-UIConstants.WIRE_HOVER_THICKNESS,
+                getEndPoint().y-UIConstants.WIRE_HOVER_THICKNESS,
+                2*UIConstants.WIRE_HOVER_THICKNESS,
+                2*UIConstants.WIRE_HOVER_THICKNESS);
+        
+        if(from.equals(startPoint)){
+            horizontalHoverRectangle = new Rectangle();
+        }
+        
+        if(to.equals(endPoint)){
+            verticalHoverRectangle = new Rectangle();
+        }        
+        
+        boolean isOverStartPoint = startPointRectangle.contains(hoverMousePoint);
+        boolean isOverEndPoint = endPointRectangle.contains(hoverMousePoint);
+
+        if(UIConstants.SHOW_WIRE_HOVER_BOXES){
+            g.setColor(UIConstants.HOVER_WIRE_COLOUR);
+            g.draw(horizontalHoverRectangle);
+            g.draw(verticalHoverRectangle);
+        }
+        
+        if(to.equals(hoverWaypoint) && hoverMousePoint != null){
+
+            if(isOverStartPoint){
+                g.setColor(UIConstants.HOVER_WIRE_COLOUR);
+                Stroke def = g.getStroke();
+                g.setStroke(UIConstants.CONNECTED_POINT_STROKE);
+                g.drawRect(startPoint.x-3, startPoint.y-3, 7, 7); 
+                g.setStroke(def);                
+            } else if(isOverEndPoint){
+                g.setColor(UIConstants.HOVER_WIRE_COLOUR);
+                Stroke def = g.getStroke();
+                g.setStroke(UIConstants.CONNECTED_POINT_STROKE);
+                g.drawRect(endPoint.x-3, endPoint.y-3, 7, 7); 
+                g.setStroke(def);   
+            } else if(horizontalHoverRectangle.contains(hoverMousePoint)){
                                     
                 int handleX0, handleX1, handleY0, handleY1;
                 
@@ -623,9 +705,8 @@ public class Wire extends SelectableComponent {
                 if(handleX0 < x1 && x1 < x2){
                     handleX0 = x1;
                     handleX1 = x2;
-                }
-                
-               if(handleX0 > x1 && x1 > x2){
+                }                
+                if(handleX0 > x1 && x1 > x2){
                     handleX0 = x1;
                     handleX1 = x2;
                 }
@@ -647,11 +728,8 @@ public class Wire extends SelectableComponent {
                         wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
                         break;
                 }   
-                                
-            } else if (((y2 <= hoverMousePoint.y && y3 >= hoverMousePoint.y)
-                    ||(y2 >= hoverMousePoint.y && y3 <= hoverMousePoint.y))
-               && ((x2-UIConstants.WIRE_HOVER_THICKNESS <= hoverMousePoint.x && x3+UIConstants.WIRE_HOVER_THICKNESS >= hoverMousePoint.x)
-                    ||(x2+UIConstants.WIRE_HOVER_THICKNESS >= hoverMousePoint.x && x3-UIConstants.WIRE_HOVER_THICKNESS <= hoverMousePoint.x))){
+                
+            } else if(verticalHoverRectangle.contains(hoverMousePoint)){
                 
                 int handleX0, handleX1, handleY0, handleY1;
             
@@ -664,8 +742,7 @@ public class Wire extends SelectableComponent {
                 if(handleY0 < y2 && y2 < y3){
                     handleY0 = y2;
                     handleY1 = y3;
-                }
-                
+                }                
                 if(handleY0 > y2 && y2 > y3){
                     handleY0 = y2;
                     handleY1 = y3;
@@ -697,12 +774,12 @@ public class Wire extends SelectableComponent {
 
     }
     
+    /** {@inheritDoc} */
     @Override
     public void draw(Graphics2D g) {
 
         // If not default values
-        if (!startPoint.equals(new Point(0, 0)) && !endPoint.equals(new Point(0, 0))) {
-            
+        if (!startPoint.equals(new Point(0, 0)) && !endPoint.equals(new Point(0, 0))) {            
             // Draw each leg along waypoints         
             Point current = startPoint, next = startPoint;
             for (Point waypoint : waypoints) {
@@ -773,12 +850,14 @@ public class Wire extends SelectableComponent {
         }
     }
     
+    /** {@inheritDoc}
+     * A wire does not have any invalid areas. */
     @Override
     protected void setInvalidAreas(){
-        // A wire does not have any invalid areas
         this.invalidArea = new Rectangle();
     }
     
+    /** {@inheritDoc} */
     @Override
     public boolean containsPoint(Point point) {
         boolean retval = false; 
@@ -815,6 +894,7 @@ public class Wire extends SelectableComponent {
         return retval;
     }
     
+    /** {@inheritDoc} */
     @Override
     public boolean containedIn(Rectangle selBox) {
         boolean retval = false;
@@ -837,6 +917,7 @@ public class Wire extends SelectableComponent {
         return retval;
     }
     
+    /** {@inheritDoc} */
     public void createXML(TransformerHandler hd) {
         try {
             AttributesImpl atts = new AttributesImpl();
@@ -862,11 +943,13 @@ public class Wire extends SelectableComponent {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getWidth() {
         return 0;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getHeight() {
         return 0;

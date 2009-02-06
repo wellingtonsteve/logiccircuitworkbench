@@ -51,6 +51,7 @@ public class UIConstants {
     public static Color LOGGER_BACKGROUND_COLOUR = Color.WHITE;
     public static Color LOGGER_GRID_COLOUR = new Color(230,230,230);
     public static Color LOGGER_GRAPH_COLOR = new Color(46,139,87);
+    public static boolean SHOW_WIRE_HOVER_BOXES = true;
 
     public static void beep(){
         java.awt.Toolkit.getDefaultToolkit().beep();
