@@ -29,7 +29,8 @@ import ui.components.standard.log.PinLogger;
 import ui.components.standard.log.ViewerWindow;
 
 /**
- *
+ * This panel represents the actual visible circuit on which the circuit is drawn.
+ * 
  * @author Matt
  */
 public class CircuitPanel extends JPanel {

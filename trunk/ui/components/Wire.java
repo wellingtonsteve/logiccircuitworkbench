@@ -19,8 +19,19 @@ import ui.UIConstants;
 import ui.grid.Grid;
 
 /**
+ * This special drawable component simulates a wire between components. Wires are
+ * contructed in L-shaped legs between waypoints. Legs take a horizontal path first 
+ * and then a vertical path joining points on the Grid. This class also 
+ * optomises some wires by removing loops and duplicate waypoints. 
  * 
+ * Wires can be moved by selecting the "handle" in the middle of a leg section 
+ * (excluding the initial and final segments), or by selecting the start or end 
+ * point. Although connections and crossovers are drawn and stored on the grid the 
+ * actual flow of data is controlled by the sister Wire class in the Sim package.
+ *  
  * @author Matt
+ * @see Grid
+ * @see sim.componentLibrary.Wire
  */
 public class Wire extends SelectableComponent {
 
