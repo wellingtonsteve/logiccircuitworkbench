@@ -53,7 +53,14 @@ public class Viewer extends JPanel {
         // Draw Vertical Grid Lines
         g2.setColor(UIConstants.LOGGER_GRID_COLOUR);
         for(int i=0; i< getWidth(); i+=20){
-            g2.drawLine(i, 0, i, getHeight());
+            if(i % 100 == 0){
+                g2.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
+                g2.drawString(((double)(i/(double) 100)) + "\u00D710\u2079ns", i+1, 15);
+                g2.drawLine(i, 0, i, getHeight());
+            } else {
+                g2.setColor(UIConstants.LOGGER_GRID_COLOUR);
+                g2.drawLine(i, 0, i, getHeight());
+            }
         }
                         
         float xOffset = 0f;

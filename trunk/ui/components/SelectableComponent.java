@@ -10,6 +10,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import sim.pin.*;
 import sim.SimItem;
 import sim.LogicState;
+import sim.SimulatorState;
 import ui.CircuitPanel;
 import ui.UIConstants;
 import ui.grid.ConnectionPoint;
@@ -649,6 +650,14 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         
         public void valueChanged(sim.pin.Pin pin, LogicState value) {
             this.value = value;
+            if(joinable instanceof sim.pin.Pin){
+                if(value.equals(LogicState.ON)){
+                    cp.setLabel("1");
+                } else {
+                    cp.setLabel("0");
+                }
+                SelectableComponent.this.getParent().repaint(getBoundingBox());
+            }            
         }
 
         /**

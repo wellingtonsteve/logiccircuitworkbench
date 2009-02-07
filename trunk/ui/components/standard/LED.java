@@ -1,9 +1,7 @@
 package ui.components.standard;
 
 import sim.LogicState;
-import sim.pin.Pin;
 import ui.components.*;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -12,7 +10,6 @@ import javax.imageio.ImageIO;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-import ui.UIConstants;
 
 /**
  *
@@ -21,9 +18,11 @@ import ui.UIConstants;
 public class LED extends ImageSelectableComponent implements sim.pin.ValueListener{
     private boolean isOn;
     private String colour = "yellow";
+    private BufferedImage specialBi;
 
     public LED(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
+        setSpecialImage();
         logicalComponent.getPinByName("Input").addValueListener(this);
     }
 
@@ -37,23 +36,22 @@ public class LED extends ImageSelectableComponent implements sim.pin.ValueListen
         componentTreeName = "Standard.LED";
     }
     
-    @Override
-    protected void setActiveImage() {
+    protected void setSpecialImage() {
         try {
             if(colour==null){
                 colour = "yellow";
             }
             if(colour.equals("red")){
-                activeBi = ImageIO.read(getClass().getResource("/ui/images/components/default_led_on_red.png"));
+                specialBi = ImageIO.read(getClass().getResource("/ui/images/components/default_led_on_red.png"));
             } else if(colour.equals("green")){
-                activeBi = ImageIO.read(getClass().getResource("/ui/images/components/default_led_on_green.png"));
+                specialBi = ImageIO.read(getClass().getResource("/ui/images/components/default_led_on_green.png"));
             } else {
-                activeBi = ImageIO.read(getClass().getResource("/ui/images/components/default_led_on_yellow.png"));
+                specialBi = ImageIO.read(getClass().getResource("/ui/images/components/default_led_on_yellow.png"));
             }
                     
         } catch (IOException ex) {
              ui.error.ErrorHandler.newError(new ui.error.Error("Initialisation Error", "Could not load \"LED On\" image.", ex));    
-             activeBi = defaultBi;
+             specialBi = activeBi;
         }
     }
     
@@ -87,39 +85,13 @@ public class LED extends ImageSelectableComponent implements sim.pin.ValueListen
     public boolean getValue(){
         return isOn;
     }
-    
-    @Override
-    public void draw(Graphics2D g) {
-        if(hasLabel()){
-            g.setColor(UIConstants.LABEL_TEXT_COLOUR);
-            g.drawString(getLabel(), getOrigin().x+10, getOrigin().y-2);
-        }
-        
-        g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-        g.drawImage(getCurrentImage(), (int)getOrigin().getX(), (int)getOrigin().getY(), null);
-        
-        switch(getSelectionState()){            
-            case ACTIVE:
-                g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
-                break;
-            case HOVER:
-                g.setColor(UIConstants.HOVER_COMPONENT_COLOUR);   
-                break;
-            default: 
-                g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-                break;
-        }   
-        g.drawOval(getOrigin().x+18,getOrigin().y+3,13,13);
-        
-        g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-    }
 
     @Override
     protected BufferedImage getCurrentImage(){
         if(isOn){
-            return getActiveImage();    
+            return specialBi;    
         } else {
-            return getDefaultImage();            
+            return super.getCurrentImage();            
         }    
     }
     

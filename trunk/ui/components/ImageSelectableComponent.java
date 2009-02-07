@@ -8,6 +8,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import ui.CircuitPanel;
 import netlist.Netlist;
+import ui.UIConstants;
 
 /**
  *
@@ -82,7 +83,17 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
     @Override
     public void draw(Graphics2D g) {
         super.draw(g); // Draw labels
-        g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
+        g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);      
+        g.translate(getOrigin().x, getOrigin().y);               
+        g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
+        for(Pin p: localPins){
+            if(p.getJoinable() instanceof sim.pin.InputPin){
+                g.drawLine(p.x, p.y, p.x+UIConstants.GRID_DOT_SPACING, p.y);
+            } else if(p.getJoinable() instanceof sim.pin.OutputPin){
+                g.drawLine(p.x, p.y, p.x-UIConstants.GRID_DOT_SPACING, p.y);
+            }
+        }        
+        g.translate(-getOrigin().x, -getOrigin().y);
         g.drawImage(getCurrentImage(), getOrigin().x, getOrigin().y, null);
         g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
     }

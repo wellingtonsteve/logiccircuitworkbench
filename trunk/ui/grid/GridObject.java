@@ -3,6 +3,7 @@ package ui.grid;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.Collection;
+import sim.SimulatorState;
 import ui.components.Labeled;
 import ui.UIConstants;
 import ui.components.SelectableComponent;
@@ -13,13 +14,17 @@ import ui.components.SelectableComponent;
  */
 public abstract class GridObject extends Point implements Labeled, Cloneable {
     private String label = new String();
+    private Grid grid;
 
-    public GridObject(Point p){
+    public GridObject(Grid grid, Point p){
         super(p.x,  p.y);
+        this.grid = grid;
     }   
     
     public void draw(Graphics2D g2){
-        if(hasLabel()){
+        if(hasLabel() 
+                && UIConstants.DRAW_PIN_LOGIC_VALUES
+                && !grid.getParentCircuit().getSimulatorState().equals(SimulatorState.STOPPED)){
             g2.drawString(getLabel(), x+UIConstants.LABEL_CONNECTION_POINT_X_OFFSET, y+UIConstants.LABEL_CONNECTION_POINT_Y_OFFSET);
         }
     }

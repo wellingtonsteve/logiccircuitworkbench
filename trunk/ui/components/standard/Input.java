@@ -1,15 +1,15 @@
 package ui.components.standard;
 
 import ui.components.*;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-import ui.UIConstants;
 
 /**
  *
@@ -17,9 +17,11 @@ import ui.UIConstants;
  */
 public class Input extends ImageSelectableComponent{
     private boolean isOn = false;
+    private BufferedImage specialBi;
 
     public Input(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
+        setSpecialImage();
     }
     
     @Override
@@ -70,40 +72,21 @@ public class Input extends ImageSelectableComponent{
     }
     
     @Override
-    public void draw(Graphics2D g) {
-        if(hasLabel()){
-            g.setColor(UIConstants.LABEL_TEXT_COLOUR);
-            g.drawString(getLabel(), getOrigin().x, getOrigin().y-2);
-        }
-        
-        g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-        g.drawImage(getCurrentImage(), (int)getOrigin().getX(), (int)getOrigin().getY(), null);
-        
-        g.translate(getCentre().x, getCentre().y);
-        switch(getSelectionState()){            
-            case ACTIVE:
-                g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
-                break;
-            case HOVER:
-                g.setColor(UIConstants.HOVER_COMPONENT_COLOUR);   
-                break;
-            default: 
-                g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-                break;
-        }   
-        g.drawRect(invalidArea.x+4, invalidArea.y+1, 19, 19);
-        g.translate(-getCentre().x, -getCentre().y);
-        
-        g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-    }
-
-    @Override
     protected BufferedImage getCurrentImage(){
         if(isOn){
-            return getActiveImage();    
+            return specialBi;    
         } else {
-            return getDefaultImage();            
+            return super.getCurrentImage();            
         }    
+    }
+    
+     protected void setSpecialImage() {
+        try {
+            specialBi = ImageIO.read(getClass().getResource("/ui/images/components/default_input_on.png"));                 
+        } catch (IOException ex) {
+             ui.error.ErrorHandler.newError(new ui.error.Error("Initialisation Error", "Could not load \"Button Source On\" image.", ex));    
+             specialBi = activeBi;
+        }
     }
     
     @Override

@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.HashMap;
+import ui.CircuitPanel;
 import ui.UIConstants;
 import ui.components.SelectableComponent;
 import ui.components.SelectableComponent.Pin;
@@ -21,6 +22,11 @@ import ui.components.SelectableComponent.Pin;
 public class Grid {
 
     private HashMap<Point,GridObject> grid = new HashMap<Point,GridObject>();
+    private CircuitPanel circuit;
+    
+    public Grid(CircuitPanel circuit){
+        this.circuit = circuit;
+    }
         
     /**
      * Check whether the specified translation of the component is valid.
@@ -99,7 +105,7 @@ public class Grid {
         GridObject go = grid.get(p);
         // Create a new connection point if it doesn't exist yet
         if(go==null){
-            grid.put(p.getLocation(), new ConnectionPoint(p));
+            grid.put(p.getLocation(), new ConnectionPoint(this, p));
             go = grid.get(p);
         }
         
@@ -136,7 +142,7 @@ public class Grid {
             for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
                 Point p = snapToGrid(new Point(i, j));
                 if(bb.contains(p)){
-                    grid.put(p, new InvalidPoint(p, sc));
+                    grid.put(p, new InvalidPoint(this, p, sc));
                 }
             }
         }  
@@ -237,6 +243,10 @@ public class Grid {
      */
     public void clear(){
         grid.clear();
+    }
+    
+    public CircuitPanel getParentCircuit() {
+        return circuit;
     }
 
 }
