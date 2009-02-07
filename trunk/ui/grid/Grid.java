@@ -7,7 +7,6 @@ import java.util.HashMap;
 import ui.UIConstants;
 import ui.components.SelectableComponent;
 import ui.components.SelectableComponent.Pin;
-import ui.components.Wire;
 
 /**
  * The Grid represents a 2-dimensional cartesian co-ordinate space where 
@@ -25,7 +24,6 @@ public class Grid {
         
     /**
      * Check whether the specified translation of the component is valid.
-     * PRE: sc.getParent().hasActiveSelection()
      * @param sc The component to test
      * @param dx The x-direction displacement
      * @param dy The y-direction displacement
@@ -41,7 +39,9 @@ public class Grid {
             if(go != null 
                     // Pins can overlap other pins but not invalid points
                     && go instanceof InvalidPoint 
-                    && (!go.hasParent(sc) || !go.hasParentInCollection(sc.getParent().getActiveComponents()))){
+                    && (!go.hasParent(sc) || 
+                        (sc.getParent().hasActiveSelection() 
+                        && !go.hasParentInCollection(sc.getParent().getActiveComponents())))){
                 return false; 
             }           
         }
@@ -58,7 +58,9 @@ public class Grid {
                 if(bb.contains(p)){
                     go = grid.get(temp);
                     if(go != null 
-                            && (!go.hasParent(sc) || !go.hasParentInCollection(sc.getParent().getActiveComponents()))){
+                            && (!go.hasParent(sc) || 
+                                (sc.getParent().hasActiveSelection() 
+                                && !go.hasParentInCollection(sc.getParent().getActiveComponents())))){
                         return false;
                     }
                 }

@@ -30,8 +30,7 @@ public class AndGate2Input extends ImageSelectableComponent{
         localPins.clear();
         Pin in1 = new Pin(10, 20, logicalComponent.getPinByName("Input 1"));
         Pin in2 = new Pin(10, 40, logicalComponent.getPinByName("Input 2"));
-        Pin out1 = new Pin(60, 30, logicalComponent.getPinByName("Output"));
-                
+        Pin out1 = new Pin(60, 30, logicalComponent.getPinByName("Output"));                
         localPins.add(in1);
         localPins.add(in2);
         localPins.add(out1);        
