@@ -818,6 +818,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
 
             if(isValidComponent(componentName)){
                 getActiveCircuit().removeUnFixedComponents();
+                getActiveCircuit().resetActiveComponents();
 
                 CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
                     componentName,                                              // properties[0] = componentName
