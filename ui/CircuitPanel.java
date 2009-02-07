@@ -35,7 +35,7 @@ import ui.components.standard.log.ViewerWindow;
  */
 public class CircuitPanel extends JPanel {
 
-    private Point currentPoint = new Point(0,0), startPoint = new Point(0,0), endPoint;
+    private Point currentPoint = new Point(0,0), dragStartPoint = new Point(0,0), endPoint;
     private LinkedList<SelectableComponent> drawnComponents = new LinkedList<SelectableComponent>();
     private LinkedList<SelectableComponent> activeComponents = new LinkedList<SelectableComponent>();  
     private String currentTool = "Select";
@@ -51,7 +51,7 @@ public class CircuitPanel extends JPanel {
     private CircuitFrame parentFrame;
     private Editor editor;
     private final Grid grid = new Grid();
-    private Point previousPoint = new Point(0,0);
+    private Point previousEndPoint = new Point(0,0);
     private CommandHistory cmdHist;
     private Simulator simulator;
     private Circuit logicalCircuit;
@@ -162,10 +162,10 @@ public class CircuitPanel extends JPanel {
      * certain mouse dragging events.
      */
     private void setSelectionBox() {
-        selX = startPoint.x;
-        selY = startPoint.y;
-        selWidth = endPoint.x - startPoint.x;
-        selHeight = endPoint.y - startPoint.y;
+        selX = dragStartPoint.x;
+        selY = dragStartPoint.y;
+        selWidth = endPoint.x - dragStartPoint.x;
+        selHeight = endPoint.y - dragStartPoint.y;
 
         if (selWidth < 0) {
             selX = selX + selWidth;
@@ -182,24 +182,32 @@ public class CircuitPanel extends JPanel {
      * last movement on the workarea.
      */
     public void repaintDirtyAreas() {              
-        int dirtyX = Math.min(endPoint.x, previousPoint.x);
-        int dirtyY = Math.min(endPoint.y, previousPoint.y);
-        int dirtyMaxX = Math.max(endPoint.x, previousPoint.x);
-        int dirtyMaxY = Math.max(endPoint.y, previousPoint.y);
-       
+        int dirtyX = Math.min(endPoint.x, previousEndPoint.x);
+        int dirtyY = Math.min(endPoint.y, previousEndPoint.y);
+        int dirtyMaxX = Math.max(endPoint.x, previousEndPoint.x);
+        int dirtyMaxY = Math.max(endPoint.y, previousEndPoint.y);
+      
         // Include range of current selection (i.e. non-fixed components)
         for(SelectableComponent sc: drawnComponents){
             if(!sc.isFixed()){
-                if(dirtyX - sc.getCentre().x < dirtyX) { dirtyX = dirtyX - sc.getCentre().x - 10; }
-                if(dirtyY - sc.getCentre().y < dirtyY) { dirtyY = dirtyY - sc.getCentre().y - 10; }
-                if(dirtyMaxX + sc.getCentre().x > dirtyMaxX) { dirtyMaxX = dirtyMaxX + sc.getCentre().x +10; }
-                if(dirtyMaxY + sc.getCentre().y > dirtyMaxY) { dirtyMaxY = dirtyMaxY + sc.getCentre().y +10; }
+                if(dirtyX - sc.getCentre().x - 10 < dirtyX) { 
+                    dirtyX = dirtyX - sc.getCentre().x - 10;
+                }
+                if(dirtyY - sc.getCentre().y - 10 < dirtyY) { 
+                    dirtyY = dirtyY - sc.getCentre().y - 10; 
+                }
+                if(dirtyMaxX + (sc.getWidth()-sc.getCentre().x) - 10 > dirtyMaxX) { 
+                    dirtyMaxX = dirtyMaxX + (sc.getWidth()-sc.getCentre().x) +10; 
+                }
+                if(dirtyMaxY + (sc.getHeight()-sc.getCentre().y) - 10> dirtyMaxY) {
+                    dirtyMaxY = dirtyMaxY + (sc.getHeight()-sc.getCentre().y) +10; 
+                }
             }            
-        }
+        }        
 
         int dirtyWidth = dirtyMaxX - dirtyX;
         int dirtyHeight = dirtyMaxY - dirtyY;
-        
+
         repaint(dirtyX, dirtyY, dirtyWidth, dirtyHeight);
     }
      
@@ -481,7 +489,7 @@ public class CircuitPanel extends JPanel {
                     // Fix floating selection
                     if (!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed()) {
                         editor.fixComponent(drawnComponents.peek());
-
+                        
                         if (!currentTool.equals("Select")) {
                             // Add another new component
                             CreateComponentCommand ccc = new CreateComponentCommand(
@@ -495,7 +503,10 @@ public class CircuitPanel extends JPanel {
                                 CircuitPanel.this
                             });
                             cmdHist.doCommand(ccc);
+                            previousEndPoint = new Point(0,0);
                         }
+                        
+                        repaint(drawnComponents.peek().getBoundingBox());
                     }
                 } else {
                     // Activate selected component
@@ -503,17 +514,17 @@ public class CircuitPanel extends JPanel {
                     resetActiveComponents();
                     activeComponents.add(temporaryComponent);
                     editor.getClipboard().setHasSelection(true);
+                    repaint(temporaryComponent.getBoundingBox());
                     
                     // Update the current selection options panel
                     editor.getOptionsPanel().setComponent(temporaryComponent);
                 }
-                repaint();
             } 
         }
 
         public void mousePressed(MouseEvent e) {
             if (isActiveCircuit()) {
-                startPoint = Grid.snapToGrid(e.getPoint());
+                dragStartPoint = Grid.snapToGrid(e.getPoint());
                 currentPoint = Grid.snapToGrid(e.getPoint());
             }
         }
@@ -595,17 +606,28 @@ public class CircuitPanel extends JPanel {
                     if(!drawnComponents.isEmpty() 
                             && !drawnComponents.peek().isFixed() 
                             && !nowDragingComponent){
-                        drawnComponents.peek().moveTo(endPoint, false);
-                        drawnComponents.peek().mouseMoved(e);
+                        SelectableComponent sc = drawnComponents.peek();
+                        boolean canMove = grid.canTranslateComponent(sc,
+                                endPoint.x-sc.getOrigin().x,
+                                endPoint.y-sc.getOrigin().y);
+                        
+                        // Move the component
+                        if(canMove){                     
+                            sc.moveTo(endPoint, false);
+                            sc.mouseMoved(e);                            
+                        }
 
                         // Activate any connection points that overlap pins on the current non-fixed component
-                        for(Pin local: drawnComponents.peek().getPins()){
+                        for(Pin local: sc.getPins()){
                             Point p = local.getGlobalLocation();
                             if(grid.isConnectionPoint(p) 
                                     && grid.getConnectionPoint(p).noOfConnections()>1){
                                 grid.setActivePoint(p,true);
                             }
                         }
+                        
+                        repaintDirtyAreas();
+                        if(canMove){ previousEndPoint = endPoint;}
 
                     // Hover highlights    
                     } else if (currentTool.equals("Select")){
@@ -613,12 +635,14 @@ public class CircuitPanel extends JPanel {
                         temporaryComponent = null;
                         if(getHighlightedComponent()!=null){
                             getHighlightedComponent().revertHoverState();
+                            repaint(getHighlightedComponent().getBoundingBox());
                         }
 
                         // Determine which component the mouse lies in
                         for(SelectableComponent sc: drawnComponents){
                             if(sc.containsPoint(endPoint)){
                                 temporaryComponent = sc;
+                                break;
                             }                            
                         }                           
 
@@ -626,11 +650,11 @@ public class CircuitPanel extends JPanel {
                         if(temporaryComponent!=null){
                             setHighlightedComponent(temporaryComponent);
                             temporaryComponent.mouseMoved(e);
+                            repaint(temporaryComponent.getBoundingBox());
                         }
+                        
                     }             
-
-                    repaint();
-
+                    
                 } else if(currentTool.equals("Wire") 
                         && !drawnComponents.isEmpty()
                         && drawnComponents.peek() instanceof Wire){
@@ -642,6 +666,7 @@ public class CircuitPanel extends JPanel {
                     }
 
                     repaint();
+                    // TODO: smarter wire draw repaint
                 }
             }
         }                   
@@ -662,7 +687,7 @@ public class CircuitPanel extends JPanel {
                         boolean clickingEmptySpace = true;
                         temporaryComponent = null;
                         for(SelectableComponent sc: drawnComponents){
-                            if(sc.isFixed() && sc.containsPoint(startPoint)){
+                            if(sc.isFixed() && sc.containsPoint(dragStartPoint)){
                                 clickingEmptySpace = false;
                                 temporaryComponent = sc;
                                 break;
@@ -688,15 +713,15 @@ public class CircuitPanel extends JPanel {
                         }
                     }
 
-                    repaint();
+                    repaintDirtyAreas();
 
                 } else if (currentTool.equals("Wire") 
                      && !drawnComponents.isEmpty()){
 
                     Wire w = (Wire) drawnComponents.peek();
                     // Start drawing the new wire
-                    if(w.getOrigin().equals(new Point(0,0)) && grid.isConnectionPoint(startPoint)){
-                        w.setStartPoint(startPoint);                           
+                    if(w.getOrigin().equals(new Point(0,0)) && grid.isConnectionPoint(dragStartPoint)){
+                        w.setStartPoint(dragStartPoint);                           
                     }
                     w.setEndPoint(endPoint);                        
 
@@ -705,6 +730,7 @@ public class CircuitPanel extends JPanel {
                         grid.setActivePoint(endPoint, true);
                     }
                     repaint();
+                    // TODO: smarter wire draw repaint
                 }
                 currentPoint = Grid.snapToGrid(e.getPoint());
             }       

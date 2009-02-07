@@ -158,7 +158,6 @@ public class LED extends ImageSelectableComponent implements sim.pin.ValueListen
 
     public void valueChanged(sim.pin.Pin pin, LogicState value) {
         setValue(value.equals(sim.LogicState.ON));
-        // TODO, repaint somewhere more sensible
-        parent.repaint();
+        parent.repaint(getBoundingBox());
     }
 }

@@ -581,28 +581,58 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         return super.clone();
     }
     
+    /**
+     * A pin belongs to its parent SelectableComponent and is the visual connection
+     * point of a component (or wire). Components have Pins at each input or output,
+     * where as wires have Pins at every connection point along thier length. 
+     * (All snapped to the grid)
+     * 
+     * Pins are specified in local (Component) co-ordinates have pointers to the 
+     * grid connection point with which they are associated.
+     * 
+     * Pins also point to thier logical connection point, that is either the logical
+     * pin (sim.pin.Pin) or the logical wire (sim.pin.Wire).
+     */
     public class Pin extends Point implements ValueListener {
 
         private SelectableComponent parent;
         private LogicState value;
         private ConnectionPoint cp;
         private sim.pin.Pin simPin;
+        private sim.pin.Wire wire;
+        private Joinable joinable;
 
+        /**
+         * Constructor for Wire Pins.
+         * @param x The x-coordinate (local)
+         * @param y The y-coordinate (local)
+         */
         public Pin(int x, int y){
             super(x,y);
             this.parent = SelectableComponent.this;
-            //throw new Error("Change all components to use the other Pin contructor!");
+            this.wire = (sim.pin.Wire) SelectableComponent.this.getLogicalComponent();
+            this.joinable = wire;
         }   
 
+        /**
+         * Constructor for Component Pins
+         * @param x The x-coordinate (local)
+         * @param y The y-coordinate (local)
+         * @param simPin The logical pin associated with this pin
+         */
         public Pin(int x, int y, sim.pin.Pin simPin){
             super(x,y);
             this.parent = SelectableComponent.this;
             this.simPin = simPin;
             this.simPin.addValueListener(this);
+            this.joinable = simPin;
         }   
 
+        /**
+         * @return The component which owns this pin.
+         */
         public SelectableComponent getParent(){
-            return parent;        
+            return parent;     
         }
 
         @Override
@@ -616,11 +646,16 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
                 return super.equals(obj);
             }
         }
-
+        
         public void valueChanged(sim.pin.Pin pin, LogicState value) {
             this.value = value;
         }
 
+        /**
+         * The global location is the location of the pin with the appropriate 
+         * rotation and translation applied.
+         * @return The global coordinates.
+         */
         public Point getGlobalLocation() {
             Point rotP;
             if(rotation != 0.0){
@@ -636,17 +671,26 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
             return retval;
         } 
 
+        /**
+         * @return The connection point that this pin lies on.
+         */
         public ConnectionPoint getConnectionPoint() {
             return cp;
         }
 
+        /**
+         * Change the connection point associated with this pin.
+         * @param cp The new connection point.
+         */
         public void setConnectionPoint(ConnectionPoint cp) {
             this.cp = cp;
         }
         
-        // TODO: Unhack
+        /**
+         * @return Either the wire or simulator pin associated with this pin.
+         */
         public sim.pin.Joinable getJoinable(){
-            return simPin;
+            return joinable;
         }
     }
 }
