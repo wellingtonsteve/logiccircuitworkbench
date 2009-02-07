@@ -10,6 +10,8 @@ import sim.pin.*;
  */
 public class Input extends Component {
     
+    private LogicState currentValue = LogicState.OFF;
+
     //Pins
     private OutputPin output = createOutputPin("Output");
     
@@ -19,6 +21,15 @@ public class Input extends Component {
     
     //Set Input value
     public void setValue(LogicState value) {
-        output.setValue(value);
+        currentValue = value;
+        if(sim != null && (sim.getCurrentState() == SimulatorState.PLAYING || sim.getCurrentState() == SimulatorState.PAUSED)){
+            output.setValue(value);
+        }
     }
+
+    @Override
+    public void initialize() {
+        output.setValue(currentValue);
+    }
+
 }
