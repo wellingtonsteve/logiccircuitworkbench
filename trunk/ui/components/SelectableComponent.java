@@ -46,7 +46,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     private Point origin;
     
     /** @see #getLocalPins() */
-    protected Collection<Pin> localPins = new LinkedList<Pin>();
+    protected LinkedList<Pin> localPins = new LinkedList<Pin>();
         
     /** Rotation in radians, with 0 being with inputs on left, output on right of standard and-gate */
     protected double rotation = 0; 

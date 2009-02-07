@@ -92,7 +92,7 @@ public class CircuitPanel extends JPanel {
      * Unselect active selection of components. Also tell the editor so that it can 
      * disable any actions that require an active selection.
      */
-    private void resetActiveComponents() {
+    public void resetActiveComponents() {
         for (SelectableComponent sc : activeComponents) {
             sc.resetDefaultState();
         }
@@ -189,7 +189,9 @@ public class CircuitPanel extends JPanel {
       
         // Include range of current selection (i.e. non-fixed components)
         for(SelectableComponent sc: drawnComponents){
-            if(!sc.isFixed()){
+            if(!sc.isFixed() 
+                    || sc.equals(highlightedComponent) 
+                    || activeComponents.contains(sc)){
                 if(dirtyX - sc.getCentre().x - 10 < dirtyX) { 
                     dirtyX = dirtyX - sc.getCentre().x - 10;
                 }
@@ -288,7 +290,6 @@ public class CircuitPanel extends JPanel {
         if(multipleSelection){                        
             g2.setColor(UIConstants.SELECTION_BOX_COLOUR);
             g2.setStroke(UIConstants.SELECTION_BOX_STROKE);
-            setSelectionBox();
             g2.drawRect(selX, selY, selWidth, selHeight);
         }      
     }
@@ -475,15 +476,13 @@ public class CircuitPanel extends JPanel {
                 boolean clickingEmptySpace = true;
                 temporaryComponent = null;
                 for (SelectableComponent sc : drawnComponents) {
-
                     if (sc.isFixed() && sc.containsPoint(currentPoint)) {
                         clickingEmptySpace = false;
                         temporaryComponent = sc;
                     }
                 }
 
-                if (clickingEmptySpace) {
-                    
+                if (clickingEmptySpace) {                    
                     resetActiveComponents();
 
                     // Fix floating selection
@@ -631,7 +630,7 @@ public class CircuitPanel extends JPanel {
 
                     // Hover highlights    
                     } else if (currentTool.equals("Select")){
-
+       
                         temporaryComponent = null;
                         if(getHighlightedComponent()!=null){
                             getHighlightedComponent().revertHoverState();
@@ -665,8 +664,10 @@ public class CircuitPanel extends JPanel {
                         grid.setActivePoint(endPoint, true);
                     }
 
-                    repaint();
-                    // TODO: smarter wire draw repaint
+                    Rectangle dirtyArea = w.getBoundingBox();
+                    dirtyArea.add(endPoint);
+                    repaint(dirtyArea);
+                    repaintDirtyAreas();
                 }
             }
         }                   
@@ -681,21 +682,26 @@ public class CircuitPanel extends JPanel {
 
                     if(nowDragingComponent){
                         dragActiveSelection(e,false,false);
+                        repaintDirtyAreas();
                     }  else {
 
                         // Area we dragging from a fixed component?
                         boolean clickingEmptySpace = true;
                         temporaryComponent = null;
-                        for(SelectableComponent sc: drawnComponents){
-                            if(sc.isFixed() && sc.containsPoint(dragStartPoint)){
-                                clickingEmptySpace = false;
-                                temporaryComponent = sc;
-                                break;
-                            } 
-                        }  
+                        if(!multipleSelection){
+                            for(SelectableComponent sc: drawnComponents){
+                                if(sc.isFixed() && sc.containsPoint(dragStartPoint)){
+                                    clickingEmptySpace = false;
+                                    temporaryComponent = sc;
+                                    break;
+                                } 
+                            }  
+                        }                            
 
                         if(clickingEmptySpace){
-                            multipleSelection = true;
+                            multipleSelection = true;                            
+                            setSelectionBox();
+                            repaint();
                         } else {
                             nowDragingComponent = true;
                             if(!activeComponents.contains(temporaryComponent)){ 
@@ -710,11 +716,10 @@ public class CircuitPanel extends JPanel {
                             
                             // Start drag
                             dragActiveSelection(e, true, false);
+                            repaintDirtyAreas();
                         }
                     }
-
-                    repaintDirtyAreas();
-
+                    
                 } else if (currentTool.equals("Wire") 
                      && !drawnComponents.isEmpty()){
 
@@ -729,8 +734,11 @@ public class CircuitPanel extends JPanel {
                     if(grid.isConnectionPoint(endPoint)){
                         grid.setActivePoint(endPoint, true);
                     }
-                    repaint();
-                    // TODO: smarter wire draw repaint
+                    
+                    Rectangle dirtyArea = w.getBoundingBox();
+                    dirtyArea.add(endPoint);
+                    repaint(dirtyArea);
+                    repaintDirtyAreas();
                 }
                 currentPoint = Grid.snapToGrid(e.getPoint());
             }       

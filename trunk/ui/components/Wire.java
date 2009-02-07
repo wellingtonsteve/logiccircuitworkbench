@@ -97,6 +97,10 @@ public class Wire extends SelectableComponent {
             // Rememeber my position at the moment I started to move
             if(this.fixed && !fixed){
                 unFixedPoint = startPoint.getLocation();
+            }            
+            // Fix loops if finished drawing wire
+            if(!this.fixed && fixed){
+                fixSelfCrossover();
             }
             this.startPoint.translate(dx, dy);
             this.endPoint.translate(dx, dy);
@@ -124,9 +128,8 @@ public class Wire extends SelectableComponent {
     public void setEndPoint(Point endPoint) {
         this.endPoint = endPoint;      
         if(!startPoint.equals(new Point(0,0))){
-            unsetGlobalPins();
-            setLocalPins();
-            setGlobalPins();
+            setBoundingBox();
+            setLastLegPins();
         }
         
         // Remove Common line waypoints for tail of wire
@@ -147,23 +150,20 @@ public class Wire extends SelectableComponent {
      * @param p The new end point.
      */
     public void moveEndPoint(Point p) {   
-        setEndPoint(p);
-        if(!waypoints.isEmpty()){
-            
-            if(waypoints.getLast().x == endPoint.x && waypoints.getLast().y == endPoint.y){
-                Point last = waypoints.removeLast();
-                Point lastButOne;
-                if(waypoints.size()==0){
-                    lastButOne = startPoint;
-                } else {
-                    lastButOne = waypoints.getLast();
-                } 
-                createLeg(lastButOne, last);
-                addWaypoint(new Point(x2,x2));
-                                
+        setEndPoint(p);       
+        if(!waypoints.isEmpty() 
+                && waypoints.getLast().x == endPoint.x 
+                && waypoints.getLast().y == endPoint.y){
+            Point last = waypoints.removeLast();
+            Point lastButOne;
+            if(waypoints.size()==0){
+                lastButOne = startPoint;
+            } else {
+                lastButOne = waypoints.getLast();
             } 
-            
-        }
+            createLeg(lastButOne, last);
+            addWaypoint(new Point(x2,x2));                                
+        }             
         
         removeDuplicateWaypoints();        
         setLocalPins();
@@ -197,6 +197,7 @@ public class Wire extends SelectableComponent {
      */
     public void moveStartPoint(Point p) {
         setStartPoint(p);
+        setBoundingBox();
         setLocalPins();
         setGlobalPins();           
     }
@@ -267,6 +268,48 @@ public class Wire extends SelectableComponent {
                 setLocalPins();
             }        
         }     
+    }    
+    
+    /**
+     * Similar to setLocalPins() except it only does so for the last leg. 
+     * used when adding waypoints and moving the end point so that the whole wire
+     * does not have to be replotted.
+     */
+    private void setLastLegPins() {
+        if(!waypoints.isEmpty()){
+            int waypointIndex = 0;
+            
+            // Remove old pins            
+            LinkedList<Pin> oldPins = new LinkedList<Pin>();
+            Point wp = waypoints.getLast();
+            for(int i = localPins.size()-1;i>=0;i--){
+                Pin p = localPins.get(i);
+                oldPins.add(p);
+                parent.getGrid().removePin(p);
+                if(p.getGlobalLocation().equals(wp)){
+                    waypointIndex = i;
+                    break;
+                }                
+            }            
+            localPins.removeAll(oldPins);           
+            
+            // Create new local pins
+            setPinsOnLeg(waypoints.getLast(), endPoint);
+            localPins.add(new Pin(endPoint.x-getOrigin().x-getCentre().x,
+                    endPoint.y-getOrigin().y-getCentre().y));
+            
+            // Add new pins to grid
+            for(int i = waypointIndex; i<localPins.size(); i++){
+                parent.getGrid().addPin(localPins.get(i));
+            }
+        } else {
+            unsetGlobalPins();
+            localPins.clear();            
+            setPinsOnLeg(startPoint, endPoint);
+            localPins.add(new Pin(endPoint.x-getOrigin().x-getCentre().x,
+                    endPoint.y-getOrigin().y-getCentre().y));
+            setGlobalPins();
+        }      
     }
     
     /** 
@@ -958,15 +1001,28 @@ public class Wire extends SelectableComponent {
         }
     }
 
+    @Override
+    protected void setBoundingBox(){
+        boundingBox = new Rectangle();
+        boundingBox.add(startPoint);
+        boundingBox.add(endPoint);
+        for(Point wp: waypoints){
+            boundingBox.add(wp);
+        }
+        boundingBox.grow(10, 10); // Allow for connection points
+        boundingBox = rotate(boundingBox);  
+    }
+
+        
     /** {@inheritDoc} */
     @Override
     public int getWidth() {
-        return 0;
+        return (int) boundingBox.getWidth();
     }
 
     /** {@inheritDoc} */
     @Override
     public int getHeight() {
-        return 0;
+        return (int) boundingBox.getHeight();
     }
 }
