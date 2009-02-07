@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import sim.Simulator;
+import sim.SimulatorState;
 import sim.componentLibrary.Circuit;
 import ui.file.FileCreator;
 import ui.grid.Grid;
@@ -29,11 +30,11 @@ import ui.components.standard.log.PinLogger;
 import ui.components.standard.log.ViewerWindow;
 
 /**
- * This panel represents the actual visible circuit on which the circuit is drawn.
+ * This panel represents the visible workarea on which the circuit is drawn.
  * 
  * @author Matt
  */
-public class CircuitPanel extends JPanel {
+public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
 
     private Point currentPoint = new Point(0,0), dragStartPoint = new Point(0,0), endPoint;
     private LinkedList<SelectableComponent> drawnComponents = new LinkedList<SelectableComponent>();
@@ -50,24 +51,27 @@ public class CircuitPanel extends JPanel {
     private String filename;
     private CircuitFrame parentFrame;
     private Editor editor;
-    private final Grid grid = new Grid();
+    private final Grid grid;
     private Point previousEndPoint = new Point(0,0);
     private CommandHistory cmdHist;
     private Simulator simulator;
     private Circuit logicalCircuit;
     private LinkedList<PinLogger> OutputLoggers = new LinkedList<PinLogger>();
     private ViewerWindow loggerWindow;
+    private SimulatorState simulatorState = SimulatorState.STOPPED;
 
     public CircuitPanel(CircuitFrame parentFrame){
         addMouseMotionListener(new CircuitPanelMouseMotionAdapter());
         addMouseListener(new CircuitPanelMouseAdapter());
         this.logicalCircuit = new Circuit();
         this.simulator = new Simulator(logicalCircuit);
+        this.simulator.addStateListener(this);
         this.loggerWindow = new ViewerWindow(this);
         this.loggerWindow.setVisible(false);
         this.parentFrame = parentFrame;
         this.editor = ((CircuitFrame) getParentFrame()).getEditor();
         this.cmdHist = new CommandHistory(editor);
+        this.grid = new Grid(this);
     }
 
     /**
@@ -198,10 +202,10 @@ public class CircuitPanel extends JPanel {
                 if(dirtyY - sc.getCentre().y - 10 < dirtyY) { 
                     dirtyY = dirtyY - sc.getCentre().y - 10; 
                 }
-                if(dirtyMaxX + (sc.getWidth()-sc.getCentre().x) - 10 > dirtyMaxX) { 
+                if(dirtyMaxX + (sc.getWidth()-sc.getCentre().x) + 10 > dirtyMaxX) { 
                     dirtyMaxX = dirtyMaxX + (sc.getWidth()-sc.getCentre().x) +10; 
                 }
-                if(dirtyMaxY + (sc.getHeight()-sc.getCentre().y) - 10> dirtyMaxY) {
+                if(dirtyMaxY + (sc.getHeight()-sc.getCentre().y) + 10> dirtyMaxY) {
                     dirtyMaxY = dirtyMaxY + (sc.getHeight()-sc.getCentre().y) +10; 
                 }
             }            
@@ -434,6 +438,19 @@ public class CircuitPanel extends JPanel {
     /** @return The simulator that calculates the logical changes for this circuit.*/
     public Simulator getSimulator(){
         return simulator;
+    }
+    
+    public void SimulatorStateChanged(SimulatorState state){
+        this.simulatorState = state;
+    }
+    
+    public void SimulationTimeChanged(long time){
+        ErrorHandler.changeStatus("message", "Simulator Time: " + ((double)(time/(double) 1000000000)) + "\u00D710\u2079ns");
+    }
+    
+    /** @return The current state of the simulator **/
+    public SimulatorState getSimulatorState(){
+        return simulatorState;
     }
     
     /** @return The corresponding Logical Circuit for this Visual Circuit.*/
@@ -795,8 +812,10 @@ public class CircuitPanel extends JPanel {
                         ErrorHandler.newError("Drag Error", 
                                 "You cannot start and finish a drag at the same time");
                     } else {
+                        boolean canMove = grid.canTranslateComponent(sc,dx,dy);
                         sc.translate(dx, dy, false);
                         sc.mouseDragged(e);
+                        if(canMove){ previousEndPoint = currentPoint; }
                     }
                 }
                 if(finish && !start){

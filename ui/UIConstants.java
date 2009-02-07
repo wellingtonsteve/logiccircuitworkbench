@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Stroke;
 
 /**
- * This class simply lists all constants that are used in the UI part of the 
+ * This class simply contains all constants that are used in the UI part of the 
  * application. Options exist for debugging, startup, the grid, selection box,
  * file format, drawing components, drawing labels, drawing wires and the Pin 
  * Logger  
@@ -32,6 +32,7 @@ public class UIConstants {
     public static final int GRID_STANDARD_WIDTH = 70;
     public static final int GRID_STANDARD_HEIGHT = 60;
     public static boolean DRAW_GRID_DOTS = false;
+    public static boolean DRAW_PIN_LOGIC_VALUES = true;
     public static final Color CONNECTION_POINT_COLOUR = Color.RED;
     public static final Stroke CONNECTED_POINT_STROKE = new BasicStroke(2.0f); 
     public static final boolean DO_SYSTEM_BEEP = true;
@@ -61,8 +62,8 @@ public class UIConstants {
     public static final Color HOVER_COMPONENT_COLOUR = Color.RED;
     
     // Component Label Options
-    public static int LABEL_CONNECTION_POINT_X_OFFSET = -3;
-    public static int LABEL_CONNECTION_POINT_Y_OFFSET = -3;
+    public static int LABEL_CONNECTION_POINT_X_OFFSET = -6;
+    public static int LABEL_CONNECTION_POINT_Y_OFFSET = -2;
     public static int LABEL_COMPONENT_X_OFFSET = 10;
     public static int LABEL_COMPONENT_Y_OFFSET = 10;
     public static Color LABEL_TEXT_COLOUR = Color.BLACK;

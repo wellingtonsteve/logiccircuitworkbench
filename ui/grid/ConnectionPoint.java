@@ -24,8 +24,8 @@ public class ConnectionPoint extends GridObject {
     private static BufferedImage defaultCrossover;
     private String label = new String();
 
-    public ConnectionPoint(Point p){
-        super(p);
+    public ConnectionPoint(Grid grid, Point p){
+        super(grid, p);
         
         try {
             defaultCrossover = ImageIO.read(

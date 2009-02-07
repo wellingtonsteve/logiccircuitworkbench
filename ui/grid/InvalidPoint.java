@@ -13,8 +13,8 @@ public class InvalidPoint extends GridObject {
     
     private SelectableComponent parent;
     
-    public InvalidPoint(Point p, SelectableComponent parent){
-        super(p);
+    public InvalidPoint(Grid grid, Point p, SelectableComponent parent){
+        super(grid, p);
         this.parent = parent;
     }
 
