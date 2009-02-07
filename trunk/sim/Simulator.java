@@ -47,6 +47,10 @@ public class Simulator {
     //Simulator control
     
     private SimulatorState currentState = SimulatorState.STOPPED;
+    public SimulatorState getCurrentState() {
+        return currentState;
+    }
+
     private Timer timer;
     private Simulator thisPtr = this;
 
