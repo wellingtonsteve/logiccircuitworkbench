@@ -29,7 +29,7 @@ public class ViewerWindow extends javax.swing.JFrame {
         viewerpanel.addComponentListener(new ComponentAdapter(){
             @Override
             public void componentResized(ComponentEvent e) {
-                 jScrollPane1.getViewport().setViewPosition(new Point(viewerpanel.getWidth(),0));
+                 PanelScollPane.getViewport().setViewPosition(new Point(viewerpanel.getWidth(),0));
             }
         });
                   
@@ -42,10 +42,14 @@ public class ViewerWindow extends javax.swing.JFrame {
         viewerpanel.addComponentListener(new ComponentAdapter(){
             @Override
             public void componentResized(ComponentEvent e) {
-                jScrollPane1.getViewport().setViewPosition(new Point(viewerpanel.getWidth(),0));
+                PanelScollPane.getViewport().setViewPosition(new Point(viewerpanel.getWidth(),0));
             }
         });
         
+    }
+    
+    public sim.SimulatorStateListener getSimStateListener(){
+        return (Viewer)viewerpanel;
     }
     
     public void addPinLoggers(Collection<PinLogger> cpl){
@@ -79,47 +83,47 @@ public class ViewerWindow extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     private void initComponents() {//GEN-BEGIN:initComponents
 
-        jToolBar1 = new javax.swing.JToolBar();
-        jButton2 = new javax.swing.JButton();
+        Toolbar = new javax.swing.JToolBar();
+        Save = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
-        jButton1 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        ClearLog = new javax.swing.JButton();
+        PanelScollPane = new javax.swing.JScrollPane();
         viewerpanel = new Viewer();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        CheckBoxScrollPane = new javax.swing.JScrollPane();
         CheckboxPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
         setTitle(bundle.getString("ViewerWindow.title")); // NOI18N
 
-        jToolBar1.setRollover(true);
+        Toolbar.setRollover(true);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/gtk-edit.png"))); // NOI18N
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton2);
+        Save.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/gtk-edit.png"))); // NOI18N
+        Save.setFocusable(false);
+        Save.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        Save.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        Toolbar.add(Save);
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-properties.png"))); // NOI18N
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton3);
-        jToolBar1.add(jSeparator1);
+        Toolbar.add(jButton3);
+        Toolbar.add(jSeparator1);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/appointment-new.png"))); // NOI18N
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        ClearLog.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/appointment-new.png"))); // NOI18N
+        ClearLog.setFocusable(false);
+        ClearLog.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        ClearLog.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        ClearLog.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                ClearLogActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton1);
+        Toolbar.add(ClearLog);
 
-        getContentPane().add(jToolBar1, java.awt.BorderLayout.NORTH);
+        getContentPane().add(Toolbar, java.awt.BorderLayout.NORTH);
 
         javax.swing.GroupLayout viewerpanelLayout = new javax.swing.GroupLayout(viewerpanel);
         viewerpanel.setLayout(viewerpanelLayout);
@@ -132,31 +136,32 @@ public class ViewerWindow extends javax.swing.JFrame {
             .addGap(0, 336, Short.MAX_VALUE)
         );
 
-        jScrollPane1.setViewportView(viewerpanel);
+        PanelScollPane.setViewportView(viewerpanel);
 
-        getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(PanelScollPane, java.awt.BorderLayout.CENTER);
 
         CheckboxPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        jScrollPane2.setViewportView(CheckboxPanel);
+        CheckBoxScrollPane.setViewportView(CheckboxPanel);
 
-        getContentPane().add(jScrollPane2, java.awt.BorderLayout.EAST);
+        getContentPane().add(CheckBoxScrollPane, java.awt.BorderLayout.EAST);
 
         pack();
     }//GEN-END:initComponents
 
-private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-// TODO add your handling code here:
-}//GEN-LAST:event_jButton1ActionPerformed
+private void ClearLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearLogActionPerformed
+    ((Viewer) viewerpanel).clear();
+    viewerpanel.repaint();
+}//GEN-LAST:event_ClearLogActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane CheckBoxScrollPane;
     private javax.swing.JPanel CheckboxPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton ClearLog;
+    private javax.swing.JScrollPane PanelScollPane;
+    private javax.swing.JButton Save;
+    private javax.swing.JToolBar Toolbar;
     private javax.swing.JButton jButton3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JToolBar.Separator jSeparator1;
-    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel viewerpanel;
     // End of variables declaration//GEN-END:variables
 

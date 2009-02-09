@@ -1,6 +1,7 @@
 package ui.command;
 
 import java.util.List;
+import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import ui.Editor;
@@ -36,7 +37,8 @@ public class FileOpenCommand extends Command {
                 activeCircuit.getParentFrame().setTitle(filename);
                 parentHistory.stageChange("message", getName() + ": " + filename);
             } else {
-                //TODO: Close bad circuit!
+                // Close bad circuit
+                ((JDesktopPane) activeCircuit.getParentFrame().getParent()).remove(activeCircuit.getParentFrame());
             }         
         }
     }

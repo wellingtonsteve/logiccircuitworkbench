@@ -36,23 +36,31 @@ import ui.components.standard.log.ViewerWindow;
  */
 public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
 
-    private Point currentPoint = new Point(0,0), dragStartPoint = new Point(0,0), endPoint;
+    private Point lastDragPoint = new Point(0,0);
+    private Point dragStartPoint = new Point(0,0);
+    private Point currentPoint;
+    private Point previousCurrentPoint = new Point(0,0);
+    
     private LinkedList<SelectableComponent> drawnComponents = new LinkedList<SelectableComponent>();
     private LinkedList<SelectableComponent> activeComponents = new LinkedList<SelectableComponent>();  
-    private String currentTool = "Select";
+    
     private SelectableComponent temporaryComponent; // Used for reference to a selection from list of drawn components
-    private SelectableComponent highlightedComponent; // The currently highlighted (SelectionState.HOVER) component      
+    private SelectableComponent highlightedComponent; // The currently highlighted (SelectionState.HOVER) component    
+    
+    private String currentTool = "Select";
+  
     private boolean nowDragingComponent = false;
     private boolean multipleSelection = false;
+    
     private int selX;
     private int selY;
     private int selWidth;
     private int selHeight;
+    
     private String filename;
     private CircuitFrame parentFrame;
     private Editor editor;
     private final Grid grid;
-    private Point previousEndPoint = new Point(0,0);
     private CommandHistory cmdHist;
     private Simulator simulator;
     private Circuit logicalCircuit;
@@ -168,8 +176,8 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
     private void setSelectionBox() {
         selX = dragStartPoint.x;
         selY = dragStartPoint.y;
-        selWidth = endPoint.x - dragStartPoint.x;
-        selHeight = endPoint.y - dragStartPoint.y;
+        selWidth = currentPoint.x - dragStartPoint.x;
+        selHeight = currentPoint.y - dragStartPoint.y;
 
         if (selWidth < 0) {
             selX = selX + selWidth;
@@ -185,36 +193,29 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
      * Speedy method to repaint only those areas that have been changed since the 
      * last movement on the workarea.
      */
-    public void repaintDirtyAreas() {              
-        int dirtyX = Math.min(endPoint.x, previousEndPoint.x);
-        int dirtyY = Math.min(endPoint.y, previousEndPoint.y);
-        int dirtyMaxX = Math.max(endPoint.x, previousEndPoint.x);
-        int dirtyMaxY = Math.max(endPoint.y, previousEndPoint.y);
-      
+    public void repaintDirtyAreas() {                    
+        Rectangle currentArea = new Rectangle(currentPoint);
+        Rectangle previousArea = new Rectangle();
+        int dx = previousCurrentPoint.x - currentPoint.x;
+        int dy = previousCurrentPoint.y - currentPoint.y;
+        
+        currentArea.add(previousCurrentPoint);
+        
         // Include range of current selection (i.e. non-fixed components)
         for(SelectableComponent sc: drawnComponents){
             if(!sc.isFixed() 
                     || sc.equals(highlightedComponent) 
                     || activeComponents.contains(sc)){
-                if(dirtyX - sc.getCentre().x - 10 < dirtyX) { 
-                    dirtyX = dirtyX - sc.getCentre().x - 10;
-                }
-                if(dirtyY - sc.getCentre().y - 10 < dirtyY) { 
-                    dirtyY = dirtyY - sc.getCentre().y - 10; 
-                }
-                if(dirtyMaxX + (sc.getWidth()-sc.getCentre().x) + 10 > dirtyMaxX) { 
-                    dirtyMaxX = dirtyMaxX + (sc.getWidth()-sc.getCentre().x) +10; 
-                }
-                if(dirtyMaxY + (sc.getHeight()-sc.getCentre().y) + 10> dirtyMaxY) {
-                    dirtyMaxY = dirtyMaxY + (sc.getHeight()-sc.getCentre().y) +10; 
-                }
+                currentArea.add(sc.getBoundingBox());
             }            
         }        
-
-        int dirtyWidth = dirtyMaxX - dirtyX;
-        int dirtyHeight = dirtyMaxY - dirtyY;
-
-        repaint(dirtyX, dirtyY, dirtyWidth, dirtyHeight);
+        
+        previousArea = currentArea.getBounds();
+        previousArea.translate(dx, dy);
+        currentArea.add(previousArea);    
+        currentArea.grow(10, 10);
+        
+        repaint(currentArea);
     }
      
     /**
@@ -260,13 +261,14 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
         
         // Background Colour
         g2.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-        g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g2.fill(g2.getClip()); 
                 
         // Grid Snap Dots
         if(UIConstants.DRAW_GRID_DOTS){
+            Point start = Grid.snapToGrid(new Point(g2.getClipBounds().x, g2.getClipBounds().y));
             g2.setColor(UIConstants.GRID_DOT_COLOUR);
-            for(int i =  UIConstants.GRID_DOT_SPACING; i< this.getWidth(); i+=UIConstants.GRID_DOT_SPACING){
-                for(int j = UIConstants.GRID_DOT_SPACING; j < this.getHeight(); j+=UIConstants.GRID_DOT_SPACING){
+            for(int i = start.x; i< g2.getClipBounds().getMaxX(); i+=UIConstants.GRID_DOT_SPACING){
+                for(int j = start.y; j < g2.getClipBounds().getMaxY(); j+=UIConstants.GRID_DOT_SPACING){
                     g2.fillRect(i, j, 1, 1);
                 }
             }
@@ -274,17 +276,19 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                 
         // Draw components
         for(SelectableComponent sc: drawnComponents){
-            g2.translate(-sc.getCentre().x, -sc.getCentre().y);
-            sc.draw(g2); 
-            g2.translate(sc.getCentre().x, sc.getCentre().y);
+            if(sc.getBoundingBox().intersects(g2.getClipBounds())){
+                g2.translate(-sc.getCentre().x, -sc.getCentre().y);
+                sc.draw(g2); 
+                g2.translate(sc.getCentre().x, sc.getCentre().y);
 
-            if(UIConstants.SHOW_INVALID_AREA_BOXES){
-                g2.draw(sc.getInvalidArea());
+                if(UIConstants.SHOW_INVALID_AREA_BOXES){
+                    g2.draw(sc.getInvalidArea());
+                }
+
+                if(UIConstants.SHOW_BOUNDING_BOXES){
+                    g2.draw(sc.getBoundingBox());
+                }             
             }
-
-            if(UIConstants.SHOW_BOUNDING_BOXES){
-                g2.draw(sc.getBoundingBox());
-            }             
         }
         
         // Draw Connection Points 
@@ -368,7 +372,8 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
             if(!sc.isFixed()){
                 activeComponents.add(sc);
                 nowDragingComponent = true;
-                currentPoint = endPoint;
+                lastDragPoint = currentPoint;
+                previousCurrentPoint = new Point(0,0);
             }
             repaint(sc.getBoundingBox());
         }
@@ -378,6 +383,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
     /** Add a single component to this circuit */
     public void addComponent(SelectableComponent sc) {
         drawnComponents.push(sc);
+        previousCurrentPoint = new Point(0,0);
         sc.getInvalidArea();
         sc.getBoundingBox();
         setCurrentTool(sc.getComponentTreeName());
@@ -493,9 +499,10 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                 boolean clickingEmptySpace = true;
                 temporaryComponent = null;
                 for (SelectableComponent sc : drawnComponents) {
-                    if (sc.isFixed() && sc.containsPoint(currentPoint)) {
+                    if (sc.isFixed() && sc.containsPoint(lastDragPoint)) {//Should this be 
                         clickingEmptySpace = false;
                         temporaryComponent = sc;
+                        break;
                     }
                 }
 
@@ -519,7 +526,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                                 CircuitPanel.this
                             });
                             cmdHist.doCommand(ccc);
-                            previousEndPoint = new Point(0,0);
+                            previousCurrentPoint = new Point(0,0);
                         }
                         
                         repaint(drawnComponents.peek().getBoundingBox());
@@ -541,14 +548,13 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
         public void mousePressed(MouseEvent e) {
             if (isActiveCircuit()) {
                 dragStartPoint = Grid.snapToGrid(e.getPoint());
-                currentPoint = Grid.snapToGrid(e.getPoint());
+                lastDragPoint = Grid.snapToGrid(e.getPoint());
             }
         }
 
         public void mouseReleased(MouseEvent e) {
             if (isActiveCircuit()) {
-                // Find the location in the circuit
-                endPoint = Grid.snapToGrid(e.getPoint());
+                currentPoint = Grid.snapToGrid(e.getPoint());
 
                 // Drop draged components
                 if (nowDragingComponent) {
@@ -582,26 +588,26 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                     Wire w = (Wire) drawnComponents.peek();
                     
                     // Start drawing the new wire
-                    if(w.getOrigin().equals(new Point(0,0)) && grid.isConnectionPoint(endPoint)){
-                        w.setStartPoint(endPoint);
+                    if(w.getOrigin().equals(new Point(0,0)) && grid.isConnectionPoint(currentPoint)){
+                        w.setStartPoint(currentPoint);
                     // We have chosen the start point again, remove the wire
-                    }else if (w.getOrigin().equals(endPoint)) {
+                    }else if (w.getOrigin().equals(currentPoint)) {
                         drawnComponents.pop();
                         drawnComponents.push(new Wire(CircuitPanel.this));
                     } else if (!w.getOrigin().equals(new Point(0, 0))) {
                         // Should we continue to draw the wire?
                         //      Only if we have not released on a connection point
-                        if (grid.getConnectionPoint(endPoint).getConnections().size() == 1) {
-                            w.addWaypoint(endPoint);
+                        if (grid.getConnectionPoint(currentPoint).getConnections().size() == 1) {
+                            w.addWaypoint(currentPoint);
                         } else {
-                            w.setEndPoint(endPoint);
+                            w.setEndPoint(currentPoint);
                             w.translate(0, 0, true);
                             drawnComponents.push(new Wire(CircuitPanel.this));
                         }
                     }
                     // Highlight connection point?
-                    if (grid.isConnectionPoint(endPoint)) {
-                        grid.setActivePoint(endPoint, true);
+                    if (grid.isConnectionPoint(currentPoint)) {
+                        grid.setActivePoint(currentPoint, true);
                     }
                 }
                 repaint();
@@ -613,8 +619,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
         @Override
         public void mouseMoved(MouseEvent e) {
             if(isActiveCircuit()){
-                // Find the location in the circuit
-                endPoint = Grid.snapToGrid(e.getPoint());
+                currentPoint = Grid.snapToGrid(e.getPoint());
 
                 if(!nowDragingComponent && !currentTool.equals("Wire")){                
 
@@ -624,12 +629,12 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                             && !nowDragingComponent){
                         SelectableComponent sc = drawnComponents.peek();
                         boolean canMove = grid.canTranslateComponent(sc,
-                                endPoint.x-sc.getOrigin().x,
-                                endPoint.y-sc.getOrigin().y);
+                                currentPoint.x-sc.getOrigin().x,
+                                currentPoint.y-sc.getOrigin().y);
                         
                         // Move the component
                         if(canMove){                     
-                            sc.moveTo(endPoint, false);
+                            sc.moveTo(currentPoint, false);
                             sc.mouseMoved(e);                            
                         }
 
@@ -643,7 +648,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                         }
                         
                         repaintDirtyAreas();
-                        if(canMove){ previousEndPoint = endPoint;}
+                        if(canMove){ previousCurrentPoint = currentPoint;}
 
                     // Hover highlights    
                     } else if (currentTool.equals("Select")){
@@ -656,7 +661,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
 
                         // Determine which component the mouse lies in
                         for(SelectableComponent sc: drawnComponents){
-                            if(sc.containsPoint(endPoint)){
+                            if(sc.containsPoint(currentPoint)){
                                 temporaryComponent = sc;
                                 break;
                             }                            
@@ -676,13 +681,13 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                         && drawnComponents.peek() instanceof Wire){
 
                     Wire w = (Wire) drawnComponents.peek();
-                    w.setEndPoint(endPoint);
-                    if(grid.isConnectionPoint(endPoint)){
-                        grid.setActivePoint(endPoint, true);
+                    w.setEndPoint(currentPoint);
+                    if(grid.isConnectionPoint(currentPoint)){
+                        grid.setActivePoint(currentPoint, true);
                     }
 
                     Rectangle dirtyArea = w.getBoundingBox();
-                    dirtyArea.add(endPoint);
+                    dirtyArea.add(currentPoint);
                     repaint(dirtyArea);
                     repaintDirtyAreas();
                 }
@@ -692,14 +697,12 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
         @Override
         public void mouseDragged(MouseEvent e) {
             if(isActiveCircuit()){
-                // Find the location in the circuit
-                endPoint = Grid.snapToGrid(e.getPoint());
+                currentPoint = Grid.snapToGrid(e.getPoint());
 
                 if(currentTool.equals("Select")){
 
                     if(nowDragingComponent){
                         dragActiveSelection(e,false,false);
-                        repaintDirtyAreas();
                     }  else {
 
                         // Area we dragging from a fixed component?
@@ -733,7 +736,6 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                             
                             // Start drag
                             dragActiveSelection(e, true, false);
-                            repaintDirtyAreas();
                         }
                     }
                     
@@ -745,19 +747,19 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                     if(w.getOrigin().equals(new Point(0,0)) && grid.isConnectionPoint(dragStartPoint)){
                         w.setStartPoint(dragStartPoint);                           
                     }
-                    w.setEndPoint(endPoint);                        
+                    w.setEndPoint(currentPoint);                        
 
                     // Highlight connection point?
-                    if(grid.isConnectionPoint(endPoint)){
-                        grid.setActivePoint(endPoint, true);
+                    if(grid.isConnectionPoint(currentPoint)){
+                        grid.setActivePoint(currentPoint, true);
                     }
                     
                     Rectangle dirtyArea = w.getBoundingBox();
-                    dirtyArea.add(endPoint);
+                    dirtyArea.add(currentPoint);
                     repaint(dirtyArea);
                     repaintDirtyAreas();
+                    lastDragPoint = currentPoint;
                 }
-                currentPoint = Grid.snapToGrid(e.getPoint());
             }       
         }
     }    
@@ -779,6 +781,9 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
             } else {
                 activeComponents.get(0).mouseDragged(e);     
             }
+            repaintDirtyAreas();
+            lastDragPoint = currentPoint;
+            previousCurrentPoint = lastDragPoint;
         // Translate selection
         } else {
             Point anchor = (temporaryComponent==null)?null:temporaryComponent.getOrigin().getLocation();
@@ -787,8 +792,8 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                 if(anchor==null){
                     anchor=sc.getOrigin().getLocation();
                 }
-                int dx = endPoint.x - anchor.x;
-                int dy = endPoint.y - anchor.y;
+                int dx = currentPoint.x - anchor.x;
+                int dy = currentPoint.y - anchor.y;
                 canMoveAll &= grid.canTranslateComponent(sc, dx, dy);
             }
             if (canMoveAll) {
@@ -797,31 +802,30 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                     stc = new SelectionTranslateCommand();
                 }
                 for (SelectableComponent sc : activeComponents) {
-                    int dx = endPoint.x - anchor.x;
-                    int dy = endPoint.y - anchor.y;
+                    int dx = currentPoint.x - anchor.x;
+                    int dy = currentPoint.y - anchor.y;
                     if(start && !finish){
-                        sc.translate(endPoint.x - currentPoint.x, endPoint.y - currentPoint.y, false);
+                        sc.translate(currentPoint.x - lastDragPoint.x, currentPoint.y - lastDragPoint.y, false);
                         sc.mouseDragged(e);
                     } else if(finish && !start){
                         sc.translate(0, 0, false);
                         stc.translate(sc, dx, dy);
-                        sc.mouseDraggedDropped(e);
                         multipleSelection = false;
                         nowDragingComponent = false;
                     } else if(start && finish){
                         ErrorHandler.newError("Drag Error", 
                                 "You cannot start and finish a drag at the same time");
                     } else {
-                        boolean canMove = grid.canTranslateComponent(sc,dx,dy);
                         sc.translate(dx, dy, false);
                         sc.mouseDragged(e);
-                        if(canMove){ previousEndPoint = currentPoint; }
                     }
                 }
                 if(finish && !start){
                     cmdHist.doCommand(stc);
-                    resetActiveComponents();
                 }
+                repaintDirtyAreas();
+                lastDragPoint = currentPoint;
+                previousCurrentPoint = lastDragPoint;
             }
         }
     }

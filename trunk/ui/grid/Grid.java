@@ -42,13 +42,16 @@ public class Grid {
             Point p = local.getGlobalLocation();
             Point temp = new Point(p.x + dx, p.y + dy);
             GridObject go = grid.get(temp);  
-            if(go != null 
-                    // Pins can overlap other pins but not invalid points
-                    && go instanceof InvalidPoint 
-                    && (!go.hasParent(sc) || 
-                        (sc.getParent().hasActiveSelection() 
-                        && !go.hasParentInCollection(sc.getParent().getActiveComponents())))){
-                return false; 
+           
+            if(go != null){
+                boolean b1 = sc.getParent().hasActiveSelection();
+                boolean b2 = go.hasParentInCollection(sc.getParent().getActiveComponents());
+                boolean b3 = go.hasParent(sc);                
+                // Pins can overlap other pins but not invalid points
+                if( go instanceof InvalidPoint 
+                    && ((b1 && !b2) || (!b1 && !b3))){
+                    return false; 
+                }
             }           
         }
         
@@ -63,11 +66,13 @@ public class Grid {
                 temp = new Point(p.x + dx, p.y + dy);
                 if(bb.contains(p)){
                     go = grid.get(temp);
-                    if(go != null 
-                            && (!go.hasParent(sc) || 
-                                (sc.getParent().hasActiveSelection() 
-                                && !go.hasParentInCollection(sc.getParent().getActiveComponents())))){
-                        return false;
+                    if(go != null){
+                        boolean b1 = sc.getParent().hasActiveSelection();
+                        boolean b2 = go.hasParentInCollection(sc.getParent().getActiveComponents());
+                        boolean b3 = go.hasParent(sc);
+                        if((b1 && !b2) || (!b1 && !b3)){
+                            return false;
+                        }                                     
                     }
                 }
             }
@@ -234,7 +239,9 @@ public class Grid {
        g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
         
        for(GridObject p: grid.values()){           
-           p.draw(g2);
+           if(g2.getClipBounds().contains(p)){
+            p.draw(g2);
+           }
        }               
     }   
     
