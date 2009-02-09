@@ -91,7 +91,7 @@ public class CircuitFrame extends JInternalFrame{
             }
 
             public void internalFrameActivated(InternalFrameEvent e) {
-                if(!isSelected()){ editor.setActiveCircuit(circuitPanel); }
+                editor.setActiveCircuit(circuitPanel);
             }            
         });
         

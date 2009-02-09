@@ -10,7 +10,6 @@ import javax.xml.transform.sax.TransformerHandler;
 import sim.pin.*;
 import sim.SimItem;
 import sim.LogicState;
-import sim.SimulatorState;
 import ui.CircuitPanel;
 import ui.UIConstants;
 import ui.grid.ConnectionPoint;

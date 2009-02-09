@@ -107,11 +107,11 @@ public class Wire extends SelectableComponent {
             for (Point p : waypoints) {
                 p.translate(dx, dy);
             }
-            setBoundingBox();
             setInvalidAreas();
             this.fixed = fixed; 
             setLocalPins();
             setGlobalPins(); 
+            setBoundingBox();
         }
     }
 
@@ -128,7 +128,6 @@ public class Wire extends SelectableComponent {
     public void setEndPoint(Point endPoint) {
         this.endPoint = endPoint;      
         if(!startPoint.equals(new Point(0,0))){
-            setBoundingBox();
             setLastLegPins();
         }
         
@@ -143,6 +142,8 @@ public class Wire extends SelectableComponent {
         if(start != null){
             removeCommonLineWaypoints(start, waypoints.getLast(), endPoint, isFixed());
         }  
+        
+        setBoundingBox();
     }
     
     /**
@@ -168,6 +169,7 @@ public class Wire extends SelectableComponent {
         removeDuplicateWaypoints();        
         setLocalPins();
         setGlobalPins();         
+        setBoundingBox();
     }
 
     /**
@@ -197,9 +199,9 @@ public class Wire extends SelectableComponent {
      */
     public void moveStartPoint(Point p) {
         setStartPoint(p);
-        setBoundingBox();
         setLocalPins();
-        setGlobalPins();           
+        setGlobalPins(); 
+        setBoundingBox();
     }
     
     /** {@inheritDoc} */
@@ -262,6 +264,7 @@ public class Wire extends SelectableComponent {
             for(Point p: oldwaypoints){
                 if(!waypoints.contains(p)){
                     waypointsHaveChanged = true;
+                    break;
                 }
             }
             if(waypointsHaveChanged){
@@ -278,6 +281,9 @@ public class Wire extends SelectableComponent {
     private void setLastLegPins() {
         if(!waypoints.isEmpty()){
             int waypointIndex = 0;
+            
+            LinkedList<Point> oldwaypoints = new LinkedList<Point>();
+            oldwaypoints.addAll(waypoints);
             
             // Remove old pins            
             LinkedList<Pin> oldPins = new LinkedList<Pin>();
@@ -297,6 +303,20 @@ public class Wire extends SelectableComponent {
             setPinsOnLeg(waypoints.getLast(), endPoint);
             localPins.add(new Pin(endPoint.x-getOrigin().x-getCentre().x,
                     endPoint.y-getOrigin().y-getCentre().y));
+            
+            fixSelfCrossover();
+        
+             // If waypoints have changed, we need to reset the local, and global pins again
+            boolean waypointsHaveChanged = false;
+            for(Point p: oldwaypoints){
+                if(!waypoints.contains(p)){
+                    waypointsHaveChanged = true;
+                    break;
+                }
+            }
+            if(waypointsHaveChanged){
+                setLastLegPins();
+            }        
             
             // Add new pins to grid
             for(int i = waypointIndex; i<localPins.size(); i++){
@@ -413,7 +433,8 @@ public class Wire extends SelectableComponent {
             removeCommonLineWaypoints();      
             unsetGlobalPins();
             setLocalPins();
-            setGlobalPins();   
+            setGlobalPins();  
+            setBoundingBox();
         }
         hoverMousePoint = Grid.snapToGrid(e.getPoint());
     }
@@ -1003,8 +1024,7 @@ public class Wire extends SelectableComponent {
 
     @Override
     protected void setBoundingBox(){
-        boundingBox = new Rectangle();
-        boundingBox.add(startPoint);
+        boundingBox = new Rectangle(startPoint);
         boundingBox.add(endPoint);
         for(Point wp: waypoints){
             boundingBox.add(wp);

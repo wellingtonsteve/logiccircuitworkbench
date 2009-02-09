@@ -16,6 +16,7 @@ import ui.components.standard.Input;
 import ui.components.standard.LED;
 import ui.components.Wire;
 import ui.components.SelectableComponent;
+import ui.error.ErrorHandler;
 
 /**
  * This panel displays the preview of the currently selected component along with
@@ -145,34 +146,40 @@ public class OptionsPanel extends JPanel{
      * @param sc
      */
     public void setComponent(SelectableComponent sc){
-        this.sc = sc;
-        
-        // Update the values in different parts of the form
-        setVisible(true);
-        
-        titleLabel.setText((editor.getActiveCircuit().getActiveComponents().contains(sc))?titleOld:titleNew);
-        typeLabel.setText(sc.getName());
-        labelTextbox.setText(sc.getLabel());
-        labelLabel.setEnabled(true);
-        labelTextbox.setEnabled(true);
-        
-        // Display component specific layout options
-        if(sc instanceof LED){
-            ledColours.setSelectedItem(((LED) sc).getColour());
+        // Protect options panel from badly created components
+        if(sc != null){
+            this.sc = sc;
+
+            // Update the values in different parts of the form
+            setVisible(true);
+
+            titleLabel.setText((editor.getActiveCircuit().getActiveComponents().contains(sc))?titleOld:titleNew);
+            typeLabel.setText(sc.getName());
+            labelTextbox.setText(sc.getLabel());
+            labelLabel.setEnabled(true);
+            labelTextbox.setEnabled(true);
+
+            // Display component specific layout options
+            if(sc instanceof LED){
+                ledColours.setSelectedItem(((LED) sc).getColour());
+            }
+            if(sc instanceof Input){
+                sourceIsOn.setSelected(((Input) sc).isOn());
+            }
+            if(sc instanceof Wire){
+                labelLabel.setEnabled(false);
+                labelTextbox.setEnabled(false);
+            }
+
+            // Cascade changes to the preview window itself
+            Preview.setComponent(sc);
+            setLayoutManager();
+            this.repaint();
+            editor.getActiveCircuit().repaint();
+        } else {
+            ErrorHandler.newError("Options Panel Error",
+                    "The component that you are trying to create or select is malformed.");
         }
-        if(sc instanceof Input){
-            sourceIsOn.setSelected(((Input) sc).isOn());
-        }
-        if(sc instanceof Wire){
-            labelLabel.setEnabled(false);
-            labelTextbox.setEnabled(false);
-        }
-        
-        // Cascade changes to the preview window itself
-        Preview.setComponent(sc);
-        setLayoutManager();
-        this.repaint();
-        editor.getActiveCircuit().repaint();
     }
 
     /**

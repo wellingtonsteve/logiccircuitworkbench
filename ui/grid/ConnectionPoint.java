@@ -38,13 +38,6 @@ public class ConnectionPoint extends GridObject {
     }
     
     public void addConnection(Pin p){      
-        if(p.getParent() instanceof Wire // The current pin belongs to a wire
-                && hasDifferentWire(p.getParent()) // Not the same wire               
-                && !((Wire) p.getParent()).getEndPoint().equals(p.getGlobalLocation()) // Not the end point of a wire
-                && !((Wire) p.getParent()).getOrigin().equals(p.getGlobalLocation())){ // Not the start point of a wire
-            isCrossover = true;
-        } 
-        // TODO: Add connections in logical circuit
         if(isConnected()
                 && p.getParent() instanceof Wire 
                 && p.getParent().isFixed()
@@ -52,21 +45,18 @@ public class ConnectionPoint extends GridObject {
                     || ((Wire) p.getParent()).getEndPoint().equals(p.getGlobalLocation()))){
             
              Wire w = (Wire) p.getParent();
-             if(w.getLogicalWire().connect(connections.get(0).getJoinable())){
-                 //System.out.println("Successful connection");
-             }    else {
-                // System.out.println("bugger!");
-             }
+             w.getLogicalWire().connect(connections.get(0).getJoinable());
         }
         if(!hasConnection(p)){
             p.setConnectionPoint(this);
             connections.add(p);
         }
+        setIsCrossover();
     }
     
     public boolean removeConnection(Pin p){
         boolean retval = connections.remove(p);
-        // TODO: Add connections in logical circuit
+        // TODO: Remove connections in logical circuit
         p.setConnectionPoint(null);
         if(noOfConnections() == 1)  {
             isCrossover = false;
@@ -199,5 +189,18 @@ public class ConnectionPoint extends GridObject {
     @Override
     public boolean hasLabel(){
         return label != null || !label.equals("");
+    }
+
+    private void setIsCrossover() {
+       int noOfWireNonTerminus = 0;
+        for(Pin p: connections){
+            if(p.getParent() instanceof Wire // The current pin belongs to a wire       
+                && !((Wire) p.getParent()).getEndPoint().equals(p.getGlobalLocation()) // Not the end point of a wire
+                && !((Wire) p.getParent()).getOrigin().equals(p.getGlobalLocation()) // Not the start point of a wire
+                ){ 
+                noOfWireNonTerminus++;
+            }
+        }
+        isCrossover = (noOfWireNonTerminus>1);
     }
 }

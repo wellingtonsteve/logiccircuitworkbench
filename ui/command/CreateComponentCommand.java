@@ -71,7 +71,7 @@ public class CreateComponentCommand extends Command {
                 editor.getOptionsPanel().setComponent(sc);
                 
             } catch (Exception ex){
-                // TODO: reset component selection
+                editor.clearComponentSelection();
                 ErrorHandler.newError("Component Creation Error",
                         "An error occured whilst creating a new component.", ex);
             }       
