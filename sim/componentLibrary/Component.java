@@ -52,7 +52,7 @@ public abstract class Component implements SimItem, ValueListener {
             pin.setValue(LogicState.FLOATING);
         }
         for(InputPin pin: inputPins.values()){
-            pin.setValue(LogicState.FLOATING);
+            if(pin.getConnectedTo() == null) pin.setValue(LogicState.FLOATING);
         }
     }
 }
