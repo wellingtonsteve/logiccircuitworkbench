@@ -258,7 +258,10 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
      */
     public void drawCircuit(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
-        
+        if(g2.getClip() == null){
+            g2.setClip(0, 0, getWidth(), getHeight());
+        }
+
         // Background Colour
         g2.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
         g2.fill(g2.getClip()); 
