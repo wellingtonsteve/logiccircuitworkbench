@@ -1033,6 +1033,7 @@ private void StartButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST
         StopButton.setEnabled(true);
         Stop.setEnabled(true);
         playPause = !playPause;    
+        SelectionMouseClicked(null);
     }
     
 }//GEN-LAST:event_StartButtonMouseClicked
@@ -1079,6 +1080,7 @@ private void RunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:eve
         StopButton.setEnabled(true);
         Stop.setEnabled(true);
         playPause = !playPause;    
+        SelectionMouseClicked(null);
     }
 }//GEN-LAST:event_RunActionPerformed
 
