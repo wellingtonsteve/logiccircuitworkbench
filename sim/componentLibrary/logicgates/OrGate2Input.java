@@ -21,7 +21,6 @@ public class OrGate2Input extends Component {
     //Input changed
     @Override
     public void valueChanged(Pin pin, LogicState value) {
-        System.out.println("Or Gate valueChanged() was called. Input changed to " + value.toString());
         final LogicState newOutputValue;
         if (input1.getValue() == LogicState.ON || input2.getValue() == LogicState.ON){
             newOutputValue = LogicState.ON; 
@@ -31,7 +30,6 @@ public class OrGate2Input extends Component {
             newOutputValue = LogicState.FLOATING;
         }
         if(sim != null){
-            System.out.println("SimEvent added");
             sim.addEvent(sim.getSimulationTime() + propagationDelay, new SimItemEvent() {
                 public void RunEvent() {
                     output.setValue(newOutputValue);
