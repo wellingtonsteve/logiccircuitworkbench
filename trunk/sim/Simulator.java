@@ -80,7 +80,6 @@ public class Simulator {
     
     private void setSimulationTime(long time){
         currentSimulationTime = time;
-        System.out.println(time);
         for(SimulatorStateListener stateListener : stateListeners) {
             stateListener.SimulationTimeChanged(time);
         }
