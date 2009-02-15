@@ -1,13 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package sim.testing;
 
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import sim.LogicState;
 import sim.SimItem;
 import sim.Simulator;
