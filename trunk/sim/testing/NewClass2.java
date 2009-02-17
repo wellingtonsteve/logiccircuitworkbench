@@ -7,8 +7,10 @@ import sim.Simulator;
 import sim.SimulatorState;
 import sim.SimulatorStateListener;
 import sim.componentLibrary.Circuit;
+import sim.pin.Pin;
 import sim.pin.Wire;
 import sim.componentLibrary.standard.Input;
+import sim.pin.ValueListener;
 import ui.CircuitPanel;
 import ui.components.standard.log.PinLogger;
 import ui.components.standard.log.ViewerWindow;
@@ -31,16 +33,6 @@ public static void main(String[] args){
     circuit.addSimItem(out);
     Simulator sim = new Simulator(circuit);
         
-//    Wire wire1 = new Wire();
-//    wire1.connectPin(in1.getPinByName("Output"));
-//    wire1.connectPin(and1.getPinByName("Input 1"));
-//    Wire wire2 = new Wire();
-//    wire2.connectPin(in2.getPinByName("Output"));
-//    wire2.connectPin(and1.getPinByName("Input 2"));
-//    Wire wire3 = new Wire();
-//    wire3.connectPin(out.getPinByName("Input"));
-//    wire3.connectPin(and1.getPinByName("Output"));
-
     Wire wire1 = new Wire();
     wire1.connect(in1.getPinByName("Output"));
     wire1.connect(and1.getPinByName("Input 1"));
@@ -68,7 +60,7 @@ public static void main(String[] args){
                     }
                 } else if(time % 700000000 == 0){
                     if(in2copy.getPinByName("Output").getValue() == LogicState.ON){
-                        in2copy.setValue(LogicState.OFF);
+                     in2copy.setValue(LogicState.OFF);
                     }
                     else{
                         in2copy.setValue(LogicState.ON);
@@ -76,16 +68,16 @@ public static void main(String[] args){
                 }             
                 
                 if(time == 3000000000l)  {
-                    in2copy.setValue(LogicState.OFF);
+                    in2copy.setValue(LogicState.OFF);                   
                 }
             }
         });
     
     sim.play();
- 
-    PinLogger pl1 = new PinLogger(out.getPinByName("Input"), sim);
-    PinLogger pl2 = new PinLogger(in1.getPinByName("Output"), sim);
-    PinLogger pl3 = new PinLogger(in2.getPinByName("Output"), sim);
+     
+    PinLogger pl1 = new PinLogger(out.getPinByName("Input"), sim, "1");
+    PinLogger pl2 = new PinLogger(in1.getPinByName("Output"), sim, "2");
+    PinLogger pl3 = new PinLogger(in2.getPinByName("Output"), sim, "3");
     LinkedList<PinLogger> coll = new LinkedList<PinLogger>();
     coll.add(pl1);
     coll.add(pl2);
