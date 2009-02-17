@@ -60,11 +60,11 @@ public class Simulator {
         while(time > currentSimulationTime && !eventQueue.isEmpty()){
             long nextQueueTime = eventQueue.peekK();
             if(nextQueueTime <= time){
+                setSimulationTime(nextQueueTime);
                 Collection<SimItemEvent> events = eventQueue.pollV();
                 for(SimItemEvent event:events){
                     event.RunEvent();
                 }
-                setSimulationTime(nextQueueTime);
             }
             else break;
         }

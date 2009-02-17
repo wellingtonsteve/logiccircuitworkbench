@@ -478,7 +478,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
      * @param simulator
      */
     public void addLogger(sim.pin.Pin pinByName, Simulator simulator) {
-        OutputLoggers.add(new PinLogger(pinByName, simulator));
+        OutputLoggers.add(new PinLogger(pinByName, simulator, OutputLoggers.size()+""));
     }
     
     /** @return A Collection of the Pin Loggers in this circuit */
