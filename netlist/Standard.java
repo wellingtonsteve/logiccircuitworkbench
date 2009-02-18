@@ -10,7 +10,7 @@ public class Standard extends Netlist{
     protected void setDrawableMappings() {
         putDrawableClass("Standard.Button Source",    ui.components.standard.Input.class);
         putDrawableClass("Standard.LED",              ui.components.standard.LED.class);  
-        putDrawableClass("Standard.Output Logger",    ui.components.standard.Logger.class);
+        putDrawableClass("Standard.Output Logger",    ui.components.standard.PinLogger.class);
     }  
     
     @Override

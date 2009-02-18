@@ -11,6 +11,7 @@ public class SimulationStartCommand extends Command {
     @Override
     protected void perform(Editor editor) {
        activeCircuit.getSimulator().play();
+       activeCircuit.repaint();
     }
 
     @Override

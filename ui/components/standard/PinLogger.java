@@ -1,43 +1,101 @@
-package ui.components.standard.log;
+package ui.components.standard;
 
+import java.awt.Graphics2D;
+import sim.LogicState;
+import ui.components.*;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
-import sim.LogicState;
 import sim.Simulator;
-import sim.pin.*;
+import ui.UIConstants;
 
 /**
  *
- * @author matt
+ * @author Matt
  */
-public class PinLogger implements sim.pin.ValueListener {
+public class PinLogger extends ImageSelectableComponent implements sim.pin.ValueListener {
 
+    public PinLogger(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
+        super(parent, point, simItem);
+        this.pin = logicalComponent.getPinByName("Input");
+        this.pin.addValueListener(this); 
+        this.sim = parent.getSimulator();      
+        setLabel("#"+(this.parent.getPinLoggers().size()+1));
+    }
+            
+    /**
+     * SELECTABLE COMPONENT CODE
+     */
+    
+    private Pin in1;
+    
+    @Override
+    protected void setNetlist() {
+        nl = new netlist.Standard();
+    }
+    
+    @Override
+    protected void setComponentTreeName() {
+        componentTreeName = "Standard.Output Logger";
+    }
+    
+    
+    @Override
+    public String getName(){
+        return "Output Logger";
+    }
+
+    @Override
+    protected void setInvalidAreas(){
+        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+9,(int)getOrigin().getY()-getCentre().y+8,46,43);
+        invalidArea = rotate(invalidArea);   
+    }
+    
+    @Override
+    public Point getCentre(){
+        return new Point(30,30);
+    }
+
+    @Override
+    public void setLocalPins() {
+        localPins.clear(); 
+        in1 = new Pin(30, 70, logicalComponent.getPinByName("Input"));
+        localPins.add(in1);        
+    }
+            
+    @Override
+    public void draw(Graphics2D g) {
+        if(hasLabel()){
+            g.setColor(UIConstants.LABEL_TEXT_COLOUR);
+            g.drawString(getLabel(), 
+                    getOrigin().x+UIConstants.LABEL_COMPONENT_X_OFFSET,
+                    getOrigin().y+UIConstants.LABEL_COMPONENT_Y_OFFSET-2);
+        }
+        g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);      
+        g.translate(getOrigin().x, getOrigin().y);               
+        g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
+        g.drawLine(30, 70, 30, 48);
+        g.translate(-getOrigin().x, -getOrigin().y);
+        g.drawImage(getCurrentImage(), getOrigin().x, getOrigin().y, null);
+        g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
+    }
+    
+    /**
+     * PIN LOGGER CODE
+     */
+    
     private LinkedList<Long> timeLog = new LinkedList<Long>();
     private LinkedList<LogicState> stateLog = new LinkedList<LogicState>();
     
     private LinkedList<Long> timeBuffer = new LinkedList<Long>();
     private LinkedList<LogicState> stateBuffer = new LinkedList<LogicState>();
     
-    private Pin pin; 
+    private sim.pin.Pin pin; 
+    private Simulator sim;
     private Long firstTime = Long.MAX_VALUE;
     private Long lastTime = 0l;
-    private Simulator sim;
     private boolean enabled = true;
-    private String name;
-    
-    public PinLogger(ui.components.SelectableComponent.Pin pin, String name){
-        this.pin = (OutputPin) pin.getParent().getLogicalComponent().getPinByName("Output");
-        this.sim = pin.getParent().getParent().getSimulator();
-        this.pin.addValueListener(this);        
-        this.name = name;
-    }
-    
-    public PinLogger(sim.pin.Pin pin, Simulator sim, String name){
-        this.pin = pin;
-        this.sim = sim;
-        this.pin.addValueListener(this);        
-        this.name = name;
-    }
     
     public int getStartIndex(Long startTime){
         int start = -1;
@@ -93,11 +151,7 @@ public class PinLogger implements sim.pin.ValueListener {
     public List<Long> getSavedTimes(){
         return timeLog;
     }
-    
-    public String getName(){
-        return name;
-    }
-    
+        
     public Long getStartTime(){
         return firstTime;
     }
@@ -106,10 +160,9 @@ public class PinLogger implements sim.pin.ValueListener {
         return lastTime;
     }
 
-    public void valueChanged(Pin pin, LogicState value) {
+    public void valueChanged(sim.pin.Pin pin, LogicState value) {
         assert(timeLog.size() == stateLog.size());
-
-        Long nextSimTime = sim.getSimulationTime();
+        Long nextSimTime = parent.getSimulator().getSimulationTime();
         timeBuffer.add(nextSimTime);
         stateBuffer.add(value);
         if(firstTime == Long.MAX_VALUE){
@@ -132,5 +185,5 @@ public class PinLogger implements sim.pin.ValueListener {
     public boolean isEnabled(){
         return enabled;
     }
-        
+    
 }

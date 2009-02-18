@@ -223,8 +223,7 @@ public class Grid {
             }
             if((old.y + (d/2)) >=  (yDivD + 1) * d){
                 newY += d;
-            }
-            
+            }            
             return new Point(newX, newY);            
         } else {
             return old;

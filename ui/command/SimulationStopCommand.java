@@ -11,6 +11,7 @@ public class SimulationStopCommand extends Command {
     @Override
     protected void perform(Editor editor) {
         activeCircuit.getSimulator().stop();
+        activeCircuit.repaint();
     }
 
     @Override

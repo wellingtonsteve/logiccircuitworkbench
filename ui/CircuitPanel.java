@@ -25,8 +25,8 @@ import ui.components.SelectableComponent.Pin;
 import ui.command.CommandHistory;
 import ui.command.CreateComponentCommand;
 import ui.command.SelectionTranslateCommand;
+import ui.components.standard.PinLogger;
 import ui.error.ErrorHandler;
-import ui.components.standard.log.PinLogger;
 import ui.components.standard.log.ViewerWindow;
 
 /**
@@ -64,7 +64,6 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
     private CommandHistory cmdHist;
     private Simulator simulator;
     private Circuit logicalCircuit;
-    private LinkedList<PinLogger> OutputLoggers = new LinkedList<PinLogger>();
     private ViewerWindow loggerWindow;
     private SimulatorState simulatorState = SimulatorState.STOPPED;
 
@@ -72,10 +71,11 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
         addMouseMotionListener(new CircuitPanelMouseMotionAdapter());
         addMouseListener(new CircuitPanelMouseAdapter());
         this.logicalCircuit = new Circuit();
-        this.simulator = new Simulator(logicalCircuit);
-        this.simulator.addStateListener(this);
         this.loggerWindow = new ViewerWindow(this);
         this.loggerWindow.setVisible(false);
+        this.simulator = new Simulator(logicalCircuit);
+        this.simulator.addStateListener(this);
+        this.simulator.addStateListener(loggerWindow.getSimStateListener());
         this.parentFrame = parentFrame;
         this.editor = ((CircuitFrame) getParentFrame()).getEditor();
         this.cmdHist = new CommandHistory(editor);
@@ -263,7 +263,11 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
         }
 
         // Background Colour
-        g2.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+        if(getSimulatorState().equals(simulatorState.STOPPED)){
+            g2.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+        } else {
+            g2.setColor(UIConstants.CIRCUIT_PLAYING_BACKGROUND_COLOUR);
+        }
         g2.fill(g2.getClip()); 
                 
         // Grid Snap Dots
@@ -319,6 +323,11 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
      * Clear everything associated with this circuit.
      */
     public void resetCircuit(){
+        for(SelectableComponent sc:drawnComponents){
+            if(sc instanceof PinLogger){
+                ((PinLogger) sc).clear();
+            }
+        }
         drawnComponents.clear();
         activeComponents.clear();
         highlightedComponent = null;
@@ -327,10 +336,6 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
         multipleSelection = false;
         grid.clear();
         logicalCircuit.clear();
-        for(PinLogger pl: OutputLoggers){
-            pl.clear();
-        }
-        OutputLoggers.clear();
         editor.getClipboard().setHasSelection(false);
 
         repaint();      
@@ -471,19 +476,16 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
     public ViewerWindow getLoggerWindow(){
         return loggerWindow;
     }
-    
-    /**
-     * Start logging the specified pin, which is associated with the specified simulator.
-     * @param pinByName
-     * @param simulator
-     */
-    public void addLogger(sim.pin.Pin pinByName, Simulator simulator) {
-        OutputLoggers.add(new PinLogger(pinByName, simulator, OutputLoggers.size()+""));
-    }
-    
+        
     /** @return A Collection of the Pin Loggers in this circuit */
     public Collection<PinLogger> getPinLoggers() {
-        return OutputLoggers;
+        LinkedList<PinLogger> loggers = new LinkedList<PinLogger>();
+        for(SelectableComponent sc:drawnComponents){
+            if(sc.isFixed() && sc instanceof PinLogger && !loggers.contains(sc)){
+                loggers.add((PinLogger) sc);
+            }
+        }
+        return loggers;
     }
     
     /** @return The parent CircuitFrame of this circuit (i.e. the internal window

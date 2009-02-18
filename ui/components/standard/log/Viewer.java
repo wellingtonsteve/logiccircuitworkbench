@@ -13,6 +13,7 @@ import javax.swing.JScrollPane;
 import sim.LogicState;
 import sim.SimulatorState;
 import ui.UIConstants;
+import ui.components.standard.PinLogger;
 
 /**
  *
@@ -25,13 +26,15 @@ public class Viewer extends JPanel implements sim.SimulatorStateListener {
     private Long startTime = Long.MAX_VALUE;
     private Long endTime = 0l;
                
-    public void addLogger(PinLogger pl){
+    public boolean addLogger(PinLogger pl){
         if(!loggers.contains(pl)){
             loggers.add(pl);
             if(pl.getStartTime()<startTime){
                 startTime = pl.getStartTime();
             }
+            return true;
         }
+        return false;
     }
      
     @Override
@@ -58,8 +61,7 @@ public class Viewer extends JPanel implements sim.SimulatorStateListener {
         g2.setColor(UIConstants.LOGGER_GRID_COLOUR);
         double d = (startTime*(scaleFactor/100));
         for(int i=(int)((g2.getClipBounds().x-d)%20)*20; i< g2.getClipBounds().getMaxX(); i+=20){
-            if(i % 100 == 0){
-                
+            if(i % 100 == 0){                
                 g2.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
                 String label = ((double)(i/(double) 100)) + "\u00D710\u2079ns";
                 g2.drawString(label, i+1, 15);
@@ -86,9 +88,10 @@ public class Viewer extends JPanel implements sim.SimulatorStateListener {
                     List<Long> timeBuffer = p.getTimesBetween(prevTime, endTime);
                     List<LogicState> stateBuffer = p.getStatesBetween(prevTime, endTime);              
                        
+                    // Draw the pin logger label
                     g2.translate(xOffset, yOffset);
                     g2.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-                    g2.drawString(p.getName(), g2.getClipBounds().x+1, (UIConstants.LOGGER_HEIGHT/2)-3);
+                    g2.drawString(p.getLabel(), g2.getClipBounds().x+10, (UIConstants.LOGGER_HEIGHT/2)-3);
                     
                     // Draw Graphs
                     g2.setColor(UIConstants.LOGGER_GRAPH_COLOR);
@@ -145,6 +148,11 @@ public class Viewer extends JPanel implements sim.SimulatorStateListener {
     }
 
     public void SimulatorStateChanged(SimulatorState state) {
+        if(state.equals(SimulatorState.PLAYING)){
+            Dimension b = getPreferredSize();
+            setPreferredSize(new Dimension(500, b.height));
+            ((JScrollPane)getParent().getParent()).getViewport().setViewPosition(new Point(0,0));
+        }
     }
 
     public void SimulationTimeChanged(long time) {
@@ -155,8 +163,6 @@ public class Viewer extends JPanel implements sim.SimulatorStateListener {
             revalidate();
         }
         endTime = time;
-        repaint(((JScrollPane)getParent().getParent()).getViewportBorderBounds());
-                
-        
+        repaint(((JScrollPane)getParent().getParent()).getViewportBorderBounds());       
     }
 }

@@ -53,7 +53,9 @@ public class CreateComponentCommand extends Command {
                     sc.setOrigin((Point) properties[2]);
                 }
                 sc.setRotation((Double) properties[1], true);
-                sc.setLabel((String) properties[3]);
+                if(properties[3] != null && !properties[3].equals("")) {
+                    sc.setLabel((String) properties[3]);
+                }
                 
                 // Display component specific layout options
                 if(sc instanceof LED){
