@@ -1,5 +1,6 @@
 package sim.testing;
 
+import java.awt.Point;
 import java.util.LinkedList;
 import sim.LogicState;
 import sim.SimItem;
@@ -7,12 +8,11 @@ import sim.Simulator;
 import sim.SimulatorState;
 import sim.SimulatorStateListener;
 import sim.componentLibrary.Circuit;
-import sim.pin.Pin;
 import sim.pin.Wire;
 import sim.componentLibrary.standard.Input;
-import sim.pin.ValueListener;
+import ui.CircuitFrame;
 import ui.CircuitPanel;
-import ui.components.standard.log.PinLogger;
+import ui.components.standard.PinLogger;
 import ui.components.standard.log.ViewerWindow;
 /**
  *
@@ -74,10 +74,9 @@ public static void main(String[] args){
         });
     
     sim.play();
-     
-    PinLogger pl1 = new PinLogger(out.getPinByName("Input"), sim, "1");
-    PinLogger pl2 = new PinLogger(in1.getPinByName("Output"), sim, "2");
-    PinLogger pl3 = new PinLogger(in2.getPinByName("Output"), sim, "3");
+    PinLogger pl1 = new PinLogger(null, new Point(0,0), out);
+    PinLogger pl2 = new PinLogger(null, new Point(0,0), in1);
+    PinLogger pl3 = new PinLogger(null, new Point(0,0), in2);
     LinkedList<PinLogger> coll = new LinkedList<PinLogger>();
     coll.add(pl1);
     coll.add(pl2);

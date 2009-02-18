@@ -110,6 +110,7 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
             atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
             atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
             atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
+            atts.addAttribute("", "", "label", "CDATA", getLabel());
             
             hd.startElement("", "", "component", atts);
             hd.endElement("", "", "component");

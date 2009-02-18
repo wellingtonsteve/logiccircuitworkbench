@@ -1581,13 +1581,11 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
           // If we were able to draw more times using the buffered graphics,
           // or if the drawing counts are the same, but the total time for
           // the buffering was less, buffering is faster.
-
           if ((bufferedCount > directCount) ||
                ((bufferedCount == directCount) &&
                 (bufferedTime < directTime))) {
                drawDirect = false;
           } else {
-
           // If we want to draw direct, free the space taken up by the
           // offscreen image and graphics context.
                offscreenImage.flush();
@@ -1658,7 +1656,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             int outputPinNo = logicalComponent.getOutputs().size();
 
             for (int i = 0; i < inputPinNo; i++) {
-                Pin p = new Pin(0, (i + 1) * UIConstants.GRID_DOT_SPACING, simitem.getPinByName("Input" + ((inputPinNo>1)?" " +(i+1):"")));
+                Pin p = new Pin(0, (i + 1) * UIConstants.GRID_DOT_SPACING, logicalComponent.getPinByName("Input" + ((inputPinNo>1)?" " +(i+1):"")));
                 localPins.add(p);
             }
 

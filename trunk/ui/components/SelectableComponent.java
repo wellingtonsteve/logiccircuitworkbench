@@ -10,6 +10,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import sim.pin.*;
 import sim.SimItem;
 import sim.LogicState;
+import sim.SimulatorState;
 import ui.CircuitPanel;
 import ui.UIConstants;
 import ui.grid.ConnectionPoint;
@@ -195,31 +196,33 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * @param dy The displacement in the y-direction.
      * @param fixed Should the component be fixed after the translation?
      */
-    public void translate(int dx, int dy, boolean fixed) {            
-        ui.grid.Grid grid = parent.getGrid();
+    public void translate(int dx, int dy, boolean fixed) {     
+        if(parent.getSimulatorState().equals(SimulatorState.STOPPED)){
+            ui.grid.Grid grid = parent.getGrid();
 
-        if(grid.canTranslateComponent(this, dx, dy) || (dx == 0 && dy == 0)){
-            unsetGlobalPins();
-            grid.unmarkInvalidAreas(this);
-            this.origin.translate(dx, dy);
-            setInvalidAreas();
-            setBoundingBox();
-            
-            // Rememeber my position at the moment I started to move
-            if(this.fixed && !fixed){
-                unFixedPoint = origin.getLocation();
+            if(grid.canTranslateComponent(this, dx, dy) || (dx == 0 && dy == 0)){
+                unsetGlobalPins();
+                grid.unmarkInvalidAreas(this);
+                this.origin.translate(dx, dy);
+                setInvalidAreas();
+                setBoundingBox();
+
+                // Rememeber my position at the moment I started to move
+                if(this.fixed && !fixed){
+                    unFixedPoint = origin.getLocation();
+                }
+
+                if (fixed){ 
+                    grid.markInvalidAreas(this);                 
+                }            
+                this.fixed = fixed; 
+                setGlobalPins();
+
+            // Alert the user that this was an invalid move and we cannot fix the 
+            // component here
+            } else if(!this.fixed && fixed && UIConstants.DO_SYSTEM_BEEP){
+                UIConstants.beep();  
             }
-            
-            if (fixed){ 
-                grid.markInvalidAreas(this);                 
-            }            
-            this.fixed = fixed; 
-            setGlobalPins();
-            
-        // Alert the user that this was an invalid move and we cannot fix the 
-        // component here
-        } else if(!this.fixed && fixed && UIConstants.DO_SYSTEM_BEEP){
-            UIConstants.beep();  
         }
     }
     
@@ -649,7 +652,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         
         public void valueChanged(sim.pin.Pin pin, LogicState value) {
             this.value = value;
-            if(joinable instanceof sim.pin.Pin){
+            if(joinable instanceof sim.pin.Pin && cp != null){
                 if(value.equals(LogicState.ON)){
                     cp.setLabel("1");
                 } else {

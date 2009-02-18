@@ -25,6 +25,7 @@ public abstract class GridObject extends Point implements Labeled, Cloneable {
         if(hasLabel() 
                 && UIConstants.DRAW_PIN_LOGIC_VALUES
                 && !grid.getParentCircuit().getSimulatorState().equals(SimulatorState.STOPPED)){
+            g2.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
             g2.drawString(getLabel(), x+UIConstants.LABEL_CONNECTION_POINT_X_OFFSET, y+UIConstants.LABEL_CONNECTION_POINT_Y_OFFSET);
         }
     }

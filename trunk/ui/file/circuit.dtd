@@ -20,6 +20,7 @@
     y CDATA #IMPLIED
     x CDATA #IMPLIED
     type CDATA #IMPLIED
+    label CDATA #IMPLIED
   >
 
 <!--- Put your DTDDoc comment here. -->

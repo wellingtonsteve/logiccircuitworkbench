@@ -13,6 +13,7 @@ import java.awt.event.ComponentEvent;
 import java.util.Collection;
 import javax.swing.JCheckBox;
 import ui.CircuitPanel;
+import ui.components.standard.PinLogger;
 
 /**
  *
@@ -35,41 +36,26 @@ public class ViewerWindow extends javax.swing.JFrame {
                   
     }
     
-    public ViewerWindow(PinLogger pl){
-        initComponents();
-        ((Viewer) viewerpanel).addLogger(pl);
-        
-        viewerpanel.addComponentListener(new ComponentAdapter(){
-            @Override
-            public void componentResized(ComponentEvent e) {
-                PanelScollPane.getViewport().setViewPosition(new Point(viewerpanel.getWidth(),0));
-            }
-        });
-        
-    }
-    
     public sim.SimulatorStateListener getSimStateListener(){
         return (Viewer)viewerpanel;
     }
     
     public void addPinLoggers(Collection<PinLogger> cpl){
         int yOffset = 0;
-        int count = 1;
         for(final PinLogger pl: cpl){  
-            ((Viewer) viewerpanel).addLogger(pl); 
-            
-            JCheckBox newCheckBox = new JCheckBox();
-            newCheckBox.setText(count + ". " + pl.getName()); 
-            newCheckBox.setSelected(pl.isEnabled());
-            newCheckBox.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    pl.setEnabled(!pl.isEnabled());
-                }
-            });
-            CheckboxPanel.add(newCheckBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, yOffset, -1, -1));
-            
-            yOffset += 20;
-            count++;
+            if(((Viewer) viewerpanel).addLogger(pl)){             
+                JCheckBox newCheckBox = new JCheckBox();
+                newCheckBox.setText(pl.getLabel()); 
+                newCheckBox.setSelected(pl.isEnabled());
+                newCheckBox.addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        pl.setEnabled(!pl.isEnabled());
+                    }
+                });
+                CheckboxPanel.add(newCheckBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, yOffset, -1, -1));
+
+                yOffset += 20;
+            }
         }
 
         pack();
