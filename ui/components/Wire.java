@@ -43,15 +43,15 @@ public class Wire extends SelectableComponent {
     private Point hoverMousePoint = new Point(0,0);
     private Point reportedSelfCrossover = null;
     private Color wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
-    private sim.pin.Wire logicalWire;
+    private sim.joinable.Wire logicalWire;
 
-    public sim.pin.Wire getLogicalWire() {
+    public sim.joinable.Wire getLogicalWire() {
         return logicalWire;
     }
 
     public Wire(CircuitPanel parent){
         super(parent, null, null);
-        logicalWire = new sim.pin.Wire();
+        logicalWire = new sim.joinable.Wire();
     }
     
     public Wire(CircuitPanel parent, Point o) {

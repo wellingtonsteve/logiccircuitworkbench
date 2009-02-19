@@ -3,7 +3,7 @@ package sim.componentLibrary;
 import sim.*;
 import java.util.*;
 import java.util.ArrayList;
-import sim.pin.*;
+import sim.joinable.*;
 
 public class Circuit implements SimItem {
     private ArrayList<SimItem> simItems = new ArrayList<SimItem>();

@@ -10,7 +10,7 @@ import ui.UIConstants;
  *
  * @author Matt
  */
-public class Buzzer extends VisualComponent implements sim.pin.ValueListener{
+public class Buzzer extends VisualComponent implements sim.joinable.ValueListener{
     public Buzzer(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
         logicalComponent.getPinByName("Input").addValueListener(this);
@@ -44,7 +44,7 @@ public class Buzzer extends VisualComponent implements sim.pin.ValueListener{
 //        localPins.add(in1);        
 //    }
  
-    public void valueChanged(sim.pin.Pin pin, LogicState value) {
+    public void valueChanged(sim.joinable.Pin pin, LogicState value) {
         if(value.equals(sim.LogicState.ON)){
             UIConstants.beep();
         }

@@ -1,7 +1,7 @@
 package sim;
 
 import java.util.Collection;
-import sim.pin.*;
+import sim.joinable.*;
 
 public interface SimItem {
     Collection<InputPin> getInputs();

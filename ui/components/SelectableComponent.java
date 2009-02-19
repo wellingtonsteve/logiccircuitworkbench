@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import javax.swing.JPanel;
 import javax.xml.transform.sax.TransformerHandler;
 import netlist.Netlist;
-import sim.pin.*;
+import sim.joinable.*;
 import sim.SimItem;
 import sim.LogicState;
 import sim.SimulatorState;
@@ -616,8 +616,8 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         private SelectableComponent parent;
         private LogicState value;
         private ConnectionPoint cp;
-        private sim.pin.Pin simPin;
-        private sim.pin.Wire wire;
+        private sim.joinable.Pin simPin;
+        private sim.joinable.Wire wire;
         private Joinable joinable;
 
         /**
@@ -628,7 +628,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         public Pin(int x, int y){
             super(x,y);
             this.parent = SelectableComponent.this;
-            this.wire = (sim.pin.Wire) SelectableComponent.this.getLogicalComponent();
+            this.wire = (sim.joinable.Wire) SelectableComponent.this.getLogicalComponent();
             this.joinable = wire;
         }   
 
@@ -638,7 +638,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
          * @param y The y-coordinate (local)
          * @param simPin The logical pin associated with this pin
          */
-        public Pin(int x, int y, sim.pin.Pin simPin){
+        public Pin(int x, int y, sim.joinable.Pin simPin){
             super(x,y);
             this.parent = SelectableComponent.this;
             this.simPin = simPin;
@@ -646,7 +646,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
             this.joinable = simPin;
         }
 
-        public Pin(Point p, sim.pin.Pin pinByName) {
+        public Pin(Point p, sim.joinable.Pin pinByName) {
             this(p.x, p.y, pinByName);
         }
 
@@ -669,9 +669,9 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
             }
         }
         
-        public void valueChanged(sim.pin.Pin pin, LogicState value) {
+        public void valueChanged(sim.joinable.Pin pin, LogicState value) {
             this.value = value;
-            if(joinable instanceof sim.pin.Pin && cp != null){
+            if(joinable instanceof sim.joinable.Pin && cp != null){
                 if(value.equals(LogicState.ON)){
                     cp.setLabel("1");
                 } else {
@@ -719,7 +719,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         /**
          * @return Either the wire or simulator pin associated with this pin.
          */
-        public sim.pin.Joinable getJoinable(){
+        public sim.joinable.Joinable getJoinable(){
             return joinable;
         }
     }

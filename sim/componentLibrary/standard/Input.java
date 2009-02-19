@@ -2,7 +2,7 @@ package sim.componentLibrary.standard;
 
 import sim.componentLibrary.Component;
 import sim.*;
-import sim.pin.*;
+import sim.joinable.*;
 
 /**
  *

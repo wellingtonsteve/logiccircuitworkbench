@@ -14,7 +14,7 @@ import ui.UIConstants;
  *
  * @author Matt
  */
-public class PinLogger extends VisualComponent implements sim.pin.ValueListener {
+public class PinLogger extends VisualComponent implements sim.joinable.ValueListener {
 
     public PinLogger(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
@@ -86,7 +86,7 @@ public class PinLogger extends VisualComponent implements sim.pin.ValueListener 
     private LinkedList<Long> timeBuffer = new LinkedList<Long>();
     private LinkedList<LogicState> stateBuffer = new LinkedList<LogicState>();
     
-    private sim.pin.Pin pin; 
+    private sim.joinable.Pin pin;
     private Simulator sim;
     private Long firstTime = Long.MAX_VALUE;
     private Long lastTime = 0l;
@@ -155,7 +155,7 @@ public class PinLogger extends VisualComponent implements sim.pin.ValueListener 
         return lastTime;
     }
 
-    public void valueChanged(sim.pin.Pin pin, LogicState value) {
+    public void valueChanged(sim.joinable.Pin pin, LogicState value) {
         assert(timeLog.size() == stateLog.size());
         Long nextSimTime = parent.getSimulator().getSimulationTime();
         timeBuffer.add(nextSimTime);

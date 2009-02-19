@@ -2,7 +2,7 @@ package sim.componentLibrary;
 
 import sim.*;
 import java.util.*;
-import sim.pin.*;
+import sim.joinable.*;
 
 /**
  *
