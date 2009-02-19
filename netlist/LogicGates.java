@@ -5,7 +5,7 @@ package netlist;
  * 
  * @author matt
  */
-public class LogicGates extends Netlist{
+public class LogicGates extends NetlistImp{
 
     @Override
     protected void setDrawableMappings() {
