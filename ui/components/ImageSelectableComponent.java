@@ -88,9 +88,9 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
         g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
         for(Pin p: localPins){
             if(p.getJoinable() instanceof sim.pin.InputPin){
-                g.drawLine(p.x, p.y, p.x+UIConstants.GRID_DOT_SPACING, p.y);
+                g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
             } else if(p.getJoinable() instanceof sim.pin.OutputPin){
-                g.drawLine(p.x, p.y, p.x-UIConstants.GRID_DOT_SPACING, p.y);
+                g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);
             }
         }        
         g.translate(-getOrigin().x, -getOrigin().y);

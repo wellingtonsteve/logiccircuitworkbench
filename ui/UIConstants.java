@@ -26,9 +26,9 @@ public class UIConstants {
     
     // Grid Options
     public static final Color CIRCUIT_BACKGROUND_COLOUR = Color.WHITE;
-    public static final Color CIRCUIT_PLAYING_BACKGROUND_COLOUR = new Color(250,255,255);
+    public static final Color CIRCUIT_PLAYING_BACKGROUND_COLOUR = new Color(242,255,255);
     public static final Color GRID_DOT_COLOUR = Color.GRAY;    
-    public static final int GRID_DOT_SPACING = 10; // Recommended only 2, 5 or 10
+    public static final int GRID_DOT_SPACING = 5; // Recommended only 2, 5 or 10
     public static final boolean SNAP_TO_GRID = true;
     public static final int GRID_STANDARD_WIDTH = 70;
     public static final int GRID_STANDARD_HEIGHT = 60;
