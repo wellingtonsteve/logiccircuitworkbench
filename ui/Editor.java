@@ -31,10 +31,9 @@ import ui.command.*;
 import ui.error.Error;
 import ui.error.ErrorListener;
 import netlist.Netlist;
-import netlist.NetlistImp;
 import ui.clipboard.Clipboard;
 import ui.error.ErrorHandler;
-import ui.components.ImageSelectableComponent;
+import ui.components.VisualComponent;
 import ui.components.SelectableComponent;
 import ui.components.SelectionState;
 
@@ -820,7 +819,6 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
             if(isValidComponent(componentName)){
                 getActiveCircuit().removeUnFixedComponents();
                 getActiveCircuit().resetActiveComponents();
-
                 CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
                     componentName,                                              // properties[0] = componentName
                     ((OptionsPanel) Options).getComponentRotation(),            // properties[1] = rotation
@@ -1344,12 +1342,12 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     }
     
     /**
-     * Register a new Component Netlist with the editor. All logicalComponent in the netlist 
+     * Register a new Component Netlist with the editor. All components in the netlist 
      * will be made available in the toolbox for use in circuits.
      * 
      * @param nl The netlist to add.
      */
-    public void addNetlist(NetlistImp nl){
+    public void addNetlist(Netlist nl){
         if(!nl.keySet().isEmpty()){
             netlists.add(nl);
             
@@ -1380,10 +1378,10 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     
     /**
      * Checks whether a the key identifies either a valid implementation of a Selectable
-     * Component which can be drawn on the circuit or a logicalComponent which has a logical 
+     * Component which can be drawn on the circuit or a component which has a logical 
      * implementation but no visual representation. Components without a valid visual
      * (Selectable Component) representation are drawn dynamically from the properties of 
-     * the logical logicalComponent.
+     * the logical component.
      * 
      * @param key
      * @return is key a valid netlist key?
@@ -1450,12 +1448,12 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     } 
     
     /**
-     * Find the first drawable component class associated the key the netlists 
+     * Find the drawable component class associated the key the netlists 
      * registered with the editor.
      * 
      * @param key
      */
-    public Class<? extends SelectableComponent> getNetlistComponent(String key){
+    public Class<? extends SelectableComponent> getVisualNetlistComponent(String key){
         //Remove "Components." from begining
         if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
             key = key.substring(11); 
@@ -1464,15 +1462,14 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             if(nl.containsDrawableKey(key)){
                 return nl.getDrawableClass(key);
             }
-        }
-        
+        }        
         ErrorHandler.newError("Editor Error",
                 key + " is not a valid key for a drawable component.");
         return null;
     }
     
     /**
-     * Find the first logical component class associated the key the netlists 
+     * Find the logical component class associated the key the netlists 
      * registered with the editor.
      * 
      * @param key
@@ -1483,7 +1480,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             key = key.substring(11); 
         }
         for(Netlist nl: netlists){
-            if(nl.containsDrawableKey(key)){
+            if(nl.containsLogicKey(key)){
                 try {
                     return simitem = nl.getLogicClass(key).getConstructor().newInstance();                                                    
                 } catch (Exception e){
@@ -1493,7 +1490,22 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                 }
             }
         }
-       
+        ErrorHandler.newError("Editor Error",
+                key + " is not a valid key for a logical component.");
+        return null;
+    }
+    
+    /**
+     * TODO Write javadoc
+     * @param key
+     * @return
+     */
+    public Netlist getNetlistForKey(String key){
+        for(Netlist nl: netlists){
+            if(nl.containsLogicKey(key)){
+                return nl;
+            }
+        }
         return null;
     }
     
@@ -1642,30 +1654,30 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
     /** This class used to create a drawable component when only details of the 
      * logical component are available */
-    private class ImageSelectableComponentImpl extends ImageSelectableComponent {
+    private class ImageSelectableComponentImpl extends VisualComponent {
         private int spacing = 2*UIConstants.GRID_DOT_SPACING;
         public ImageSelectableComponentImpl(CircuitPanel parent, Point point, String key, sim.SimItem simItem) {
             super(parent, point, simitem);
-            this.componentTreeName = key;
+            this.keyName = key;
         }
 
-        @Override
-        protected void setLocalPins() {
-            localPins.clear();
-            
-            int inputPinNo = logicalComponent.getInputs().size();
-            int outputPinNo = logicalComponent.getOutputs().size();
-
-            for (int i = 0; i < inputPinNo; i++) {
-                Pin p = new Pin(0, (i + 1) * spacing, logicalComponent.getPinByName("Input" + ((inputPinNo>1)?" " +(i+1):"")));
-                localPins.add(p);
-            }
-
-            for (int i = 0; i < outputPinNo; i++) {
-                Pin p = new Pin(getWidth() + spacing, (i + 1) * spacing, logicalComponent.getPinByName("Output" + ((outputPinNo>1)?" " +(i+1):"")));
-                localPins.add(p);
-            }
-        }
+//        @Override
+//        protected void setLocalPins() {
+//            localPins.clear();
+//            
+//            int inputPinNo = logicalComponent.getInputs().size();
+//            int outputPinNo = logicalComponent.getOutputs().size();
+//
+//            for (int i = 0; i < inputPinNo; i++) {
+//                Pin p = new Pin(0, (i + 1) * spacing, logicalComponent.getPinByName("Input" + ((inputPinNo>1)?" " +(i+1):"")));
+//                localPins.add(p);
+//            }
+//
+//            for (int i = 0; i < outputPinNo; i++) {
+//                Pin p = new Pin(getWidth() + spacing, (i + 1) * spacing, logicalComponent.getPinByName("Output" + ((outputPinNo>1)?" " +(i+1):"")));
+//                localPins.add(p);
+//            }
+//        }
         
         @Override
         protected void setBoundingBox(){
@@ -1729,26 +1741,23 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
             String name = logicalComponent.getShortName();
             g.drawString(name.substring(0, Math.min(6,name.length()-1)), 10, 10);
-            
-            int inputPinNo = logicalComponent.getInputs().size();
-            int outputPinNo = logicalComponent.getOutputs().size();
-
-            for (int i = 0; i < inputPinNo; i++) {
-                Point p = new Point(0, (i + 1) * spacing);
-                g.drawLine(p.x, p.y, p.x+spacing, p.y);
-            }
-
-            for (int i = 0; i < outputPinNo; i++) {
-                Point p = new Point(getWidth() + spacing, (i + 1) * spacing);
-                g.drawLine(p.x, p.y, p.x-spacing, p.y);
-            }
+//            
+//            int inputPinNo = logicalComponent.getInputs().size();
+//            int outputPinNo = logicalComponent.getOutputs().size();
+//
+//            for (int i = 0; i < inputPinNo; i++) {
+//                Point p = new Point(0, (i + 1) * spacing);
+//                g.drawLine(p.x, p.y, p.x+spacing, p.y);
+//            }
+//
+//            for (int i = 0; i < outputPinNo; i++) {
+//                Point p = new Point(getWidth() + spacing, (i + 1) * spacing);
+//                g.drawLine(p.x, p.y, p.x-spacing, p.y);
+//            }
 
             g.translate(-getOrigin().x, -getOrigin().y);
             g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
         }
-
-        @Override
-        protected void setNetlist() {}
 
         @Override
         protected void setComponentTreeName() {}

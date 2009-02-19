@@ -40,8 +40,8 @@ public class CreateComponentCommand extends Command {
         if(parentCircuit != null){
             try {
                 if(editor.isDrawableComponent((String) properties[0])){
-                    SimItem simItem = editor.getLogicalComponent((String) properties[0]);                 
-                    sc = editor.getNetlistComponent((String) properties[0]).getConstructor(
+                    SimItem simItem = editor.getLogicalComponent((String) properties[0]);       
+                    sc = editor.getVisualNetlistComponent((String) properties[0]).getConstructor(
                             CircuitPanel.class,
                             Point.class, 
                             SimItem.class)

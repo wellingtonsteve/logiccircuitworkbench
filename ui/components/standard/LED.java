@@ -1,12 +1,14 @@
 package ui.components.standard;
 
+import java.awt.event.ActionEvent;
 import sim.LogicState;
 import ui.components.*;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
+import javax.swing.JComboBox;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -15,44 +17,33 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Matt
  */
-public class LED extends ImageSelectableComponent implements sim.pin.ValueListener{
+public class LED extends VisualComponent implements sim.pin.ValueListener{
     private boolean isOn;
     private String colour = "yellow";
-    private BufferedImage specialBi;
+    private BufferedImage yellow, red, green;
 
     public LED(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
         setSpecialImage();
         logicalComponent.getPinByName("Input").addValueListener(this);
-    }
+        ((JComboBox)nl.getProperties(keyName).getAttribute("Colour").getJComponent()).addActionListener(new ActionListener(){
 
-    @Override
-    protected void setNetlist() {
-        nl = new netlist.Standard();
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+        
+        });
     }
     
     @Override
     protected void setComponentTreeName() {
-        componentTreeName = "Standard.LED";
+        keyName = "Standard.LED";
     }
     
     protected void setSpecialImage() {
-        try {
-            if(colour==null){
-                colour = "yellow";
-            }
-            if(colour.equals("red")){
-                specialBi = ImageIO.read(getClass().getResource("/ui/images/components/default_led_on_red.png"));
-            } else if(colour.equals("green")){
-                specialBi = ImageIO.read(getClass().getResource("/ui/images/components/default_led_on_green.png"));
-            } else {
-                specialBi = ImageIO.read(getClass().getResource("/ui/images/components/default_led_on_yellow.png"));
-            }
-                    
-        } catch (IOException ex) {
-             ui.error.ErrorHandler.newError(new ui.error.Error("Initialisation Error", "Could not load \"LED On\" image.", ex));    
-             specialBi = activeBi;
-        }
+        yellow = nl.getImage(keyName, "yellow");
+        red = nl.getImage(keyName, "red");
+        green = nl.getImage(keyName, "green");
     }
     
     @Override
@@ -70,13 +61,6 @@ public class LED extends ImageSelectableComponent implements sim.pin.ValueListen
     public Point getCentre(){
         return new Point(20,10);
     }
-
-    @Override
-    public void setLocalPins() {
-        localPins.clear();
-        Pin in1 = new Pin(10, 10, logicalComponent.getPinByName("Input"));             
-        localPins.add(in1);        
-    }
         
     public void setValue(boolean isOn){
         this.isOn = isOn;
@@ -89,7 +73,13 @@ public class LED extends ImageSelectableComponent implements sim.pin.ValueListen
     @Override
     protected BufferedImage getCurrentImage(){
         if(isOn){
-            return specialBi;    
+            if(colour.equals("yellow")){
+                return yellow;
+            } else if(colour.equals("red")){
+                return red;
+            } else {
+                return green;
+            }
         } else {
             return super.getCurrentImage();            
         }    
@@ -125,7 +115,6 @@ public class LED extends ImageSelectableComponent implements sim.pin.ValueListen
 
     public void setColour(String colour) {
         this.colour = colour.toLowerCase();
-        setActiveImage();
     }
 
     public void valueChanged(sim.pin.Pin pin, LogicState value) {

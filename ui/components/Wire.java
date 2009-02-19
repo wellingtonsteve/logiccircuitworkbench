@@ -67,7 +67,7 @@ public class Wire extends SelectableComponent {
     /** {@inheritDoc} */
     @Override
     protected void setComponentTreeName() {
-        componentTreeName = "Wire";
+        keyName = "Wire";
     }
 
     /**

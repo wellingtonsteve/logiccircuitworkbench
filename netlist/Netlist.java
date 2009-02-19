@@ -1,7 +1,9 @@
 package netlist;
 
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.Set;
+import netlist.properties.Properties;
 import sim.SimItem;
 import ui.components.SelectableComponent;
 
@@ -27,39 +29,62 @@ import ui.components.SelectableComponent;
  * 
  * @author matt
  */
-public interface Netlist {
+public class Netlist{
     
+    protected HashMap<String, Properties> netlist = new HashMap<String, Properties>();
+
     /**
      * @param key
      * @return the class associated with the <code>key</code>
      */
-    public Class<? extends SelectableComponent> getDrawableClass(String key);
-    
+    public Class<? extends SelectableComponent> getDrawableClass(String key) {
+        return netlist.get(key).getVisualComponentClass();
+    }
+
     /**
      * @param key
      * @return the class associated with the <code>key</code>
      */
-    public BufferedImage getImage(String key);
-  
+    public BufferedImage getImage(String key, String name) {
+        return netlist.get(key).getImage(name);
+    }
+
     /**
      * @param key
      * @return the class associated with the <code>key</code>
      */
-    public Class<? extends SimItem> getLogicClass(String key);
+    public Class<? extends SimItem> getLogicClass(String key) {
+        return netlist.get(key).getLogicalComponentClass();
+    }
+
+    /**
+     * @see java.util.Set
+     */
+    public Set<String> keySet() {
+        return netlist.keySet();
+    }
+
+    /**
+     * TODO: javadoc
+     */
+    public boolean containsDrawableKey(String key) {
+        return netlist.containsKey(key) && netlist.get(key).getVisualComponentClass() != null;
+    }
     
     /**
      * @see java.util.Set
      */
-    public Set<String> keySet();
+    public boolean containsLogicKey(String key) {
+        return netlist.containsKey(key);
+    }
     
     /**
-     * @see java.util.Set
+     * TODO: javadoc
+     * @param key
+     * @return
      */
-    public boolean containsDrawableKey(String key);
-    
-    /**
-     * @see java.util.Set
-     */
-    public boolean containsLogicKey(String key);
-    
+    public Properties getProperties(String key) {
+        return netlist.get(key);
+    }
+
 }

@@ -5,8 +5,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -15,7 +13,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Matt
  */
-public class Input extends ImageSelectableComponent{
+public class Input extends VisualComponent{
     private boolean isOn = false;
     private BufferedImage specialBi;
 
@@ -26,7 +24,7 @@ public class Input extends ImageSelectableComponent{
     
     @Override
     protected void setComponentTreeName() {
-        componentTreeName = "Standard.Button Source";
+        keyName = "Standard.Button Source";
     }
    
     @Override
@@ -34,11 +32,6 @@ public class Input extends ImageSelectableComponent{
         return "Button Source [On/Off]";
     }
 
-    @Override
-    protected void setNetlist() {
-        nl = new netlist.Standard();
-    }
-    
     @Override
     protected void setInvalidAreas(){
         invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x-1,(int)getOrigin().getY()-getCentre().y-1,22,22);
@@ -50,12 +43,12 @@ public class Input extends ImageSelectableComponent{
         return new Point(10,10);
     }
 
-    @Override
-    public void setLocalPins() {
-        localPins.clear();
-        Pin out1 = new Pin(30, 10, logicalComponent.getPinByName("Output"));               
-        localPins.add(out1);        
-    }
+//    @Override
+//    public void setLocalPins() {
+//        localPins.clear();
+//        Pin out1 = new Pin(30, 10, logicalComponent.getPinByName("Output"));               
+//        localPins.add(out1);        
+//    }
     
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -80,13 +73,8 @@ public class Input extends ImageSelectableComponent{
         }    
     }
     
-     protected void setSpecialImage() {
-        try {
-            specialBi = ImageIO.read(getClass().getResource("/ui/images/components/default_input_on.png"));                 
-        } catch (IOException ex) {
-             ui.error.ErrorHandler.newError(new ui.error.Error("Initialisation Error", "Could not load \"Button Source On\" image.", ex));    
-             specialBi = activeBi;
-        }
+    protected void setSpecialImage() {
+        specialBi = nl.getImage(keyName, "default_on");
     }
     
     @Override

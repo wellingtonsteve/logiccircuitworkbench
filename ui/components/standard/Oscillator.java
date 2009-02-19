@@ -8,24 +8,19 @@ import java.awt.Rectangle;
  *
  * @author Matt
  */
-public class Oscillator extends ImageSelectableComponent{
+public class Oscillator extends VisualComponent{
     public Oscillator(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
     }
     
     @Override
     protected void setComponentTreeName() {
-        componentTreeName = "Standard.Oscillator";
+        keyName = "Standard.Oscillator";
     }
    
     @Override
     public String getName(){
         return "Oscillator";
-    }
-
-    @Override
-    protected void setNetlist() {
-        nl = new netlist.Standard();
     }
     
     @Override
@@ -39,11 +34,10 @@ public class Oscillator extends ImageSelectableComponent{
         return new Point(10,10);
     }
 
-    @Override
-    public void setLocalPins() {
-        localPins.clear();
-        Pin out1 = new Pin(30, 10, logicalComponent.getPinByName("Output"));               
-        localPins.add(out1);        
-    }
-    
+//    @Override
+//    public void setLocalPins() {
+//        localPins.clear();
+//        Pin out1 = new Pin(30, 10, logicalComponent.getPinByName("Output"));               
+//        localPins.add(out1);        
+//    }
 }

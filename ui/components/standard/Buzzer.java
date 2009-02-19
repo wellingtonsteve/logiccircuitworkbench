@@ -10,20 +10,15 @@ import ui.UIConstants;
  *
  * @author Matt
  */
-public class Buzzer extends ImageSelectableComponent implements sim.pin.ValueListener{
+public class Buzzer extends VisualComponent implements sim.pin.ValueListener{
     public Buzzer(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
         logicalComponent.getPinByName("Input").addValueListener(this);
     }
 
     @Override
-    protected void setNetlist() {
-        nl = new netlist.Standard();
-    }
-    
-    @Override
     protected void setComponentTreeName() {
-        componentTreeName = "Standard.Buzzer";
+        keyName = "Standard.Buzzer";
     }
         
     @Override
@@ -42,12 +37,12 @@ public class Buzzer extends ImageSelectableComponent implements sim.pin.ValueLis
         return new Point(30,10);
     }
 
-    @Override
-    public void setLocalPins() {
-        localPins.clear();
-        Pin in1 = new Pin(10, 10, logicalComponent.getPinByName("Input"));             
-        localPins.add(in1);        
-    }
+//    @Override
+//    public void setLocalPins() {
+//        localPins.clear();
+//        Pin in1 = new Pin(10, 10, logicalComponent.getPinByName("Input"));             
+//        localPins.add(in1);        
+//    }
  
     public void valueChanged(sim.pin.Pin pin, LogicState value) {
         if(value.equals(sim.LogicState.ON)){

@@ -3,6 +3,7 @@ package ui.components;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.Map;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -14,18 +15,14 @@ import ui.UIConstants;
  *
  * @author matt
  */
-public abstract class ImageSelectableComponent extends SelectableComponent {
+public abstract class VisualComponent extends SelectableComponent {
     
-    protected Netlist nl;
     protected BufferedImage defaultBi;
     protected BufferedImage selectedBi;
     protected BufferedImage activeBi;
       
-    public ImageSelectableComponent(CircuitPanel parent, Point point, sim.SimItem logicalComponent){
+    public VisualComponent(CircuitPanel parent, Point point, sim.SimItem logicalComponent){
         super(parent, point, logicalComponent);
-        
-        setComponentTreeName();
-        setNetlist();
         
         setDefaultImage();
         setSelectedImage();
@@ -36,6 +33,18 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
         
         setSelectionState(SelectionState.DEFAULT);
     }    
+
+    protected void setDefaultImage(){        
+        defaultBi = nl.getImage(keyName, "default");
+    }
+    
+    protected void setSelectedImage(){
+        selectedBi = nl.getImage(keyName, "selected");
+    }
+    
+    protected void setActiveImage(){
+        activeBi = nl.getImage(keyName, "active");
+    }
     
     public int getWidth(){
         return getDefaultImage().getWidth();
@@ -68,18 +77,20 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
         }    
     }
 
-    protected void setDefaultImage(){        
-        defaultBi = nl.getImage(getComponentTreeName()+".default");
+    @Override
+    public void setLocalPins() {
+        localPins.clear();
+        Map<String, Point> inpins = nl.getProperties(keyName).getInputPins();
+        for(String k: inpins.keySet()){
+            localPins.add(new Pin(inpins.get(k), logicalComponent.getPinByName(k)));
+        }
+        
+        Map<String, Point> outpins = nl.getProperties(keyName).getOutputPins();
+        for(String k: outpins.keySet()){
+            localPins.add(new Pin(outpins.get(k), logicalComponent.getPinByName(k)));
+        }        
     }
     
-    protected void setSelectedImage(){
-        selectedBi = nl.getImage(getComponentTreeName()+".selected");
-    }
-    
-    protected void setActiveImage(){
-        activeBi = nl.getImage(getComponentTreeName()+".active");
-    }
-
     @Override
     public void draw(Graphics2D g) {
         super.draw(g); // Draw labels
@@ -117,8 +128,5 @@ public abstract class ImageSelectableComponent extends SelectableComponent {
         } catch (SAXException ex) {
             ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below.",ex);
         }
-    }
-       
-    protected abstract void setNetlist();
- 
+    } 
 }
