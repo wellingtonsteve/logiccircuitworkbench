@@ -31,6 +31,7 @@ import ui.command.*;
 import ui.error.Error;
 import ui.error.ErrorListener;
 import netlist.Netlist;
+import netlist.NetlistImp;
 import ui.clipboard.Clipboard;
 import ui.error.ErrorHandler;
 import ui.components.ImageSelectableComponent;
@@ -1348,7 +1349,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
      * 
      * @param nl The netlist to add.
      */
-    public void addNetlist(Netlist nl){
+    public void addNetlist(NetlistImp nl){
         if(!nl.keySet().isEmpty()){
             netlists.add(nl);
             
