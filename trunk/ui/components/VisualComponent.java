@@ -98,9 +98,9 @@ public abstract class VisualComponent extends SelectableComponent {
         g.translate(getOrigin().x, getOrigin().y);               
         g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
         for(Pin p: localPins){
-            if(p.getJoinable() instanceof sim.pin.InputPin){
+            if(p.getJoinable() instanceof sim.joinable.InputPin){
                 g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
-            } else if(p.getJoinable() instanceof sim.pin.OutputPin){
+            } else if(p.getJoinable() instanceof sim.joinable.OutputPin){
                 g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);
             }
         }        

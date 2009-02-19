@@ -2,7 +2,7 @@ package sim.componentLibrary.logicgates;
 
 import sim.componentLibrary.Component;
 import sim.*;
-import sim.pin.*;
+import sim.joinable.*;
 
 public class AndGate2Input extends Component {
     

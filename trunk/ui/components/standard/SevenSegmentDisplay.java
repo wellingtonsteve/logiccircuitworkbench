@@ -12,7 +12,7 @@ import ui.UIConstants;
  *
  * @author Matt
  */
-public class SevenSegmentDisplay extends VisualComponent implements sim.pin.ValueListener{
+public class SevenSegmentDisplay extends VisualComponent implements sim.joinable.ValueListener{
     private BufferedImage A, B, C, D, E, F, G, DP;
     private boolean isOn;
 
@@ -69,7 +69,7 @@ public class SevenSegmentDisplay extends VisualComponent implements sim.pin.Valu
         return isOn;
     }
     
-    public void valueChanged(sim.pin.Pin pin, LogicState value) {
+    public void valueChanged(sim.joinable.Pin pin, LogicState value) {
         setValue(value.equals(sim.LogicState.ON));
         parent.repaint(getBoundingBox());
     }
@@ -86,9 +86,9 @@ public class SevenSegmentDisplay extends VisualComponent implements sim.pin.Valu
         g.translate(getOrigin().x, getOrigin().y);               
         g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
         for(Pin p: localPins){
-            if(p.getJoinable() instanceof sim.pin.InputPin){
+            if(p.getJoinable() instanceof sim.joinable.InputPin){
                 g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
-            } else if(p.getJoinable() instanceof sim.pin.OutputPin){
+            } else if(p.getJoinable() instanceof sim.joinable.OutputPin){
                 g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);
             }
         }        

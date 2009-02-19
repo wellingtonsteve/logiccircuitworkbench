@@ -1,7 +1,7 @@
 package sim.componentLibrary.standard;
 
 import sim.componentLibrary.Component;
-import sim.pin.*;
+import sim.joinable.*;
 /**
  *
  * @author Stephen

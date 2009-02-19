@@ -1,7 +1,7 @@
 package sim.componentLibrary.logicgates;
 
 import sim.componentLibrary.Component;
-import sim.pin.*;
+import sim.joinable.*;
 import sim.*;
 
 public class OrGate2Input extends Component {

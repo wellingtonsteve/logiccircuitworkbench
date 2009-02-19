@@ -8,7 +8,7 @@ import sim.Simulator;
 import sim.SimulatorState;
 import sim.SimulatorStateListener;
 import sim.componentLibrary.Circuit;
-import sim.pin.Wire;
+import sim.joinable.Wire;
 import sim.componentLibrary.standard.Input;
 import ui.CircuitFrame;
 import ui.CircuitPanel;

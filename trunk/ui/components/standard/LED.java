@@ -17,7 +17,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Matt
  */
-public class LED extends VisualComponent implements sim.pin.ValueListener{
+public class LED extends VisualComponent implements sim.joinable.ValueListener{
     private boolean isOn;
     private String colour = "yellow";
     private BufferedImage yellow, red, green;
@@ -117,7 +117,7 @@ public class LED extends VisualComponent implements sim.pin.ValueListener{
         this.colour = colour.toLowerCase();
     }
 
-    public void valueChanged(sim.pin.Pin pin, LogicState value) {
+    public void valueChanged(sim.joinable.Pin pin, LogicState value) {
         setValue(value.equals(sim.LogicState.ON));
         parent.repaint(getBoundingBox());
     }
