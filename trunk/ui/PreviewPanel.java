@@ -9,7 +9,7 @@ import ui.components.SelectionState;
 
 /**
  * This panel is simply responsible for displaying a preview of a new component
- * or a currently selected component in an active circuit.
+ * or a currently selected component of the active circuit.
  * 
  * @author matt
  */

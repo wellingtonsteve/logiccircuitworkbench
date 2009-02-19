@@ -13,20 +13,15 @@ import java.awt.Rectangle;
  *
  * @author Matt
  */
-public class NandGate2Input extends ImageSelectableComponent{
+public class NandGate2Input extends VisualComponent{
 
     public NandGate2Input(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
     }
     
     @Override
-    protected void setNetlist() {
-        nl = new netlist.LogicGates();
-    }
-    
-    @Override
     protected void setComponentTreeName() {
-        componentTreeName = "Logic Gates.2 Input.NAND";
+        keyName = "Logic Gates.2 Input.NAND";
     }
     
     @Override
@@ -41,18 +36,18 @@ public class NandGate2Input extends ImageSelectableComponent{
         return new Point(30,30);
     }
     
-    @Override
-    public void setLocalPins() {
-        localPins.clear();
-        
-        Pin in1 = new Pin(10, 20, logicalComponent.getPinByName("Input 1"));
-        Pin in2 = new Pin(10, 40, logicalComponent.getPinByName("Input 2"));
-        Pin out1 = new Pin(60, 30, logicalComponent.getPinByName("Output"));
-                
-        localPins.add(in1);
-        localPins.add(in2);
-        localPins.add(out1);
-        
-    }
+//    @Override
+//    public void setLocalPins() {
+//        localPins.clear();
+//        
+//        Pin in1 = new Pin(10, 20, logicalComponent.getPinByName("Input 1"));
+//        Pin in2 = new Pin(10, 40, logicalComponent.getPinByName("Input 2"));
+//        Pin out1 = new Pin(60, 30, logicalComponent.getPinByName("Output"));
+//                
+//        localPins.add(in1);
+//        localPins.add(in2);
+//        localPins.add(out1);
+//        
+//    }
 
 }

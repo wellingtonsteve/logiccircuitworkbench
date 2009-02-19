@@ -6,15 +6,13 @@ import ui.components.*;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import ui.UIConstants;
 
 /**
  *
  * @author Matt
  */
-public class SevenSegmentDisplay extends ImageSelectableComponent implements sim.pin.ValueListener{
+public class SevenSegmentDisplay extends VisualComponent implements sim.pin.ValueListener{
     private BufferedImage A, B, C, D, E, F, G, DP;
     private boolean isOn;
 
@@ -23,30 +21,21 @@ public class SevenSegmentDisplay extends ImageSelectableComponent implements sim
         setSpecialImage();
         logicalComponent.getPinByName("Input").addValueListener(this);
     }
-
-    @Override
-    protected void setNetlist() {
-        nl = new netlist.Standard();
-    }
     
     @Override
     protected void setComponentTreeName() {
-        componentTreeName = "Standard.7 Segment Display";
+        keyName = "Standard.7 Segment Display";
     }
     
     protected void setSpecialImage() {
-        try {
-            A = ImageIO.read(getClass().getResource("/ui/images/components/default_7seg_A.png"));
-            B = ImageIO.read(getClass().getResource("/ui/images/components/default_7seg_B.png"));
-            C = ImageIO.read(getClass().getResource("/ui/images/components/default_7seg_C.png"));
-            D = ImageIO.read(getClass().getResource("/ui/images/components/default_7seg_D.png"));
-            E = ImageIO.read(getClass().getResource("/ui/images/components/default_7seg_E.png"));
-            F = ImageIO.read(getClass().getResource("/ui/images/components/default_7seg_F.png"));
-            G = ImageIO.read(getClass().getResource("/ui/images/components/default_7seg_G.png"));
-            DP = ImageIO.read(getClass().getResource("/ui/images/components/default_7seg_DP.png"));
-        } catch (IOException ex) {
-             ui.error.ErrorHandler.newError(new ui.error.Error("Initialisation Error", "Could not load \"LED On\" image.", ex));    
-        }
+        A = nl.getImage(keyName, "A");
+        B = nl.getImage(keyName, "B");
+        C = nl.getImage(keyName, "C");
+        D = nl.getImage(keyName, "D");
+        E = nl.getImage(keyName, "E");
+        F = nl.getImage(keyName, "F");
+        G = nl.getImage(keyName, "G");
+        DP = nl.getImage(keyName, "DP");
     }
     
     @Override
@@ -65,12 +54,12 @@ public class SevenSegmentDisplay extends ImageSelectableComponent implements sim
         return new Point(40,40);
     }
 
-    @Override
-    public void setLocalPins() {
-        localPins.clear();
-        Pin in1 = new Pin(10, 10, logicalComponent.getPinByName("Input"));             
-        localPins.add(in1);        
-    }
+//    @Override
+//    public void setLocalPins() {
+//        localPins.clear();
+//        Pin in1 = new Pin(10, 10, logicalComponent.getPinByName("Input"));             
+//        localPins.add(in1);        
+//    }
         
     public void setValue(boolean isOn){
         this.isOn = isOn;

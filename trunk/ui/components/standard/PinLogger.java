@@ -14,7 +14,7 @@ import ui.UIConstants;
  *
  * @author Matt
  */
-public class PinLogger extends ImageSelectableComponent implements sim.pin.ValueListener {
+public class PinLogger extends VisualComponent implements sim.pin.ValueListener {
 
     public PinLogger(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
@@ -31,13 +31,8 @@ public class PinLogger extends ImageSelectableComponent implements sim.pin.Value
     private Pin in1;
     
     @Override
-    protected void setNetlist() {
-        nl = new netlist.Standard();
-    }
-    
-    @Override
     protected void setComponentTreeName() {
-        componentTreeName = "Standard.Output Logger";
+        keyName = "Standard.Output Logger";
     }
     
     
@@ -57,12 +52,12 @@ public class PinLogger extends ImageSelectableComponent implements sim.pin.Value
         return new Point(10,10);
     }
 
-    @Override
-    public void setLocalPins() {
-        localPins.clear(); 
-        in1 = new Pin(10, 30, logicalComponent.getPinByName("Input"));
-        localPins.add(in1);        
-    }
+//    @Override
+//    public void setLocalPins() {
+//        localPins.clear(); 
+//        in1 = new Pin(10, 30, logicalComponent.getPinByName("Input"));
+//        localPins.add(in1);        
+//    }
             
     @Override
     public void draw(Graphics2D g) {

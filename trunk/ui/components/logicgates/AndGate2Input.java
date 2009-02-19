@@ -8,7 +8,7 @@ import java.awt.Rectangle;
  *
  * @author Matt
  */
-public class AndGate2Input extends ImageSelectableComponent{    
+public class AndGate2Input extends VisualComponent{    
     
     public AndGate2Input(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
@@ -26,24 +26,8 @@ public class AndGate2Input extends ImageSelectableComponent{
     }
 
     @Override
-    public void setLocalPins() {
-        localPins.clear();
-        Pin in1 = new Pin(10, 20, logicalComponent.getPinByName("Input 1"));
-        Pin in2 = new Pin(10, 40, logicalComponent.getPinByName("Input 2"));
-        Pin out1 = new Pin(60, 30, logicalComponent.getPinByName("Output"));                
-        localPins.add(in1);
-        localPins.add(in2);
-        localPins.add(out1);        
-    }
-
-    @Override
-    protected void setNetlist() {
-        nl = new netlist.LogicGates();
-    }
-
-    @Override
     protected void setComponentTreeName() {
-        componentTreeName = "Logic Gates.2 Input.AND";
+        keyName = "Logic Gates.2 Input.AND";
     }
     
 }

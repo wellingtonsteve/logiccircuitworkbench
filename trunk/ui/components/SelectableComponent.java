@@ -6,12 +6,15 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.LinkedList;
+import javax.swing.JPanel;
 import javax.xml.transform.sax.TransformerHandler;
+import netlist.Netlist;
 import sim.pin.*;
 import sim.SimItem;
 import sim.LogicState;
 import sim.SimulatorState;
 import ui.CircuitPanel;
+import ui.Editor;
 import ui.UIConstants;
 import ui.grid.ConnectionPoint;
 import ui.grid.Grid;
@@ -62,10 +65,13 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     protected CircuitPanel parent;
     
     /** @see #getComponentTreeName() */
-    protected String componentTreeName;
+    protected String keyName;
     
     /** Store the point at which this component was unfixed */
     protected Point unFixedPoint;
+    
+    /** The netlist to which this component belongs **/
+    protected Netlist nl;
     
     /**
      * Default constructor for a SelectableComponent. 
@@ -74,6 +80,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * @param origin The initial origin of this component.
      */
     public SelectableComponent(CircuitPanel parent, Point origin, SimItem logicalComponent){
+         
         this.parent = parent;
         this.logicalComponent = logicalComponent;
         if(origin == null){
@@ -83,7 +90,11 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         }
         if(logicalComponent!=null){
             this.parent.getLogicalCircuit().addSimItem(logicalComponent);
-        }        
+        }  
+        
+        setComponentTreeName();
+        this.nl = this.parent.getParentFrame().getEditor().getNetlistForKey(keyName);
+        
         setLocalPins();
         setGlobalPins();
     }
@@ -372,7 +383,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * @return The component tree name of this component
      */
     public String getComponentTreeName() {
-        return componentTreeName;
+        return keyName;
     }
 
     /**
@@ -484,6 +495,10 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         }
     }
 
+    public JPanel getOptionsPanel(){
+        return nl.getProperties(keyName).getAttributesPanel();
+    }
+    
     /**
      * Helper method to calculate the rotation of Point p about the centre Point
      * of the component in the clockwise direction.
@@ -629,7 +644,11 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
             this.simPin = simPin;
             this.simPin.addValueListener(this);
             this.joinable = simPin;
-        }   
+        }
+
+        public Pin(Point p, sim.pin.Pin pinByName) {
+            this(p.x, p.y, pinByName);
+        }
 
         /**
          * @return The component which owns this pin.

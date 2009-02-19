@@ -47,7 +47,7 @@ public class Properties {
     
     public JPanel getAttributesPanel(){
         JPanel attrPanel = new JPanel();
-        attrPanel.setLayout(new java.awt.GridLayout(2, attributes.size()));
+        attrPanel.setLayout(new java.awt.GridLayout(0,2));
         
         for(Attribute a: attributes.values()){
             attrPanel.add(new JLabel(a.getName()));
