@@ -1642,7 +1642,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     /** This class used to create a drawable component when only details of the 
      * logical component are available */
     private class ImageSelectableComponentImpl extends ImageSelectableComponent {
-        
+        private int spacing = 2*UIConstants.GRID_DOT_SPACING;
         public ImageSelectableComponentImpl(CircuitPanel parent, Point point, String key, sim.SimItem simItem) {
             super(parent, point, simitem);
             this.componentTreeName = key;
@@ -1656,12 +1656,12 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             int outputPinNo = logicalComponent.getOutputs().size();
 
             for (int i = 0; i < inputPinNo; i++) {
-                Pin p = new Pin(0, (i + 1) * UIConstants.GRID_DOT_SPACING, logicalComponent.getPinByName("Input" + ((inputPinNo>1)?" " +(i+1):"")));
+                Pin p = new Pin(0, (i + 1) * spacing, logicalComponent.getPinByName("Input" + ((inputPinNo>1)?" " +(i+1):"")));
                 localPins.add(p);
             }
 
             for (int i = 0; i < outputPinNo; i++) {
-                Pin p = new Pin(getWidth() + UIConstants.GRID_DOT_SPACING, (i + 1) * UIConstants.GRID_DOT_SPACING, logicalComponent.getPinByName("Output" + ((outputPinNo>1)?" " +(i+1):"")));
+                Pin p = new Pin(getWidth() + spacing, (i + 1) * spacing, logicalComponent.getPinByName("Output" + ((outputPinNo>1)?" " +(i+1):"")));
                 localPins.add(p);
             }
         }
@@ -1682,14 +1682,14 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
         @Override
         public int getHeight(){
-            return (Math.max(logicalComponent.getInputs().size(), logicalComponent.getOutputs().size()) + 1) * UIConstants.GRID_DOT_SPACING;
+            return (Math.max(logicalComponent.getInputs().size(), logicalComponent.getOutputs().size()) + 1) * spacing;
         }
         
         @Override
         protected void setInvalidAreas() {
             invalidArea = new java.awt.Rectangle(getOrigin().x-getCentre().x+9, 
                     getOrigin().y-getCentre().y-1, 
-                    getWidth()-UIConstants.GRID_DOT_SPACING+2, 
+                    getWidth()-spacing+2, 
                     getHeight()+2);
             invalidArea = rotate(invalidArea);
         }
@@ -1711,17 +1711,17 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
               
             if(getSelectionState().equals(SelectionState.ACTIVE)){
                 g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
-                g.drawRect(10, 0, getWidth()-UIConstants.GRID_DOT_SPACING, getHeight());
+                g.drawRect(10, 0, getWidth()-spacing, getHeight());
             } else if(getSelectionState().equals(SelectionState.HOVER)){
                 g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-                g.fillRect(10, 0, getWidth()-UIConstants.GRID_DOT_SPACING, getHeight());
+                g.fillRect(10, 0, getWidth()-spacing, getHeight());
                 g.setColor(UIConstants.HOVER_COMPONENT_COLOUR);
-                g.drawRect(10, 0, getWidth()-UIConstants.GRID_DOT_SPACING, getHeight());
+                g.drawRect(10, 0, getWidth()-spacing, getHeight());
             } else {
                 g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-                g.fillRect(10, 0, getWidth()-UIConstants.GRID_DOT_SPACING, getHeight());             
+                g.fillRect(10, 0, getWidth()-spacing, getHeight());             
                 g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-                g.drawRect(10, 0, getWidth()-UIConstants.GRID_DOT_SPACING, getHeight());
+                g.drawRect(10, 0, getWidth()-spacing, getHeight());
                 
             }            
             
@@ -1733,13 +1733,13 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             int outputPinNo = logicalComponent.getOutputs().size();
 
             for (int i = 0; i < inputPinNo; i++) {
-                Point p = new Point(0, (i + 1) * UIConstants.GRID_DOT_SPACING);
-                g.drawLine(p.x, p.y, p.x+UIConstants.GRID_DOT_SPACING, p.y);
+                Point p = new Point(0, (i + 1) * spacing);
+                g.drawLine(p.x, p.y, p.x+spacing, p.y);
             }
 
             for (int i = 0; i < outputPinNo; i++) {
-                Point p = new Point(getWidth() + UIConstants.GRID_DOT_SPACING, (i + 1) * UIConstants.GRID_DOT_SPACING);
-                g.drawLine(p.x, p.y, p.x-UIConstants.GRID_DOT_SPACING, p.y);
+                Point p = new Point(getWidth() + spacing, (i + 1) * spacing);
+                g.drawLine(p.x, p.y, p.x-spacing, p.y);
             }
 
             g.translate(-getOrigin().x, -getOrigin().y);

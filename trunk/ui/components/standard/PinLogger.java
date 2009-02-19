@@ -48,19 +48,19 @@ public class PinLogger extends ImageSelectableComponent implements sim.pin.Value
 
     @Override
     protected void setInvalidAreas(){
-        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+9,(int)getOrigin().getY()-getCentre().y+8,46,43);
+        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x,(int)getOrigin().getY()-getCentre().y,21,21);
         invalidArea = rotate(invalidArea);   
     }
     
     @Override
     public Point getCentre(){
-        return new Point(30,30);
+        return new Point(10,10);
     }
 
     @Override
     public void setLocalPins() {
         localPins.clear(); 
-        in1 = new Pin(30, 70, logicalComponent.getPinByName("Input"));
+        in1 = new Pin(10, 30, logicalComponent.getPinByName("Input"));
         localPins.add(in1);        
     }
             
@@ -69,13 +69,13 @@ public class PinLogger extends ImageSelectableComponent implements sim.pin.Value
         if(hasLabel()){
             g.setColor(UIConstants.LABEL_TEXT_COLOUR);
             g.drawString(getLabel(), 
-                    getOrigin().x+UIConstants.LABEL_COMPONENT_X_OFFSET,
-                    getOrigin().y+UIConstants.LABEL_COMPONENT_Y_OFFSET-2);
+                    getOrigin().x+UIConstants.LABEL_COMPONENT_X_OFFSET-10,
+                    getOrigin().y+UIConstants.LABEL_COMPONENT_Y_OFFSET-10);
         }
         g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);      
         g.translate(getOrigin().x, getOrigin().y);               
         g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-        g.drawLine(30, 70, 30, 48);
+        g.drawLine(10, 30, 10, 20);
         g.translate(-getOrigin().x, -getOrigin().y);
         g.drawImage(getCurrentImage(), getOrigin().x, getOrigin().y, null);
         g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
