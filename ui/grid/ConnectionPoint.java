@@ -38,17 +38,21 @@ public class ConnectionPoint extends GridObject {
     }
     
     public void addConnection(Pin p){         
-        if(!hasConnection(p)){
-            if(isConnected() && p.getParent().isFixed()){
-                for(Pin pin: connections){
-                    sim.joinable.Joinable.connect(pin.getJoinable(), p.getJoinable());
-                }
-            }
-            
+        if(!hasConnection(p)){          
             p.setConnectionPoint(this);
             connections.add(p);
             
             setIsCrossover();
+            
+            // TODO: Test all connections with canconnect()
+            
+            if(isConnected() && p.getParent().isFixed() && !isCrossover){
+                for(Pin pin: connections){
+                    if(!pin.equals(p)){
+                        sim.joinable.Joinable.connect(pin.getJoinable(), p.getJoinable());
+                    }
+                }
+            }
         }        
     }
     

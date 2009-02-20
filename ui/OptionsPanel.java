@@ -2,19 +2,12 @@ package ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
-import java.awt.event.ItemEvent;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
-import java.awt.event.ItemListener;
-import javax.swing.JCheckBox;
 import ui.command.EditLabelCommand;
-import ui.components.standard.Input;
-import ui.components.standard.LED;
-import ui.components.Wire;
 import ui.components.SelectableComponent;
 import ui.error.ErrorHandler;
 
@@ -32,15 +25,12 @@ import ui.error.ErrorHandler;
 public class OptionsPanel extends JPanel{
     private PreviewPanel Preview;
     private JTextField labelTextbox = new JTextField();
-    private JComboBox ledColours = new JComboBox();
-    private JCheckBox sourceIsOn = new JCheckBox();
     private JLabel typeLabel = new JLabel();
     private JLabel titleLabel = new JLabel();
-    private JLabel blankLabel = new JLabel();
+    private JPanel componentAttributes = new JPanel();
     private SelectableComponent sc = null;
     private Editor editor;
     private String titleNew, titleOld;
-    private JLabel ledColoursLabel = new JLabel();
     private JLabel labelLabel = new JLabel();
     private double rotation = 0;
 
@@ -112,8 +102,15 @@ public class OptionsPanel extends JPanel{
             PreviewLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 88, Short.MAX_VALUE)
         );
-
         
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        
+        add(titleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 5, -1, -1));
+        add(typeLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 25, -1, -1));
+        add(labelLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 45, -1, -1));
+        add(labelTextbox, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 45, -1, -1));
+        add(componentAttributes, new org.netbeans.lib.awtextra.AbsoluteConstraints(5,80, -1, 100));
+        add(Preview, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 180, -1, -1));        
     }
 
     /**
@@ -150,30 +147,17 @@ public class OptionsPanel extends JPanel{
         if(sc != null){
             this.sc = sc;
 
-            // Update the values in different parts of the form
             setVisible(true);
-
             titleLabel.setText((editor.getActiveCircuit().getActiveComponents().contains(sc))?titleOld:titleNew);
             typeLabel.setText(sc.getName());
             labelTextbox.setText(sc.getLabel());
             labelLabel.setEnabled(true);
             labelTextbox.setEnabled(true);
-
-//            // Display component specific layout options
-//            if(sc instanceof LED){
-//                ledColours.setSelectedItem(((LED) sc).getColour());
-//            }
-//            if(sc instanceof Input){
-//                sourceIsOn.setSelected(((Input) sc).isOn());
-//            }
-//            if(sc instanceof Wire){
-//                labelLabel.setEnabled(false);
-//                labelTextbox.setEnabled(false);
-//            }
-
+            //componentAttributes = sc.getOptionsPanel();
+            //componentAttributes.repaint();
+            revalidate();
             // Cascade changes to the preview window itself
             Preview.setComponent(sc);
-            setLayoutManager();
             this.repaint();
             editor.getActiveCircuit().repaint();
         } else {
@@ -204,75 +188,4 @@ public class OptionsPanel extends JPanel{
     public Double getComponentRotation(){
         return rotation;
     }
-    
-    /**
-     * @return the current colour of the LED colours drop down box.
-     */
-    public String getLEDColour(){
-        return (String) ledColours.getSelectedItem();
-    }
-    
-    /**
-     * @return The state of the Input Source.
-     */
-    public boolean getInputSourceState(){
-        return sourceIsOn.isSelected();
-    }
-    
-    /**
-     * Layout the Panel. Dependant upon the current component.
-     */
-    public void setLayoutManager(){    
-        invalidate();
-        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        
-        add(titleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 5, -1, -1));
-        add(typeLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 25, -1, -1));
-        add(labelLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 45, -1, -1));
-        add(labelTextbox, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 45, -1, -1));
-        //add(sc.getOptionsPanel(), new org.netbeans.lib.awtextra.AbsoluteConstraints(5,80, -1, 100));
-        add(Preview, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 180, -1, -1));
-        validate();
-        repaint();
-//        org.jdesktop.layout.GroupLayout OptionsLayout = new org.jdesktop.layout.GroupLayout(this);
-//        
-//        setLayout(OptionsLayout);
-//        
-//        OptionsLayout.setHorizontalGroup(
-//            OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-//            .add(org.jdesktop.layout.GroupLayout.TRAILING, OptionsLayout.createSequentialGroup()
-//                .add(OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-//                    .add(org.jdesktop.layout.GroupLayout.LEADING, OptionsLayout.createSequentialGroup()
-//                        .addContainerGap()
-//                        .add(Preview, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-//                    .add(org.jdesktop.layout.GroupLayout.LEADING, OptionsLayout.createSequentialGroup()
-//                        .add(typeLabel))
-//                     .add(org.jdesktop.layout.GroupLayout.LEADING, OptionsLayout.createSequentialGroup()
-//                        .add(sc.getOptionsPanel()))
-//                    .add(org.jdesktop.layout.GroupLayout.LEADING, OptionsLayout.createSequentialGroup()
-//                        .add(titleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))
-//                    .add(OptionsLayout.createSequentialGroup()
-//                        .add(labelLabel)
-//                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-//                        .add(labelTextbox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 130)))
-//                     .addContainerGap())
-//        );
-//        
-//        OptionsLayout.setVerticalGroup(
-//            OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-//            .add(OptionsLayout.createSequentialGroup()
-//                .add(titleLabel)
-//                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-//                .add(typeLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-//                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-//                .add(OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-//                    .add(labelLabel)
-//                    .add(labelTextbox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 20))
-//                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)      
-//                    .add(sc.getOptionsPanel(), org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-//                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-//                .add(Preview, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-//                .addContainerGap())
-//        );
-    }   
 }
