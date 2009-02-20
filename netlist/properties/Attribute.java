@@ -30,4 +30,5 @@ public abstract class Attribute {
     public JComponent getJComponent() {
         return jcomponent;
     }
+   
 }

@@ -25,7 +25,7 @@ public class PreviewPanel extends JPanel{
     public void paintComponent(Graphics g){      
         super.paintComponent(g);
         
-        if(!(sc instanceof Wire)){
+        if(sc!=null && !(sc instanceof Wire)){
             g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
             g.fillRect(0, 0, getWidth(), getHeight());
             g.translate(-sc.getOrigin().x, -sc.getOrigin().y);

@@ -111,7 +111,7 @@ public class Standard extends Netlist{
                 addImage("E", "/ui/images/components/default_7seg_E.png");
                 addImage("F", "/ui/images/components/default_7seg_F.png");
                 addImage("G", "/ui/images/components/default_7seg_G.png");
-                addImage("DP", "/ui/images/components/default_7seg_dp.png");
+                addImage("DP", "/ui/images/components/default_7seg_DP.png");
 
                 addInputPin("Input", new Point(10,30));
             }
