@@ -44,15 +44,15 @@ public static void main(String[] args){
 //    wire3.connectPin(out.getPinByName("Input"));
 //    wire3.connectPin(and1.getPinByName("Output"));
 
-    Wire wire1 = new Wire();
-    wire1.connect(in1.getPinByName("Output"));
-    wire1.connect(and1.getPinByName("Input 1"));
-    Wire wire2 = new Wire();
-    wire2.connect(in2.getPinByName("Output"));
-    wire2.connect(and1.getPinByName("Input 2"));
-    Wire wire3 = new Wire();
-    wire3.connect(out.getPinByName("Input"));
-    wire3.connect(and1.getPinByName("Output"));
+//    Wire wire1 = new Wire();
+//    wire1.connect(in1.getPinByName("Output"));
+//    wire1.connect(and1.getPinByName("Input 1"));
+//    Wire wire2 = new Wire();
+//    wire2.connect(in2.getPinByName("Output"));
+//    wire2.connect(and1.getPinByName("Input 2"));
+//    Wire wire3 = new Wire();
+//    wire3.connect(out.getPinByName("Input"));
+//    wire3.connect(and1.getPinByName("Output"));
     
     
     //((InputPin)(and1.getPinByName("Input 1"))).connectToOutput((OutputPin)(in1.getPinByName("Output")));
