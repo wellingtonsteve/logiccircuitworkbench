@@ -37,4 +37,5 @@ public abstract class Pin extends Joinable {
     }
 
     public LogicState getValue() { return this.value; }
+    
 }
