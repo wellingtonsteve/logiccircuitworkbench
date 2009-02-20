@@ -53,7 +53,7 @@ public class LogicGates extends Netlist{
         ////////////////////////
         // Nand Gate (2 Input)
         ////////////////////////
-        Properties nand2Props = new Properties("Logic Gates.2 Input.NAND", sim.componentLibrary.logicgates.AndGate2Input.class){
+        Properties nand2Props = new Properties("Logic Gates.2 Input.NAND", sim.componentLibrary.logicgates.NandGate2Input.class){
             // Further Options
             {
                 setVisualComponentClass(ui.components.logicgates.NandGate2Input.class);
@@ -73,7 +73,7 @@ public class LogicGates extends Netlist{
         ////////////////////////
         // Nor Gate (2 Input)
         ////////////////////////
-        Properties nor2Props = new Properties("Logic Gates.2 Input.NOR", sim.componentLibrary.logicgates.AndGate2Input.class){
+        Properties nor2Props = new Properties("Logic Gates.2 Input.NOR", sim.componentLibrary.logicgates.NorGate2Input.class){
             // Further Options
             {
                 setVisualComponentClass(ui.components.logicgates.NorGate2Input.class);
