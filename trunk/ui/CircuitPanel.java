@@ -526,8 +526,8 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                                 editor.getOptionsPanel().getComponentRotation(),
                                 new Point(0, 0),
                                 editor.getOptionsPanel().getCurrentLabel(),
-                                (currentTool.equals("Standard.LED")) ? editor.getOptionsPanel().getLEDColour() : null, 
-                                (currentTool.equals("Standard.Button Source")) ? editor.getOptionsPanel().getInputSourceState() : null, 
+                                null, 
+                                null, 
                                 CircuitPanel.this
                             });
                             cmdHist.doCommand(ccc);
