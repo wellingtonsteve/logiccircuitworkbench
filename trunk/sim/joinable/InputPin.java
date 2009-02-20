@@ -37,6 +37,11 @@ public class InputPin extends Pin implements ValueListener {
     @Override
     public void setOutputSource(OutputPin joinable, ArrayList<Joinable> visited){
         super.setOutputSource(joinable, visited);
-        connectToOutput(joinable);
+        if(joinable != null){
+            connectToOutput(joinable);
+        } else{
+            disconnect();
+        }
+        
     }
 }

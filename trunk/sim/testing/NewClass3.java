@@ -13,7 +13,7 @@ import sim.joinable.*;
  */
 public class NewClass3 {
     public static void main(String[] args){
-        Joinable a = new Joinable() {public String toString(){return "a";}};
+        Joinable a = new OutputPin(null,"") {public String toString(){return "a";}};
         Joinable b = new Joinable() {public String toString(){return "b";}};
         Joinable c = new Joinable() {public String toString(){return "c";}};
         Joinable d = new Joinable() {public String toString(){return "d";}};

@@ -37,26 +37,29 @@ public class ConnectionPoint extends GridObject {
         }
     }
     
-    public void addConnection(Pin p){      
-        if(isConnected()
-                && p.getParent() instanceof Wire 
-                && p.getParent().isFixed()
-                && (((Wire) p.getParent()).getOrigin().equals(p.getGlobalLocation())
-                    || ((Wire) p.getParent()).getEndPoint().equals(p.getGlobalLocation()))){
-            
-             Wire w = (Wire) p.getParent();
-             w.getLogicalWire().connect(connections.get(0).getJoinable());
-        }
+    public void addConnection(Pin p){         
         if(!hasConnection(p)){
+            if(isConnected() && p.getParent().isFixed()){
+                for(Pin pin: connections){
+                    sim.joinable.Joinable.connect(pin.getJoinable(), p.getJoinable());
+                }
+            }
+            
             p.setConnectionPoint(this);
             connections.add(p);
-        }
-        setIsCrossover();
+            
+            setIsCrossover();
+        }        
     }
     
     public boolean removeConnection(Pin p){
         boolean retval = connections.remove(p);
-        // TODO: Remove connections in logical circuit
+        if(isConnected() && p.getParent().isFixed()){
+            for(Pin pin: connections){
+                sim.joinable.Joinable.disconnect(pin.getJoinable(), p.getJoinable());
+            }
+        }        
+        
         p.setConnectionPoint(null);
         if(noOfConnections() == 1)  {
             isCrossover = false;
