@@ -230,7 +230,7 @@ public class OptionsPanel extends JPanel{
         add(typeLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 25, -1, -1));
         add(labelLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 45, -1, -1));
         add(labelTextbox, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 45, -1, -1));
-        add(sc.getOptionsPanel(), new org.netbeans.lib.awtextra.AbsoluteConstraints(5,80, -1, 100));
+        //add(sc.getOptionsPanel(), new org.netbeans.lib.awtextra.AbsoluteConstraints(5,80, -1, 100));
         add(Preview, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 180, -1, -1));
         validate();
         repaint();

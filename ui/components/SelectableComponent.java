@@ -628,7 +628,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         public Pin(int x, int y){
             super(x,y);
             this.parent = SelectableComponent.this;
-            this.wire = (sim.joinable.Wire) SelectableComponent.this.getLogicalComponent();
+            this.wire = ((Wire) SelectableComponent.this).getLogicalWire();
             this.joinable = wire;
         }   
 
