@@ -43,25 +43,15 @@ public class Input extends VisualComponent{
         return new Point(10,10);
     }
 
-//    @Override
-//    public void setLocalPins() {
-//        localPins.clear();
-//        Pin out1 = new Pin(30, 10, logicalComponent.getPinByName("Output"));               
-//        localPins.add(out1);        
-//    }
-    
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
-        // To check that this is an activation due to a click, not a selection
-        if(e != null) { 
-            if(isOn){
-                ((sim.componentLibrary.standard.Input) logicalComponent).setValue(sim.LogicState.OFF);
-            } else {
-                ((sim.componentLibrary.standard.Input) logicalComponent).setValue(sim.LogicState.ON);
-            }
-            isOn = !isOn; 
-        } 
+        if(isOn){
+            ((sim.componentLibrary.standard.Input) logicalComponent).setValue(sim.LogicState.OFF);
+        } else {
+            ((sim.componentLibrary.standard.Input) logicalComponent).setValue(sim.LogicState.ON);
+        }
+        isOn = !isOn; 
     }
     
     @Override

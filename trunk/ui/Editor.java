@@ -43,6 +43,7 @@ import ui.components.SelectionState;
  */
 public class Editor extends javax.swing.JFrame implements ErrorListener {
     private CircuitPanel circuitPanel;
+    private OptionsPanel optionsPanel;
     private LinkedList<Netlist> netlists = new LinkedList<Netlist>();
     private Image offscreenImage;
     private Graphics offscreenGraphics;
@@ -53,6 +54,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     private LinkedList<JInternalFrame> circuitwindows = new LinkedList<JInternalFrame>();
     private sim.SimItem simitem;
     private boolean playPause = false;
+    private String ImageSelectableComponentImplKeyName;
     private WindowListener loggerWindowListener = new WindowAdapter(){
         public void windowClosed(WindowEvent e) {RecordButton.setSelected(getActiveCircuit().getLoggerWindow().isShowing()); }
     };
@@ -132,7 +134,8 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         InsertComponent = new javax.swing.JButton();
         SelectionTreeScrollPane = new javax.swing.JScrollPane();
         ComponentSelectionTree = new javax.swing.JTree();
-        Options = new OptionsPanel(this);
+        OptionsContainer = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         MainScrollPane = new javax.swing.JScrollPane();
         DesktopPane = new ScrollableDesktop();
         statusPanel = new javax.swing.JPanel();
@@ -501,19 +504,34 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         Toolbox.add(SelectionTreeScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 74, 170, 250));
 
-        org.jdesktop.layout.GroupLayout OptionsLayout = new org.jdesktop.layout.GroupLayout(Options);
-        Options.setLayout(OptionsLayout);
-        OptionsLayout.setHorizontalGroup(
-            OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+        jLabel1.setText(bundle.getString("Editor.jLabel1.text")); // NOI18N
+
+        optionsPanel = new OptionsPanel(this);
+        optionsPanel.setPreferredSize(new java.awt.Dimension(170, 250));
+        OptionsContainer.add(optionsPanel);
+
+        org.jdesktop.layout.GroupLayout OptionsContainerLayout = new org.jdesktop.layout.GroupLayout(OptionsContainer);
+        OptionsContainer.setLayout(OptionsContainerLayout);
+        OptionsContainerLayout.setHorizontalGroup(
+            OptionsContainerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 170, Short.MAX_VALUE)
+            .add(OptionsContainerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(OptionsContainerLayout.createSequentialGroup()
+                    .add(0, 65, Short.MAX_VALUE)
+                    .add(optionsPanel)
+                    .add(0, 65, Short.MAX_VALUE)))
         );
-        OptionsLayout.setVerticalGroup(
-            OptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+        OptionsContainerLayout.setVerticalGroup(
+            OptionsContainerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 250, Short.MAX_VALUE)
+            .add(OptionsContainerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(OptionsContainerLayout.createSequentialGroup()
+                    .add(0, 118, Short.MAX_VALUE)
+                    .add(optionsPanel)
+                    .add(0, 118, Short.MAX_VALUE)))
         );
 
-        Toolbox.add(Options, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 324, 170, 250));
-
+        Toolbox.add(OptionsContainer, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 330, 170, 250));
         getContentPane().add(Toolbox, java.awt.BorderLayout.WEST);
 
         MainScrollPane.setPreferredSize(new java.awt.Dimension(800, 600));
@@ -775,21 +793,20 @@ private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
 
         CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
             componentName,                                              // properties[0] = componentName
-            ((OptionsPanel) Options).getComponentRotation(),            // properties[1] = rotation
+            optionsPanel.getComponentRotation(),            // properties[1] = rotation
             new Point(0,0),                                             // properties[2] = point
-            ((OptionsPanel) Options).getCurrentLabel(),                 // properties[3] = label
+            optionsPanel.getCurrentLabel(),                 // properties[3] = label
             null,                                                       // properties[4] = LED Colour
             null                                                        // properties[5] = Input On/Off
         });
         getActiveCircuit().doCommand(ccc);
 
         // Set Options panel (Preview, Component Specific Options etc.)
-        ((OptionsPanel) Options).setComponent(ccc.getComponent());
-        ((OptionsPanel) Options).resetLabel(); // Assume user wants a different name for a different logicalComponent
-        ((OptionsPanel) Options).repaint();
+        optionsPanel.setComponent(ccc.getComponent());
+        optionsPanel.resetLabel(); // Assume user wants a different name for a different logicalComponent
 
-        Options.setVisible(true);
-        Options.repaint();
+        optionsPanel.setVisible(true);
+        optionsPanel.repaint();
 
         circuitPanel.setCurrentTool(componentName);
 
@@ -820,20 +837,19 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
                 getActiveCircuit().resetActiveComponents();
                 CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
                     componentName,                                              // properties[0] = componentName
-                    ((OptionsPanel) Options).getComponentRotation(),            // properties[1] = rotation
+                    optionsPanel.getComponentRotation(),            // properties[1] = rotation
                     new Point(0,0),                                             // properties[2] = point
-                    ((OptionsPanel) Options).getCurrentLabel(),                 // properties[3] = label
+                    optionsPanel.getCurrentLabel(),                 // properties[3] = label
                     null,// properties[4] = LED Colour
                     null// properties[5] = Input On/Off
                 });
                 getActiveCircuit().doCommand(ccc);
 
                 // Set Options panel (Preview, Component Specific Options etc.)
-                ((OptionsPanel) Options).setComponent(ccc.getComponent());
-                ((OptionsPanel) Options).resetLabel(); // Assume user wants a different name for a different logicalComponent
-                ((OptionsPanel) Options).revalidate();
-                Options.setVisible(true);
-                Options.repaint();
+                optionsPanel.setComponent(ccc.getComponent());
+                optionsPanel.resetLabel(); // Assume user wants a different name for a different logicalComponent
+                optionsPanel.setVisible(true);
+                optionsPanel.repaint();
 
                 getActiveCircuit().setCurrentTool(componentName);
 
@@ -1055,7 +1071,7 @@ private void CopyButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
 }//GEN-LAST:event_CopyButtonMouseClicked
 
 private void ComponentSelectionTreeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeFocusGained
-    ((OptionsPanel)Options).setComponentRotation(0);
+     optionsPanel.setComponentRotation(0);
     ComponentSelectionTreeValueChanged(null);
 }//GEN-LAST:event_ComponentSelectionTreeFocusGained
 
@@ -1172,7 +1188,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         
         // Remove floating components
         if(!button.equals(InsertComponent)){
-            Options.setVisible(false);
+            optionsPanel.setVisible(false);
             circuitPanel.removeUnFixedComponents();
         }
     }
@@ -1425,7 +1441,8 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             if(nl.containsLogicKey(key)){           
                 try {
                     simitem = nl.getLogicClass(key).getConstructor().newInstance();
-                    ImageSelectableComponentImpl sc = new ImageSelectableComponentImpl(getActiveCircuit(), new Point(0,0),key, simitem);
+                    ImageSelectableComponentImplKeyName = key;
+                    ImageSelectableComponentImpl sc = new ImageSelectableComponentImpl(getActiveCircuit(), new Point(0,0), simitem);
                     return sc;
                                 
                 } catch (Exception e){
@@ -1520,7 +1537,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     
     /** @return The options panel for new/selected components */
     public OptionsPanel getOptionsPanel(){
-        return (OptionsPanel) Options;
+        return  optionsPanel;
     }
     
     public Graphics getOffscreenGraphics() {
@@ -1655,28 +1672,28 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
      * logical component are available */
     private class ImageSelectableComponentImpl extends VisualComponent {
         private int spacing = 2*UIConstants.GRID_DOT_SPACING;
-        public ImageSelectableComponentImpl(CircuitPanel parent, Point point, String key, sim.SimItem simItem) {
-            super(parent, point, simitem);
-            this.keyName = key;
+        
+        public ImageSelectableComponentImpl(CircuitPanel parent, Point point, sim.SimItem simItem) {
+            super(parent, point, simitem);            
         }
+        
+        @Override
+        public void setLocalPins() {
+            localPins.clear();
+            spacing = 2*UIConstants.GRID_DOT_SPACING;
+            int inputPinNo = logicalComponent.getInputs().size();
+            int outputPinNo = logicalComponent.getOutputs().size();
 
-//        @Override
-//        protected void setLocalPins() {
-//            localPins.clear();
-//            
-//            int inputPinNo = logicalComponent.getInputs().size();
-//            int outputPinNo = logicalComponent.getOutputs().size();
-//
-//            for (int i = 0; i < inputPinNo; i++) {
-//                Pin p = new Pin(0, (i + 1) * spacing, logicalComponent.getPinByName("Input" + ((inputPinNo>1)?" " +(i+1):"")));
-//                localPins.add(p);
-//            }
-//
-//            for (int i = 0; i < outputPinNo; i++) {
-//                Pin p = new Pin(getWidth() + spacing, (i + 1) * spacing, logicalComponent.getPinByName("Output" + ((outputPinNo>1)?" " +(i+1):"")));
-//                localPins.add(p);
-//            }
-//        }
+            for (int i = 0; i < inputPinNo; i++) {
+                Pin p = new Pin(0, (i + 1) * spacing, logicalComponent.getPinByName("Input" + ((inputPinNo>1)?" " +(i+1):"")));
+                localPins.add(p);
+            }
+
+            for (int i = 0; i < outputPinNo; i++) {
+                Pin p = new Pin(getWidth() + spacing, (i + 1) * spacing, logicalComponent.getPinByName("Output" + ((outputPinNo>1)?" " +(i+1):"")));
+                localPins.add(p);
+            }
+        }
         
         @Override
         protected void setBoundingBox(){
@@ -1734,13 +1751,12 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                 g.fillRect(10, 0, getWidth()-spacing, getHeight());             
                 g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
                 g.drawRect(10, 0, getWidth()-spacing, getHeight());
-                
             }            
             
             g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
             String name = logicalComponent.getShortName();
             g.drawString(name.substring(0, Math.min(6,name.length()-1)), 10, 10);
-//            
+            
 //            int inputPinNo = logicalComponent.getInputs().size();
 //            int outputPinNo = logicalComponent.getOutputs().size();
 //
@@ -1753,13 +1769,23 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 //                Point p = new Point(getWidth() + spacing, (i + 1) * spacing);
 //                g.drawLine(p.x, p.y, p.x-spacing, p.y);
 //            }
+            
+            for(Pin p: localPins){
+                if(p.getJoinable() instanceof sim.joinable.InputPin){
+                    g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
+                } else if(p.getJoinable() instanceof sim.joinable.OutputPin){
+                    g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);
+                }
+            }      
 
             g.translate(-getOrigin().x, -getOrigin().y);
             g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
         }
 
         @Override
-        protected void setComponentTreeName() {}
+        protected void setComponentTreeName() {
+            keyName = ImageSelectableComponentImplKeyName;
+        }
 
         @Override
         protected void setDefaultImage() {
@@ -1825,7 +1851,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JButton NewButton;
     private javax.swing.JMenuItem Open;
     private javax.swing.JButton OpenFileButton;
-    private javax.swing.JPanel Options;
+    private javax.swing.JPanel OptionsContainer;
     private javax.swing.JMenuItem Paste;
     private javax.swing.JButton PasteButton;
     private javax.swing.JMenuItem Record;
@@ -1857,6 +1883,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JButton UndoButton;
     private javax.swing.JMenu Window;
     private javax.swing.JButton Wire;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;

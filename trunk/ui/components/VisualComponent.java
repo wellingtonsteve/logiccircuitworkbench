@@ -8,7 +8,6 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import ui.CircuitPanel;
-import netlist.Netlist;
 import ui.UIConstants;
 
 /**

@@ -6,7 +6,6 @@ import ui.components.*;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
 import java.awt.image.BufferedImage;
 import javax.swing.JComboBox;
 import javax.xml.transform.sax.TransformerHandler;
@@ -29,7 +28,7 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener{
         ((JComboBox)nl.getProperties(keyName).getAttribute("Colour").getJComponent()).addActionListener(new ActionListener(){
 
             public void actionPerformed(ActionEvent e) {
-                
+                colour = (String) ((JComboBox)nl.getProperties(keyName).getAttribute("Colour").getJComponent()).getSelectedItem();
             }
         
         });

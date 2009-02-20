@@ -208,32 +208,30 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * @param fixed Should the component be fixed after the translation?
      */
     public void translate(int dx, int dy, boolean fixed) {     
-        if(parent.getSimulatorState().equals(SimulatorState.STOPPED)){
-            ui.grid.Grid grid = parent.getGrid();
+        ui.grid.Grid grid = parent.getGrid();
 
-            if(grid.canTranslateComponent(this, dx, dy) || (dx == 0 && dy == 0)){
-                unsetGlobalPins();
-                grid.unmarkInvalidAreas(this);
-                this.origin.translate(dx, dy);
-                setInvalidAreas();
-                setBoundingBox();
+        if(grid.canTranslateComponent(this, dx, dy) || (dx == 0 && dy == 0)){
+            unsetGlobalPins();
+            grid.unmarkInvalidAreas(this);
+            this.origin.translate(dx, dy);
+            setInvalidAreas();
+            setBoundingBox();
 
-                // Rememeber my position at the moment I started to move
-                if(this.fixed && !fixed){
-                    unFixedPoint = origin.getLocation();
-                }
-
-                if (fixed){ 
-                    grid.markInvalidAreas(this);                 
-                }            
-                this.fixed = fixed; 
-                setGlobalPins();
-
-            // Alert the user that this was an invalid move and we cannot fix the 
-            // component here
-            } else if(!this.fixed && fixed && UIConstants.DO_SYSTEM_BEEP){
-                UIConstants.beep();  
+            // Rememeber my position at the moment I started to move
+            if(this.fixed && !fixed){
+                unFixedPoint = origin.getLocation();
             }
+
+            if (fixed){ 
+                grid.markInvalidAreas(this);                 
+            }            
+            this.fixed = fixed; 
+            setGlobalPins();
+
+        // Alert the user that this was an invalid move and we cannot fix the 
+        // component here
+        } else if(!this.fixed && fixed && UIConstants.DO_SYSTEM_BEEP){
+            UIConstants.beep();  
         }
     }
     
