@@ -1,5 +1,6 @@
 package sim.joinable;
 
+import java.util.ArrayList;
 import sim.*;
 
 public class InputPin extends Pin implements ValueListener {
@@ -31,5 +32,11 @@ public class InputPin extends Pin implements ValueListener {
 
     public OutputPin getConnectedTo() {
         return connectedTo;
+    }
+
+    @Override
+    public void setOutputSource(OutputPin joinable, ArrayList<Joinable> visited){
+        super.setOutputSource(joinable, visited);
+        connectToOutput(joinable);
     }
 }
