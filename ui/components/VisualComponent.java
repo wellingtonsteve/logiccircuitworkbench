@@ -123,6 +123,9 @@ public abstract class VisualComponent extends SelectableComponent {
             atts.addAttribute("", "", "label", "CDATA", getLabel());
             
             hd.startElement("", "", "component", atts);
+            
+            // TODO: add attributes
+            
             hd.endElement("", "", "component");
         } catch (SAXException ex) {
             ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below.",ex);

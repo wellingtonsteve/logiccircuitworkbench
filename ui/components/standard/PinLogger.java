@@ -21,14 +21,20 @@ public class PinLogger extends VisualComponent implements sim.joinable.ValueList
         this.pin = logicalComponent.getPinByName("Input");
         this.pin.addValueListener(this); 
         this.sim = parent.getSimulator();      
-        setLabel("#"+(this.parent.getPinLoggers().size()+1));
+        setLabel("#"+(this.parent.getLoggerWindow().getLoggers().size()+1));
+    }
+
+    public void print() {
+        System.out.println("##############");
+        System.out.println(getLabel());
+        for(int i = 0; i<stateLog.size();i++){
+            System.out.println(timeLog.get(i)+" "+stateLog.get(i));
+        }
     }
             
     /**
      * SELECTABLE COMPONENT CODE
      */
-    
-    private Pin in1;
     
     @Override
     protected void setComponentTreeName() {
@@ -51,13 +57,6 @@ public class PinLogger extends VisualComponent implements sim.joinable.ValueList
     public Point getCentre(){
         return new Point(10,10);
     }
-
-//    @Override
-//    public void setLocalPins() {
-//        localPins.clear(); 
-//        in1 = new Pin(10, 30, logicalComponent.getPinByName("Input"));
-//        localPins.add(in1);        
-//    }
             
     @Override
     public void draw(Graphics2D g) {

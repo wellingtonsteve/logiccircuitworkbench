@@ -42,7 +42,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
     private Point previousCurrentPoint = new Point(0,0);
     
     private LinkedList<SelectableComponent> drawnComponents = new LinkedList<SelectableComponent>();
-    private LinkedList<SelectableComponent> activeComponents = new LinkedList<SelectableComponent>();  
+    private LinkedList<SelectableComponent> activeComponents = new LinkedList<SelectableComponent>(); 
     
     private SelectableComponent temporaryComponent; // Used for reference to a selection from list of drawn components
     private SelectableComponent highlightedComponent; // The currently highlighted (SelectionState.HOVER) component    
@@ -86,9 +86,13 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
      * Remove any components that are still floating in the workarea and have not been fixed.
      */
     public void removeUnFixedComponents() {
+        loggerWindow.clearPinLoggers();
         LinkedList<SelectableComponent> fixedComponents = new LinkedList<SelectableComponent>();
         for(SelectableComponent sc: drawnComponents){
             if(sc.isFixed() && sc.getParent().equals(this)){
+                if(sc instanceof PinLogger){
+                    loggerWindow.addPinLogger((PinLogger)sc);
+                }                
                 fixedComponents.push(sc);
             } else {
                 grid.removeComponent(sc);
@@ -119,10 +123,11 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
     public void selectAllComponents() {
         activeComponents.clear();
         for (SelectableComponent sc : drawnComponents) {
-            sc.mouseClicked(null);
+            sc.setSelectionState(SelectionState.ACTIVE);
             activeComponents.add(sc);
         }
         editor.getClipboard().setHasSelection(true);
+        repaint();
     }
     
     /** @return Does this circuit has any components selected? */
@@ -136,18 +141,15 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
     }
     
     /** Delete the current selection from the circuit. */
-    public void deleteActiveComponents(){
-
+    public void deleteActiveComponents(){        
         for(SelectableComponent sc: activeComponents){
             grid.removeComponent(sc);
             logicalCircuit.removeSimItem(sc.getLogicalComponent());
-        }
-        
+        }        
         drawnComponents.removeAll(activeComponents);        
         activeComponents.clear();
         editor.getClipboard().setHasSelection(false);
         repaint();
-
     }
     
     /** @return The current selection of active components */
@@ -405,6 +407,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
     
     /** Remove the specified component from this circuit */
     public void removeComponent(SelectableComponent sc) {
+        loggerWindow.removePinLogger(sc);
         drawnComponents.remove(sc);
         grid.removeComponent(sc);
         logicalCircuit.removeSimItem(sc.getLogicalComponent());
@@ -475,17 +478,6 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
     /** @return The window that shows the graphical log of Pin Loggers in this circuit.*/
     public ViewerWindow getLoggerWindow(){
         return loggerWindow;
-    }
-        
-    /** @return A Collection of the Pin Loggers in this circuit */
-    public Collection<PinLogger> getPinLoggers() {
-        LinkedList<PinLogger> loggers = new LinkedList<PinLogger>();
-        for(SelectableComponent sc:drawnComponents){
-            if(sc.isFixed() && sc instanceof PinLogger && !loggers.contains(sc)){
-                loggers.add((PinLogger) sc);
-            }
-        }
-        return loggers;
     }
     
     /** @return The parent CircuitFrame of this circuit (i.e. the internal window

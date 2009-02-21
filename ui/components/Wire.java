@@ -87,6 +87,15 @@ public class Wire extends SelectableComponent {
         return startPoint;
     }
 
+    @Override
+    public void setParent(CircuitPanel parent) {
+        this.parent = parent;
+        this.logicalWire = new sim.joinable.Wire();
+        setLocalPins();    
+    }
+
+    
+    
     /** {@inheritDoc} */
     @Override
     public void translate(int dx, int dy, boolean fixed) {        

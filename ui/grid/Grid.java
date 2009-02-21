@@ -77,6 +77,9 @@ public class Grid {
                 }
             }
         }        
+        
+        // TODO Check connections with simulator
+        
         return true;
     }
     

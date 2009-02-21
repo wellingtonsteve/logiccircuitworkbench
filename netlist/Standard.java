@@ -21,7 +21,12 @@ public class Standard extends Netlist{
             {
                 setVisualComponentClass(ui.components.standard.Oscillator.class);
 
-                addAttribute(new TextAttribute("t1 (ms)","5"));
+                addAttribute(new TextAttribute("t1 (ms)","5"){
+                    @Override
+                    public boolean validate(Object value) {
+                        return super.validate(value);
+                    }                    
+                });
                 addAttribute(new TextAttribute("t2 (ms)","5"));
 
                 addImage("default", "/ui/images/components/default_oscillator.png");
@@ -41,7 +46,6 @@ public class Standard extends Netlist{
             {
                 setVisualComponentClass(ui.components.standard.Input.class);
 
-                addAttribute(new BooleanAttribute("Is On?", false));
                 addAttribute(new BooleanAttribute("External?", false));
 
                 addImage("default", "/ui/images/components/default_input_off.png");

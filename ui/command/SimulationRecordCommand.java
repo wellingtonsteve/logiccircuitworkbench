@@ -15,10 +15,6 @@ public class SimulationRecordCommand extends Command {
         this.logger = activeCircuit.getLoggerWindow();
         logger.setLocationRelativeTo(activeCircuit);
         logger.setVisible(!logger.isVisible());
-        
-        if(logger.isVisible()){
-            logger.addPinLoggers(activeCircuit.getPinLoggers());
-        }
     }
 
     @Override

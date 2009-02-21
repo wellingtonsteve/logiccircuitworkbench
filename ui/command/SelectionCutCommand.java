@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import ui.clipboard.ClipboardType;
 import ui.Editor;
 import ui.components.SelectableComponent;
+import ui.components.standard.PinLogger;
 
 /**
  *
@@ -18,6 +19,11 @@ public class SelectionCutCommand extends Command {
             activeCircuit.removeUnFixedComponents();
             selection.addAll(activeCircuit.getActiveComponents());
             activeCircuit.deleteActiveComponents();    
+            for(SelectableComponent sc: selection){
+                if(sc instanceof PinLogger){
+                    activeCircuit.getLoggerWindow().removePinLogger(sc);
+                }
+            }  
             editor.getClipboard().addSetToClipboard(selection, ClipboardType.Cut);
             canUndo = true;
         }

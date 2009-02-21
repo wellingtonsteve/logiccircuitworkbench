@@ -30,5 +30,9 @@ public abstract class Attribute {
     public JComponent getJComponent() {
         return jcomponent;
     }
+    
+    public boolean validate(Object value){
+        return true;
+    }
    
 }
