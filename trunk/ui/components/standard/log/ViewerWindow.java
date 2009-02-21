@@ -6,13 +6,16 @@
 
 package ui.components.standard.log;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-
 import java.util.Collection;
+import java.util.LinkedList;
 import javax.swing.JCheckBox;
+import javax.swing.JPanel;
 import ui.CircuitPanel;
+import ui.components.SelectableComponent;
 import ui.components.standard.PinLogger;
 
 /**
@@ -21,7 +24,11 @@ import ui.components.standard.PinLogger;
  */
 public class ViewerWindow extends javax.swing.JFrame {
     private CircuitPanel circuit;
-
+    private int yOffset=0;
+    private LinkedList<PinLogger> loggers = new LinkedList<PinLogger>();
+    private Long startTime = Long.MAX_VALUE;
+    private Long endTime = 0l;
+    
     /** Creates new form ViewerWindow */
     public ViewerWindow(CircuitPanel circuit) {
         this.circuit = circuit;
@@ -30,37 +37,88 @@ public class ViewerWindow extends javax.swing.JFrame {
         viewerpanel.addComponentListener(new ComponentAdapter(){
             @Override
             public void componentResized(ComponentEvent e) {
-                 PanelScollPane.getViewport().setViewPosition(new Point(viewerpanel.getWidth(),0));
+                 PanelScrollPane.getViewport().setViewPosition(new Point(viewerpanel.getWidth(),0));
             }
         });
-                  
+        
+        PanelScrollPane.getHorizontalScrollBar().setUnitIncrement(20);
+        ((Viewer)viewerpanel).getRowHeader().setPreferredSize(new Dimension(35, 500));
+        PanelScrollPane.setRowHeaderView(((Viewer)viewerpanel).getRowHeader());
     }
     
     public sim.SimulatorStateListener getSimStateListener(){
         return (Viewer)viewerpanel;
     }
     
-    public void addPinLoggers(Collection<PinLogger> cpl){
-        int yOffset = 0;
-        for(final PinLogger pl: cpl){  
-            if(((Viewer) viewerpanel).addLogger(pl)){             
-                JCheckBox newCheckBox = new JCheckBox();
-                newCheckBox.setText(pl.getLabel()); 
-                newCheckBox.setSelected(pl.isEnabled());
-                newCheckBox.addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        pl.setEnabled(!pl.isEnabled());
-                    }
-                });
-                CheckboxPanel.add(newCheckBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, yOffset, -1, -1));
-
-                yOffset += 20;
+    public void addPinLogger(PinLogger pl){
+        if(!loggers.contains(pl)){
+            loggers.add(pl);
+            if(pl.getStartTime()<startTime){
+                startTime = pl.getStartTime();
             }
+            drawCheckBoxes();
         }
-
-        pack();
+    }
+    
+    public void addPinLoggers(Collection<PinLogger> cpl){
+        for(final PinLogger pl: cpl){  
+            addPinLogger(pl);
+        }
+    }
+    
+    public void clearPinLoggers(){
+        for(PinLogger pl: loggers){
+            pl.clear();
+        }
+        loggers.clear();
+        drawCheckBoxes();
     }
 
+    public void removePinLogger(SelectableComponent sc) {
+        loggers.remove(sc);
+        drawCheckBoxes();
+    }
+
+    private void drawCheckBoxes(){
+        CheckboxPanel = new JPanel();
+        CheckboxPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        CheckBoxScrollPane.setViewportView(CheckboxPanel);
+        yOffset = 0;
+        for(final PinLogger pl: loggers){
+            JCheckBox newCheckBox = new JCheckBox();
+            newCheckBox.setText(pl.getLabel()); 
+            newCheckBox.setSelected(pl.isEnabled());
+            newCheckBox.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    pl.setEnabled(!pl.isEnabled());
+                }
+            });
+            CheckboxPanel.add(newCheckBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, yOffset, -1, -1));
+
+            yOffset += 20;
+        }
+    }
+    
+    public LinkedList<PinLogger> getLoggers(){
+        return loggers;
+    }
+    
+    public Long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Long endTime) {
+        this.endTime = endTime;
+    }
+
+    public Long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -74,8 +132,8 @@ public class ViewerWindow extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         ClearLog = new javax.swing.JButton();
-        PanelScollPane = new javax.swing.JScrollPane();
-        viewerpanel = new Viewer();
+        PanelScrollPane = new javax.swing.JScrollPane();
+        viewerpanel = new Viewer(this);
         CheckBoxScrollPane = new javax.swing.JScrollPane();
         CheckboxPanel = new javax.swing.JPanel();
 
@@ -89,6 +147,11 @@ public class ViewerWindow extends javax.swing.JFrame {
         Save.setFocusable(false);
         Save.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         Save.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        Save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveActionPerformed(evt);
+            }
+        });
         Toolbar.add(Save);
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/document-properties.png"))); // NOI18N
@@ -122,9 +185,9 @@ public class ViewerWindow extends javax.swing.JFrame {
             .addGap(0, 336, Short.MAX_VALUE)
         );
 
-        PanelScollPane.setViewportView(viewerpanel);
+        PanelScrollPane.setViewportView(viewerpanel);
 
-        getContentPane().add(PanelScollPane, java.awt.BorderLayout.CENTER);
+        getContentPane().add(PanelScrollPane, java.awt.BorderLayout.CENTER);
 
         CheckboxPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         CheckBoxScrollPane.setViewportView(CheckboxPanel);
@@ -139,11 +202,17 @@ private void ClearLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     viewerpanel.repaint();
 }//GEN-LAST:event_ClearLogActionPerformed
 
+private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
+    for(PinLogger pl: loggers){
+        pl.print();
+    }
+}//GEN-LAST:event_SaveActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane CheckBoxScrollPane;
     private javax.swing.JPanel CheckboxPanel;
     private javax.swing.JButton ClearLog;
-    private javax.swing.JScrollPane PanelScollPane;
+    private javax.swing.JScrollPane PanelScrollPane;
     private javax.swing.JButton Save;
     private javax.swing.JToolBar Toolbar;
     private javax.swing.JButton jButton3;

@@ -2,6 +2,8 @@ package ui.command;
 
 import ui.Editor;
 import ui.components.SelectableComponent;
+import ui.components.standard.log.ViewerWindow;
+import ui.components.standard.PinLogger;
 
 /**
  *
@@ -22,7 +24,11 @@ public class FixComponentCommand extends Command {
             activeCircuit.removeUnFixedComponents();
             if(!activeCircuit.containsComponent(sc)){
                 activeCircuit.addComponent(sc);
-            }           
+            }            
+            if(sc.isFixed() && sc instanceof PinLogger){
+                 ViewerWindow loggerWindow = activeCircuit.getLoggerWindow();
+                loggerWindow.addPinLogger((PinLogger) sc);
+            }
             canUndo = true;
         }
     }

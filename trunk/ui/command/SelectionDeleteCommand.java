@@ -5,6 +5,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import ui.Editor;
 import ui.components.SelectableComponent;
+import ui.components.standard.PinLogger;
 
 /**
  *
@@ -19,7 +20,12 @@ public class SelectionDeleteCommand extends Command {
 
             if(ans == JOptionPane.YES_OPTION){     
                 selection.addAll(activeCircuit.getActiveComponents());
-                activeCircuit.deleteActiveComponents();    
+                activeCircuit.deleteActiveComponents();  
+                for(SelectableComponent sc: selection){
+                    if(sc instanceof PinLogger){
+                        activeCircuit.getLoggerWindow().removePinLogger(sc);
+                    }
+                }  
                 canUndo = true;
             }  
         }

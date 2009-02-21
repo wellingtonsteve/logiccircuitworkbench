@@ -4,10 +4,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import sim.LogicState;
@@ -21,22 +19,13 @@ import ui.components.standard.PinLogger;
  */
 public class Viewer extends JPanel implements sim.SimulatorStateListener {
     public static final double scaleFactor = 1.0E-7;
+    private JPanel rowHeader = new JPanel();
+    private ViewerWindow parent;
 
-    private List<PinLogger> loggers = new LinkedList<PinLogger>();
-    private Long startTime = Long.MAX_VALUE;
-    private Long endTime = 0l;
-               
-    public boolean addLogger(PinLogger pl){
-        if(!loggers.contains(pl)){
-            loggers.add(pl);
-            if(pl.getStartTime()<startTime){
-                startTime = pl.getStartTime();
-            }
-            return true;
-        }
-        return false;
+    public Viewer(ViewerWindow parent){
+        this.parent = parent;
     }
-     
+    
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -44,11 +33,16 @@ public class Viewer extends JPanel implements sim.SimulatorStateListener {
         if(g2.getClip() == null){
             g2.setClip(((JScrollPane)getParent().getParent()).getViewportBorderBounds());
         }        
+                
+        LinkedList<PinLogger> loggers = parent.getLoggers();
+        Long startTime = parent.getStartTime();
+        Long endTime = parent.getEndTime();
         
         if(startTime == Long.MAX_VALUE){
             for(PinLogger p: loggers){
                 if(p.getStartTime()<startTime){
                     startTime = p.getStartTime();
+                    parent.setStartTime(startTime);
                 }
             }
         }
@@ -56,7 +50,7 @@ public class Viewer extends JPanel implements sim.SimulatorStateListener {
         // Background Colour
         g2.setColor(UIConstants.LOGGER_BACKGROUND_COLOUR);
         g2.fill(g2.getClipBounds());
-        
+                
         // Draw Vertical Grid Lines
         g2.setColor(UIConstants.LOGGER_GRID_COLOUR);
         double d = (startTime*(scaleFactor/100));
@@ -75,6 +69,8 @@ public class Viewer extends JPanel implements sim.SimulatorStateListener {
         float xOffset = 0f;
         float yOffset = 0.5f * UIConstants.LOGGER_VIEWER_MARGIN;
         
+        rowHeader.getGraphics().clearRect(0, 0, rowHeader.getPreferredSize().width,rowHeader.getPreferredSize().height);
+        
         for(PinLogger p: loggers){            
             
             if(p.isEnabled()){
@@ -91,7 +87,8 @@ public class Viewer extends JPanel implements sim.SimulatorStateListener {
                     // Draw the pin logger label
                     g2.translate(xOffset, yOffset);
                     g2.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-                    g2.drawString(p.getLabel(), g2.getClipBounds().x+10, (UIConstants.LOGGER_HEIGHT/2)-3);
+                    
+                    rowHeader.getGraphics().drawString(p.getLabel(), 5,(int) (yOffset + (UIConstants.LOGGER_HEIGHT / 2) - 3));
                     
                     // Draw Graphs
                     g2.setColor(UIConstants.LOGGER_GRAPH_COLOR);
@@ -133,15 +130,10 @@ public class Viewer extends JPanel implements sim.SimulatorStateListener {
                 // Move down to next pin logger
                 yOffset += UIConstants.LOGGER_VIEWER_MARGIN+UIConstants.LOGGER_HEIGHT;
             }                        
-        }                               
+        }                
     }
     
     public void clear(){
-        startTime = Long.MAX_VALUE;
-        endTime = 0l;
-        for(PinLogger p: loggers){
-            p.clear();
-        }
         Dimension b = getPreferredSize();
         setPreferredSize(new Dimension(500, b.height));
         ((JScrollPane)getParent().getParent()).getViewport().setViewPosition(new Point(0,0));
@@ -156,13 +148,20 @@ public class Viewer extends JPanel implements sim.SimulatorStateListener {
     }
 
     public void SimulationTimeChanged(long time) {
+        Long startTime = parent.getStartTime();
+        Long endTime = parent.getEndTime();
+        
         // Auto-Scrolling policy
         Dimension b = getPreferredSize();
         if((endTime-startTime)*scaleFactor > b.width){
             setPreferredSize(new Dimension((int)((endTime-startTime)*scaleFactor), b.height));
             revalidate();
         }
-        endTime = time;
-        repaint(((JScrollPane)getParent().getParent()).getViewportBorderBounds());       
+        parent.setEndTime(time);
+        repaint(((JScrollPane)getParent().getParent()).getViewport().getViewRect());       
+    }
+    
+    public JPanel getRowHeader(){
+        return rowHeader;
     }
 }

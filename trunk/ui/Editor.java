@@ -169,7 +169,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Help = new javax.swing.JMenu();
         About = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
         setTitle(bundle.getString("Editor.title")); // NOI18N
         setBounds(new java.awt.Rectangle(0, 0, 985, 750));
@@ -1490,7 +1490,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
      * 
      * @param key
      */
-    public SimItem getLogicalComponent(String key) throws NoSuchMethodException {
+    public SimItem getLogicalComponent(String key){
         //Remove "Components." from begining
         if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
             key = key.substring(11); 

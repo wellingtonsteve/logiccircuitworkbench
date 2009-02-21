@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+import sim.SimulatorState;
 
 /**
  *
@@ -46,17 +47,19 @@ public class Input extends VisualComponent{
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
-        if(isOn){
-            ((sim.componentLibrary.standard.Input) logicalComponent).setValue(sim.LogicState.OFF);
-        } else {
-            ((sim.componentLibrary.standard.Input) logicalComponent).setValue(sim.LogicState.ON);
+        if(e != null){
+            if(isOn){
+                ((sim.componentLibrary.standard.Input) logicalComponent).setValue(sim.LogicState.OFF);
+            } else {
+                ((sim.componentLibrary.standard.Input) logicalComponent).setValue(sim.LogicState.ON);
+            }
         }
         isOn = !isOn; 
     }
     
     @Override
     protected BufferedImage getCurrentImage(){
-        if(isOn){
+        if(isOn && !parent.getSimulatorState().equals(SimulatorState.STOPPED)){
             return specialBi;    
         } else {
             return super.getCurrentImage();            

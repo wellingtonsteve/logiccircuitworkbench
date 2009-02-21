@@ -12,9 +12,7 @@ import netlist.Netlist;
 import sim.joinable.*;
 import sim.SimItem;
 import sim.LogicState;
-import sim.SimulatorState;
 import ui.CircuitPanel;
-import ui.Editor;
 import ui.UIConstants;
 import ui.grid.ConnectionPoint;
 import ui.grid.Grid;
@@ -116,6 +114,9 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      */
     public void setParent(CircuitPanel parent) {
         this.parent = parent;
+        this.logicalComponent = parent.getParentFrame().getEditor().getLogicalComponent(keyName); 
+        parent.getLogicalCircuit().addSimItem(logicalComponent);
+        setLocalPins();    
     }
     
     /**
