@@ -33,16 +33,6 @@ public class FileLoader extends DefaultHandler{
     }
     
     /**
-     * A stack of components is created during the load. The methods returns the
-     * result so that we can add the components to the editor later.
-     * 
-     * @return The resulting stack of components
-     */
-    public Stack<SelectableComponent> getStack(){
-        return stack;
-    }
-    
-    /**
      * Open the File with the filename matching that in the argument. It is parsed
      * using the XMLReaderFactory class with elements realised by the startElement
      * method which follows.
@@ -118,9 +108,10 @@ public class FileLoader extends DefaultHandler{
                 // Perform the creation
                 ccc.execute(editor);
                 
-                // Push the new component on the stack and fix it to the circuit
+                // fix it to the circuit
+                ccc.getComponent().translate(0, 0, true);
                 stack.push(ccc.getComponent());
-                stack.peek().translate(0, 0, true);
+                
                 
             // Create a new wire <wire>
             } else if(qName.equals("wire")){
@@ -131,14 +122,26 @@ public class FileLoader extends DefaultHandler{
                 int endx = Integer.parseInt(attribs.getValue("endx"));
                 int endy = Integer.parseInt(attribs.getValue("endy"));
                 
+                // Create a new component with the desired attributes
+                CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
+                    "Wire",                // properties[0] = componentName
+                    0.0,           // properties[1] = rotation
+                    new Point(startx, starty),                   // properties[2] = point
+                    "",               // properties[3] = label
+                    null,                // properties[4] = LED Colour
+                    null                 // properties[5] = Input On/Off
+                });
+                
+                // Perform the creation
+                ccc.execute(editor);
+                
                 // Create the wire
-                Wire w = new Wire(editor.getActiveCircuit());
+                Wire w = (Wire) ccc.getComponent();
 
                 // Set the attributes
-                w.setStartPoint(new Point(startx, starty));
-                w.setEndPoint(new Point(endx, endy));                
-
+                w.setEndPoint(new Point(endx, endy));
                 stack.push(w);
+                
 
             // Set the attributes of a previously created component <attr>
             } else if(qName.equals("attr")){    
@@ -192,7 +195,7 @@ public class FileLoader extends DefaultHandler{
     public void endElement(String uri, String localName, String qName) throws SAXException {
         // Fix the wire only after we've added all the waypoints
         if(successful && qName.equals("wire")){
-            ((Wire) stack.peek()).translate(0, 0, true);
+            stack.peek().translate(0, 0, true);
         }
     }    
 }

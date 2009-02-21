@@ -6,7 +6,6 @@ import ui.CircuitPanel;
 import ui.Editor;
 import ui.error.ErrorHandler;
 import ui.components.SelectableComponent;
-import ui.components.standard.*;
 
 /**
  *
@@ -48,6 +47,9 @@ public class CreateComponentCommand extends Command {
                                 .newInstance(parentCircuit, (Point) properties[2], simItem);
                 } else if(properties[0].equals("Wire")){
                     sc = new ui.components.Wire(parentCircuit);
+                    if(properties[2] != null){
+                        sc.setOrigin((Point) properties[2]);
+                    }
                 } else if(editor.isValidComponent((String) properties[0])) { 
                     sc = editor.getDefaultNetlistComponent((String) properties[0]);
                     sc.setOrigin((Point) properties[2]);
@@ -55,18 +57,6 @@ public class CreateComponentCommand extends Command {
                 sc.setRotation((Double) properties[1], true);
                 if(properties[3] != null && !properties[3].equals("")) {
                     sc.setLabel((String) properties[3]);
-                }
-                
-                // Display component specific layout options
-                if(sc instanceof LED){
-                    if(properties[4] != null){
-                        ((LED) sc).setColour((String) properties[4]);
-                    }
-                }
-                if(sc instanceof Input){
-                    if(properties[5] != null){
-                        ((Input) sc).setIsOn((Boolean) properties[5]);
-                    }
                 }
 
                 parentCircuit.addComponent(sc);
@@ -77,7 +67,7 @@ public class CreateComponentCommand extends Command {
                 ErrorHandler.newError("Component Creation Error",
                         "An error occured whilst creating a new component.", ex);
             }       
-        }
+        } 
     }
     
     /**

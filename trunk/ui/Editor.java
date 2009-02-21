@@ -1203,8 +1203,8 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         // Construct the containing frame, also set position
         CircuitFrame cir = new CircuitFrame(this, untitledIndex++);
         if(getActiveCircuit() != null){
-            cir.setBounds(getActiveCircuit().getParentFrame().getBounds().x+20,
-                    getActiveCircuit().getParentFrame().getBounds().y+20,
+            cir.setBounds(getActiveCircuit().getParentFrame().getBounds().x,
+                    getActiveCircuit().getParentFrame().getBounds().y,
                     cir.getWidth(),
                     cir.getHeight());
         }

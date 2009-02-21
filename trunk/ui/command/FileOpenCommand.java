@@ -1,13 +1,11 @@
 package ui.command;
 
-import java.util.List;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import ui.Editor;
 import ui.file.FileLoader;
 import ui.file.CircuitFileFilter;
-import ui.components.SelectableComponent;
 
 /**
  *
@@ -30,8 +28,6 @@ public class FileOpenCommand extends Command {
             
             activeCircuit = editor.createBlankCircuit();    
             if(cfh.loadFile(filename)){
-                List<SelectableComponent> fileComponents = cfh.getStack();
-                activeCircuit.addComponentList(fileComponents);
                 activeCircuit.setFilename(filename);
                 editor.refreshWindowsMenu();
                 activeCircuit.getParentFrame().setTitle(filename);
