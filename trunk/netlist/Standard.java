@@ -16,7 +16,7 @@ public class Standard extends Netlist{
         ////////////////////////
         // Input (Oscillator)
         ////////////////////////
-        Properties oscillatorProps = new Properties("Standard.Oscillator", sim.componentLibrary.standard.Input.class){
+        Properties oscillatorProps = new Properties("Standard.Oscillator", sim.componentLibrary.standard.Oscillator.class){
             // Further Options
             {
                 setVisualComponentClass(ui.components.standard.Oscillator.class);
