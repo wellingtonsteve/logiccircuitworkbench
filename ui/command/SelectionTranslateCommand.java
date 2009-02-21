@@ -26,9 +26,9 @@ public class SelectionTranslateCommand extends Command {
             if(first){
                 SelectableComponent sc = selection.get(i);
                 sc.translate(dxs.get(i), dys.get(i), true);        
-                dxs.add(i, sc.getOrigin().x-sc.getUnfixedOrigin().x);
+                dxs.add(i, sc.getOrigin().x-sc.getUnfixedOrigin().x+dxs.get(i));
                 dxs.remove(i+1);
-                dys.add(i, sc.getOrigin().y-sc.getUnfixedOrigin().y);
+                dys.add(i, sc.getOrigin().y-sc.getUnfixedOrigin().y+dys.get(i));
                 dys.remove(i+1);
             } else {
                 SelectableComponent sc = selection.get(i);

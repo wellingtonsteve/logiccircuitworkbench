@@ -384,6 +384,8 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                 nowDragingComponent = true;
                 lastDragPoint = currentPoint;
                 previousCurrentPoint = new Point(0,0);
+                sc.getInvalidArea();
+                sc.getBoundingBox();
             }
             repaint(sc.getBoundingBox());
         }
@@ -523,6 +525,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                                 CircuitPanel.this
                             });
                             cmdHist.doCommand(ccc);
+                            // To redraw new component at workarea origin
                             previousCurrentPoint = new Point(0,0);
                         }
                         
@@ -771,7 +774,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
      */
     private void dragActiveSelection(MouseEvent e, boolean start, boolean finish) {
         // We don't want to translate a wire unless we are moving it with some other pieces.
-        if(activeComponents.size() == 1 && activeComponents.get(0) instanceof Wire){
+        if(activeComponents.size() == 1 && activeComponents.get(0) instanceof Wire){            
             if(finish){
                 activeComponents.get(0).mouseDraggedDropped(e);
                 nowDragingComponent = false;
@@ -783,12 +786,9 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
             previousCurrentPoint = lastDragPoint;
         // Translate selection
         } else {
-            Point anchor = (temporaryComponent==null)?null:temporaryComponent.getOrigin().getLocation();
+            Point anchor = temporaryComponent.getOrigin().getLocation();
             boolean canMoveAll = true;
             for (SelectableComponent sc : activeComponents) {
-                if(anchor==null){
-                    anchor=sc.getOrigin().getLocation();
-                }
                 int dx = currentPoint.x - anchor.x;
                 int dy = currentPoint.y - anchor.y;
                 canMoveAll &= grid.canTranslateComponent(sc, dx, dy);
@@ -803,6 +803,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                     int dy = currentPoint.y - anchor.y;
                     if(start && !finish){
                         sc.translate(currentPoint.x - lastDragPoint.x, currentPoint.y - lastDragPoint.y, false);
+                        //sc.translate(dx, dy, false);
                         sc.mouseDragged(e);
                     } else if(finish && !start){
                         sc.translate(0, 0, false);
@@ -814,6 +815,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                                 "You cannot start and finish a drag at the same time");
                     } else {
                         sc.translate(dx, dy, false);
+                        //sc.translate(currentPoint.x - lastDragPoint.x, currentPoint.y - lastDragPoint.y, false);
                         sc.mouseDragged(e);
                     }
                 }
@@ -822,7 +824,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                 }
                 repaintDirtyAreas();
                 lastDragPoint = currentPoint;
-                previousCurrentPoint = lastDragPoint;
+                previousCurrentPoint = currentPoint;
             }
         }
     }

@@ -36,7 +36,6 @@ import ui.grid.Grid;
 public class Wire extends SelectableComponent {
 
     private Point endPoint = new Point(0, 0);
-    private Point startPoint = new Point(0, 0);
     private LinkedList<Point> waypoints = new LinkedList<Point>(); // NOTE: Waypoints are specified in Global (World) Co-ordinates
     private int x1 = 0,  y1 = 0,  x2 = 0,  y2 = 0,  x3 = 0,  y3 = 0;
     private Point hoverWaypoint;
@@ -77,15 +76,6 @@ public class Wire extends SelectableComponent {
      */
     @Override
     public void setRotation(double rotation, boolean updateGrid){}
-   
-    /**
-     * {@inheritDoc}
-     * @return The Start point of a wire
-     */
-    @Override
-    public Point getOrigin() {
-        return startPoint;
-    }
 
     @Override
     public void setParent(CircuitPanel parent) {
@@ -94,8 +84,6 @@ public class Wire extends SelectableComponent {
         setLocalPins();    
     }
 
-    
-    
     /** {@inheritDoc} */
     @Override
     public void translate(int dx, int dy, boolean fixed) {        
@@ -105,22 +93,23 @@ public class Wire extends SelectableComponent {
             unsetGlobalPins();
             // Rememeber my position at the moment I started to move
             if(this.fixed && !fixed){
-                unFixedPoint = startPoint.getLocation();
+                unFixedPoint = origin.getLocation();
             }            
             // Fix loops if finished drawing wire
             if(!this.fixed && fixed){
                 fixSelfCrossover();
             }
-            this.startPoint.translate(dx, dy);
+            this.origin.translate(dx, dy);
             this.endPoint.translate(dx, dy);
             for (Point p : waypoints) {
                 p.translate(dx, dy);
             }
             setInvalidAreas();
+            setBoundingBox();
             this.fixed = fixed; 
             setLocalPins();
             setGlobalPins(); 
-            setBoundingBox();
+            
         }
     }
 
@@ -136,7 +125,7 @@ public class Wire extends SelectableComponent {
      */
     public void setEndPoint(Point endPoint) {
         this.endPoint = endPoint;      
-        if(!startPoint.equals(new Point(0,0))){
+        if(!origin.equals(new Point(0,0))){
             setLastLegPins();
         }
         
@@ -144,7 +133,7 @@ public class Wire extends SelectableComponent {
         int len = waypoints.size();
         Point start = null;
         if(len == 1){
-            start = startPoint;
+            start = origin;
         } else if (len > 1){
             start = waypoints.get(len - 2);
         }
@@ -167,7 +156,7 @@ public class Wire extends SelectableComponent {
             Point last = waypoints.removeLast();
             Point lastButOne;
             if(waypoints.size()==0){
-                lastButOne = startPoint;
+                lastButOne = origin;
             } else {
                 lastButOne = waypoints.getLast();
             } 
@@ -187,7 +176,7 @@ public class Wire extends SelectableComponent {
      * @param startPoint The new start point
      */
     public void setStartPoint(Point startPoint) {
-        this.startPoint = startPoint;
+        this.origin = startPoint;
         
         // Remove Common line waypoints for head of wire
         int len = waypoints.size();
@@ -230,7 +219,7 @@ public class Wire extends SelectableComponent {
         int len = waypoints.size();
         Point start = null;
         if(len == 1){
-            start = startPoint;
+            start = origin;
         } else if (len > 1){
             start = waypoints.get(len - 2);
         }
@@ -249,8 +238,8 @@ public class Wire extends SelectableComponent {
         localPins.clear();
         
         if (waypoints != null) {
-            Point current = startPoint;
-            Point next = startPoint;
+            Point current = origin;
+            Point next = origin;
             Point last = endPoint;
         
             LinkedList<Point> oldwaypoints = new LinkedList<Point>();
@@ -334,7 +323,7 @@ public class Wire extends SelectableComponent {
         } else {
             unsetGlobalPins();
             localPins.clear();            
-            setPinsOnLeg(startPoint, endPoint);
+            setPinsOnLeg(origin, endPoint);
             localPins.add(new Pin(endPoint.x-getOrigin().x-getCentre().x,
                     endPoint.y-getOrigin().y-getCentre().y));
             setGlobalPins();
@@ -411,7 +400,7 @@ public class Wire extends SelectableComponent {
                         hoverWaypoint.x = p.x;
                     }
                 } else if(i == 0) { 
-                    createLeg(startPoint, hoverWaypoint);
+                    createLeg(origin, hoverWaypoint);
                     Line2D.Double l2 = new Line2D.Double(x2, y2, x3, y3);
                     if(l2.ptLineDist(hoverMousePoint)==0.0){
                         hoverWaypoint.x = p.x;
@@ -494,9 +483,9 @@ public class Wire extends SelectableComponent {
      */
     private void removeCommonLineWaypoints() {
         if (waypoints != null && isFixed()) {
-            Point previous = startPoint;
-            Point current = startPoint;
-            Point next = startPoint;
+            Point previous = origin;
+            Point current = origin;
+            Point next = origin;
             Point last = endPoint;
             
             int len = waypoints.size();
@@ -582,8 +571,8 @@ public class Wire extends SelectableComponent {
         }
         
         // Are waypoints duplicating the start or end points
-        if(waypoints.contains(startPoint)){
-            waypoints.remove(startPoint);
+        if(waypoints.contains(origin)){
+            waypoints.remove(origin);
         }
         if(waypoints.contains(endPoint)){
             waypoints.remove(endPoint);
@@ -617,7 +606,7 @@ public class Wire extends SelectableComponent {
             Point p = new Point(reportedSelfCrossover.x+getOrigin().x+getCentre().x,
                     reportedSelfCrossover.y+getOrigin().y+getCentre().y);
             
-            Point current = startPoint;
+            Point current = origin;
             Point next = null;
 
             // Find the first waypoint
@@ -664,11 +653,11 @@ public class Wire extends SelectableComponent {
                 }
 
                 if(end == null){
-                    createLeg(startPoint, next);
+                    createLeg(origin, next);
                     Line2D.Double l1 = new Line2D.Double(x1, y1, x2, y2);
                     Line2D.Double l2 = new Line2D.Double(x2, y2, x3, y3);
                     if(l1.ptLineDist(p)==0.0 || l2.ptLineDist(p)==0.0){
-                            end = startPoint;
+                            end = origin;
                     } 
                 }                
             }
@@ -749,7 +738,7 @@ public class Wire extends SelectableComponent {
                 2*UIConstants.WIRE_HOVER_THICKNESS,
                 2*UIConstants.WIRE_HOVER_THICKNESS);
         
-        if(from.equals(startPoint)){
+        if(from.equals(origin)){
             horizontalHoverRectangle = new Rectangle();
         }
         
@@ -772,7 +761,7 @@ public class Wire extends SelectableComponent {
                 g.setColor(UIConstants.HOVER_WIRE_COLOUR);
                 Stroke def = g.getStroke();
                 g.setStroke(UIConstants.CONNECTED_POINT_STROKE);
-                g.drawRect(startPoint.x-3, startPoint.y-3, 7, 7); 
+                g.drawRect(origin.x-3, origin.y-3, 7, 7); 
                 g.setStroke(def);                
             } else if(isOverEndPoint){
                 g.setColor(UIConstants.HOVER_WIRE_COLOUR);
@@ -867,9 +856,9 @@ public class Wire extends SelectableComponent {
     public void draw(Graphics2D g) {
 
         // If not default values
-        if (!startPoint.equals(new Point(0, 0)) && !endPoint.equals(new Point(0, 0))) {            
+        if (!origin.equals(new Point(0, 0)) && !endPoint.equals(new Point(0, 0))) {            
             // Draw each leg along waypoints         
-            Point current = startPoint, next = startPoint;
+            Point current = origin, next = origin;
             for (Point waypoint : waypoints) {
                 next = waypoint;
                 drawLeg(g, current, next);
@@ -896,8 +885,8 @@ public class Wire extends SelectableComponent {
      */
     private void setPinsOnLeg(Point from, Point to) {
 
-        int dx = from.x - startPoint.x;
-        int dy = from.y - startPoint.y;
+        int dx = from.x - origin.x;
+        int dy = from.y - origin.y;
         Pin p;
         
         createLeg(from, to);
@@ -949,7 +938,7 @@ public class Wire extends SelectableComponent {
     @Override
     public boolean containsPoint(Point point) {
         boolean retval = false; 
-        Point current = startPoint, next = startPoint;
+        Point current = origin, next = origin;
         for (Point waypoint : waypoints) {
             next = waypoint;
 
@@ -986,7 +975,7 @@ public class Wire extends SelectableComponent {
     @Override
     public boolean containedIn(Rectangle selBox) {
         boolean retval = false;
-        Point current = startPoint, next = startPoint;
+        Point current = origin, next = origin;
         for (Point waypoint : waypoints) {
             next = waypoint;
 
@@ -1009,8 +998,8 @@ public class Wire extends SelectableComponent {
     public void createXML(TransformerHandler hd) {
         try {
             AttributesImpl atts = new AttributesImpl();
-            atts.addAttribute("", "", "startx", "CDATA", String.valueOf(startPoint.x));
-            atts.addAttribute("", "", "starty", "CDATA", String.valueOf(startPoint.y));
+            atts.addAttribute("", "", "startx", "CDATA", String.valueOf(origin.x));
+            atts.addAttribute("", "", "starty", "CDATA", String.valueOf(origin.y));
             atts.addAttribute("", "", "endx", "CDATA", String.valueOf(endPoint.x));
             atts.addAttribute("", "", "endy", "CDATA", String.valueOf(endPoint.y));
 
@@ -1033,7 +1022,7 @@ public class Wire extends SelectableComponent {
 
     @Override
     protected void setBoundingBox(){
-        boundingBox = new Rectangle(startPoint);
+        boundingBox = new Rectangle(origin);
         boundingBox.add(endPoint);
         for(Point wp: waypoints){
             boundingBox.add(wp);

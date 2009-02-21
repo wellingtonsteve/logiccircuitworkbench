@@ -45,7 +45,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     protected boolean fixed = false;    
     
     /** @see #getOrigin() */
-    private Point origin;
+    protected Point origin;
     
     /** @see #getLocalPins() */
     protected LinkedList<Pin> localPins = new LinkedList<Pin>();
@@ -214,14 +214,13 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         if(grid.canTranslateComponent(this, dx, dy) || (dx == 0 && dy == 0)){
             unsetGlobalPins();
             grid.unmarkInvalidAreas(this);
-            this.origin.translate(dx, dy);
-            setInvalidAreas();
-            setBoundingBox();
-
             // Rememeber my position at the moment I started to move
             if(this.fixed && !fixed){
                 unFixedPoint = origin.getLocation();
             }
+            this.origin.translate(dx, dy);
+            setInvalidAreas();
+            setBoundingBox();
 
             if (fixed){ 
                 grid.markInvalidAreas(this);                 
