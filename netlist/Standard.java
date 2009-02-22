@@ -66,6 +66,7 @@ public class Standard extends Netlist{
             {
                 setVisualComponentClass(ui.components.standard.LED.class);
 
+                addAttribute(new BooleanAttribute("External?", false));
                 addAttribute(new SelectionAttribute("Colour", new String[]{"Yellow","Red","Green"}));
 
                 addImage("default", "/ui/images/components/default_led.png");
