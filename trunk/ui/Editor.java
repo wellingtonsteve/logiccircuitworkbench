@@ -16,6 +16,8 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
 import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
@@ -788,7 +790,7 @@ private void SelectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
 private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WireMouseClicked
     if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){ 
         toggleToolboxButton(Wire);
-        circuitPanel.removeUnFixedComponents();
+        circuitPanel.removeUnfixedComponents();
         String componentName = "Wire";
 
         CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
@@ -833,7 +835,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
             componentName = componentName.substring(0, componentName.length() - 1);
 
             if(isValidComponent(componentName)){
-                getActiveCircuit().removeUnFixedComponents();
+                getActiveCircuit().removeUnfixedComponents();
                 getActiveCircuit().resetActiveComponents();
                 CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
                     componentName,                                              // properties[0] = componentName
@@ -1189,7 +1191,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         // Remove floating components
         if(!button.equals(InsertComponent)){
             optionsPanel.setVisible(false);
-            circuitPanel.removeUnFixedComponents();
+            circuitPanel.removeUnfixedComponents();
         }
     }
 
@@ -1825,6 +1827,16 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     
     public void statusChange(String stage, Object value) {
         cmdHist.stageChange(stage, value);
+    }
+    
+    public void wait(String msg){
+        System.out.println(msg);
+        repaint();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
+        }        
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

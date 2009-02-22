@@ -19,7 +19,6 @@ public class PinLogger extends VisualComponent implements sim.joinable.ValueList
     public PinLogger(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
         this.pin = logicalComponent.getPinByName("Input");
-        this.pin.addValueListener(this); 
         this.sim = parent.getSimulator();      
         setLabel("#"+(this.parent.getLoggerWindow().getLoggers().size()+1));
     }
@@ -74,6 +73,14 @@ public class PinLogger extends VisualComponent implements sim.joinable.ValueList
         g.drawImage(getCurrentImage(), getOrigin().x, getOrigin().y, null);
         g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
     }
+    
+    
+    @Override
+    public void addPinListeners() {
+        pin = logicalComponent.getPinByName("Input");
+        pin.addValueListener(this);
+    }
+    
     
     /**
      * PIN LOGGER CODE

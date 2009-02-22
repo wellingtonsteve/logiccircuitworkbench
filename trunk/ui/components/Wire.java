@@ -11,6 +11,8 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -81,7 +83,8 @@ public class Wire extends SelectableComponent {
     public void setParent(CircuitPanel parent) {
         this.parent = parent;
         this.logicalWire = new sim.joinable.Wire();
-        setLocalPins();    
+        refreshLocalPins();
+        setLocalPins();
     }
 
     /** {@inheritDoc} */
@@ -108,8 +111,7 @@ public class Wire extends SelectableComponent {
             setBoundingBox();
             this.fixed = fixed; 
             setLocalPins();
-            setGlobalPins(); 
-            
+            setGlobalPins();             
         }
     }
 
@@ -235,7 +237,7 @@ public class Wire extends SelectableComponent {
     /** {@inheritDoc} */
     @Override
     protected void setLocalPins() {
-        localPins.clear();
+        localPins = new LinkedList<Pin>();
         
         if (waypoints != null) {
             Point current = origin;
@@ -269,8 +271,8 @@ public class Wire extends SelectableComponent {
                 setLocalPins();
             }        
         }     
-    }    
-    
+    }   
+        
     /**
      * Similar to setLocalPins() except it only does so for the last leg. 
      * used when adding waypoints and moving the end point so that the whole wire
@@ -1042,5 +1044,32 @@ public class Wire extends SelectableComponent {
     @Override
     public int getHeight() {
         return (int) boundingBox.getHeight();
+    }
+    
+    /**
+     * Similar to clone except that the exception is caught and the Cast to 
+     * SelectableComponent is also performed.
+     * 
+     * @return Return an exact copy of this component. 
+     */
+    @Override
+    public SelectableComponent copy(){
+        try {
+            Wire retval = (Wire) this.clone();
+            retval.setOrigin(getOrigin().getLocation());
+            retval.endPoint = getEndPoint().getLocation();
+//            this.unsetGlobalPins();
+//            this.setLocalPins();
+//            this.setGlobalPins();           
+            retval.refreshLocalPins();            
+            retval.unsetGlobalPins();
+            retval.setBoundingBox();
+            retval.setInvalidAreas();
+            return retval;
+        } catch (CloneNotSupportedException ex) {
+            ui.error.ErrorHandler.newError("Component Copying Error",
+                    "It is not possible to copy this component.",ex);
+        }
+        return null;
     }
 }

@@ -29,7 +29,7 @@ public class MakeImageCommand extends Command {
             filename = c.getSelectedFile().getAbsolutePath();
             boolean drawDots = UIConstants.DRAW_GRID_DOTS;
             UIConstants.DRAW_GRID_DOTS = false;
-            activeCircuit.removeUnFixedComponents();
+            activeCircuit.removeUnfixedComponents();
             activeCircuit.createImage(filename);
             UIConstants.DRAW_GRID_DOTS = drawDots;
         }

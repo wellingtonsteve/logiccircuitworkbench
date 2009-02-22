@@ -31,7 +31,7 @@ public class Clipboard {
         clipboardPointer.push(clipboard.size());
         clipboardTypes.push(ct);
         for(SelectableComponent sc: col){
-            clipboard.add(sc.copy());
+            clipboard.add(sc);
         }
         if(canPaste()){
             for(JComponent c: pastelisteners){
@@ -45,7 +45,7 @@ public class Clipboard {
      */
     public Collection<SelectableComponent> getLastClipboardItem(){
         int n = clipboard.size();
-        Collection<SelectableComponent> retval = new LinkedList<SelectableComponent>();
+        LinkedList<SelectableComponent> retval = new LinkedList<SelectableComponent>();
         for(SelectableComponent sc: clipboard.subList(clipboardPointer.peek(), n)){
             retval.add(sc.copy());
         }

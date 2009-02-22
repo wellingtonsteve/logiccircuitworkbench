@@ -21,7 +21,7 @@ public class FixComponentCommand extends Command {
     protected void perform(Editor editor) {
         if(activeCircuit != null){        
             sc.translate(0, 0, true);
-            activeCircuit.removeUnFixedComponents();
+            activeCircuit.removeUnfixedComponents();
             if(!activeCircuit.containsComponent(sc)){
                 activeCircuit.addComponent(sc);
             }            

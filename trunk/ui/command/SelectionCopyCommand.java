@@ -14,7 +14,7 @@ public class SelectionCopyCommand extends Command {
     @Override
     protected void perform(Editor editor) {
          if(activeCircuit.hasActiveSelection()){
-            activeCircuit.removeUnFixedComponents();
+            activeCircuit.removeUnfixedComponents();
             LinkedList<SelectableComponent> selection = new LinkedList<SelectableComponent>();
             for(SelectableComponent sc: activeCircuit.getActiveComponents()){
                 selection.add(sc.copy());
