@@ -95,6 +95,8 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         
         setLocalPins();
         setGlobalPins();
+        
+        addPinListeners();
     }
     
     /**
@@ -113,9 +115,10 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * @param parent The new parent Circuit
      */
     public void setParent(CircuitPanel parent) {
-        this.parent = parent;
         this.logicalComponent = parent.getParentFrame().getEditor().getLogicalComponent(keyName); 
         parent.getLogicalCircuit().addSimItem(logicalComponent);
+        this.parent = parent;
+        refreshLocalPins();
         setLocalPins();    
     }
     
@@ -459,8 +462,13 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * of pins themselves.
      */
     protected void setLocalPins(){
-        localPins.clear();
+        localPins = new LinkedList<Pin>();
     }
+    
+    /**
+     * Register this as a listener to its pins
+     */
+    public void addPinListeners(){}
     
     /**
      * @param point The point to test.
@@ -570,6 +578,10 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     public void mouseDraggedDropped(MouseEvent e) {
         setSelectionState(SelectionState.DEFAULT);
     }
+        
+    void refreshLocalPins(){
+        localPins = new LinkedList<Pin>(); 
+    }
     
     /**
      * Similar to clone except that the exception is caught and the Cast to 
@@ -580,7 +592,10 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     public SelectableComponent copy(){
         try {
             SelectableComponent retval = (SelectableComponent) this.clone();
-            retval.setOrigin(new Point(this.getOrigin().x,this.getOrigin().y));
+            retval.refreshLocalPins();
+            retval.setOrigin(getOrigin().getLocation());
+            retval.setBoundingBox();
+            retval.setInvalidAreas();
             return retval;
         } catch (CloneNotSupportedException ex) {
             ui.error.ErrorHandler.newError("Component Copying Error",
@@ -609,7 +624,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * Pins also point to thier logical connection point, that is either the logical
      * pin (sim.pin.Pin) or the logical wire (sim.pin.Wire).
      */
-    public class Pin extends Point implements ValueListener {
+    public class Pin extends Point implements ValueListener, Cloneable {
 
         private SelectableComponent parent;
         private LogicState value;
@@ -654,7 +669,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         public SelectableComponent getParent(){
             return parent;     
         }
-
+        
         @Override
         public boolean equals(Object obj) {
             if (obj == null) {

@@ -3,6 +3,7 @@ package ui.components;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
 import java.util.Map;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
@@ -78,7 +79,7 @@ public abstract class VisualComponent extends SelectableComponent {
 
     @Override
     public void setLocalPins() {
-        localPins.clear();
+        localPins = new LinkedList<Pin>();
         Map<String, Point> inpins = nl.getProperties(keyName).getInputPins();
         for(String k: inpins.keySet()){
             localPins.add(new Pin(inpins.get(k), logicalComponent.getPinByName(k)));

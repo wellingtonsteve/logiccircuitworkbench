@@ -53,14 +53,7 @@ public class SevenSegmentDisplay extends VisualComponent implements sim.joinable
     public Point getCentre(){
         return new Point(40,40);
     }
-
-//    @Override
-//    public void setLocalPins() {
-//        localPins.clear();
-//        Pin in1 = new Pin(10, 10, logicalComponent.getPinByName("Input"));             
-//        localPins.add(in1);        
-//    }
-        
+ 
     public void setValue(boolean isOn){
         this.isOn = isOn;
     }

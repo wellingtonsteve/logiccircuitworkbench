@@ -16,7 +16,7 @@ public class SelectionCutCommand extends Command {
     @Override
     protected void perform(Editor editor) {
          if(activeCircuit.hasActiveSelection()){
-            activeCircuit.removeUnFixedComponents();
+            activeCircuit.removeUnfixedComponents();
             selection.addAll(activeCircuit.getActiveComponents());
             activeCircuit.deleteActiveComponents();    
             for(SelectableComponent sc: selection){

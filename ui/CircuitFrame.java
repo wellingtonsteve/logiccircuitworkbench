@@ -133,4 +133,3 @@ public class CircuitFrame extends JInternalFrame{
         return circuitPanel.getCommandHistory().isDirty();
     }
 }
-

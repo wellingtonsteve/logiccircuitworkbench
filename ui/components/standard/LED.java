@@ -24,7 +24,6 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener{
     public LED(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
         setSpecialImage();
-        logicalComponent.getPinByName("Input").addValueListener(this);
         ((JComboBox)nl.getProperties(keyName).getAttribute("Colour").getJComponent()).addActionListener(new ActionListener(){
 
             public void actionPerformed(ActionEvent e) {
@@ -32,6 +31,11 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener{
             }
         
         });
+    }
+
+    @Override
+    public void addPinListeners() {
+        logicalComponent.getPinByName("Input").addValueListener(this);
     }
     
     @Override

@@ -58,13 +58,12 @@ public class ConnectionPoint extends GridObject {
     
     public boolean removeConnection(Pin p){
         boolean retval = connections.remove(p);
-        if(isConnected() && p.getParent().isFixed()){
+        if(retval && isConnected() && p.getParent().isFixed()){
             for(Pin pin: connections){
                 sim.joinable.Joinable.disconnect(pin.getJoinable(), p.getJoinable());
             }
-        }        
-        
-        p.setConnectionPoint(null);
+        }                
+        if(retval){p.setConnectionPoint(null);}
         if(noOfConnections() == 1)  {
             isCrossover = false;
         }

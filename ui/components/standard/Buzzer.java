@@ -13,7 +13,6 @@ import ui.UIConstants;
 public class Buzzer extends VisualComponent implements sim.joinable.ValueListener{
     public Buzzer(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
-        logicalComponent.getPinByName("Input").addValueListener(this);
     }
 
     @Override
@@ -37,12 +36,10 @@ public class Buzzer extends VisualComponent implements sim.joinable.ValueListene
         return new Point(30,10);
     }
 
-//    @Override
-//    public void setLocalPins() {
-//        localPins.clear();
-//        Pin in1 = new Pin(10, 10, logicalComponent.getPinByName("Input"));             
-//        localPins.add(in1);        
-//    }
+    @Override
+    public void addPinListeners() {
+        logicalComponent.getPinByName("Input").addValueListener(this);
+    }    
  
     public void valueChanged(sim.joinable.Pin pin, LogicState value) {
         if(value.equals(sim.LogicState.ON)){
