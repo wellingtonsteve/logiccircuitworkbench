@@ -20,7 +20,7 @@ public class RotateLeftCommand extends Command {
 
             item.setRotation(item.getRotation() - Math.PI/2, true);
             editor.getOptionsPanel().setComponentRotation(item.getRotation());
-            editor.getOptionsPanel().repaint();
+            editor.repaintOptionsPanel();
 
             activeCircuit.repaint();
             
@@ -28,7 +28,7 @@ public class RotateLeftCommand extends Command {
                 && !activeCircuit.getCurrentTool().equals("Wire") 
                 && !activeCircuit.getCurrentTool().equals("Select")){
             editor.getOptionsPanel().setComponentRotation(editor.getOptionsPanel().getSelectableComponent().getRotation() - Math.PI/2);
-            editor.getOptionsPanel().repaint();
+            editor.repaintOptionsPanel();
         }
     }
     

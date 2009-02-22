@@ -1,13 +1,11 @@
 package ui.components.standard;
 
-import java.awt.event.ActionEvent;
 import sim.LogicState;
+import sim.SimulatorState;
 import ui.components.*;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import javax.swing.JComboBox;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -16,7 +14,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Matt
  */
-public class LED extends VisualComponent implements sim.joinable.ValueListener{
+public class LED extends VisualComponent implements sim.joinable.ValueListener, sim.SimulatorStateListener{
     private boolean isOn;
     private String colour = "yellow";
     private BufferedImage yellow, red, green;
@@ -24,18 +22,12 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener{
     public LED(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
         super(parent, point, simItem);
         setSpecialImage();
-        ((JComboBox)nl.getProperties(keyName).getAttribute("Colour").getJComponent()).addActionListener(new ActionListener(){
-
-            public void actionPerformed(ActionEvent e) {
-                colour = (String) ((JComboBox)nl.getProperties(keyName).getAttribute("Colour").getJComponent()).getSelectedItem();
-            }
-        
-        });
     }
 
     @Override
     public void addPinListeners() {
         logicalComponent.getPinByName("Input").addValueListener(this);
+        parent.getSimulator().addStateListener(this);
     }
     
     @Override
@@ -123,5 +115,16 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener{
     public void valueChanged(sim.joinable.Pin pin, LogicState value) {
         setValue(value.equals(sim.LogicState.ON));
         parent.repaint(getBoundingBox());
+    }
+
+    @Override
+    public void SimulatorStateChanged(SimulatorState state) {
+        if(state.equals(SimulatorState.STOPPED)){
+            isOn = false;
+        }
+    }
+
+    @Override
+    public void SimulationTimeChanged(long time) {
     }
 }

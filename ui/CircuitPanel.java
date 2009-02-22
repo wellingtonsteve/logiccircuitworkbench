@@ -605,7 +605,8 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                         }
                     }
                     // Highlight connection point?
-                    if (grid.isConnectionPoint(currentPoint)) {
+                    if (grid.isConnectionPoint(currentPoint) 
+                            && grid.getConnectionPoint(currentPoint).noOfConnections() > 1) {
                         grid.setActivePoint(currentPoint, true);
                     }
                 }
@@ -640,8 +641,8 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                         // Activate any connection points that overlap pins on the current non-fixed component
                         for(Pin local: sc.getPins()){
                             Point p = local.getGlobalLocation();
-                            if(grid.isConnectionPoint(p) 
-                                    && grid.getConnectionPoint(p).noOfConnections()>1){
+                            if(grid.isConnectionPoint(p)
+                                    && grid.getConnectionPoint(p).noOfConnections() > 1){
                                 grid.setActivePoint(p,true);
                             }
                         }
@@ -681,7 +682,9 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
 
                     Wire w = (Wire) drawnComponents.peek();
                     w.setEndPoint(currentPoint);
-                    if(grid.isConnectionPoint(currentPoint)){
+                    if(grid.isConnectionPoint(currentPoint) 
+                            && (w.getOrigin().equals(new Point(0,0))
+                            || grid.getConnectionPoint(currentPoint).noOfConnections() > 1)){
                         grid.setActivePoint(currentPoint, true);
                     }
 
@@ -691,7 +694,6 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                     repaintDirtyAreas();
                 }
             } else if(nowDragingComponent){
-                System.out.println("here");
                 dragActiveSelection(e,false,false);
             }
         }                   
@@ -752,7 +754,8 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                     w.setEndPoint(currentPoint);                        
 
                     // Highlight connection point?
-                    if(grid.isConnectionPoint(currentPoint)){
+                    if(grid.isConnectionPoint(currentPoint)
+                            && grid.getConnectionPoint(currentPoint).noOfConnections() > 1){
                         grid.setActivePoint(currentPoint, true);
                     }
                     
