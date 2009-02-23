@@ -3,18 +3,19 @@ package ui.components.standard;
 import ui.components.*;
 import java.awt.Point;
 import java.awt.Rectangle;
+import netlist.properties.Properties;
 
 /**
  *
  * @author Matt
  */
 public class Oscillator extends VisualComponent{
-    public Oscillator(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
-        super(parent, point, simItem);
+    public Oscillator(ui.CircuitPanel parent, Point point, sim.SimItem simItem, Properties properties) {
+        super(parent, point, simItem,properties);
     }
     
     @Override
-    protected void setComponentTreeName() {
+    protected void setKeyName() {
         keyName = "Standard.Oscillator";
     }
    

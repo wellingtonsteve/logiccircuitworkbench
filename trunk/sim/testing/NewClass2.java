@@ -74,18 +74,18 @@ public static void main(String[] args){
         });
     
     sim.play();
-    PinLogger pl1 = new PinLogger(null, new Point(0,0), out);
-    PinLogger pl2 = new PinLogger(null, new Point(0,0), in1);
-    PinLogger pl3 = new PinLogger(null, new Point(0,0), in2);
-    LinkedList<PinLogger> coll = new LinkedList<PinLogger>();
-    coll.add(pl1);
-    coll.add(pl2);
-    coll.add(pl3);
-    ViewerWindow vw = new ViewerWindow((CircuitPanel)null);
-    sim.addStateListener(vw.getSimStateListener());
-    vw.addPinLoggers(coll);
-    vw.setVisible(true);
-        
+//    PinLogger pl1 = new PinLogger(null, new Point(0,0), out);
+//    PinLogger pl2 = new PinLogger(null, new Point(0,0), in1);
+//    PinLogger pl3 = new PinLogger(null, new Point(0,0), in2);
+//    LinkedList<PinLogger> coll = new LinkedList<PinLogger>();
+//    coll.add(pl1);
+//    coll.add(pl2);
+//    coll.add(pl3);
+//    ViewerWindow vw = new ViewerWindow((CircuitPanel)null);
+//    sim.addStateListener(vw.getSimStateListener());
+//    vw.addPinLoggers(coll);
+//    vw.setVisible(true);
+//        
 }
     
 }

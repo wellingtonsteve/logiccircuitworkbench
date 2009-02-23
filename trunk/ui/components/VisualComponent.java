@@ -21,8 +21,8 @@ public abstract class VisualComponent extends SelectableComponent {
     protected BufferedImage selectedBi;
     protected BufferedImage activeBi;
       
-    public VisualComponent(CircuitPanel parent, Point point, sim.SimItem logicalComponent){
-        super(parent, point, logicalComponent);
+    public VisualComponent(CircuitPanel parent, Point point, sim.SimItem logicalComponent,netlist.properties.Properties properties){
+        super(parent, point, logicalComponent, properties);
         
         setDefaultImage();
         setSelectedImage();
@@ -35,15 +35,15 @@ public abstract class VisualComponent extends SelectableComponent {
     }    
 
     protected void setDefaultImage(){        
-        defaultBi = nl.getImage(keyName, "default");
+        defaultBi = properties.getImage("default");
     }
     
     protected void setSelectedImage(){
-        selectedBi = nl.getImage(keyName, "selected");
+        selectedBi = properties.getImage("selected");
     }
     
     protected void setActiveImage(){
-        activeBi = nl.getImage(keyName, "active");
+        activeBi = properties.getImage("active");
     }
     
     public int getWidth(){
@@ -80,12 +80,12 @@ public abstract class VisualComponent extends SelectableComponent {
     @Override
     public void setLocalPins() {
         localPins = new LinkedList<Pin>();
-        Map<String, Point> inpins = nl.getProperties(keyName).getInputPins();
+        Map<String, Point> inpins = properties.getInputPins();
         for(String k: inpins.keySet()){
             localPins.add(new Pin(inpins.get(k), logicalComponent.getPinByName(k)));
         }
         
-        Map<String, Point> outpins = nl.getProperties(keyName).getOutputPins();
+        Map<String, Point> outpins = properties.getOutputPins();
         for(String k: outpins.keySet()){
             localPins.add(new Pin(outpins.get(k), logicalComponent.getPinByName(k)));
         }        

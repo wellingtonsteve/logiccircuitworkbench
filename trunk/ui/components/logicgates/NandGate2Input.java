@@ -15,12 +15,12 @@ import java.awt.Rectangle;
  */
 public class NandGate2Input extends VisualComponent{
 
-    public NandGate2Input(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
-        super(parent, point, simItem);
+    public NandGate2Input(ui.CircuitPanel parent, Point point, sim.SimItem simItem, netlist.properties.Properties properties) {
+        super(parent, point, simItem,properties);
     }
     
     @Override
-    protected void setComponentTreeName() {
+    protected void setKeyName() {
         keyName = "Logic Gates.2 Input.NAND";
     }
     

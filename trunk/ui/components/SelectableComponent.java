@@ -6,9 +6,12 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.xml.transform.sax.TransformerHandler;
 import netlist.Netlist;
+import netlist.properties.Properties;
 import sim.joinable.*;
 import sim.SimItem;
 import sim.LogicState;
@@ -68,8 +71,8 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     /** Store the point at which this component was unfixed */
     protected Point unFixedPoint;
     
-    /** The netlist to which this component belongs **/
-    protected Netlist nl;
+    /** The properties collection for this component **/    
+    protected Properties properties;
     
     /**
      * Default constructor for a SelectableComponent. 
@@ -77,10 +80,11 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * @param parent The parent circuit panel to which this component wll be drawn.
      * @param origin The initial origin of this component.
      */
-    public SelectableComponent(CircuitPanel parent, Point origin, SimItem logicalComponent){
-         
+    public SelectableComponent(CircuitPanel parent, Point origin, SimItem logicalComponent, Properties properties){
+
         this.parent = parent;
         this.logicalComponent = logicalComponent;
+        this.properties = properties;
         if(origin == null){
             this.origin = new Point(0,0);
         } else {
@@ -90,13 +94,12 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
             this.parent.getLogicalCircuit().addSimItem(logicalComponent);
         }  
         
-        setComponentTreeName();
-        this.nl = this.parent.getParentFrame().getEditor().getNetlistForKey(keyName);
+        setKeyName();
         
         setLocalPins();
         setGlobalPins();
         
-        addPinListeners();
+        addListeners();
     }
     
     /**
@@ -115,7 +118,11 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * @param parent The new parent Circuit
      */
     public void setParent(CircuitPanel parent) {
-        this.logicalComponent = parent.getParentFrame().getEditor().getLogicalComponent(keyName); 
+        try {
+            this.logicalComponent = properties.getLogicalComponentClass().getConstructor().newInstance();
+        } catch (Exception ex) {
+            Logger.getLogger(SelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+        }
         parent.getLogicalCircuit().addSimItem(logicalComponent);
         this.parent = parent;
         refreshLocalPins();
@@ -394,7 +401,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * 
      * The component tree name must be set in all subclasses.
      */
-    protected abstract void setComponentTreeName();
+    protected abstract void setKeyName();
 
     /**
      * Convience method to record the current state of the object and then to change
@@ -468,7 +475,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     /**
      * Register this as a listener to its pins
      */
-    public void addPinListeners(){}
+    public void addListeners(){}
     
     /**
      * @param point The point to test.
@@ -502,7 +509,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     }
 
     public JPanel getOptionsPanel(){
-        return nl.getProperties(keyName).getAttributesPanel();
+        return properties.getAttributesPanel();
     }
     
     /**
@@ -581,6 +588,11 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         
     void refreshLocalPins(){
         localPins = new LinkedList<Pin>(); 
+    }
+    
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+        this.logicalComponent.setProperties(this.properties);
     }
     
     /**

@@ -4,6 +4,7 @@ import sim.LogicState;
 import ui.components.*;
 import java.awt.Point;
 import java.awt.Rectangle;
+import netlist.properties.Properties;
 import ui.UIConstants;
 
 /**
@@ -11,12 +12,12 @@ import ui.UIConstants;
  * @author Matt
  */
 public class Buzzer extends VisualComponent implements sim.joinable.ValueListener{
-    public Buzzer(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
-        super(parent, point, simItem);
+    public Buzzer(ui.CircuitPanel parent, Point point, sim.SimItem simItem, Properties properties) {
+        super(parent, point, simItem,properties);
     }
 
     @Override
-    protected void setComponentTreeName() {
+    protected void setKeyName() {
         keyName = "Standard.Buzzer";
     }
         
@@ -37,7 +38,7 @@ public class Buzzer extends VisualComponent implements sim.joinable.ValueListene
     }
 
     @Override
-    public void addPinListeners() {
+    public void addListeners() {
         logicalComponent.getPinByName("Input").addValueListener(this);
     }    
  

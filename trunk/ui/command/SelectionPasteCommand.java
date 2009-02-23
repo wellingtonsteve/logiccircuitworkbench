@@ -19,8 +19,11 @@ public class SelectionPasteCommand extends Command {
         int dy = activeCircuit.getMousePosition().y - pasted.getFirst().getOrigin().y;
         for(SelectableComponent sc: pasted){
             sc.setParent(activeCircuit);  
+            if(!sc.getComponentTreeName().equals("Wire")){ 
+                sc.setProperties(editor.getNetlistWithKey(sc.getComponentTreeName()).getProperties(sc.getComponentTreeName()));
+            }
             sc.translate(dx, dy, false);  
-            sc.addPinListeners();
+            sc.addListeners();
         }
         activeCircuit.addComponentList(pasted);
     }

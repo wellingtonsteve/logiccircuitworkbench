@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import javax.xml.transform.sax.TransformerHandler;
+import netlist.properties.Properties;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import sim.SimulatorState;
@@ -18,13 +19,13 @@ public class Input extends VisualComponent{
     private boolean isOn = false;
     private BufferedImage specialBi;
 
-    public Input(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
-        super(parent, point, simItem);
+    public Input(ui.CircuitPanel parent, Point point, sim.SimItem simItem, Properties properties) {
+        super(parent, point, simItem, properties);
         setSpecialImage();
     }
     
     @Override
-    protected void setComponentTreeName() {
+    protected void setKeyName() {
         keyName = "Standard.Button Source";
     }
    
@@ -67,7 +68,7 @@ public class Input extends VisualComponent{
     }
     
     protected void setSpecialImage() {
-        specialBi = nl.getImage(keyName, "default_on");
+        specialBi = properties.getImage("default_on");
     }
     
     @Override

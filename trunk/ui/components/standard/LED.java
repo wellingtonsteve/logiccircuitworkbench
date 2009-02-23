@@ -1,5 +1,6 @@
 package ui.components.standard;
 
+import netlist.properties.Attribute;
 import sim.LogicState;
 import sim.SimulatorState;
 import ui.components.*;
@@ -7,6 +8,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import javax.xml.transform.sax.TransformerHandler;
+import netlist.properties.Properties;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -14,31 +16,35 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author Matt
  */
-public class LED extends VisualComponent implements sim.joinable.ValueListener, sim.SimulatorStateListener{
+public class LED extends VisualComponent implements sim.joinable.ValueListener, 
+                                                    sim.SimulatorStateListener,
+                                                    netlist.properties.AttributeListener{
     private boolean isOn;
     private String colour = "yellow";
     private BufferedImage yellow, red, green;
 
-    public LED(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
-        super(parent, point, simItem);
+    public LED(ui.CircuitPanel parent, Point point, sim.SimItem simItem, Properties properties) {
+        super(parent, point, simItem,properties);
         setSpecialImage();
     }
 
     @Override
-    public void addPinListeners() {
+    public void addListeners() {
         logicalComponent.getPinByName("Input").addValueListener(this);
         parent.getSimulator().addStateListener(this);
+        properties.getAttribute("Colour").addAttributeListener(this);
+        setColour((String) properties.getAttribute("Colour").getValue());
     }
     
     @Override
-    protected void setComponentTreeName() {
+    protected void setKeyName() {
         keyName = "Standard.LED";
     }
     
     protected void setSpecialImage() {
-        yellow = nl.getImage(keyName, "yellow");
-        red = nl.getImage(keyName, "red");
-        green = nl.getImage(keyName, "green");
+        yellow = properties.getImage("yellow");
+        red = properties.getImage("red");
+        green = properties.getImage("green");
     }
     
     @Override
@@ -126,5 +132,12 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener, 
 
     @Override
     public void SimulationTimeChanged(long time) {
+    }
+
+    @Override
+    public void attributeValueChanged(Attribute attr, Object value) {
+        if(attr.getName().equals("Colour")){
+           setColour((String) attr.getValue());
+        }
     }
 }

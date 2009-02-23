@@ -516,9 +516,9 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                             CreateComponentCommand ccc = new CreateComponentCommand(
                             new Object[]{
                                 currentTool,
-                                editor.getOptionsPanel().getComponentRotation(),
+                                editor.getComponentRotation(),
                                 new Point(0, 0),
-                                editor.getOptionsPanel().getCurrentLabel(),
+                                editor.getCurrentLabel(),
                                 null, 
                                 null, 
                                 CircuitPanel.this
@@ -539,7 +539,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                     repaint(temporaryComponent.getBoundingBox());
                     
                     // Update the current selection options panel
-                    editor.getOptionsPanel().setComponent(temporaryComponent);
+                    editor.setComponent(temporaryComponent);
                 }
             } 
         }
@@ -578,7 +578,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                     
                     // Update the current selection options panel
                     if (activeComponents.size() == 1) {
-                        editor.getOptionsPanel().setComponent(activeComponents.get(0));
+                        editor.setComponent(activeComponents.get(0));
                     }
 
                     multipleSelection = false;

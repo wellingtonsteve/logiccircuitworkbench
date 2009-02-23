@@ -15,7 +15,7 @@ import ui.error.ErrorHandler;
  *
  * @author Matt
  */
-public class Properties {
+public class Properties implements Cloneable{
     private String key;
     private HashMap<String, Attribute> attributes = new HashMap<String, Attribute>();
     private HashMap<String, Point> inputPins = new HashMap<String, Point>();
@@ -24,13 +24,16 @@ public class Properties {
     private Class<? extends SimItem> simItem;
     private Class<? extends SelectableComponent> selectableComponent;
     
-    public Properties(String key, Class<? extends SimItem> simItem){
+    public Properties(String key){
         this.key = key;
-        this.simItem = simItem;
     }
     
-    public void setVisualComponentClass(Class<? extends SelectableComponent> sc){
+    protected void setVisualComponentClass(Class<? extends SelectableComponent> sc){
         this.selectableComponent = sc;
+    }
+    
+    protected void setLogicalComponentClass(Class<? extends SimItem> simItem){
+        this.simItem = simItem;
     }
     
     public Class<? extends SelectableComponent> getVisualComponentClass() {
@@ -41,7 +44,7 @@ public class Properties {
         return simItem;
     }
     
-    public void addAttribute(Attribute attr){
+    protected void addAttribute(Attribute attr){
         attributes.put(attr.getName(), attr);
     }
     
@@ -60,7 +63,7 @@ public class Properties {
         return attributes.get(name);        
     }
     
-    public void addImage(String name, String imageFilename){
+    protected void addImage(String name, String imageFilename){
         try {
             BufferedImage image = ImageIO.read(getClass().getResource(imageFilename));
             images.put(name, image);
@@ -73,7 +76,7 @@ public class Properties {
         return images.get(name);
     }
 
-    public void addInputPin(String name, Point p){
+    protected void addInputPin(String name, Point p){
         inputPins.put(name, p);
     }
     
@@ -81,11 +84,11 @@ public class Properties {
         return inputPins;
     }
     
-    public void addOutputPin(String name, Point p){
+    protected void addOutputPin(String name, Point p){
         outputPins.put(name, p);
     }
     
     public Map<String, Point> getOutputPins(){
         return outputPins;
     }
-}
+ }

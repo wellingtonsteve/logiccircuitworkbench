@@ -1,5 +1,7 @@
 package netlist.properties;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 
 /**
@@ -10,11 +12,20 @@ public class SelectionAttribute extends Attribute{
     
     public SelectionAttribute(String name, String[] options){
         super(name, options);
+        setValue(options[0]);
     }
 
     @Override
     protected void setJComponent() {
-        JComboBox cb = new JComboBox((Object[])getValue());        
+        final JComboBox cb = new JComboBox((Object[])getValue());        
+        cb.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setValue(cb.getSelectedItem());
+            }
+        });
         jcomponent = cb;
     }
+    
+    
 }
