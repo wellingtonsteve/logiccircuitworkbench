@@ -1,8 +1,11 @@
 package netlist;
 
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import netlist.properties.Properties;
 import sim.SimItem;
 import ui.components.SelectableComponent;
@@ -31,31 +34,44 @@ import ui.components.SelectableComponent;
  */
 public class Netlist{
     
-    protected HashMap<String, Properties> netlist = new HashMap<String, Properties>();
+    protected HashMap<String, Class<? extends Properties>> netlist = new HashMap<String, Class<? extends Properties>>();
 
-    /**
-     * @param key
-     * @return the class associated with the <code>key</code>
-     */
-    public Class<? extends SelectableComponent> getDrawableClass(String key) {
-        return netlist.get(key).getVisualComponentClass();
+    public Properties getProperties(String key){
+        //Remove "Components." from begining
+        if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
+            key = key.substring(11); 
+        }
+        try {
+            return netlist.get(key).getConstructor(this.getClass(),String.class).newInstance(this, key);
+        } catch (Exception ex) {
+            Logger.getLogger(Netlist.class.getName()).log(Level.SEVERE, null, ex);
+        } return null;
     }
+    
+    
+//    /**
+//     * @param key
+//     * @return the class associated with the <code>key</code>
+//     */
+//    public Class<? extends SelectableComponent> getDrawableClass(String key) {
+//        return netlist.get(key).getVisualComponentClass();
+//    }
+//
+//    /**
+//     * @param key
+//     * @return the class associated with the <code>key</code>
+//     */
+//    public BufferedImage getImage(String key, String name) {
+//        return netlist.get(key).getImage(name);
+//    }
 
-    /**
-     * @param key
-     * @return the class associated with the <code>key</code>
-     */
-    public BufferedImage getImage(String key, String name) {
-        return netlist.get(key).getImage(name);
-    }
-
-    /**
-     * @param key
-     * @return the class associated with the <code>key</code>
-     */
-    public Class<? extends SimItem> getLogicClass(String key) {
-        return netlist.get(key).getLogicalComponentClass();
-    }
+//    /**
+//     * @param key
+//     * @return the class associated with the <code>key</code>
+//     */
+//    public Class<? extends SimItem> getLogicClass(String key) {
+//        return netlist.get(key).getLogicalComponentClass();
+//    }
 
     /**
      * @see java.util.Set
@@ -64,12 +80,12 @@ public class Netlist{
         return netlist.keySet();
     }
 
-    /**
-     * TODO: javadoc
-     */
-    public boolean containsDrawableKey(String key) {
-        return netlist.containsKey(key) && netlist.get(key).getVisualComponentClass() != null;
-    }
+//    /**
+//     * TODO: javadoc
+//     */
+//    public boolean containsDrawableKey(String key) {
+//        return netlist.containsKey(key) && netlist.get(key).getVisualComponentClass() != null;
+//    }
     
     /**
      * @see java.util.Set
@@ -78,13 +94,4 @@ public class Netlist{
         return netlist.containsKey(key);
     }
     
-    /**
-     * TODO: javadoc
-     * @param key
-     * @return
-     */
-    public Properties getProperties(String key) {
-        return netlist.get(key);
-    }
-
 }

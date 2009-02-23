@@ -51,7 +51,7 @@ public class Wire extends SelectableComponent {
     }
 
     public Wire(CircuitPanel parent){
-        super(parent, null, null);
+        super(parent, null, null, null);
         logicalWire = new sim.joinable.Wire();
     }
     
@@ -67,7 +67,7 @@ public class Wire extends SelectableComponent {
     
     /** {@inheritDoc} */
     @Override
-    protected void setComponentTreeName() {
+    protected void setKeyName() {
         keyName = "Wire";
     }
 

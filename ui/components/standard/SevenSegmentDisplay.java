@@ -16,26 +16,26 @@ public class SevenSegmentDisplay extends VisualComponent implements sim.joinable
     private BufferedImage A, B, C, D, E, F, G, DP;
     private boolean isOn;
 
-    public SevenSegmentDisplay(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
-        super(parent, point, simItem);
+    public SevenSegmentDisplay(ui.CircuitPanel parent, Point point, sim.SimItem simItem, netlist.properties.Properties properties) {
+        super(parent, point, simItem,properties);
         setSpecialImage();
         logicalComponent.getPinByName("Input").addValueListener(this);
     }
     
     @Override
-    protected void setComponentTreeName() {
+    protected void setKeyName() {
         keyName = "Standard.7 Segment Display";
     }
     
     protected void setSpecialImage() {
-        A = nl.getImage(keyName, "A");
-        B = nl.getImage(keyName, "B");
-        C = nl.getImage(keyName, "C");
-        D = nl.getImage(keyName, "D");
-        E = nl.getImage(keyName, "E");
-        F = nl.getImage(keyName, "F");
-        G = nl.getImage(keyName, "G");
-        DP = nl.getImage(keyName, "DP");
+        A = properties.getImage("A");
+        B = properties.getImage("B");
+        C = properties.getImage("C");
+        D = properties.getImage("D");
+        E = properties.getImage("E");
+        F = properties.getImage("F");
+        G = properties.getImage("G");
+        DP = properties.getImage("DP");
     }
     
     @Override

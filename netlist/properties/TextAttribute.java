@@ -1,5 +1,7 @@
 package netlist.properties;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JTextField;
 
 /**
@@ -16,7 +18,13 @@ public class TextAttribute extends Attribute{
     
     @Override
     protected void setJComponent() {
-        JTextField tf = new JTextField(defaultValue);
+        final JTextField tf = new JTextField(defaultValue);
+        tf.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setValue(tf.getText());
+            }
+        });
         jcomponent = tf;
     }
 }

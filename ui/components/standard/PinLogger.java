@@ -16,8 +16,8 @@ import ui.UIConstants;
  */
 public class PinLogger extends VisualComponent implements sim.joinable.ValueListener {
 
-    public PinLogger(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
-        super(parent, point, simItem);
+    public PinLogger(ui.CircuitPanel parent, Point point, sim.SimItem simItem, netlist.properties.Properties properties) {
+        super(parent, point, simItem,properties);
         this.pin = logicalComponent.getPinByName("Input");
         this.sim = parent.getSimulator();      
         setLabel("#"+(this.parent.getLoggerWindow().getLoggers().size()+1));
@@ -36,7 +36,7 @@ public class PinLogger extends VisualComponent implements sim.joinable.ValueList
      */
     
     @Override
-    protected void setComponentTreeName() {
+    protected void setKeyName() {
         keyName = "Standard.Output Logger";
     }
     
@@ -76,7 +76,7 @@ public class PinLogger extends VisualComponent implements sim.joinable.ValueList
     
     
     @Override
-    public void addPinListeners() {
+    public void addListeners() {
         pin = logicalComponent.getPinByName("Input");
         pin.addValueListener(this);
     }

@@ -1,5 +1,7 @@
 package netlist.properties;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 
 /**
@@ -16,9 +18,14 @@ public class BooleanAttribute extends Attribute{
 
     @Override
     protected void setJComponent() {
-        JCheckBox cb = new JCheckBox();
+        final JCheckBox cb = new JCheckBox();
         cb.setSelected(defaultValue);
-        
+        cb.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setValue(cb.isSelected());
+            }
+        });
         jcomponent = cb;
     }
 }

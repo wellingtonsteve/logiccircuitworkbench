@@ -55,4 +55,9 @@ public abstract class Component implements SimItem, ValueListener {
             if(pin.getConnectedTo() == null) pin.setValue(LogicState.FLOATING);
         }
     }
+    
+    private netlist.properties.Properties properties;
+    public void setProperties(netlist.properties.Properties properties){
+        this.properties = properties;
+    }
 }

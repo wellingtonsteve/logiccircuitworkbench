@@ -15,8 +15,8 @@ import java.awt.Rectangle;
  */
 public class AndGate3Input extends VisualComponent{
     
-    public AndGate3Input(ui.CircuitPanel parent, Point point, sim.SimItem simItem) {
-        super(parent, point, simItem);
+    public AndGate3Input(ui.CircuitPanel parent, Point point, sim.SimItem simItem, netlist.properties.Properties properties) {
+        super(parent, point, simItem,properties);
     }
     
     @Override
@@ -48,7 +48,7 @@ public class AndGate3Input extends VisualComponent{
 //    }
     
     @Override
-    protected void setComponentTreeName() {
+    protected void setKeyName() {
         keyName = "Logic Gates.3 Input.AND";
     }
     

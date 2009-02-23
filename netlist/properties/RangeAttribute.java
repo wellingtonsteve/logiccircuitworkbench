@@ -1,6 +1,8 @@
 package netlist.properties;
 
 import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -20,7 +22,13 @@ public class RangeAttribute extends Attribute{
 
     @Override
     protected void setJComponent() {
-        JSlider js = new JSlider(minValue, maxValue, defaultValue); 
+        final JSlider js = new JSlider(minValue, maxValue, defaultValue); 
+        js.addChangeListener(new ChangeListener(){
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                 setValue(js.getValue());
+            }
+        });
         jcomponent = js;
     }
 }
