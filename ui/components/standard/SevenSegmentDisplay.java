@@ -22,11 +22,6 @@ public class SevenSegmentDisplay extends VisualComponent implements sim.joinable
         logicalComponent.getPinByName("Input").addValueListener(this);
     }
     
-    @Override
-    protected void setKeyName() {
-        keyName = "Standard.7 Segment Display";
-    }
-    
     protected void setSpecialImage() {
         A = properties.getImage("A");
         B = properties.getImage("B");

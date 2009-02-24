@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import javax.xml.transform.sax.TransformerHandler;
+import netlist.properties.AttributeListener;
 import netlist.properties.Properties;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -19,7 +20,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public class LED extends VisualComponent implements sim.joinable.ValueListener, 
                                                     sim.SimulatorStateListener,
                                                     netlist.properties.AttributeListener{
-    private boolean isOn;
+    private boolean isOn = false;
     private String colour = "yellow";
     private BufferedImage yellow, red, green;
 
@@ -33,12 +34,13 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
         logicalComponent.getPinByName("Input").addValueListener(this);
         parent.getSimulator().addStateListener(this);
         properties.getAttribute("Colour").addAttributeListener(this);
+        properties.getAttribute("Colour").addAttributeListener(new AttributeListener(){
+            @Override
+            public void attributeValueChanged(Attribute attr, Object value) {
+                parent.getParentFrame().getEditor().repaintOptionsPanel();
+            }            
+        });
         setColour((String) properties.getAttribute("Colour").getValue());
-    }
-    
-    @Override
-    protected void setKeyName() {
-        keyName = "Standard.LED";
     }
     
     protected void setSpecialImage() {
@@ -90,7 +92,7 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
     public void createXML(TransformerHandler hd) {
         try {
             AttributesImpl atts = new AttributesImpl();
-            atts.addAttribute("", "", "type", "CDATA", getComponentTreeName());
+            atts.addAttribute("", "", "type", "CDATA", getKeyName());
             atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
             atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
             atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
@@ -126,6 +128,8 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
     @Override
     public void SimulatorStateChanged(SimulatorState state) {
         if(state.equals(SimulatorState.STOPPED)){
+            isOn = true;
+        } else if(state.equals(SimulatorState.PLAYING)){
             isOn = false;
         }
     }

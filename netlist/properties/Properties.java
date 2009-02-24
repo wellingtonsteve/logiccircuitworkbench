@@ -1,7 +1,5 @@
 package netlist.properties;
 
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
@@ -28,9 +26,11 @@ public class Properties implements Cloneable{
     private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();
     private Class<? extends SimItem> simItem;
     private Class<? extends SelectableComponent> selectableComponent;
+    private JPanel attrPanel = new JPanel();
     
     public Properties(String key){
         this.key = key;
+        createAttributesPanel();
     }
     
     protected void setVisualComponentClass(Class<? extends SelectableComponent> sc){
@@ -54,30 +54,6 @@ public class Properties implements Cloneable{
     }
     
     public JPanel getAttributesPanel(){
-        JPanel attrPanel = new JPanel();        
-        attrPanel.setLayout(new BoxLayout(attrPanel, BoxLayout.PAGE_AXIS));
-        
-        int i = 0;
-        for(Attribute a: attributes.values()){
-            JPanel subPanel = new JPanel();   
-            subPanel.setLayout(new GridBagLayout());
-            GridBagConstraints c = new GridBagConstraints();
-            c.anchor = GridBagConstraints.WEST;
-            c.gridx = 0;
-            c.gridy = i;
-            subPanel.add(new JLabel(a.getName()+"   "),c);
-            
-            c.weightx = 0.5;
-            c.fill = GridBagConstraints.BOTH;
-            c.anchor = GridBagConstraints.EAST;
-            c.gridx = 1;
-            c.gridy = i;
-            subPanel.add(a.getJComponent(), c);   
-            
-            attrPanel.add(subPanel);
-            i++;
-        }
-        
         return attrPanel;        
     }    
     
@@ -112,5 +88,35 @@ public class Properties implements Cloneable{
     
     public Map<String, Point> getOutputPins(){
         return outputPins;
+    }
+
+    private void createAttributesPanel() {
+        attrPanel = new JPanel();
+        attrPanel.setLayout(new BoxLayout(attrPanel, BoxLayout.PAGE_AXIS));
+
+        int i = 0;
+        for (Attribute a : attributes.values()) {
+            JPanel subPanel = new JPanel();
+            subPanel.setLayout(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+            c.anchor = GridBagConstraints.WEST;
+            c.gridx = 0;
+            c.gridy = i;
+            subPanel.add(new JLabel(a.getName() + "   "), c);
+
+            c.weightx = 0.5;
+            c.fill = GridBagConstraints.BOTH;
+            c.anchor = GridBagConstraints.EAST;
+            c.gridx = 1;
+            c.gridy = i;
+            subPanel.add(a.getJComponent(), c);
+
+            attrPanel.add(subPanel);
+            i++;
+        }
+    }
+    
+    public String getKeyName(){
+        return key;
     }
  }

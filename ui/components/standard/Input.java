@@ -23,11 +23,6 @@ public class Input extends VisualComponent{
         super(parent, point, simItem, properties);
         setSpecialImage();
     }
-    
-    @Override
-    protected void setKeyName() {
-        keyName = "Standard.Button Source";
-    }
    
     @Override
     public String getName(){
@@ -75,7 +70,7 @@ public class Input extends VisualComponent{
     public void createXML(TransformerHandler hd) {
         try {
             AttributesImpl atts = new AttributesImpl();
-            atts.addAttribute("", "", "type", "CDATA", getComponentTreeName());
+            atts.addAttribute("", "", "type", "CDATA", getKeyName());
             atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
             atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
             atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));

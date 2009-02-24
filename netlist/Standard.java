@@ -1,8 +1,6 @@
 package netlist;
 
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import javax.swing.JOptionPane;
 import netlist.properties.*;
 /**
  *
@@ -84,7 +82,7 @@ public class Standard extends Netlist{
             addImage("green", "/ui/images/components/default_led_on_green.png");
 
             addInputPin("Input", new Point(10,10));
-        }
+        };
     }
     
     ////////////////////////

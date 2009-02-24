@@ -78,7 +78,7 @@ public abstract class VisualComponent extends SelectableComponent {
     }
 
     @Override
-    public void setLocalPins() {
+    protected void setLocalPins() {
         localPins = new LinkedList<Pin>();
         Map<String, Point> inpins = properties.getInputPins();
         for(String k: inpins.keySet()){
@@ -117,7 +117,7 @@ public abstract class VisualComponent extends SelectableComponent {
     public void createXML(TransformerHandler hd) {
         try {
             AttributesImpl atts = new AttributesImpl();
-            atts.addAttribute("", "", "type", "CDATA", getComponentTreeName());
+            atts.addAttribute("", "", "type", "CDATA", getKeyName());
             atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
             atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
             atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
