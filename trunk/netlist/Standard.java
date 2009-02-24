@@ -1,6 +1,8 @@
 package netlist;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import javax.swing.JOptionPane;
 import netlist.properties.*;
 /**
  *
@@ -73,8 +75,6 @@ public class Standard extends Netlist{
 
             addAttribute(new BooleanAttribute("External?", false));
             addAttribute(new SelectionAttribute("Colour", new String[]{"Yellow","Red","Green"}));
-            addAttribute(new RangeAttribute("Test1", 0, 0, 50));
-            addAttribute(new SelectionAttribute("test2", new String[]{"Test1"}));
 
             addImage("default", "/ui/images/components/default_led.png");
             addImage("selected", "/ui/images/components/selected_led.png");
