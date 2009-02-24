@@ -1046,6 +1046,14 @@ public class Wire extends SelectableComponent {
         return (int) boundingBox.getHeight();
     }
     
+    private void refreshWaypoints(){
+         LinkedList<Point> newwaypoints = new LinkedList<Point>();
+         for(Point wp: waypoints){
+             newwaypoints.add(wp.getLocation());
+         }
+         waypoints = newwaypoints;
+    }
+    
     /**
      * Similar to clone except that the exception is caught and the Cast to 
      * SelectableComponent is also performed.
@@ -1057,11 +1065,9 @@ public class Wire extends SelectableComponent {
         try {
             Wire retval = (Wire) this.clone();
             retval.setOrigin(getOrigin().getLocation());
-            retval.endPoint = getEndPoint().getLocation();
-//            this.unsetGlobalPins();
-//            this.setLocalPins();
-//            this.setGlobalPins();           
-            retval.refreshLocalPins();            
+            retval.endPoint = getEndPoint().getLocation();      
+            retval.refreshLocalPins();         
+            retval.refreshWaypoints();    
             retval.unsetGlobalPins();
             retval.setBoundingBox();
             retval.setInvalidAreas();

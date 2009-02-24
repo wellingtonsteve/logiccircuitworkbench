@@ -76,6 +76,8 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
             }
         }); 
         
+        optionsPanel.setVisible(false);
+        
         titleNew = bundle.getString("OptionsPanel.titleNew.text"); // NOI18N
         titleOld = bundle.getString("OptionsPanel.titleOld.text"); // NOI18N     
        
@@ -505,6 +507,8 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         Toolbox.add(SelectionTreeScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 74, 170, 250));
 
+        optionsPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 2, 1, 2));
+
         titleLabel.setText(titleNew);
         titleLabel.setForeground(new java.awt.Color(108, 108, 108));
         titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -512,6 +516,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         typeLabel.setText(bundle.getString("OptionsPanel.jLabel2.text"));
 
         labelLabel.setText(bundle.getString("Editor.labelLabel.text")); // NOI18N
+        labelLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 2, 1, 1));
 
         labelTextbox.setText(bundle.getString("OptionsPanel.jTextField1.text"));
         labelTextbox.setPreferredSize(new java.awt.Dimension(50, 20));
@@ -526,19 +531,25 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
             }
         });
 
+        OptionsPane.setBorder(null);
+        OptionsPane.setViewportBorder(null);
+
         org.jdesktop.layout.GroupLayout optionsPanelLayout = new org.jdesktop.layout.GroupLayout(optionsPanel);
         optionsPanel.setLayout(optionsPanelLayout);
         optionsPanelLayout.setHorizontalGroup(
             optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, optionsPanelLayout.createSequentialGroup()
-                .add(labelLabel)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(labelTextbox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
-                .addContainerGap())
-            .add(Preview, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-            .add(OptionsPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-            .add(typeLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-            .add(titleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+            .add(typeLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
+            .add(titleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
+            .add(optionsPanelLayout.createSequentialGroup()
+                .add(optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, OptionsPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, Preview, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, optionsPanelLayout.createSequentialGroup()
+                            .add(labelLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 42, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(labelTextbox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 107, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         optionsPanelLayout.setVerticalGroup(
             optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -546,15 +557,15 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
                 .add(titleLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(typeLabel)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(labelLabel)
                     .add(labelTextbox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(OptionsPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 80, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(OptionsPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(Preview, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 98, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(21, 21, 21))
+                .add(2, 2, 2))
         );
 
         Toolbox.add(optionsPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 330, 170, 260));

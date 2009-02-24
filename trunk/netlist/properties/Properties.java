@@ -1,10 +1,13 @@
 package netlist.properties;
 
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import sim.SimItem;
@@ -49,13 +52,18 @@ public class Properties implements Cloneable{
     }
     
     public JPanel getAttributesPanel(){
-        JPanel attrPanel = new JPanel();
-        attrPanel.setLayout(new java.awt.GridLayout(0,2));
+        JPanel attrPanel = new JPanel();        
+        attrPanel.setLayout(new BoxLayout(attrPanel, BoxLayout.PAGE_AXIS));
         
         for(Attribute a: attributes.values()){
-            attrPanel.add(new JLabel(a.getName()));
-            attrPanel.add(a.getJComponent());            
-        }        
+            JPanel subPanel = new JPanel();        
+            subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.LINE_AXIS));
+            subPanel.add(new JLabel(a.getName()+"   "));
+            subPanel.add(a.getJComponent());   
+            subPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            attrPanel.add(subPanel);
+        }
+        
         return attrPanel;        
     }    
     

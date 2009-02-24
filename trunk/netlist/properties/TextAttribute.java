@@ -1,5 +1,6 @@
 package netlist.properties;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JTextField;
@@ -25,6 +26,7 @@ public class TextAttribute extends Attribute{
                 setValue(tf.getText());
             }
         });
+        tf.setMaximumSize(new Dimension(tf.getMaximumSize().width, 25));
         jcomponent = tf;
     }
 }
