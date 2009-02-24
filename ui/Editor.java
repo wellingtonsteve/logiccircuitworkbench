@@ -20,11 +20,13 @@ import java.beans.PropertyVetoException;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -100,6 +102,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     @SuppressWarnings("unchecked")
     private void initComponents() {//GEN-BEGIN:initComponents
 
+        OptionsPane = new javax.swing.JScrollPane();
         Toolbar = new javax.swing.JToolBar();
         NewButton = new javax.swing.JButton();
         OpenFileButton = new javax.swing.JButton();
@@ -137,7 +140,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         typeLabel = new javax.swing.JLabel();
         labelLabel = new javax.swing.JLabel();
         labelTextbox = new javax.swing.JTextField();
-        OptionsPane = new javax.swing.JScrollPane();
+        AttributesPanel = new javax.swing.JPanel();
         Preview = new PreviewPanel(this);
         MainScrollPane = new javax.swing.JScrollPane();
         DesktopPane = new ScrollableDesktop();
@@ -171,6 +174,9 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Window = new javax.swing.JMenu();
         Help = new javax.swing.JMenu();
         About = new javax.swing.JMenuItem();
+
+        OptionsPane.setBorder(null);
+        OptionsPane.setViewportBorder(null);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
@@ -508,6 +514,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         Toolbox.add(SelectionTreeScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 74, 170, 250));
 
         optionsPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 2, 1, 2));
+        optionsPanel.setPreferredSize(new java.awt.Dimension(104, 232));
 
         titleLabel.setText(titleNew);
         titleLabel.setForeground(new java.awt.Color(108, 108, 108));
@@ -531,41 +538,40 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
             }
         });
 
-        OptionsPane.setBorder(null);
-        OptionsPane.setViewportBorder(null);
+        AttributesPanel.setMinimumSize(new java.awt.Dimension(100, 100));
+        AttributesPanel.setLayout(new javax.swing.BoxLayout(AttributesPanel, javax.swing.BoxLayout.LINE_AXIS));
+
+        Preview.setMinimumSize(new java.awt.Dimension(100, 500));
+        Preview.setPreferredSize(new java.awt.Dimension(100, 80));
 
         org.jdesktop.layout.GroupLayout optionsPanelLayout = new org.jdesktop.layout.GroupLayout(optionsPanel);
         optionsPanel.setLayout(optionsPanelLayout);
         optionsPanelLayout.setHorizontalGroup(
             optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(typeLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
-            .add(titleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
             .add(optionsPanelLayout.createSequentialGroup()
-                .add(optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, OptionsPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, Preview, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, optionsPanelLayout.createSequentialGroup()
-                            .add(labelLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 42, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(labelTextbox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 107, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(labelLabel)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(labelTextbox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
+            .add(Preview, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+            .add(AttributesPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+            .add(titleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+            .add(typeLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
         );
         optionsPanelLayout.setVerticalGroup(
             optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(optionsPanelLayout.createSequentialGroup()
                 .add(titleLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(typeLabel)
+                .add(typeLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 14, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(labelLabel)
+                .add(optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(labelLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 22, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(labelTextbox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(OptionsPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                .add(AttributesPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(Preview, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 98, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(2, 2, 2))
+                .add(Preview, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         Toolbox.add(optionsPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 330, 170, 260));
@@ -1682,12 +1688,17 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             labelTextbox.setText(sc.getLabel());
             labelLabel.setEnabled(true);
             labelTextbox.setEnabled(true);
+            optionsPanel.setVisible(true);
             if(sc instanceof VisualComponent){
-                OptionsPane.setViewportView(sc.getOptionsPanel());
+                AttributesPanel.removeAll();
+                JPanel test = sc.getOptionsPanel();
+                AttributesPanel.add(test);
                 ((PreviewPanel)Preview).setComponent(sc);
                 Preview.repaint();
+                AttributesPanel.setPreferredSize(test.getSize());
+                Toolbox.revalidate();
             }
-            optionsPanel.setVisible(true);
+            
             getActiveCircuit().repaint();
         } else {
             ErrorHandler.newError("Options Panel Error",
@@ -1724,6 +1735,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem About;
+    private javax.swing.JPanel AttributesPanel;
     private javax.swing.JButton ClearCircuit;
     private javax.swing.JTree ComponentSelectionTree;
     private javax.swing.JMenuItem Copy;

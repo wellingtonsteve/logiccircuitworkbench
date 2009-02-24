@@ -2,6 +2,8 @@ package netlist.properties;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -55,13 +57,25 @@ public class Properties implements Cloneable{
         JPanel attrPanel = new JPanel();        
         attrPanel.setLayout(new BoxLayout(attrPanel, BoxLayout.PAGE_AXIS));
         
+        int i = 0;
         for(Attribute a: attributes.values()){
-            JPanel subPanel = new JPanel();        
-            subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.LINE_AXIS));
-            subPanel.add(new JLabel(a.getName()+"   "));
-            subPanel.add(a.getJComponent());   
-            subPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            JPanel subPanel = new JPanel();   
+            subPanel.setLayout(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+            c.anchor = GridBagConstraints.WEST;
+            c.gridx = 0;
+            c.gridy = i;
+            subPanel.add(new JLabel(a.getName()+"   "),c);
+            
+            c.weightx = 0.5;
+            c.fill = GridBagConstraints.BOTH;
+            c.anchor = GridBagConstraints.EAST;
+            c.gridx = 1;
+            c.gridy = i;
+            subPanel.add(a.getJComponent(), c);   
+            
             attrPanel.add(subPanel);
+            i++;
         }
         
         return attrPanel;        
