@@ -73,9 +73,9 @@ public class Circuit implements SimItem {
             simItem.initialize();
         }
     }
-
-    @Override
-    public void setProperties(netlist.properties.Properties properties) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    
+    private netlist.properties.Properties properties;
+    public void setProperties(netlist.properties.Properties properties){
+        this.properties = properties;
     }
 }

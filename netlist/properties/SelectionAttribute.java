@@ -1,5 +1,6 @@
 package netlist.properties;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
@@ -24,6 +25,7 @@ public class SelectionAttribute extends Attribute{
                 setValue(cb.getSelectedItem());
             }
         });
+        cb.setMaximumSize(new Dimension(cb.getMaximumSize().width, 25));
         jcomponent = cb;
     }
     

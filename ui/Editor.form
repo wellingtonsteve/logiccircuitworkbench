@@ -825,6 +825,13 @@
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="optionsPanel">
+          <Properties>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                <EmptyBorder bottom="1" left="2" right="2" top="1"/>
+              </Border>
+            </Property>
+          </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JPanel()"/>
           </AuxValues>
@@ -837,16 +844,22 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <Component id="labelLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="labelTextbox" pref="116" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                  <Component id="typeLabel" alignment="0" pref="173" max="32767" attributes="1"/>
+                  <Component id="titleLabel" alignment="0" pref="173" max="32767" attributes="1"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="OptionsPane" alignment="0" pref="161" max="32767" attributes="1"/>
+                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="Preview" alignment="0" max="32767" attributes="1"/>
+                              <Group type="102" alignment="0" attributes="1">
+                                  <Component id="labelLabel" min="-2" pref="42" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="labelTextbox" min="-2" pref="107" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
-                  <Component id="Preview" alignment="0" pref="170" max="32767" attributes="0"/>
-                  <Component id="OptionsPane" alignment="0" pref="170" max="32767" attributes="0"/>
-                  <Component id="typeLabel" alignment="0" pref="170" max="32767" attributes="1"/>
-                  <Component id="titleLabel" alignment="0" pref="170" max="32767" attributes="1"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -855,16 +868,16 @@
                       <Component id="titleLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="typeLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="labelLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="labelTextbox" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="OptionsPane" min="-2" pref="80" max="-2" attributes="0"/>
+                      <Component id="OptionsPane" pref="84" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="Preview" min="-2" pref="98" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -892,6 +905,11 @@
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="ui/Bundle.properties" key="Editor.labelLabel.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                    <EmptyBorder bottom="1" left="2" right="1" top="1"/>
+                  </Border>
+                </Property>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="labelTextbox">
@@ -905,6 +923,14 @@
               </AuxValues>
             </Component>
             <Container class="javax.swing.JScrollPane" name="OptionsPane">
+              <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="null"/>
+                </Property>
+                <Property name="viewportBorder" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="null"/>
+                </Property>
+              </Properties>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
             </Container>

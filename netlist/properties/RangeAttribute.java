@@ -1,5 +1,6 @@
 package netlist.properties;
 
+import java.awt.Dimension;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -29,6 +30,10 @@ public class RangeAttribute extends Attribute{
                  setValue(js.getValue());
             }
         });
+        js.setMaximumSize(new Dimension(100, 25));
+        js.setMinorTickSpacing(1);
+        js.setMajorTickSpacing(10);
+        
         jcomponent = js;
     }
 }

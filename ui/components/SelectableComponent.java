@@ -586,7 +586,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         setSelectionState(SelectionState.DEFAULT);
     }
         
-    void refreshLocalPins(){
+    protected void refreshLocalPins(){
         localPins = new LinkedList<Pin>(); 
     }
     
