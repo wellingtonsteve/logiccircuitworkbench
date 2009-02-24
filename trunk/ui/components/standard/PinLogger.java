@@ -33,13 +33,7 @@ public class PinLogger extends VisualComponent implements sim.joinable.ValueList
             
     /**
      * SELECTABLE COMPONENT CODE
-     */
-    
-    @Override
-    protected void setKeyName() {
-        keyName = "Standard.Output Logger";
-    }
-    
+     */   
     
     @Override
     public String getName(){

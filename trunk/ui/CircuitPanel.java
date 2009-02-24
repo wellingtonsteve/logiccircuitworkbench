@@ -397,7 +397,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
         previousCurrentPoint = new Point(0,0);
         sc.getInvalidArea();
         sc.getBoundingBox();
-        setCurrentTool(sc.getComponentTreeName());
+        setCurrentTool(sc.getKeyName());
         repaint(sc.getBoundingBox());
     }
     

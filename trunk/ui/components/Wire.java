@@ -64,12 +64,6 @@ public class Wire extends SelectableComponent {
     public String getName(){
         return "Wire";
     }    
-    
-    /** {@inheritDoc} */
-    @Override
-    protected void setKeyName() {
-        keyName = "Wire";
-    }
 
     /**
      * Do nothing, we don't want to rotate wires

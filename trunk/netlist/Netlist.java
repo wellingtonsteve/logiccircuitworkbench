@@ -1,14 +1,10 @@
 package netlist;
 
-import java.awt.image.BufferedImage;
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import netlist.properties.Properties;
-import sim.SimItem;
-import ui.components.SelectableComponent;
 
 /**
  * A netlist class is a module for adding new components to the editor. Each component

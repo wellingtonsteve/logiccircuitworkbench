@@ -15,11 +15,6 @@ public class Buzzer extends VisualComponent implements sim.joinable.ValueListene
     public Buzzer(ui.CircuitPanel parent, Point point, sim.SimItem simItem, Properties properties) {
         super(parent, point, simItem,properties);
     }
-
-    @Override
-    protected void setKeyName() {
-        keyName = "Standard.Buzzer";
-    }
         
     @Override
     public String getName(){

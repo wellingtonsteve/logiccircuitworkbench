@@ -8,9 +8,9 @@ import java.awt.Rectangle;
  *
  * @author Matt
  */
-public class AndGate2Input extends VisualComponent{    
+public class DefaultLogicGate extends VisualComponent{    
     
-    public AndGate2Input(ui.CircuitPanel parent, Point point, sim.SimItem simItem, netlist.properties.Properties properties) {
+    public DefaultLogicGate(ui.CircuitPanel parent, Point point, sim.SimItem simItem, netlist.properties.Properties properties) {
         super(parent, point, simItem,properties);
     }
 
@@ -23,11 +23,5 @@ public class AndGate2Input extends VisualComponent{
     @Override
     public Point getCentre(){
         return new Point(30,30);
-    }
-
-    @Override
-    protected void setKeyName() {
-        keyName = "Logic Gates.2 Input.AND";
-    }
-    
+    }    
 }

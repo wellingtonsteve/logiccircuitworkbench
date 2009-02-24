@@ -10,7 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.xml.transform.sax.TransformerHandler;
-import netlist.Netlist;
 import netlist.properties.Properties;
 import sim.joinable.*;
 import sim.SimItem;
@@ -65,9 +64,6 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     /** @see #getParent() */
     protected CircuitPanel parent;
     
-    /** @see #getComponentTreeName() */
-    protected String keyName;
-    
     /** Store the point at which this component was unfixed */
     protected Point unFixedPoint;
     
@@ -92,13 +88,9 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         }
         if(logicalComponent!=null){
             this.parent.getLogicalCircuit().addSimItem(logicalComponent);
-        }  
-        
-        setKeyName();
-        
+        }                
         setLocalPins();
-        setGlobalPins();
-        
+        setGlobalPins();        
         addListeners();
     }
     
@@ -123,7 +115,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         } catch (Exception ex) {
             Logger.getLogger(SelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
         }
-        parent.getLogicalCircuit().addSimItem(logicalComponent);
+        if(parent != null) parent.getLogicalCircuit().addSimItem(logicalComponent);
         this.parent = parent;
         refreshLocalPins();
         setLocalPins();    
@@ -390,18 +382,9 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * 
      * @return The component tree name of this component
      */
-    public String getComponentTreeName() {
-        return keyName;
+    public String getKeyName() {
+        return properties.getKeyName();
     }
-
-    /**
-     * The Component Tree Name is the value that is returned from the Component Tree
-     * in the toolbox when this type of component is selected. The name is also the
-     * key for all netlist mappings.
-     * 
-     * The component tree name must be set in all subclasses.
-     */
-    protected abstract void setKeyName();
 
     /**
      * Convience method to record the current state of the object and then to change
@@ -574,7 +557,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     public void mousePressed(MouseEvent e) {
         ui.error.ErrorHandler.newError("Mouse Press Error", 
                 "An action has not yet been defined to pressing the mouse on a \"" +
-                getComponentTreeName() + "\".");
+                getKeyName() + "\".");
     }
     public void mouseReleased(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);

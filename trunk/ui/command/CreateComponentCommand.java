@@ -2,8 +2,6 @@ package ui.command;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.lang.reflect.Constructor;
-import netlist.Netlist;
 import netlist.properties.Properties;
 import sim.SimItem;
 import ui.CircuitPanel;
@@ -118,7 +116,7 @@ public class CreateComponentCommand extends Command {
         }
         
         @Override
-        public void setLocalPins() {
+        protected void setLocalPins() {
             localPins.clear();
             spacing = 2*UIConstants.GRID_DOT_SPACING;
             int inputPinNo = logicalComponent.getInputs().size();
@@ -207,11 +205,6 @@ public class CreateComponentCommand extends Command {
 
             g.translate(-getOrigin().x, -getOrigin().y);
             g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-        }
-
-        @Override
-        protected void setKeyName() {
-            keyName = key;
         }
 
         @Override

@@ -53,5 +53,4 @@ public abstract class Attribute implements Cloneable {
             }
         }
     }
-       
 }

@@ -13,11 +13,6 @@ public class Oscillator extends VisualComponent{
     public Oscillator(ui.CircuitPanel parent, Point point, sim.SimItem simItem, Properties properties) {
         super(parent, point, simItem,properties);
     }
-    
-    @Override
-    protected void setKeyName() {
-        keyName = "Standard.Oscillator";
-    }
    
     @Override
     public String getName(){
