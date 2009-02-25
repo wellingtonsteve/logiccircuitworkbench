@@ -52,9 +52,10 @@ public class UIConstants {
     /** File Format
      *  LCW v1.0  -  Limited Component support. Case analysis on string.
      *  LCW v2.0  -  Netlist support, Component names match keys in netlists. Not backwards compatible with v1.0
-     *  LCW v2.1  -  As 2.0, "Standard.Wire" moved to "Wire", backwards compatible with renaming of wires
+     *  LCW v2.1  -  As 2.0, "Standard.Wire" moved to "Wire", backwards compatible with renaming of wire
+     *  LCW v3.0  -  Attributes use netlist properties, no more special cases, not backwards compatible
      */
-    public static String FILE_FORMAT_VERSION = "LCW v2.1";
+    public static String FILE_FORMAT_VERSION = "LCW v3.0";
     public static String FILE_EXTENSION = ".xml";
     
     // Component Options

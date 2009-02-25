@@ -30,10 +30,4 @@ public class Oscillator extends VisualComponent{
         return new Point(10,10);
     }
 
-//    @Override
-//    public void setLocalPins() {
-//        localPins.clear();
-//        Pin out1 = new Pin(30, 10, logicalComponent.getPinByName("Output"));               
-//        localPins.add(out1);        
-//    }
 }

@@ -145,24 +145,18 @@ public class FileLoader extends DefaultHandler{
 
             // Set the attributes of a previously created component <attr>
             } else if(qName.equals("attr")){    
-
                 String attrName = attribs.getValue("name");
                 String attrValue = attribs.getValue("value");
-
                 SelectableComponent top = stack.peek();
 
-                // TODO: Generalise this
-                if(top instanceof LED && attrName.equals("colour")){
-                    ((LED) top).setColour(attrValue);
-                } else if(top instanceof Input && attrName.equals("value")){
-                    ((Input) top).setIsOn(attrValue.equals("On"));
-                } else {
+                try{
+                    top.getProperties().getAttribute(attrName).setValue(attrValue);
+                } catch (Exception e){
                     successful = false;           
                     ErrorHandler.newError("File Load Error",
                             "Invalid File Format: The property \"" + attrName +
-                            "\" is not valid for a "+ top.getClass().getSimpleName() +".");
+                            "\" is not valid for a "+ top.getKeyName() +".", e);
                 }
-
             // Add a waypoint to a previously created wire <waypoint>
             } else if(qName.equals("waypoint")){    
 

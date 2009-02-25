@@ -88,30 +88,29 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
         }    
     }
     
-    @Override
-    public void createXML(TransformerHandler hd) {
-        try {
-            AttributesImpl atts = new AttributesImpl();
-            atts.addAttribute("", "", "type", "CDATA", getKeyName());
-            atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
-            atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
-            atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
-            
-            hd.startElement("", "", "component", atts);
-
-                atts.clear();
-                atts.addAttribute("", "", "name", "CDATA", "colour");
-                atts.addAttribute("", "", "value", "CDATA", colour);
-                hd.startElement("", "", "attr", atts);
-                hd.endElement("", "", "attr");
-
-            hd.endElement("", "", "component");
-        } catch (SAXException ex) {
-             ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below",ex);
-        }
-    }
-    
-    
+//    @Override
+//    public void createXML(TransformerHandler hd) {
+//        try {
+//            AttributesImpl atts = new AttributesImpl();
+//            atts.addAttribute("", "", "type", "CDATA", getKeyName());
+//            atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
+//            atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
+//            atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
+//            
+//            hd.startElement("", "", "component", atts);
+//
+//                atts.clear();
+//                atts.addAttribute("", "", "name", "CDATA", "colour");
+//                atts.addAttribute("", "", "value", "CDATA", colour);
+//                hd.startElement("", "", "attr", atts);
+//                hd.endElement("", "", "attr");
+//
+//            hd.endElement("", "", "component");
+//        } catch (SAXException ex) {
+//             ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below",ex);
+//        }
+//    }
+        
     public String getColour() {
         return colour;
     }

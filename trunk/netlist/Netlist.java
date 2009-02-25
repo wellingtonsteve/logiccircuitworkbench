@@ -32,6 +32,11 @@ public class Netlist{
     
     protected HashMap<String, Class<? extends Properties>> netlist = new HashMap<String, Class<? extends Properties>>();
 
+    /**
+     * Create a properties object from the class description specified in the map.
+     * @param key The key to the map.
+     * @return The new properties object
+     */
     public Properties getProperties(String key){
         //Remove "Components." from begining
         if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
@@ -43,31 +48,6 @@ public class Netlist{
             Logger.getLogger(Netlist.class.getName()).log(Level.SEVERE, null, ex);
         } return null;
     }
-    
-    
-//    /**
-//     * @param key
-//     * @return the class associated with the <code>key</code>
-//     */
-//    public Class<? extends SelectableComponent> getDrawableClass(String key) {
-//        return netlist.get(key).getVisualComponentClass();
-//    }
-//
-//    /**
-//     * @param key
-//     * @return the class associated with the <code>key</code>
-//     */
-//    public BufferedImage getImage(String key, String name) {
-//        return netlist.get(key).getImage(name);
-//    }
-
-//    /**
-//     * @param key
-//     * @return the class associated with the <code>key</code>
-//     */
-//    public Class<? extends SimItem> getLogicClass(String key) {
-//        return netlist.get(key).getLogicalComponentClass();
-//    }
 
     /**
      * @see java.util.Set
@@ -75,18 +55,11 @@ public class Netlist{
     public Set<String> keySet() {
         return netlist.keySet();
     }
-
-//    /**
-//     * TODO: javadoc
-//     */
-//    public boolean containsDrawableKey(String key) {
-//        return netlist.containsKey(key) && netlist.get(key).getVisualComponentClass() != null;
-//    }
     
     /**
      * @see java.util.Set
      */
-    public boolean containsLogicKey(String key) {
+    public boolean containsKey(String key) {
         return netlist.containsKey(key);
     }
     

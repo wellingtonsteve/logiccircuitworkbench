@@ -1,7 +1,12 @@
 package netlist.properties;
 
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.xml.transform.sax.TransformerHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  *
@@ -46,6 +51,10 @@ public abstract class Attribute implements Cloneable {
     }
     
     public void setValue(Object val){
+        changeValue(val);
+    }
+     
+    public void changeValue(Object val){
         if(validate(val)){
             this.value = val;
             for(AttributeListener al: attributeListeners){
@@ -53,4 +62,17 @@ public abstract class Attribute implements Cloneable {
             }
         }
     }
+
+    void createXML(TransformerHandler hd) {
+        try {
+            AttributesImpl atts = new AttributesImpl();
+            atts.addAttribute("", "", "name", "CDATA", getName());
+            atts.addAttribute("", "", "value", "CDATA", (value instanceof String)?(String) value:value.toString());
+            hd.startElement("", "", "attr", atts);
+            hd.endElement("", "", "attr");
+        } catch (SAXException ex) {
+            Logger.getLogger(Attribute.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
 }

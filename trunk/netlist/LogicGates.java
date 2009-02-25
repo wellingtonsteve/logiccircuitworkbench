@@ -133,7 +133,7 @@ public class LogicGates extends Netlist{
             addImage("selected", "/ui/images/components/selected_not.png");
             addImage("active", "/ui/images/components/active_not.png");
 
-            addInputPin("Input 1", new Point(10,30));
+            addInputPin("Input 1", new Point(15,30));
             addOutputPin("Output", new Point(60,30));
         }
     }

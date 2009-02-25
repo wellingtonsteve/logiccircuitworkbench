@@ -55,7 +55,7 @@ public class Input extends VisualComponent{
     
     @Override
     protected BufferedImage getCurrentImage(){
-        if(isOn && !parent.getSimulatorState().equals(SimulatorState.STOPPED)){
+        if(isOn){
             return specialBi;    
         } else {
             return super.getCurrentImage();            
@@ -66,28 +66,28 @@ public class Input extends VisualComponent{
         specialBi = properties.getImage("default_on");
     }
     
-    @Override
-    public void createXML(TransformerHandler hd) {
-        try {
-            AttributesImpl atts = new AttributesImpl();
-            atts.addAttribute("", "", "type", "CDATA", getKeyName());
-            atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
-            atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
-            atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
-            
-            hd.startElement("", "", "component", atts);
-
-                atts.clear();
-                atts.addAttribute("", "", "name", "CDATA", "value");
-                atts.addAttribute("", "", "value", "CDATA", (isOn)?"On":"Off");
-                hd.startElement("", "", "attr", atts);
-                hd.endElement("", "", "attr");
-
-            hd.endElement("", "", "component");
-        } catch (SAXException ex) {
-             ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below.",ex);
-        }
-    }
+//    @Override
+//    public void createXML(TransformerHandler hd) {
+//        try {
+//            AttributesImpl atts = new AttributesImpl();
+//            atts.addAttribute("", "", "type", "CDATA", getKeyName());
+//            atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
+//            atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
+//            atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
+//            
+//            hd.startElement("", "", "component", atts);
+//
+//                atts.clear();
+//                atts.addAttribute("", "", "name", "CDATA", "value");
+//                atts.addAttribute("", "", "value", "CDATA", (isOn)?"On":"Off");
+//                hd.startElement("", "", "attr", atts);
+//                hd.endElement("", "", "attr");
+//
+//            hd.endElement("", "", "component");
+//        } catch (SAXException ex) {
+//             ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below.",ex);
+//        }
+//    }
     
     public boolean isOn() {
         return isOn;

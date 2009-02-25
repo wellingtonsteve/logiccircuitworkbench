@@ -23,9 +23,21 @@ public class BooleanAttribute extends Attribute{
         cb.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                setValue(cb.isSelected());
+                changeValue(cb.isSelected());
             }
         });
         jcomponent = cb;
     }
+
+    @Override
+    public void setValue(Object val) {
+        if(val instanceof String){
+            val = Boolean.parseBoolean((String) val);
+        }
+        if(validate(val)){
+            ((JCheckBox) jcomponent).setSelected((Boolean) val);
+        }
+        super.setValue(val);
+    }
+    
 }

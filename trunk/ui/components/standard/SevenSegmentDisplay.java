@@ -40,7 +40,7 @@ public class SevenSegmentDisplay extends VisualComponent implements sim.joinable
 
     @Override
     protected void setInvalidAreas(){
-        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+15,(int)getOrigin().getY()-getCentre().y,45,65);
+        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+18,(int)getOrigin().getY()-getCentre().y+4,43,57);
         invalidArea = rotate(invalidArea);   
     }
     

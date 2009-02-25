@@ -125,7 +125,7 @@ public abstract class VisualComponent extends SelectableComponent {
             
             hd.startElement("", "", "component", atts);
             
-            // TODO: add attributes
+            properties.createXML(hd);
             
             hd.endElement("", "", "component");
         } catch (SAXException ex) {

@@ -17,9 +17,10 @@ public class RotateRightCommand extends Command {
                 && activeCircuit.getActiveComponents().size() == 1){
             List<SelectableComponent> selection = activeCircuit.getActiveComponents();
             item = selection.get(0);
-                       
-            item.setRotation(item.getRotation() + Math.PI/2, true);
-            editor.setComponentRotation(item.getRotation());
+              
+            editor.setComponentRotation(item.getRotation() + Math.PI/2);
+            item.setRotation(item.getRotation(), true);
+            
             editor.repaintOptionsPanel();
             
             canUndo = true;
