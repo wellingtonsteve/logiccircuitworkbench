@@ -39,8 +39,10 @@ public class InputPin extends Pin implements ValueListener {
         super.setOutputSource(joinable, visited);
         if(joinable != null){
             connectToOutput(joinable);
+            setValue(joinable.getValue());
         } else{
             disconnect();
+            setValue(LogicState.FLOATING);
         }
         
     }
