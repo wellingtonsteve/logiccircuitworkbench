@@ -1,4 +1,4 @@
-package ui.components.logicgates;
+package ui.components.flipflops;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -8,15 +8,15 @@ import ui.components.VisualComponent;
  *
  * @author Matt
  */
-public class DefaultLogicGate extends VisualComponent{    
+public class DefaultLatch extends VisualComponent{    
     
-    public DefaultLogicGate(ui.CircuitPanel parent, Point point, sim.SimItem simItem, netlist.properties.Properties properties) {
+    public DefaultLatch(ui.CircuitPanel parent, Point point, sim.SimItem simItem, netlist.properties.Properties properties) {
         super(parent, point, simItem,properties);
     }
 
     @Override
     protected void setInvalidAreas(){
-        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+18,(int)getOrigin().getY()+18-getCentre().y,34,24);
+        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+23,(int)getOrigin().getY()-getCentre().y+3,34,54);
         invalidArea = rotate(invalidArea);        
     }
     

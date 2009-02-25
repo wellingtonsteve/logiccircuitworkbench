@@ -287,11 +287,11 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         unsetGlobalPins();
         parent.getGrid().unmarkInvalidAreas(this);
         this.rotation = rotation % (Math.PI * 2);
-        setInvalidAreas();
-        setBoundingBox();
         if(updateGrid){
+            setInvalidAreas();
+            setBoundingBox();
             setGlobalPins();
-            parent.getGrid().markInvalidAreas(this);
+            parent.getGrid().markInvalidAreas(this);            
         }        
     }
         
@@ -576,6 +576,10 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     public void setProperties(Properties properties) {
         this.properties = properties;
         this.logicalComponent.setProperties(this.properties);
+    }
+    
+    public Properties getProperties(){
+        return properties;
     }
     
     /**

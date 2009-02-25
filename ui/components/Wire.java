@@ -63,8 +63,13 @@ public class Wire extends SelectableComponent {
     @Override
     public String getName(){
         return "Wire";
-    }    
+    }
 
+    @Override
+    public String getKeyName() {
+        return "Wire";
+    } 
+   
     /**
      * Do nothing, we don't want to rotate wires
      * 

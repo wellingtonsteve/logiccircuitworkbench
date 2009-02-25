@@ -15,18 +15,16 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -60,7 +58,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     private sim.SimItem simitem;
     private boolean playPause = false;
     private String ImageSelectableComponentImplKeyName;
-    private WindowListener loggerWindowListener = new WindowAdapter(){
+    private WindowAdapter loggerWindowListener = new WindowAdapter(){
         public void windowClosed(WindowEvent e) {RecordButton.setSelected(getActiveCircuit().getLoggerWindow().isShowing()); }
     };
     private JDialog aboutBox = new AboutBox(this);
@@ -1387,8 +1385,10 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         parent = rootNode;
         
         for(Netlist nl: netlists){
-            
-            for(String s: nl.keySet()){
+            Object[] keys = nl.keySet().toArray();
+            Arrays.sort(keys);
+            for(Object o: keys){
+                String s = (String) o;
                 nodes = s.split("\\.");
                 parent = rootNode;
                 
@@ -1462,7 +1462,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         
         // Check Logical Component mappings
         for(Netlist nl: netlists){
-            if(nl.containsLogicKey(key)){
+            if(nl.containsKey(key)){
                 return true;
             }
         }    
@@ -1480,7 +1480,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             key = key.substring(11); 
         }
         for(Netlist nl: netlists){
-            if(nl.containsLogicKey(key)){
+            if(nl.containsKey(key)){
                 return nl;
             }
         }
@@ -1694,6 +1694,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                 JPanel test = sc.getOptionsPanel();
                 AttributesPanel.add(test);
                 ((PreviewPanel)Preview).setComponent(sc);
+                AttributesPanel.repaint();
                 Preview.repaint();
                 AttributesPanel.setPreferredSize(test.getSize());
                 Toolbox.revalidate();

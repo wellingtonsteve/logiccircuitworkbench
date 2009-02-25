@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.xml.transform.sax.TransformerHandler;
 import sim.SimItem;
 import ui.components.SelectableComponent;
 import ui.error.ErrorHandler;
@@ -51,6 +52,7 @@ public class Properties implements Cloneable{
     
     protected void addAttribute(Attribute attr){
         attributes.put(attr.getName(), attr);
+        createAttributesPanel();
     }
     
     public JPanel getAttributesPanel(){
@@ -90,7 +92,7 @@ public class Properties implements Cloneable{
         return outputPins;
     }
 
-    private void createAttributesPanel() {
+    public void createAttributesPanel() {
         attrPanel = new JPanel();
         attrPanel.setLayout(new BoxLayout(attrPanel, BoxLayout.PAGE_AXIS));
 
@@ -118,5 +120,11 @@ public class Properties implements Cloneable{
     
     public String getKeyName(){
         return key;
+    }
+    
+    public void createXML(TransformerHandler hd){
+        for(Attribute attr: attributes.values()){
+            attr.createXML(hd);
+        }
     }
  }

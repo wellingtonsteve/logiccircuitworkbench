@@ -38,9 +38,13 @@ public class Main {
             editor.addNetlist(new netlist.LogicGates());
             loadingBar.setValue(50);
 
+            loadingBar.setString("Loading Latches and Flip-Flops Netlist...");
+            editor.addNetlist(new netlist.FlipFlops());
+             loadingBar.setValue(60);
+            
             loadingBar.setString("Creating Blank Circuit...");
             editor.createBlankCircuit();
-            loadingBar.setValue(80);
+            loadingBar.setValue(85);
 
             if (UIConstants.DO_OFFSCREEN_DRAWING_TEST) {
                 loadingBar.setString("Testing Offscreen Drawing...");

@@ -21,8 +21,7 @@ public class FileCreator {
     
     public FileCreator(String filename){
         
-        try {
-            
+        try {            
             FileOutputStream fos = new FileOutputStream(filename);
             out = new PrintWriter(fos);
             StreamResult streamResult = new StreamResult(out);
@@ -37,8 +36,7 @@ public class FileCreator {
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
 
             hd.setResult(streamResult);
-            hd.startDocument();
-            
+            hd.startDocument();            
             
             AttributesImpl atts = new AttributesImpl();
             // "circuit" tag
@@ -79,4 +77,3 @@ public class FileCreator {
         }
     }
 }
-

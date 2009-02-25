@@ -59,7 +59,7 @@ public class CreateComponentCommand extends Command {
                     Properties props = editor.getNetlistWithKey(key).getProperties(key);
                     SimItem simItem = props.getLogicalComponentClass().getConstructor().newInstance();
                 
-                    if(props.getVisualComponentClass() != null && editor.getNetlistWithKey(key).containsLogicKey(key)){
+                    if(props.getVisualComponentClass() != null && editor.getNetlistWithKey(key).containsKey(key)){
                             sc = props.getVisualComponentClass().getConstructor(
                                 CircuitPanel.class,
                                 Point.class, 

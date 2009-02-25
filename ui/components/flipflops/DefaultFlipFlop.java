@@ -1,9 +1,8 @@
 package ui.components.flipflops;
 
-import ui.components.logicgates.*;
-import ui.components.*;
 import java.awt.Point;
 import java.awt.Rectangle;
+import ui.components.VisualComponent;
 
 /**
  *
@@ -17,7 +16,7 @@ public class DefaultFlipFlop extends VisualComponent{
 
     @Override
     protected void setInvalidAreas(){
-        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+18,(int)getOrigin().getY()+18-getCentre().y,34,24);
+        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+13,(int)getOrigin().getY()+8-getCentre().y,34,54);
         invalidArea = rotate(invalidArea);        
     }
     

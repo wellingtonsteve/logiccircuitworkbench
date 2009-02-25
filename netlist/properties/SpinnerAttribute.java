@@ -33,12 +33,23 @@ public class SpinnerAttribute extends Attribute{
             @Override
             public void stateChanged(ChangeEvent e) {
                 js.setValue(model.getNumber().intValue());
-                SpinnerAttribute.this.setValue(model.getNumber().intValue());
+                SpinnerAttribute.this.changeValue(model.getNumber().intValue());
             }
         });
         js.setModel(model);
         js.setPreferredSize(new Dimension(100, 25));
         js.setMaximumSize(new Dimension(100, 25));
         jcomponent = js;
+    }
+    
+    @Override
+    public void setValue(Object val) {
+        if(val instanceof String){
+            val = Integer.parseInt((String) val);
+        }
+        if(validate(val)){
+            ((JSpinner) jcomponent).setValue(val);
+        }
+        super.setValue(val);        
     }
 }

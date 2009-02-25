@@ -22,12 +22,19 @@ public class SelectionAttribute extends Attribute{
         cb.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                setValue(cb.getSelectedItem());
+                changeValue(cb.getSelectedItem());
             }
         });
         cb.setMaximumSize(new Dimension(100, 25));
         jcomponent = cb;
     }
     
+    @Override
+    public void setValue(Object val) {
+        if(validate(val)){
+            ((JComboBox) jcomponent).setSelectedItem(val);
+        }
+        super.setValue(val);
+    }
     
 }
