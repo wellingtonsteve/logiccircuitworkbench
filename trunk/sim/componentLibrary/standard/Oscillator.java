@@ -15,8 +15,8 @@ public class Oscillator extends Component {
     private static Random r = new Random();
 
     private OutputPin output = createOutputPin("Output");
-    private long t1 = 100000000l;
-    private long t2 = 400000000l;
+    private long t1 = 10000000l;
+    private long t2 = 10000000l;
     private LogicState initialState = LogicState.OFF;
     
 
