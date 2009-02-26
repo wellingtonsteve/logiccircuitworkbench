@@ -3,6 +3,7 @@ package sim.componentLibrary;
 import sim.*;
 import java.util.*;
 import java.util.ArrayList;
+import sim.componentLibrary.standard.Input;
 import sim.joinable.*;
 
 public class Circuit implements SimItem {
@@ -15,6 +16,9 @@ public class Circuit implements SimItem {
         if(!simItems.contains(simItem)){
             simItems.add(simItem);
             simItem.setSimulator(sim);
+            if(simItem instanceof Input){
+                InputPin connectingInputPin = new InputPin(this, ((Input) simItem).getPinName());
+            }
             return true;
         }
         else{
@@ -74,8 +78,6 @@ public class Circuit implements SimItem {
         }
     }
     
-    private netlist.properties.Properties properties;
     public void setProperties(netlist.properties.Properties properties){
-        this.properties = properties;
     }
 }
