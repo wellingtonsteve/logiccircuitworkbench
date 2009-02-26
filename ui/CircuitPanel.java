@@ -450,8 +450,8 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     
     /** {@inheritDoc } */
     @Override
-    public void SimulationTimeChanged(long time) {
-        if(time % 10E10 == 0){
+    public void SimulationTimeChanged(long time) {        
+        if(time % 10E7 == 0){// Don't change too quickly!
             ErrorHandler.changeStatus("message", "Simulator Time: " + ((double) (time / (double) 1000000000)) + "×10⁹ns");
         }
     }

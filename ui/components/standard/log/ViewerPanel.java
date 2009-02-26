@@ -150,7 +150,7 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
 
     @Override
     public void SimulationTimeChanged(long time) {
-        if(time % 10E10 == 0){// Don't update too quickly!!
+        if(time % 10E7 == 0){// Don't update too quickly!!
             Long startTime = parent.getStartTime();
             Long endTime = parent.getEndTime();
 

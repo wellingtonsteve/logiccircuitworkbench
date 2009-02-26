@@ -812,7 +812,6 @@ private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
 
         // Set Options panel (Preview, Component Specific Options etc.)
         setComponent(ccc.getComponent());
-        resetLabel(); // Assume user wants a different name for a different logicalComponent
 
         optionsPanel.setVisible(true);
         optionsPanel.repaint();
@@ -849,7 +848,6 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
                 
                 // Set Options panel (Preview, Component Specific Options etc.)
                 setComponent(ccc.getComponent());
-                resetLabel(); // Assume user wants a different name for a different logicalComponent
                 optionsPanel.setVisible(true);
                 optionsPanel.repaint();
 
@@ -1611,9 +1609,11 @@ private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GE
     
     // Options Panel Methods
     
-    /** Reset the value of the Component Label Textbox */
+    /** Reset the value of the Component Label Attribute */
     public void resetLabel(){
-        sc.getProperties().getAttribute("Label").setValue("");
+        if(sc!= null && sc.getProperties().getAttribute("Label") != null){
+                sc.getProperties().getAttribute("Label").setValue("");
+        }
     }
     
     /** @return  the current value of the Component Label Attribute */

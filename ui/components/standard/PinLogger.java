@@ -57,7 +57,7 @@ public class PinLogger extends VisualComponent implements sim.joinable.ValueList
             g.setColor(UIConstants.LABEL_TEXT_COLOUR);
             g.drawString(getLabel(), 
                     getOrigin().x+UIConstants.LABEL_COMPONENT_X_OFFSET-10,
-                    getOrigin().y+UIConstants.LABEL_COMPONENT_Y_OFFSET-10);
+                    getOrigin().y+UIConstants.LABEL_COMPONENT_Y_OFFSET);
         }
         g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);      
         g.translate(getOrigin().x, getOrigin().y);               
@@ -66,15 +66,13 @@ public class PinLogger extends VisualComponent implements sim.joinable.ValueList
         g.translate(-getOrigin().x, -getOrigin().y);
         g.drawImage(getCurrentImage(), getOrigin().x, getOrigin().y, null);
         g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-    }
-    
+    }    
     
     @Override
     public void addListeners() {
         pin = logicalComponent.getPinByName("Input");
         pin.addValueListener(this);
-    }
-    
+    }    
     
     /**
      * PIN LOGGER CODE
@@ -120,7 +118,6 @@ public class PinLogger extends VisualComponent implements sim.joinable.ValueList
         if(end > timeLog.size()-1){
             end = timeLog.size()-1;
         }
-        //System.out.println(endTime + " " + timeLog.get(end));
         return end;
     }
     
