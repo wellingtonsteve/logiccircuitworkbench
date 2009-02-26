@@ -23,12 +23,12 @@ public class CircuitFrame extends JInternalFrame{
     private Editor editor;
     private int untitledIndex;
     
-    public CircuitFrame(final Editor editor, int untitledIndex){
+    public CircuitFrame(final Editor editor, int untitledIndex, boolean isSubCircuit){
         super();
         
         this.editor = editor;
         this.untitledIndex = untitledIndex;
-        this.circuitPanel = new CircuitPanel(this);
+        this.circuitPanel = new CircuitPanel(this, isSubCircuit);
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);

@@ -26,7 +26,7 @@ public class FileOpenCommand extends Command {
             filename = c.getSelectedFile().getAbsolutePath();
             FileLoader cfh = new FileLoader(editor);
             
-            activeCircuit = editor.createBlankCircuit();    
+            activeCircuit = editor.createBlankCircuit(false);    
             if(cfh.loadFile(filename)){
                 activeCircuit.setFilename(filename);
                 editor.refreshWindowsMenu();

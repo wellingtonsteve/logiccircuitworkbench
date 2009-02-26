@@ -43,7 +43,7 @@ public class Main {
              loadingBar.setValue(60);
             
             loadingBar.setString("Creating Blank Circuit...");
-            editor.createBlankCircuit();
+            editor.createBlankCircuit(false);
             loadingBar.setValue(85);
 
             if (UIConstants.DO_OFFSCREEN_DRAWING_TEST) {
