@@ -1199,10 +1199,10 @@ private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GE
      * 
      * @return The new circuit
      */
-    public CircuitPanel createBlankCircuit() {
+    public CircuitPanel createBlankCircuit(boolean isSubCircuit) {
         
         // Construct the containing frame, also set position
-        CircuitFrame cir = new CircuitFrame(this, untitledIndex++);
+        CircuitFrame cir = new CircuitFrame(this, untitledIndex++, isSubCircuit);
         if(getActiveCircuit() != null){
             cir.setBounds(getActiveCircuit().getParentFrame().getBounds().x,
                     getActiveCircuit().getParentFrame().getBounds().y,

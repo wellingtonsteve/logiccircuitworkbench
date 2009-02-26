@@ -29,7 +29,7 @@ public class SubcircuitOpenCommand extends Command {
             filename = c.getSelectedFile().getAbsolutePath();
             FileLoader cfh = new FileLoader(editor);
             CircuitPanel loadingCircuit = activeCircuit;
-            activeCircuit = editor.createBlankCircuit();    
+            activeCircuit = editor.createBlankCircuit(true);    
             if(cfh.loadFile(filename)){
                 activeCircuit.setFilename(filename);
                 editor.refreshWindowsMenu();
