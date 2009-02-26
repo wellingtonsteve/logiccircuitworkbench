@@ -37,6 +37,13 @@ public class Grid {
      */
     public boolean canTranslateComponent(SelectableComponent sc, int dx, int dy){
         
+        // TODO Check connections with simulator
+        for(Pin local: sc.getPins()){
+            local.getJoinable();
+            
+        }
+        
+        
         // Check each pin
         for(Pin local: sc.getPins()){
             Point p = local.getGlobalLocation();
@@ -77,8 +84,6 @@ public class Grid {
                 }
             }
         }        
-        
-        // TODO Check connections with simulator
         
         return true;
     }

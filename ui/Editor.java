@@ -1076,12 +1076,13 @@ private void StopButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:
 
 private void StartButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StartButtonMouseClicked
     if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
-        getActiveCircuit().doCommand(new SimulationStartCommand());
         if(playPause){ 
+            getActiveCircuit().doCommand(new SimulationPauseCommand());
             StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png")));
             StepForward.setEnabled(true);
             StepForwardButton.setEnabled(true);
         } else {
+            getActiveCircuit().doCommand(new SimulationStartCommand());
             StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-pause.png")));
             StepForward.setEnabled(false);
             StepForwardButton.setEnabled(false);
@@ -1122,12 +1123,13 @@ private void NewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:eve
 
 private void RunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RunActionPerformed
     if(getActiveCircuit()!=null){
-        getActiveCircuit().doCommand(new SimulationStartCommand());
         if(playPause){ 
+            getActiveCircuit().doCommand(new SimulationPauseCommand());
             StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-start.png")));
             StepForward.setEnabled(true);
             StepForwardButton.setEnabled(true);
         } else {
+            getActiveCircuit().doCommand(new SimulationStartCommand());
             StartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/media-playback-pause.png")));
             StepForward.setEnabled(false);
             StepForwardButton.setEnabled(false);
