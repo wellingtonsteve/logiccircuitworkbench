@@ -16,7 +16,7 @@ public class Oscillator extends Component {
 
     private OutputPin output = createOutputPin("Output");
     private long t1 = 100000000l;
-    private long t2 = 200000000l;
+    private long t2 = 400000000l;
     private LogicState initialState = LogicState.OFF;
     
 
@@ -35,8 +35,8 @@ public class Oscillator extends Component {
     };
 
     public Oscillator(){
-        t1 = 100000000l * r.nextInt(20);
-        t2 = 100000000l * r.nextInt(20);
+        //t1 = 100000000l * r.nextInt(20);
+        //t2 = 100000000l * r.nextInt(20);
     }
 
     public void initialize(){
