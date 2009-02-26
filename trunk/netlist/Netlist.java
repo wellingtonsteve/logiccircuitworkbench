@@ -1,6 +1,7 @@
 package netlist;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +31,7 @@ import netlist.properties.Properties;
  */
 public class Netlist{
     
-    protected HashMap<String, Class<? extends Properties>> netlist = new HashMap<String, Class<? extends Properties>>();
+    protected HashMap<String, Class<? extends Properties>> netlist = new LinkedHashMap<String, Class<? extends Properties>>();
 
     /**
      * Create a properties object from the class description specified in the map.

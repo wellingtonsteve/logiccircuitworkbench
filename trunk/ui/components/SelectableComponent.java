@@ -4,7 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -58,9 +57,6 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
     
     /** Precompute the values of Math.cos(rotation) and Math.cos(rotation) */
     protected double cosTheta, sinTheta;
-
-    /** @see #getLabel() */
-    private String label = "";
     
     /** @see #getParent() */
     protected CircuitPanel parent;
@@ -352,28 +348,38 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * {@inheritDoc}
      */
     public String getLabel() {
-        return label;
+        if(properties.getAttribute("Label")==null){
+            return "";
+        }
+        return (String) properties.getAttribute("Label").getValue();
     }
 
     /**
      * {@inheritDoc}
      */
     public void setLabel(String label) {
-        this.label = label;
+        if(properties.getAttribute("Label")!=null){
+            properties.getAttribute("Label").changeValue(label);
+        }
     }
     
     /**
      * {@inheritDoc}
      */
     public void removeLabel(){
-        this.label = "";
+        if(properties.getAttribute("Label")!=null){
+            properties.getAttribute("Label").changeValue("");
+        }
     }
     
     /**
      * {@inheritDoc}
      */
     public boolean hasLabel(){
-        return label != null && !label.isEmpty();
+        if(properties.getAttribute("Label")==null){
+            return false;
+        }
+        return !getLabel().equals("");
     }
  
     /**
@@ -574,11 +580,13 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
         localPins = new LinkedList<Pin>(); 
     }
     
+    /** Change the properties of this component */
     public void setProperties(Properties properties) {
         this.properties = properties;
         this.logicalComponent.setProperties(this.properties);
     }
     
+    /** @return the properties of this component */
     public Properties getProperties(){
         return properties;
     }

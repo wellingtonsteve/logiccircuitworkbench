@@ -5,11 +5,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import javax.xml.transform.sax.TransformerHandler;
 import netlist.properties.Properties;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-import sim.SimulatorState;
 
 /**
  *
@@ -65,29 +61,6 @@ public class Input extends VisualComponent{
     protected void setSpecialImage() {
         specialBi = properties.getImage("default_on");
     }
-    
-//    @Override
-//    public void createXML(TransformerHandler hd) {
-//        try {
-//            AttributesImpl atts = new AttributesImpl();
-//            atts.addAttribute("", "", "type", "CDATA", getKeyName());
-//            atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
-//            atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
-//            atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
-//            
-//            hd.startElement("", "", "component", atts);
-//
-//                atts.clear();
-//                atts.addAttribute("", "", "name", "CDATA", "value");
-//                atts.addAttribute("", "", "value", "CDATA", (isOn)?"On":"Off");
-//                hd.startElement("", "", "attr", atts);
-//                hd.endElement("", "", "attr");
-//
-//            hd.endElement("", "", "component");
-//        } catch (SAXException ex) {
-//             ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below.",ex);
-//        }
-//    }
     
     public boolean isOn() {
         return isOn;

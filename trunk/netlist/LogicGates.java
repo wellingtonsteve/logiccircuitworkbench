@@ -2,6 +2,7 @@ package netlist;
 
 import java.awt.Point;
 import netlist.properties.Properties;
+import netlist.properties.TextAttribute;
 
 /**
  *
@@ -27,7 +28,7 @@ public class LogicGates extends Netlist{
             super(key);
             setLogicalComponentClass(sim.componentLibrary.logicgates.AndGate2Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
-
+            addAttribute(new TextAttribute("Label", ""));
             addImage("default", "/ui/images/components/default_2in_and.png");
             addImage("selected", "/ui/images/components/selected_2in_and.png");
             addImage("active", "/ui/images/components/active_2in_and.png");
@@ -47,7 +48,7 @@ public class LogicGates extends Netlist{
             super(key);
             setLogicalComponentClass(sim.componentLibrary.logicgates.OrGate2Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
-
+            addAttribute(new TextAttribute("Label", ""));
             addImage("default", "/ui/images/components/default_2in_or.png");
             addImage("selected", "/ui/images/components/selected_2in_or.png");
             addImage("active", "/ui/images/components/active_2in_or.png");
@@ -67,7 +68,7 @@ public class LogicGates extends Netlist{
             super(key);
             setLogicalComponentClass(sim.componentLibrary.logicgates.NandGate2Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
-
+            addAttribute(new TextAttribute("Label", ""));
             addImage("default", "/ui/images/components/default_2in_nand.png");
             addImage("selected", "/ui/images/components/selected_2in_nand.png");
             addImage("active", "/ui/images/components/active_2in_nand.png");
@@ -87,7 +88,7 @@ public class LogicGates extends Netlist{
             super(key);
             setLogicalComponentClass(sim.componentLibrary.logicgates.NorGate2Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
-
+            addAttribute(new TextAttribute("Label", ""));
             addImage("default", "/ui/images/components/default_2in_nor.png");
             addImage("selected", "/ui/images/components/selected_2in_nor.png");
             addImage("active", "/ui/images/components/active_2in_nor.png");
@@ -107,7 +108,7 @@ public class LogicGates extends Netlist{
             super(key);
             setLogicalComponentClass(sim.componentLibrary.logicgates.AndGate2Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
-
+            addAttribute(new TextAttribute("Label", ""));
             addImage("default", "/ui/images/components/default_2in_and.png");
             addImage("selected", "/ui/images/components/selected_2in_and.png");
             addImage("active", "/ui/images/components/active_2in_and.png");
@@ -128,7 +129,7 @@ public class LogicGates extends Netlist{
             super(key);
             setLogicalComponentClass(sim.componentLibrary.logicgates.AndGate2Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
-
+            addAttribute(new TextAttribute("Label", ""));
             addImage("default", "/ui/images/components/default_not.png");
             addImage("selected", "/ui/images/components/selected_not.png");
             addImage("active", "/ui/images/components/active_not.png");
@@ -147,7 +148,7 @@ public class LogicGates extends Netlist{
             super(key);
             setLogicalComponentClass(sim.componentLibrary.logicgates.AndGate2Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
-
+            addAttribute(new TextAttribute("Label", ""));
             addImage("default", "/ui/images/components/default_xor.png");
             addImage("selected", "/ui/images/components/selected_xor.png");
             addImage("active", "/ui/images/components/active_xor.png");
@@ -167,7 +168,7 @@ public class LogicGates extends Netlist{
             super(key);
             setLogicalComponentClass(sim.componentLibrary.logicgates.AndGate2Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
-
+            addAttribute(new TextAttribute("Label", ""));
             addImage("default", "/ui/images/components/default_2in_or.png");
             addImage("selected", "/ui/images/components/selected_2in_or.png");
             addImage("active", "/ui/images/components/active_2in_or.png");

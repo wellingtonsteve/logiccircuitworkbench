@@ -19,6 +19,8 @@ public class SubcircuitOpenCommand extends Command {
         String filename;                                    
         JFileChooser c = new JFileChooser();
         FileFilter xmlFilter = new CircuitFileFilter();        
+        c.setApproveButtonText("Insert");
+        c.setDialogTitle("Insert Subcomponent");
         c.setFileFilter(xmlFilter);
         c.setDialogType(JFileChooser.OPEN_DIALOG);
         int rVal = c.showOpenDialog(editor);
@@ -33,7 +35,7 @@ public class SubcircuitOpenCommand extends Command {
                 editor.refreshWindowsMenu();
                 activeCircuit.getParentFrame().setTitle(filename);
                 
-                loadingCircuit.addComponent(activeCircuit.asSelectableComponent(loadingCircuit));                            
+                //loadingCircuit.addComponent(activeCircuit.asSelectableComponent(loadingCircuit));                            
                 activeCircuit.getParentFrame().setVisible(false);
                 editor.setActiveCircuit(loadingCircuit);                
 

@@ -14,13 +14,10 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
-import netlist.properties.Attribute;
-import netlist.properties.Properties;
 import sim.Simulator;
 import sim.SimulatorState;
 import sim.componentLibrary.Circuit;
-import sim.joinable.InputPin;
+import ui.command.Command;
 import ui.file.FileCreator;
 import ui.grid.Grid;
 import ui.components.*;
@@ -30,14 +27,14 @@ import ui.command.CreateComponentCommand;
 import ui.command.SelectionTranslateCommand;
 import ui.components.standard.PinLogger;
 import ui.error.ErrorHandler;
-import ui.components.standard.log.ViewerWindow;
+import ui.components.standard.log.ViewerFrame;
 
 /**
  * This panel represents the visible workarea on which the circuit is drawn.
  * 
  * @author Matt
  */
-public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
+public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorStateListener {
 
     private Point lastDragPoint = new Point(0,0);
     private Point dragStartPoint = new Point(0,0);
@@ -67,14 +64,14 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
     private CommandHistory cmdHist;
     private Simulator simulator;
     private Circuit logicalCircuit;
-    private ViewerWindow loggerWindow;
+    private ViewerFrame loggerWindow;
     private SimulatorState simulatorState = SimulatorState.STOPPED;
 
     public CircuitPanel(CircuitFrame parentFrame){
         addMouseMotionListener(new CircuitPanelMouseMotionAdapter());
         addMouseListener(new CircuitPanelMouseAdapter());
         this.logicalCircuit = new Circuit();
-        this.loggerWindow = new ViewerWindow(this);
+        this.loggerWindow = new ViewerFrame(this);
         this.loggerWindow.setVisible(false);
         this.simulator = new Simulator(logicalCircuit);
         this.simulator.addStateListener(this);
@@ -85,153 +82,153 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
         this.grid = new Grid(this);
     }
 
-    public SelectableComponent asSelectableComponent(CircuitPanel parentCircuit) {
-        Properties newProperties = new Properties(getFilename()){
-            {
-                setLogicalComponentClass(logicalCircuit.getClass());      
-                
-                int i = 0, o = 0;
-                for(SelectableComponent sc: drawnComponents){                    
-                    if(sc.isFixed() 
-                            && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Input){
-                        int inputX = (Integer) sc.getProperties().getAttribute("External X").getValue();
-                        int inputY = (Integer) sc.getProperties().getAttribute("External Y").getValue();
-                        addInputPin("Input " + i, new Point(inputX, inputY));
-                        i++;
-                    } else if(sc.isFixed() 
-                            && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Output){
-                        int inputX = (Integer) sc.getProperties().getAttribute("External X").getValue();
-                        int inputY = (Integer) sc.getProperties().getAttribute("External Y").getValue();
-                        addOutputPin("Output " + i, new Point(inputX, inputY));
-                        i++;
-                    }              
-                }
-                
-            }          
-        };
-        
-        return new VisualComponent(parentCircuit, new Point(0,0), logicalCircuit, newProperties){
-            private int width, height;
-            private int spacing = 2*UIConstants.GRID_DOT_SPACING;
-
-            @Override
-            protected void setBoundingBox(){
-                boundingBox = new java.awt.Rectangle(getOrigin().x-getCentre().x,
-                        getOrigin().y-getCentre().y,
-                        getWidth()+10,
-                        getHeight());
-                boundingBox = rotate(boundingBox);
-            }
-
-            
-            @Override
-            public int getWidth(){
-                if(width == 0){
-                    int maxX = 0;
-                    for(Point p: properties.getInputPins().values()){
-                        if(p.x > maxX) {
-                            maxX = p.x;
-                        }
-                    }   
-                    for(Point p: properties.getOutputPins().values()){
-                        if(p.x > maxX) {
-                            maxX = p.x;
-                        }
-                    }     
-                    width = maxX + UIConstants.GRID_DOT_SPACING;
-                }
-                return width;                
-            }
-
-            @Override
-            public int getHeight(){
-                if(width == 0){
-                    int maxY = 0;
-                    for(Point p: properties.getInputPins().values()){
-                        if(p.y > maxY) {
-                            maxY = p.y;
-                        }
-                    }   
-                    for(Point p: properties.getOutputPins().values()){
-                        if(p.y > maxY) {
-                            maxY = p.y;
-                        }
-                    }     
-                    height = maxY + UIConstants.GRID_DOT_SPACING;
-                }
-                return height;   
-            }
-
-            @Override
-            protected void setInvalidAreas() {
-                invalidArea = new java.awt.Rectangle(getOrigin().x-getCentre().x+9, 
-                        getOrigin().y-getCentre().y-1, 
-                        getWidth()-UIConstants.GRID_DOT_SPACING+2, 
-                        getHeight()+2);
-                invalidArea = rotate(invalidArea);
-            }
-
-            @Override
-            public Point getCentre() {
-                return new Point(30, 30);
-            }
-
-            @Override
-            public void draw(Graphics2D g) {
-               if(hasLabel()){
-                    g.setColor(UIConstants.LABEL_TEXT_COLOUR);
-                    g.drawString(getLabel(), getOrigin().x, getOrigin().y-2);
-                }
-
-                g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-                g.translate(getOrigin().x, getOrigin().y);
-
-                if(getSelectionState().equals(SelectionState.ACTIVE)){
-                    g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
-                    g.drawRect(10, 0, getWidth()-spacing, getHeight());
-                } else if(getSelectionState().equals(SelectionState.HOVER)){
-                    g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-                    g.fillRect(10, 0, getWidth()-spacing, getHeight());
-                    g.setColor(UIConstants.HOVER_COMPONENT_COLOUR);
-                    g.drawRect(10, 0, getWidth()-spacing, getHeight());
-                } else {
-                    g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-                    g.fillRect(10, 0, getWidth()-spacing, getHeight());             
-                    g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-                    g.drawRect(10, 0, getWidth()-spacing, getHeight());
-                }            
-
-                g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-                g.drawString( filename, 10, 10);
-
-                for(Pin p: localPins){
-                    if(p.getJoinable() instanceof sim.joinable.InputPin){
-                        g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
-                    } else if(p.getJoinable() instanceof sim.joinable.OutputPin){
-                        g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);
-                    }
-                }      
-
-                g.translate(-getOrigin().x, -getOrigin().y);
-                g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-            }
-
-            @Override
-            protected void setDefaultImage() {
-                defaultBi = null;
-            }
-
-            @Override
-            protected void setSelectedImage() {
-                selectedBi = null;
-            }
-
-            @Override
-            protected void setActiveImage() {
-                activeBi = null;
-            }
-        };
-    }
+//    public SelectableComponent asSelectableComponent(CircuitPanel parentCircuit) {
+//        Properties newProperties = new Properties(getFilename()){
+//            {
+//                setLogicalComponentClass(logicalCircuit.getClass());      
+//                
+//                int i = 0, o = 0;
+//                for(SelectableComponent sc: drawnComponents){                    
+//                    if(sc.isFixed() 
+//                            && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Input){
+//                        int inputX = (Integer) sc.getProperties().getAttribute("External X").getValue();
+//                        int inputY = (Integer) sc.getProperties().getAttribute("External Y").getValue();
+//                        addInputPin("Input " + i, new Point(inputX, inputY));
+//                        i++;
+//                    } else if(sc.isFixed() 
+//                            && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Output){
+//                        int inputX = (Integer) sc.getProperties().getAttribute("External X").getValue();
+//                        int inputY = (Integer) sc.getProperties().getAttribute("External Y").getValue();
+//                        addOutputPin("Output " + i, new Point(inputX, inputY));
+//                        i++;
+//                    }              
+//                }
+//                
+//            }          
+//        };
+//        
+//        return new VisualComponent(parentCircuit, new Point(0,0), logicalCircuit, newProperties){
+//            private int width, height;
+//            private int spacing = 2*UIConstants.GRID_DOT_SPACING;
+//
+//            @Override
+//            protected void setBoundingBox(){
+//                boundingBox = new java.awt.Rectangle(getOrigin().x-getCentre().x,
+//                        getOrigin().y-getCentre().y,
+//                        getWidth()+10,
+//                        getHeight());
+//                boundingBox = rotate(boundingBox);
+//            }
+//
+//            
+//            @Override
+//            public int getWidth(){
+//                if(width == 0){
+//                    int maxX = 0;
+//                    for(Point p: properties.getInputPins().values()){
+//                        if(p.x > maxX) {
+//                            maxX = p.x;
+//                        }
+//                    }   
+//                    for(Point p: properties.getOutputPins().values()){
+//                        if(p.x > maxX) {
+//                            maxX = p.x;
+//                        }
+//                    }     
+//                    width = maxX + UIConstants.GRID_DOT_SPACING;
+//                }
+//                return width;                
+//            }
+//
+//            @Override
+//            public int getHeight(){
+//                if(width == 0){
+//                    int maxY = 0;
+//                    for(Point p: properties.getInputPins().values()){
+//                        if(p.y > maxY) {
+//                            maxY = p.y;
+//                        }
+//                    }   
+//                    for(Point p: properties.getOutputPins().values()){
+//                        if(p.y > maxY) {
+//                            maxY = p.y;
+//                        }
+//                    }     
+//                    height = maxY + UIConstants.GRID_DOT_SPACING;
+//                }
+//                return height;   
+//            }
+//
+//            @Override
+//            protected void setInvalidAreas() {
+//                invalidArea = new java.awt.Rectangle(getOrigin().x-getCentre().x+9, 
+//                        getOrigin().y-getCentre().y-1, 
+//                        getWidth()-UIConstants.GRID_DOT_SPACING+2, 
+//                        getHeight()+2);
+//                invalidArea = rotate(invalidArea);
+//            }
+//
+//            @Override
+//            public Point getCentre() {
+//                return new Point(30, 30);
+//            }
+//
+//            @Override
+//            public void draw(Graphics2D g) {
+//               if(hasLabel()){
+//                    g.setColor(UIConstants.LABEL_TEXT_COLOUR);
+//                    g.drawString(getLabel(), getOrigin().x, getOrigin().y-2);
+//                }
+//
+//                g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
+//                g.translate(getOrigin().x, getOrigin().y);
+//
+//                if(getSelectionState().equals(SelectionState.ACTIVE)){
+//                    g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
+//                    g.drawRect(10, 0, getWidth()-spacing, getHeight());
+//                } else if(getSelectionState().equals(SelectionState.HOVER)){
+//                    g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+//                    g.fillRect(10, 0, getWidth()-spacing, getHeight());
+//                    g.setColor(UIConstants.HOVER_COMPONENT_COLOUR);
+//                    g.drawRect(10, 0, getWidth()-spacing, getHeight());
+//                } else {
+//                    g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+//                    g.fillRect(10, 0, getWidth()-spacing, getHeight());             
+//                    g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
+//                    g.drawRect(10, 0, getWidth()-spacing, getHeight());
+//                }            
+//
+//                g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
+//                g.drawString( filename, 10, 10);
+//
+//                for(Pin p: localPins){
+//                    if(p.getJoinable() instanceof sim.joinable.InputPin){
+//                        g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
+//                    } else if(p.getJoinable() instanceof sim.joinable.OutputPin){
+//                        g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);
+//                    }
+//                }      
+//
+//                g.translate(-getOrigin().x, -getOrigin().y);
+//                g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
+//            }
+//
+//            @Override
+//            protected void setDefaultImage() {
+//                defaultBi = null;
+//            }
+//
+//            @Override
+//            protected void setSelectedImage() {
+//                selectedBi = null;
+//            }
+//
+//            @Override
+//            protected void setActiveImage() {
+//                activeBi = null;
+//            }
+//        };
+//    }
 
     /**
      * Remove any components that are still floating in the workarea and have not been fixed.
@@ -321,157 +318,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
         this.highlightedComponent = higlightedComponent;
         this.highlightedComponent.setHoverState();
     }
-    
-    /** 
-     * Calculate the Bounds of the Selection box based on mouse co-ordinates at
-     * certain mouse dragging events.
-     */
-    private void setSelectionBox() {
-        selX = dragStartPoint.x;
-        selY = dragStartPoint.y;
-        selWidth = currentPoint.x - dragStartPoint.x;
-        selHeight = currentPoint.y - dragStartPoint.y;
-
-        if (selWidth < 0) {
-            selX = selX + selWidth;
-            selWidth = selWidth * -1;
-        }
-        if (selHeight < 0) {
-            selY = selY + selHeight;
-            selHeight = selHeight * -1;
-        }
-    }
-    
-    /**
-     * Speedy method to repaint only those areas that have been changed since the 
-     * last movement on the workarea.
-     */
-    public void repaintDirtyAreas() {                    
-        Rectangle currentArea = new Rectangle(currentPoint);
-        Rectangle previousArea = new Rectangle();
-        int dx = previousCurrentPoint.x - currentPoint.x;
-        int dy = previousCurrentPoint.y - currentPoint.y;
         
-        currentArea.add(previousCurrentPoint);
-        
-        // Include range of current selection (i.e. non-fixed components)
-        for(SelectableComponent sc: drawnComponents){
-            if(!sc.isFixed() 
-                    || sc.equals(highlightedComponent) 
-                    || activeComponents.contains(sc)){
-                currentArea.add(sc.getBoundingBox());
-            }            
-        }        
-        
-        previousArea = currentArea.getBounds();
-        previousArea.translate(dx, dy);
-        currentArea.add(previousArea);    
-        currentArea.grow(10, 10);
-        
-        repaint(currentArea);
-    }
-     
-    /**
-     * Implement the buffering as required by the speed test that was performed 
-     * when the application was started.
-     * If we draw directly, we simply draw the circuit to the graphics context provided,
-     * otherwise if we're doing buffered drawing, we first draw to a clean offscreen 
-     * drawing area and then draw the completed image to intial graphics context.
-     * 
-     * @param g The original graphics context.
-     */
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        if (editor.drawDirect()) {
-           drawCircuit(g);
-        } else {
-
-           // Clear the offscreen drawing area and set the drawing
-           // color back to foreground.
-           Graphics offscreenGraphics = editor.getOffscreenGraphics();
-           Image offscreenImage = editor.getOffscreenImage();               
-
-           offscreenGraphics.setColor(getBackground());
-           offscreenGraphics.fillRect(0, 0, getWidth(), getHeight());
-           offscreenGraphics.setColor(getForeground());
-
-           // Paint to the offscreen image
-           drawCircuit(offscreenGraphics);
-
-           // Copy the offscreen image to the screen
-           g.drawImage(offscreenImage, 0, 0, this);
-        }                                
-    }
-    
-    /**
-     * Draw the components, background & grid of this circuit to the graphics context.
-     * @param g
-     */
-    public void drawCircuit(Graphics g){
-        Graphics2D g2 = (Graphics2D) g;
-        if(g2.getClip() == null){
-            g2.setClip(0, 0, getWidth(), getHeight());
-        }
-
-        // Background Colour
-        if(getSimulatorState().equals(simulatorState.STOPPED)){
-            g2.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-        } else {
-            g2.setColor(UIConstants.CIRCUIT_PLAYING_BACKGROUND_COLOUR);
-        }
-        g2.fill(g2.getClip()); 
-                
-        // Grid Snap Dots
-        if(UIConstants.DRAW_GRID_DOTS){
-            Point start = Grid.snapToGrid(new Point(g2.getClipBounds().x, g2.getClipBounds().y));
-            g2.setColor(UIConstants.GRID_DOT_COLOUR);
-            for(int i = start.x; i< g2.getClipBounds().getMaxX(); i+=UIConstants.GRID_DOT_SPACING){
-                for(int j = start.y; j < g2.getClipBounds().getMaxY(); j+=UIConstants.GRID_DOT_SPACING){
-                    g2.fillRect(i, j, 1, 1);
-                }
-            }
-        }
-                
-        // Draw components
-        for(SelectableComponent sc: drawnComponents){
-            if(sc.getBoundingBox().intersects(g2.getClipBounds())){
-                g2.translate(-sc.getCentre().x, -sc.getCentre().y);
-                sc.draw(g2); 
-                g2.translate(sc.getCentre().x, sc.getCentre().y);
-
-                if(UIConstants.SHOW_INVALID_AREA_BOXES){
-                    g2.draw(sc.getInvalidArea());
-                }
-
-                if(UIConstants.SHOW_BOUNDING_BOXES){
-                    g2.draw(sc.getBoundingBox());
-                }             
-            }
-        }
-        
-        // Draw Connection Points 
-        grid.draw(g2);
-        
-        // Draw Selection Box
-        if(multipleSelection){                        
-            g2.setColor(UIConstants.SELECTION_BOX_COLOUR);
-            g2.setStroke(UIConstants.SELECTION_BOX_STROKE);
-            g2.drawRect(selX, selY, selWidth, selHeight);
-        }      
-    }
-             
-    /** @param tool The current tool that being used to modify the circuit. */
-    public void setCurrentTool(String tool){      
-        this.currentTool = tool;                    
-    }
-    
-    /** @return The name of the tool that is currently being used to modify the circuit */
-    public String getCurrentTool(){
-        return currentTool;
-    }
-    
     /**
      * Clear everything associated with this circuit.
      */
@@ -494,37 +341,6 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
         repaint();      
     }    
     
-    /** Save this circuit in the appropriate location. */
-    public void saveAs(String filename){
-        setFilename(filename);
-        FileCreator fc = new FileCreator(filename);
-        for(SelectableComponent sc: drawnComponents){
-            if(sc.isFixed()){
-                fc.add(sc);
-            }
-        }        
-        fc.write();
-        CircuitFrame frame = getParentFrame();
-        frame.setTitle(filename);
-        cmdHist.setIsDirty(false);
-    }
-    
-    /**@return The filename of this circuit */
-    public String getFilename(){
-        return (filename==null)?"Untitled"+getParentFrame().getUntitledIndex()+UIConstants.FILE_EXTENSION:filename;
-    }
-    
-    /**
-     * Change the filename of this circuit, also cascade changes to parent frame
-     * and application window.
-     * @param filename The new filename
-     */
-    public void setFilename(String filename) {
-        this.filename = filename;
-        this.getParentFrame().setTitle(filename);
-        editor.setTitle("Logic Circuit Workbench - " + filename);
-    }
-    
     /** Add a list of components to this circuit */
     public void addComponentList(Collection<SelectableComponent> list){
         drawnComponents.addAll(list);
@@ -538,7 +354,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
             }
             repaint(sc.getBoundingBox());
         }
-//        if(nowDragingComponent){dragActiveSelection(null, true, false);}            
+        //if(nowDragingComponent){dragActiveSelection(null, true, false);}            
         editor.getClipboard().setHasSelection(!activeComponents.isEmpty());
     }
      
@@ -564,36 +380,25 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
         grid.removeComponent(sc);
         logicalCircuit.removeSimItem(sc.getLogicalComponent());
     }
+    
+    /** 
+     * Calculate the Bounds of the Selection box based on mouse co-ordinates at
+     * certain mouse dragging events.
+     */
+    private void setSelectionBox() {
+        selX = dragStartPoint.x;
+        selY = dragStartPoint.y;
+        selWidth = currentPoint.x - dragStartPoint.x;
+        selHeight = currentPoint.y - dragStartPoint.y;
 
-    /** Instead of drawing this circuit to the panel, create an image and draw it there.
-     * Then write the image to file.
-     * @param filename The filename for the new image.
-     */
-    public void createImage(String filename) {
-        BufferedImage bi = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
-        paint(bi.getGraphics());      
-        try {
-            ImageIO.write(bi, "jpg", new File(filename));
-        } catch (IOException ex) {
-            ErrorHandler.newError("Image Creation Error","Please refer to the system output below.",ex);
-        }        
-    }
-    
-    /** @return The command history associated with this circuit */
-    public CommandHistory getCommandHistory(){
-        return cmdHist;
-    }
-    
-    /** Convience method to perform (undoable/redoable) commands on this circuit */
-    public void doCommand(ui.command.Command cmd){
-        cmdHist.doCommand(cmd);
-    }
-    
-     /**
-     * Returns true if and only if this circuit is currently active in the editor.
-     */
-    protected boolean isActiveCircuit() {
-        return editor.getActiveCircuit().equals(CircuitPanel.this); 
+        if (selWidth < 0) {
+            selX = selX + selWidth;
+            selWidth = selWidth * -1;
+        }
+        if (selHeight < 0) {
+            selY = selY + selHeight;
+            selHeight = selHeight * -1;
+        }
     }
     
     /**
@@ -602,43 +407,206 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
      */
     public Grid getGrid() {
         return grid;
+    }  
+        
+    /**
+     * @return The command history of actions in this panel
+     * @see ui.command.CommandHistory;
+     */
+    public CommandHistory getCommandHistory() {
+        return cmdHist;
+    }
+
+    /** Convienience method to execute a command */
+    public void doCommand(Command cmd) {
+        cmdHist.doCommand(cmd);
+    }
+
+    /** The current tool causes distinctions in the mouse actions */
+    public String getCurrentTool() {
+        return currentTool;
     }
     
-    /** @return The simulator that calculates the logical changes for this circuit.*/
-    public Simulator getSimulator(){
+    /** @see #getCurrentTool() */
+    public void setCurrentTool(String tool) {
+        this.currentTool = tool;
+    }
+
+    public ViewerFrame getLoggerWindow() {
+        return loggerWindow;
+    }
+
+    public Circuit getLogicalCircuit() {
+        return logicalCircuit;
+    }
+
+    public Simulator getSimulator() {
         return simulator;
     }
-    
-    public void SimulatorStateChanged(SimulatorState state){
-        this.simulatorState = state;
-    }
-    
-    public void SimulationTimeChanged(long time){
-        ErrorHandler.changeStatus("message", "Simulator Time: " + ((double)(time/(double) 1000000000)) + "\u00D710\u2079ns");
-    }
-    
-    /** @return The current state of the simulator **/
-    public SimulatorState getSimulatorState(){
+
+    public SimulatorState getSimulatorState() {
         return simulatorState;
     }
     
-    /** @return The corresponding Logical Circuit for this Visual Circuit.*/
-    public Circuit getLogicalCircuit(){
-        return logicalCircuit;
+    /** {@inheritDoc } */
+    @Override
+    public void SimulationTimeChanged(long time) {
+        if(time % 10E10 == 0){
+            ErrorHandler.changeStatus("message", "Simulator Time: " + ((double) (time / (double) 1000000000)) + "×10⁹ns");
+        }
+    }
+
+    /** {@inheritDoc } */
+    @Override
+    public void SimulatorStateChanged(SimulatorState state) {
+        this.simulatorState = state;
     }
     
-    /** @return The window that shows the graphical log of Pin Loggers in this circuit.*/
-    public ViewerWindow getLoggerWindow(){
-        return loggerWindow;
+    /** Paint areas within the clip rectangle onto the specified graphics context */
+    public void drawCircuit(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        if (g2.getClip() == null) {
+            g2.setClip(0, 0, getWidth(), getHeight());
+        }
+
+        // Background Colour
+        if (getSimulatorState().equals(simulatorState.STOPPED)) {
+            g2.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+        } else {
+            g2.setColor(UIConstants.CIRCUIT_PLAYING_BACKGROUND_COLOUR);
+        }
+        g2.fill(g2.getClip());
+        
+        // Draw the grid dots
+        if (UIConstants.DRAW_GRID_DOTS) {
+            Point start = Grid.snapToGrid(new Point(g2.getClipBounds().x, g2.getClipBounds().y));
+            g2.setColor(UIConstants.GRID_DOT_COLOUR);
+            for (int i = start.x; i < g2.getClipBounds().getMaxX(); i += UIConstants.GRID_DOT_SPACING) {
+                for (int j = start.y; j < g2.getClipBounds().getMaxY(); j += UIConstants.GRID_DOT_SPACING) {
+                    g2.fillRect(i, j, 1, 1);
+                }
+            }
+        }
+        
+        // Draw the components
+        for (SelectableComponent sc : drawnComponents) {
+            if (sc.getBoundingBox().intersects(g2.getClipBounds())) {
+                g2.translate(-sc.getCentre().x, -sc.getCentre().y);
+                sc.draw(g2);
+                g2.translate(sc.getCentre().x, sc.getCentre().y);
+                if (UIConstants.SHOW_INVALID_AREA_BOXES) {
+                    g2.draw(sc.getInvalidArea());
+                }
+                if (UIConstants.SHOW_BOUNDING_BOXES) {
+                    g2.draw(sc.getBoundingBox());
+                }
+            }
+        }
+
+        // Draw Connection Points
+        grid.draw(g2);
+
+        // Draw Selection Box
+        if (multipleSelection) {
+            g2.setColor(UIConstants.SELECTION_BOX_COLOUR);
+            g2.setStroke(UIConstants.SELECTION_BOX_STROKE);
+            g2.drawRect(selX, selY, selWidth, selHeight);
+        }
     }
     
-    /** @return The parent CircuitFrame of this circuit (i.e. the internal window
-     * that contains this panel. */
+    /** Draw the circuit to a buffered image and write to the filename specified. */
+    public void createImage(String filename) {
+        BufferedImage bi = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        paint(bi.getGraphics());
+        try {
+            ImageIO.write(bi, "jpg", new File(filename));
+        } catch (IOException ex) {
+            ErrorHandler.newError("Image Creation Error", "Please refer to the system output below.", ex);
+        }
+    }
+
+    /** Returns true if and only if this circuit is currently active in the editor. */
+    protected boolean isActiveCircuit() {
+        return editor.getActiveCircuit().equals(CircuitPanel.this);
+    }
+
+    /** @return the JFrame within which this panel is contained in the workarea*/
     public CircuitFrame getParentFrame() {
         return parentFrame;
     }
+    
+    /** @return Create a filename if we are untitled, otherwise return the filename */
+    public String getFilename() {
+        return (filename == null) ? "Untitled" + getParentFrame().getUntitledIndex() + UIConstants.FILE_EXTENSION : filename;
+    }
+    
+    /** Convienience method to change the filename of this panel, it's parent frame 
+     * and the title of the editor */
+    public void setFilename(String filename) {
+        this.filename = filename;
+        this.getParentFrame().setTitle(filename);
+        editor.setTitle("Logic Circuit Workbench - " + filename);
+    }
+    
+    /** Save this circuit to disk, required to access hidden component list */
+    public void saveAs(String filename) {
+        setFilename(filename);
+        FileCreator fc = new FileCreator(filename, drawnComponents);
+        fc.write();
+        CircuitFrame frame = getParentFrame();
+        frame.setTitle(filename);
+        cmdHist.setIsDirty(false);
+    }
+    
+    /** {@inheritDoc} 
+     * Also print to the correct area as determined by the double buffering test.
+     */
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (editor.drawDirect()) {
+            drawCircuit(g);
+        } else {
+            Graphics offscreenGraphics = editor.getOffscreenGraphics();
+            Image offscreenImage = editor.getOffscreenImage();
 
-    /** This inner class handles all MouseListener events */
+            offscreenGraphics.setColor(getBackground());
+            offscreenGraphics.fillRect(0, 0, getWidth(), getHeight());
+            offscreenGraphics.setColor(getForeground());
+
+            // Paint to the offscreen image
+            drawCircuit(offscreenGraphics);
+
+            // Copy the offscreen image to the screen
+            g.drawImage(offscreenImage, 0, 0, this);
+        }
+    }
+
+    /**
+     * TODO: javadoc
+     */
+    public void repaintDirtyAreas() {
+        Rectangle currentArea = new Rectangle(currentPoint);
+        Rectangle previousArea = new Rectangle();
+        int dx = previousCurrentPoint.x - currentPoint.x;
+        int dy = previousCurrentPoint.y - currentPoint.y;
+
+        currentArea.add(previousCurrentPoint);
+        for (SelectableComponent sc : drawnComponents) {
+            if (!sc.isFixed() || sc.equals(highlightedComponent) || activeComponents.contains(sc)) {
+                currentArea.add(sc.getBoundingBox());
+            }
+        }
+
+        previousArea = currentArea.getBounds();
+        previousArea.translate(dx, dy);
+        currentArea.add(previousArea);
+        currentArea.grow(10, 10);
+
+        repaint(currentArea);
+    }
+    
+     /** This inner class handles all MouseListener events */
     private class CircuitPanelMouseAdapter extends MouseAdapter {
 
         public void mouseClicked(MouseEvent e) {
@@ -664,16 +632,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                         
                         if (!currentTool.equals("Select")) {
                             // Add another new component
-                            CreateComponentCommand ccc = new CreateComponentCommand(
-                            new Object[]{
-                                currentTool,
-                                editor.getComponentRotation(),
-                                new Point(0, 0),
-                                editor.getCurrentLabel(),
-                                null, 
-                                null, 
-                                CircuitPanel.this
-                            });
+                            CreateComponentCommand ccc = new CreateComponentCommand(CircuitPanel.this,currentTool,editor.getComponentRotation(),new Point(0, 0));
                             cmdHist.doCommand(ccc);
                             // To redraw new component at workarea origin
                             previousCurrentPoint = new Point(0,0);
@@ -744,7 +703,8 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
                     }else if (w.getOrigin().equals(currentPoint)) {
                         drawnComponents.pop();
                         drawnComponents.push(new Wire(CircuitPanel.this));
-                    } else if (!w.getOrigin().equals(new Point(0, 0))) {
+                    } else if (!w.getOrigin().equals(new Point(0, 0)) 
+                            && grid.getConnectionPoint(currentPoint).canConnect(w.getLogicalWire())) {
                         // Should we continue to draw the wire?
                         //      Only if we have not released on a connection point
                         if (grid.getConnectionPoint(currentPoint).getConnections().size() == 1) {
@@ -766,6 +726,7 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
         }
     }
     
+    /** This inner class handles all Mouse Motion events */
     public class CircuitPanelMouseMotionAdapter extends MouseMotionAdapter {
         @Override
         public void mouseMoved(MouseEvent e) {

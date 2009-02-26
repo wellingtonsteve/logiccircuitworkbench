@@ -13,7 +13,7 @@ import sim.componentLibrary.standard.Input;
 import ui.CircuitFrame;
 import ui.CircuitPanel;
 import ui.components.standard.PinLogger;
-import ui.components.standard.log.ViewerWindow;
+import ui.components.standard.log.ViewerFrame;
 /**
  *
  * @author Stephen
@@ -81,7 +81,7 @@ public static void main(String[] args){
 //    coll.add(pl1);
 //    coll.add(pl2);
 //    coll.add(pl3);
-//    ViewerWindow vw = new ViewerWindow((CircuitPanel)null);
+//    ViewerFrame vw = new ViewerFrame((CircuitPanel)null);
 //    sim.addStateListener(vw.getSimStateListener());
 //    vw.addPinLoggers(coll);
 //    vw.setVisible(true);

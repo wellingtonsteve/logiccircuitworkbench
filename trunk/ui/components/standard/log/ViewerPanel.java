@@ -17,12 +17,12 @@ import ui.components.standard.PinLogger;
  *
  * @author matt
  */
-public class Viewer extends JPanel implements sim.SimulatorStateListener {
+public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
     public static final double scaleFactor = 1.0E-7;
     private JPanel rowHeader = new JPanel();
-    private ViewerWindow parent;
+    private ViewerFrame parent;
 
-    public Viewer(ViewerWindow parent){
+    public ViewerPanel(ViewerFrame parent){
         this.parent = parent;
     }
     
@@ -139,6 +139,7 @@ public class Viewer extends JPanel implements sim.SimulatorStateListener {
         ((JScrollPane)getParent().getParent()).getViewport().setViewPosition(new Point(0,0));
     }
 
+    @Override
     public void SimulatorStateChanged(SimulatorState state) {
         if(state.equals(SimulatorState.PLAYING)){
             Dimension b = getPreferredSize();
@@ -147,18 +148,21 @@ public class Viewer extends JPanel implements sim.SimulatorStateListener {
         }
     }
 
+    @Override
     public void SimulationTimeChanged(long time) {
-        Long startTime = parent.getStartTime();
-        Long endTime = parent.getEndTime();
-        
-        // Auto-Scrolling policy
-        Dimension b = getPreferredSize();
-        if((endTime-startTime)*scaleFactor > b.width){
-            setPreferredSize(new Dimension((int)((endTime-startTime)*scaleFactor), b.height));
-            revalidate();
+        if(time % 10E10 == 0){// Don't update too quickly!!
+            Long startTime = parent.getStartTime();
+            Long endTime = parent.getEndTime();
+
+            // Auto-Scrolling policy
+            Dimension b = getPreferredSize();
+            if((endTime-startTime)*scaleFactor > b.width){
+                setPreferredSize(new Dimension((int)((endTime-startTime)*scaleFactor), b.height));
+                revalidate();
+            }
+            parent.setEndTime(time);
+            repaint(((JScrollPane)getParent().getParent()).getViewport().getViewRect());    
         }
-        parent.setEndTime(time);
-        repaint(((JScrollPane)getParent().getParent()).getViewport().getViewRect());       
     }
     
     public JPanel getRowHeader(){

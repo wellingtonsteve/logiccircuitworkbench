@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -21,7 +22,7 @@ import ui.error.ErrorHandler;
  */
 public class Properties implements Cloneable{
     private String key;
-    private HashMap<String, Attribute> attributes = new HashMap<String, Attribute>();
+    private HashMap<String, Attribute> attributes = new LinkedHashMap<String, Attribute>();
     private HashMap<String, Point> inputPins = new HashMap<String, Point>();
     private HashMap<String, Point> outputPins = new HashMap<String, Point>();
     private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();
