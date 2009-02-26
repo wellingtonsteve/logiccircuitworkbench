@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.HashMap;
+import sim.joinable.Joinable;
 import ui.CircuitPanel;
 import ui.UIConstants;
 import ui.components.SelectableComponent;
@@ -37,10 +38,16 @@ public class Grid {
      */
     public boolean canTranslateComponent(SelectableComponent sc, int dx, int dy){
         
-        // TODO Check connections with simulator
+        // Check connections with simulator
         for(Pin local: sc.getPins()){
-            local.getJoinable();
-            
+            Joinable thisPin = local.getJoinable();
+            Point location = new Point(local.getGlobalLocation().x + dx, local.getGlobalLocation().y + dy);
+            ConnectionPoint cp = getConnectionPoint(location);
+            if(cp != null){
+                for(Pin otherPin : cp.getConnections()){
+                    if(!Joinable.canConnect(thisPin, otherPin.getJoinable())) return false;
+                }
+            }
         }
         
         
