@@ -4,7 +4,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
     <Property name="title" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-      <ResourceString bundle="ui/Bundle.properties" key="ViewerWindow.title" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+      <ResourceString bundle="ui/Bundle.properties" key="ViewerFrame.title" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
     </Property>
   </Properties>
   <SyntheticProperties>
@@ -89,7 +89,7 @@
       <SubComponents>
         <Container class="javax.swing.JPanel" name="viewerpanel">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new Viewer(this)"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ui.components.standard.log.ViewerPanel(this)"/>
             <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="ViewerWindow_jPanel1"/>
           </AuxValues>
 

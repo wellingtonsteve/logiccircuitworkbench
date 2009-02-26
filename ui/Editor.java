@@ -136,8 +136,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         optionsPanel = new JPanel();
         titleLabel = new javax.swing.JLabel();
         typeLabel = new javax.swing.JLabel();
-        labelLabel = new javax.swing.JLabel();
-        labelTextbox = new javax.swing.JTextField();
         AttributesPanel = new javax.swing.JPanel();
         Preview = new PreviewPanel(this);
         MainScrollPane = new javax.swing.JScrollPane();
@@ -520,22 +518,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         typeLabel.setText(bundle.getString("OptionsPanel.jLabel2.text"));
 
-        labelLabel.setText(bundle.getString("Editor.labelLabel.text")); // NOI18N
-        labelLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 2, 1, 1));
-
-        labelTextbox.setText(bundle.getString("OptionsPanel.jTextField1.text"));
-        labelTextbox.setPreferredSize(new java.awt.Dimension(50, 20));
-        labelTextbox.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e) {
-                if(sc!=null)getActiveCircuit().doCommand(new EditLabelCommand(sc, labelTextbox.getText()));
-            }
-        });
-        labelTextbox.addFocusListener(new FocusAdapter(){
-            public void focusLost(FocusEvent e) {
-                if(sc!=null)getActiveCircuit().doCommand(new EditLabelCommand(sc, labelTextbox.getText()));
-            }
-        });
-
         AttributesPanel.setMinimumSize(new java.awt.Dimension(100, 100));
         AttributesPanel.setLayout(new javax.swing.BoxLayout(AttributesPanel, javax.swing.BoxLayout.LINE_AXIS));
 
@@ -546,14 +528,10 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         optionsPanel.setLayout(optionsPanelLayout);
         optionsPanelLayout.setHorizontalGroup(
             optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(optionsPanelLayout.createSequentialGroup()
-                .add(labelLabel)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(labelTextbox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
             .add(Preview, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
-            .add(AttributesPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
             .add(titleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
             .add(typeLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+            .add(AttributesPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
         );
         optionsPanelLayout.setVerticalGroup(
             optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -562,11 +540,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(typeLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 14, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(labelLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 22, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(labelTextbox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(AttributesPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                .add(AttributesPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(Preview, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -833,14 +807,7 @@ private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
         circuitPanel.removeUnfixedComponents();
         String componentName = "Wire";
 
-        CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
-            componentName,                                              // properties[0] = componentName
-            getComponentRotation(),            // properties[1] = rotation
-            new Point(0,0),                                             // properties[2] = point
-            getCurrentLabel(),                 // properties[3] = label
-            null,                                                       // properties[4] = LED Colour
-            null                                                        // properties[5] = Input On/Off
-        });
+        CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit(), componentName, getComponentRotation(),new Point(0,0));
         getActiveCircuit().doCommand(ccc);
 
         // Set Options panel (Preview, Component Specific Options etc.)
@@ -877,14 +844,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
             if(isValidComponent(componentName)){
                 getActiveCircuit().removeUnfixedComponents();
                 getActiveCircuit().resetActiveComponents();
-                CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
-                    componentName,                                              // properties[0] = componentName
-                    getComponentRotation(),            // properties[1] = rotation
-                    new Point(0,0),                                             // properties[2] = point
-                    getCurrentLabel(),                 // properties[3] = label
-                    null,// properties[4] = LED Colour
-                    null// properties[5] = Input On/Off
-                });
+                CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit(), componentName, getComponentRotation(),new Point(0,0));
                 getActiveCircuit().doCommand(ccc);
                 
                 // Set Options panel (Preview, Component Specific Options etc.)
@@ -1387,10 +1347,7 @@ private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GE
         parent = rootNode;
         
         for(Netlist nl: netlists){
-            Object[] keys = nl.keySet().toArray();
-            Arrays.sort(keys);
-            for(Object o: keys){
-                String s = (String) o;
+            for(String s: nl.keySet()){
                 nodes = s.split("\\.");
                 parent = rootNode;
                 
@@ -1647,25 +1604,22 @@ private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GE
         return progressBar;
     }
     
+    @Override
     public void statusChange(String stage, Object value) {
         cmdHist.stageChange(stage, value);
     }
     
     // Options Panel Methods
-        /**
-     * Reset the value of the Component Label Textbox
-     */
+    
+    /** Reset the value of the Component Label Textbox */
     public void resetLabel(){
-        labelTextbox.setText("");
+        sc.getProperties().getAttribute("Label").setValue("");
     }
     
-    /**
-     * Return the current value of the Component Label Textbox
-     * 
-     * @return The String of labelTextbox
-     */
+    /** @return  the current value of the Component Label Attribute */
     public String getCurrentLabel(){
-        return labelTextbox.getText();
+        if(sc==null){ return ""; } 
+        return (String) sc.getProperties().getAttribute("Label").getValue();
     }
     
     /**
@@ -1687,9 +1641,6 @@ private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GE
             this.sc = sc;
             titleLabel.setText((getActiveCircuit().getActiveComponents().contains(sc))?titleOld:titleNew);
             typeLabel.setText(sc.getName());
-            labelTextbox.setText(sc.getLabel());
-            labelLabel.setEnabled(true);
-            labelTextbox.setEnabled(true);
             optionsPanel.setVisible(true);
             if(sc instanceof VisualComponent){
                 AttributesPanel.removeAll();
@@ -1799,8 +1750,6 @@ private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GE
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;
-    private javax.swing.JLabel labelLabel;
-    private javax.swing.JTextField labelTextbox;
     private javax.swing.JPanel optionsPanel;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JLabel statusAnimationLabel;

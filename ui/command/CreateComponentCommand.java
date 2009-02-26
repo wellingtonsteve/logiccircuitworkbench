@@ -19,40 +19,34 @@ import ui.components.VisualComponent;
 public class CreateComponentCommand extends Command {
     private SelectableComponent sc;
     private CircuitPanel parentCircuit;
-    private Object[] properties;
     private String key;
-        /* Properties Format
-         *      properties[0] = componentName
-         *      properties[1] = rotation
-         *      properties[2] = point
-         *      properties[3] = label
-         *      properties[4] = LED Colour
-         *      properties[5] = Input On/Off
-         *      properties[6] = activeCircuit
-         */
-
-    public CreateComponentCommand(Object[] properties){
-        this.properties = properties;
+    private Point point;
+    private double rotation;
+    
+    public CreateComponentCommand(CircuitPanel circuit, String type, double rotation, Point p) {
+        this.key = type;
+        this.rotation = rotation;
+        this.point = p;
+        this.parentCircuit = circuit;
     }
     
     @Override
     protected void perform(Editor editor) {
-        key = (String) properties[0];
-        if(properties.length < 7 || properties[6] == null){
+        if(parentCircuit == null){
             parentCircuit = activeCircuit;
-        } else {
-            parentCircuit = (CircuitPanel) properties[6];
-        }
+        } 
+       
+        
         //Remove "Components." from begining
         if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
             key = key.substring(11); 
         }   
         if(parentCircuit != null){
             try {                
-                if(properties[0].equals("Wire")){                    
+                if(key.equals("Wire")){                    
                     sc = new ui.components.Wire(parentCircuit);
-                    if(properties[2] != null){
-                        sc.setOrigin((Point) properties[2]);
+                    if(point!=null){
+                        sc.setOrigin(point);
                     }
                 }else if(editor.isValidComponent(key)){
                     
@@ -67,22 +61,18 @@ public class CreateComponentCommand extends Command {
                                 Properties.class)
                                     .newInstance(
                                         parentCircuit, 
-                                        (Point) properties[2], 
+                                        point, 
                                         simItem,
                                         props);
                     } else { 
-                        sc = new ImageSelectableComponentImpl(parentCircuit, (Point) properties[2], simItem, props);
+                        sc = new ImageSelectableComponentImpl(parentCircuit, point, simItem, props);
                     }                     
                     sc.setProperties(props);
                 } else {
                     throw new Exception();
                 }                            
                 
-                sc.setRotation((Double) properties[1], true);                             
-                if(properties[3] != null && !properties[3].equals("")) {
-                    sc.setLabel((String) properties[3]);
-                }
-
+                sc.setRotation(rotation, true);                             
                 parentCircuit.addComponent(sc);
                 editor.setComponent(sc);
                 

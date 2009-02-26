@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
+import sim.joinable.Joinable;
 import ui.UIConstants;
 import ui.components.SelectableComponent;
 import ui.components.SelectableComponent.Pin;
@@ -25,8 +26,7 @@ public class ConnectionPoint extends GridObject {
     private String label = new String();
 
     public ConnectionPoint(Grid grid, Point p){
-        super(grid, p);
-        
+        super(grid, p);        
         try {
             defaultCrossover = ImageIO.read(
                     getClass().getResource("/ui/images/components/default_wire_crossover.png"));
@@ -54,6 +54,15 @@ public class ConnectionPoint extends GridObject {
                 }
             }
         }        
+    }
+
+    public boolean canConnect(sim.joinable.Wire logicalWire) {
+        for(Pin pin: connections){
+            if(!Joinable.canConnect(pin.getJoinable(), logicalWire)){
+                return false;
+            }
+        }
+        return true;
     }
     
     public boolean removeConnection(Pin p){

@@ -101,16 +101,18 @@ public class Wire extends SelectableComponent {
             if(!this.fixed && fixed){
                 fixSelfCrossover();
             }
-            this.origin.translate(dx, dy);
-            this.endPoint.translate(dx, dy);
-            for (Point p : waypoints) {
-                p.translate(dx, dy);
-            }
-            setInvalidAreas();
-            setBoundingBox();
+            if(dx != 0 || dy != 0){
+                this.origin.translate(dx, dy);
+                this.endPoint.translate(dx, dy);
+                for (Point p : waypoints) {
+                    p.translate(dx, dy);
+                }            
+                setInvalidAreas();
+                setBoundingBox();  
+            }           
             this.fixed = fixed; 
             setLocalPins();
-            setGlobalPins();             
+            setGlobalPins();  
         }
     }
 

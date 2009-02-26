@@ -2,6 +2,7 @@ package netlist;
 
 import java.awt.Point;
 import netlist.properties.Properties;
+import netlist.properties.TextAttribute;
 
 /**
  *
@@ -23,6 +24,8 @@ public class FlipFlops extends Netlist{
             setLogicalComponentClass(sim.componentLibrary.flipflops.DType.class);
             setVisualComponentClass(ui.components.flipflops.DefaultFlipFlop.class);
 
+            addAttribute(new TextAttribute("Label", ""));
+            
             addImage("default", "/ui/images/components/default_d_flipflop.png");
             addImage("selected", "/ui/images/components/selected_d_flipflop.png");
             addImage("active", "/ui/images/components/active_d_flipflop.png");
@@ -41,6 +44,8 @@ public class FlipFlops extends Netlist{
             setLogicalComponentClass(sim.componentLibrary.logicgates.AndGate2Input.class);
             setVisualComponentClass(ui.components.flipflops.DefaultFlipFlop.class);
 
+            addAttribute(new TextAttribute("Label", ""));
+                        
             addImage("default", "/ui/images/components/default_jk_flipflop.png");
             addImage("selected", "/ui/images/components/selected_jk_flipflop.png");
             addImage("active", "/ui/images/components/active_jk_flipflop.png");
@@ -59,7 +64,9 @@ public class FlipFlops extends Netlist{
             super(key);
             setLogicalComponentClass(sim.componentLibrary.logicgates.AndGate2Input.class);
             setVisualComponentClass(ui.components.flipflops.DefaultLatch.class);
-
+            
+            addAttribute(new TextAttribute("Label", ""));
+            
             addImage("default", "/ui/images/components/default_sr_latch.png");
             addImage("selected", "/ui/images/components/selected_sr_latch.png");
             addImage("active", "/ui/images/components/active_sr_latch.png");

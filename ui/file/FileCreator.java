@@ -3,6 +3,7 @@ package ui.file;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.LinkedList;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import javax.xml.transform.*;
@@ -18,10 +19,9 @@ public class FileCreator {
     
     private PrintWriter out = null;
     private TransformerHandler hd = null;
-    
-    public FileCreator(String filename){
-        
-        try {            
+   
+    public FileCreator(String filename, LinkedList<SelectableComponent> drawnComponents) {
+         try {            
             FileOutputStream fos = new FileOutputStream(filename);
             out = new PrintWriter(fos);
             StreamResult streamResult = new StreamResult(out);
@@ -53,6 +53,13 @@ public class FileCreator {
             atts.clear();
             hd.startElement("", "", "components", atts);       
             
+            // Create xml for each component
+            for (SelectableComponent sc : drawnComponents) {
+                if (sc.isFixed()) {
+                    sc.createXML(hd);   
+                }
+            }        
+            
         } catch (SAXException ex) {
             ui.error.ErrorHandler.newError("File Creation Error","Please refer to the system output below.",ex);
         } catch (TransformerConfigurationException ex) {
@@ -60,10 +67,6 @@ public class FileCreator {
         } catch (FileNotFoundException ex) {
             ui.error.ErrorHandler.newError("File Not Found","Please refer to the system output below.",ex);
         } 
-    }
-    
-    public void add(SelectableComponent sc) {
-        sc.createXML(hd);     
     }
 
     public void write() {

@@ -7,11 +7,8 @@ import ui.components.*;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import javax.xml.transform.sax.TransformerHandler;
 import netlist.properties.AttributeListener;
 import netlist.properties.Properties;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
 
 /**
  *
@@ -20,7 +17,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public class LED extends VisualComponent implements sim.joinable.ValueListener, 
                                                     sim.SimulatorStateListener,
                                                     netlist.properties.AttributeListener{
-    private boolean isOn = false;
+    private boolean isOn = true;
     private String colour = "yellow";
     private BufferedImage yellow, red, green;
 
@@ -88,29 +85,6 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
         }    
     }
     
-//    @Override
-//    public void createXML(TransformerHandler hd) {
-//        try {
-//            AttributesImpl atts = new AttributesImpl();
-//            atts.addAttribute("", "", "type", "CDATA", getKeyName());
-//            atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
-//            atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
-//            atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
-//            
-//            hd.startElement("", "", "component", atts);
-//
-//                atts.clear();
-//                atts.addAttribute("", "", "name", "CDATA", "colour");
-//                atts.addAttribute("", "", "value", "CDATA", colour);
-//                hd.startElement("", "", "attr", atts);
-//                hd.endElement("", "", "attr");
-//
-//            hd.endElement("", "", "component");
-//        } catch (SAXException ex) {
-//             ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below",ex);
-//        }
-//    }
-        
     public String getColour() {
         return colour;
     }

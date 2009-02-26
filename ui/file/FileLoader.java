@@ -93,17 +93,9 @@ public class FileLoader extends DefaultHandler{
 
                 // Get textual attributes
                 String type = attribs.getValue("type");
-                String label = attribs.getValue("label");
                                 
                 // Create a new component with the desired attributes
-                CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
-                    type,                // properties[0] = componentName
-                    rotation,            // properties[1] = rotation
-                    p,                   // properties[2] = point
-                    label,               // properties[3] = label
-                    null,                // properties[4] = LED Colour
-                    null                 // properties[5] = Input On/Off
-                });
+                CreateComponentCommand ccc = new CreateComponentCommand(null,type,rotation,p);
                 
                 // Perform the creation
                 ccc.execute(editor);
@@ -123,14 +115,7 @@ public class FileLoader extends DefaultHandler{
                 int endy = Integer.parseInt(attribs.getValue("endy"));
                 
                 // Create a new component with the desired attributes
-                CreateComponentCommand ccc = new CreateComponentCommand(new Object[]{
-                    "Wire",                // properties[0] = componentName
-                    0.0,           // properties[1] = rotation
-                    new Point(startx, starty),                   // properties[2] = point
-                    "",               // properties[3] = label
-                    null,                // properties[4] = LED Colour
-                    null                 // properties[5] = Input On/Off
-                });
+                CreateComponentCommand ccc = new CreateComponentCommand(null,"Wire",0.0,new Point(startx, starty));
                 
                 // Perform the creation
                 ccc.execute(editor);

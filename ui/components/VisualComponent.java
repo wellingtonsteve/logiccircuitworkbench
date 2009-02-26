@@ -116,14 +116,14 @@ public abstract class VisualComponent extends SelectableComponent {
         return getInvalidArea().contains(point);
     }
     
-    public void createXML(TransformerHandler hd) {
+    @Override
+    public final void createXML(TransformerHandler hd) {
         try {
             AttributesImpl atts = new AttributesImpl();
             atts.addAttribute("", "", "type", "CDATA", getKeyName());
             atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
             atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
             atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
-            atts.addAttribute("", "", "label", "CDATA", getLabel());
             
             hd.startElement("", "", "component", atts);
             

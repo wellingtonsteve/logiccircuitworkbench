@@ -1,5 +1,5 @@
 /*
- * ViewerWindow.java
+ * ViewerFrame.java
  *
  * Created on 26 December 2008, 17:17
  */
@@ -22,15 +22,15 @@ import ui.components.standard.PinLogger;
  *
  * @author  matt
  */
-public class ViewerWindow extends javax.swing.JFrame {
+public class ViewerFrame extends javax.swing.JFrame {
     private CircuitPanel circuit;
     private int yOffset=0;
     private LinkedList<PinLogger> loggers = new LinkedList<PinLogger>();
     private Long startTime = Long.MAX_VALUE;
     private Long endTime = 0l;
     
-    /** Creates new form ViewerWindow */
-    public ViewerWindow(CircuitPanel circuit) {
+    /** Creates new form ViewerFrame */
+    public ViewerFrame(CircuitPanel circuit) {
         this.circuit = circuit;
         initComponents();
 
@@ -42,12 +42,12 @@ public class ViewerWindow extends javax.swing.JFrame {
         });
         
         PanelScrollPane.getHorizontalScrollBar().setUnitIncrement(20);
-        ((Viewer)viewerpanel).getRowHeader().setPreferredSize(new Dimension(35, 500));
-        PanelScrollPane.setRowHeaderView(((Viewer)viewerpanel).getRowHeader());
+        ((ViewerPanel)viewerpanel).getRowHeader().setPreferredSize(new Dimension(35, 500));
+        PanelScrollPane.setRowHeaderView(((ViewerPanel)viewerpanel).getRowHeader());
     }
     
     public sim.SimulatorStateListener getSimStateListener(){
-        return (Viewer)viewerpanel;
+        return (ViewerPanel)viewerpanel;
     }
     
     public void addPinLogger(PinLogger pl){
@@ -133,13 +133,13 @@ public class ViewerWindow extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JToolBar.Separator();
         ClearLog = new javax.swing.JButton();
         PanelScrollPane = new javax.swing.JScrollPane();
-        viewerpanel = new Viewer(this);
+        viewerpanel = new ViewerPanel(this);
         CheckBoxScrollPane = new javax.swing.JScrollPane();
         CheckboxPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
-        setTitle(bundle.getString("ViewerWindow.title")); // NOI18N
+        setTitle(bundle.getString("ViewerFrame.title")); // NOI18N
 
         Toolbar.setRollover(true);
 
@@ -198,7 +198,7 @@ public class ViewerWindow extends javax.swing.JFrame {
     }//GEN-END:initComponents
 
 private void ClearLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearLogActionPerformed
-    ((Viewer) viewerpanel).clear();
+    ((ViewerPanel) viewerpanel).clear();
     viewerpanel.repaint();
 }//GEN-LAST:event_ClearLogActionPerformed
 

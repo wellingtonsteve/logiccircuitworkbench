@@ -67,7 +67,7 @@ public class UIConstants {
     public static int LABEL_CONNECTION_POINT_X_OFFSET = -6;
     public static int LABEL_CONNECTION_POINT_Y_OFFSET = -2;
     public static int LABEL_COMPONENT_X_OFFSET = 10;
-    public static int LABEL_COMPONENT_Y_OFFSET = 10;
+    public static int LABEL_COMPONENT_Y_OFFSET = 0;
     public static Color LABEL_TEXT_COLOUR = Color.BLACK;
 
     // Wire Options
