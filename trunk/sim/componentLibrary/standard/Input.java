@@ -1,5 +1,7 @@
 package sim.componentLibrary.standard;
 
+import netlist.properties.Attribute;
+import netlist.properties.Properties;
 import sim.componentLibrary.Component;
 import sim.*;
 import sim.joinable.*;
@@ -30,6 +32,15 @@ public class Input extends Component {
     @Override
     public void initialize() {
         output.setValue(currentValue);
+    }
+
+    public String getPinName() {
+        return "";
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
+        Attribute nameProperty = properties.getAttribute("")
     }
 
 }
