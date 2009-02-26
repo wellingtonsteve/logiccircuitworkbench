@@ -46,10 +46,12 @@ public abstract class VisualComponent extends SelectableComponent {
         activeBi = properties.getImage("active");
     }
     
+    @Override
     public int getWidth(){
         return getDefaultImage().getWidth();
     }
     
+    @Override
     public int getHeight(){
         return getDefaultImage().getHeight();
     }

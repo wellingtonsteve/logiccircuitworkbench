@@ -1041,12 +1041,6 @@ private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-F
     
 }//GEN-LAST:event_InsertComponentMouseClicked
 
-private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertSubComponentMouseClicked
-    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
-        getActiveCircuit().doCommand(new InsertSubcomponentCommand());
-    }
-}//GEN-LAST:event_InsertSubComponentMouseClicked
-
 private void MakeImageButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MakeImageButtonMouseClicked
     if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().doCommand(new MakeImageCommand());
@@ -1184,6 +1178,12 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     UIConstants.DRAW_GRID_DOTS = !UIConstants.DRAW_GRID_DOTS;
     repaint();
 }//GEN-LAST:event_ToggleGridActionPerformed
+
+private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertSubComponentMouseClicked
+    if(getActiveCircuit()!=null){
+        getActiveCircuit().doCommand(new SubcircuitOpenCommand());
+    }
+}//GEN-LAST:event_InsertSubComponentMouseClicked
 
     /** 
      * Repopulate the windows menu in the toolbar with the opened circuits

@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -432,7 +433,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * @return a list of the pins belonging to this component in their local
      * co-ordinates.
      */
-    protected  Collection<Pin> getLocalPins(){
+    protected  List<Pin> getLocalPins(){
         return localPins;
     }
     
@@ -440,7 +441,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable {
      * Convience method. 
      * @see ui.components.SelectableComponent#getLocalPins()
      */
-    public Collection<Pin> getPins(){
+    public List<Pin> getPins(){
         return getLocalPins();
     }
     
