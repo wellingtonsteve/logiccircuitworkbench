@@ -2,6 +2,7 @@ package netlist;
 
 import java.awt.Point;
 import netlist.properties.*;
+import ui.UIConstants;
 /**
  *
  * @author Matt
@@ -52,6 +53,8 @@ public class Standard extends Netlist{
             setVisualComponentClass(ui.components.standard.Input.class);
 
             addAttribute(new BooleanAttribute("External?", false));
+            addAttribute(new SpinnerAttribute("External X", 5, 0, Integer.MAX_VALUE, UIConstants.GRID_DOT_SPACING));
+            addAttribute(new SpinnerAttribute("External Y", 5, 0, Integer.MAX_VALUE, UIConstants.GRID_DOT_SPACING));
 
             addImage("default", "/ui/images/components/default_input_off.png");
             addImage("default_on", "/ui/images/components/default_input_on.png");
@@ -72,6 +75,8 @@ public class Standard extends Netlist{
             setVisualComponentClass(ui.components.standard.LED.class);
 
             addAttribute(new BooleanAttribute("External?", false));
+            addAttribute(new SpinnerAttribute("External X", 5, 0, Integer.MAX_VALUE, UIConstants.GRID_DOT_SPACING));
+            addAttribute(new SpinnerAttribute("External Y", 5, 0, Integer.MAX_VALUE, UIConstants.GRID_DOT_SPACING));
             addAttribute(new SelectionAttribute("Colour", new String[]{"Yellow","Red","Green"}));
 
             addImage("default", "/ui/images/components/default_led.png");

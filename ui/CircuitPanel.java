@@ -15,9 +15,12 @@ import java.util.Collection;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import netlist.properties.Attribute;
+import netlist.properties.Properties;
 import sim.Simulator;
 import sim.SimulatorState;
 import sim.componentLibrary.Circuit;
+import sim.joinable.InputPin;
 import ui.file.FileCreator;
 import ui.grid.Grid;
 import ui.components.*;
@@ -80,6 +83,154 @@ public class CircuitPanel extends JPanel implements sim.SimulatorStateListener {
         this.editor = ((CircuitFrame) getParentFrame()).getEditor();
         this.cmdHist = new CommandHistory(editor);
         this.grid = new Grid(this);
+    }
+
+    public SelectableComponent asSelectableComponent(CircuitPanel parentCircuit) {
+        Properties newProperties = new Properties(getFilename()){
+            {
+                setLogicalComponentClass(logicalCircuit.getClass());      
+                
+                int i = 0, o = 0;
+                for(SelectableComponent sc: drawnComponents){                    
+                    if(sc.isFixed() 
+                            && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Input){
+                        int inputX = (Integer) sc.getProperties().getAttribute("External X").getValue();
+                        int inputY = (Integer) sc.getProperties().getAttribute("External Y").getValue();
+                        addInputPin("Input " + i, new Point(inputX, inputY));
+                        i++;
+                    } else if(sc.isFixed() 
+                            && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Output){
+                        int inputX = (Integer) sc.getProperties().getAttribute("External X").getValue();
+                        int inputY = (Integer) sc.getProperties().getAttribute("External Y").getValue();
+                        addOutputPin("Output " + i, new Point(inputX, inputY));
+                        i++;
+                    }              
+                }
+                
+            }          
+        };
+        
+        return new VisualComponent(parentCircuit, new Point(0,0), logicalCircuit, newProperties){
+            private int width, height;
+            private int spacing = 2*UIConstants.GRID_DOT_SPACING;
+
+            @Override
+            protected void setBoundingBox(){
+                boundingBox = new java.awt.Rectangle(getOrigin().x-getCentre().x,
+                        getOrigin().y-getCentre().y,
+                        getWidth()+10,
+                        getHeight());
+                boundingBox = rotate(boundingBox);
+            }
+
+            
+            @Override
+            public int getWidth(){
+                if(width == 0){
+                    int maxX = 0;
+                    for(Point p: properties.getInputPins().values()){
+                        if(p.x > maxX) {
+                            maxX = p.x;
+                        }
+                    }   
+                    for(Point p: properties.getOutputPins().values()){
+                        if(p.x > maxX) {
+                            maxX = p.x;
+                        }
+                    }     
+                    width = maxX + UIConstants.GRID_DOT_SPACING;
+                }
+                return width;                
+            }
+
+            @Override
+            public int getHeight(){
+                if(width == 0){
+                    int maxY = 0;
+                    for(Point p: properties.getInputPins().values()){
+                        if(p.y > maxY) {
+                            maxY = p.y;
+                        }
+                    }   
+                    for(Point p: properties.getOutputPins().values()){
+                        if(p.y > maxY) {
+                            maxY = p.y;
+                        }
+                    }     
+                    height = maxY + UIConstants.GRID_DOT_SPACING;
+                }
+                return height;   
+            }
+
+            @Override
+            protected void setInvalidAreas() {
+                invalidArea = new java.awt.Rectangle(getOrigin().x-getCentre().x+9, 
+                        getOrigin().y-getCentre().y-1, 
+                        getWidth()-UIConstants.GRID_DOT_SPACING+2, 
+                        getHeight()+2);
+                invalidArea = rotate(invalidArea);
+            }
+
+            @Override
+            public Point getCentre() {
+                return new Point(30, 30);
+            }
+
+            @Override
+            public void draw(Graphics2D g) {
+               if(hasLabel()){
+                    g.setColor(UIConstants.LABEL_TEXT_COLOUR);
+                    g.drawString(getLabel(), getOrigin().x, getOrigin().y-2);
+                }
+
+                g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
+                g.translate(getOrigin().x, getOrigin().y);
+
+                if(getSelectionState().equals(SelectionState.ACTIVE)){
+                    g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
+                    g.drawRect(10, 0, getWidth()-spacing, getHeight());
+                } else if(getSelectionState().equals(SelectionState.HOVER)){
+                    g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+                    g.fillRect(10, 0, getWidth()-spacing, getHeight());
+                    g.setColor(UIConstants.HOVER_COMPONENT_COLOUR);
+                    g.drawRect(10, 0, getWidth()-spacing, getHeight());
+                } else {
+                    g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+                    g.fillRect(10, 0, getWidth()-spacing, getHeight());             
+                    g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
+                    g.drawRect(10, 0, getWidth()-spacing, getHeight());
+                }            
+
+                g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
+                g.drawString( filename, 10, 10);
+
+                for(Pin p: localPins){
+                    if(p.getJoinable() instanceof sim.joinable.InputPin){
+                        g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
+                    } else if(p.getJoinable() instanceof sim.joinable.OutputPin){
+                        g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);
+                    }
+                }      
+
+                g.translate(-getOrigin().x, -getOrigin().y);
+                g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
+            }
+
+            @Override
+            protected void setDefaultImage() {
+                defaultBi = null;
+            }
+
+            @Override
+            protected void setSelectedImage() {
+                selectedBi = null;
+            }
+
+            @Override
+            protected void setActiveImage() {
+                activeBi = null;
+            }
+        };
     }
 
     /**
