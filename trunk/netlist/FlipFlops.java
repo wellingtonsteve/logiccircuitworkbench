@@ -20,18 +20,18 @@ public class FlipFlops extends Netlist{
     public class DTypeProps extends Properties{
         public DTypeProps(String key){
             super(key);
-            setLogicalComponentClass(sim.componentLibrary.logicgates.AndGate2Input.class);
+            setLogicalComponentClass(sim.componentLibrary.flipflops.DType.class);
             setVisualComponentClass(ui.components.flipflops.DefaultFlipFlop.class);
 
             addImage("default", "/ui/images/components/default_d_flipflop.png");
             addImage("selected", "/ui/images/components/selected_d_flipflop.png");
             addImage("active", "/ui/images/components/active_d_flipflop.png");
 
-            addInputPin("Input 1", new Point(5,20));
-            addInputPin("Input 2", new Point(5,50));
+            addInputPin("D", new Point(5,20));
+            addInputPin("Clock", new Point(5,50));
 
-            addOutputPin("Output", new Point(55,20));
-            addOutputPin("Output", new Point(55,20));
+            addOutputPin("Q", new Point(55,20));
+            addOutputPin("NotQ", new Point(55,50));
         }
     }
     
