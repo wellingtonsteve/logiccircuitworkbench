@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -14,7 +15,13 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+import netlist.properties.ButtonAttribute;
 import netlist.properties.Properties;
+import netlist.properties.PropertiesOwner;
+import netlist.properties.TextAttribute;
 import sim.Simulator;
 import sim.SimulatorState;
 import sim.componentLibrary.Circuit;
@@ -29,13 +36,16 @@ import ui.command.SelectionTranslateCommand;
 import ui.components.standard.PinLogger;
 import ui.error.ErrorHandler;
 import ui.components.standard.log.ViewerFrame;
+import ui.file.JPGFileFilter;
 
 /**
- * This panel represents the visible workarea on which the circuit is drawn.
+ * This panel represents the visual workarea on which the circuit is drawn. And responds to
+ * mouse actions by the user. The circuit panel also keeps a history of commands and 
+ * retains lists of the components that are drawn here.
  * 
  * @author Matt
  */
-public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorStateListener {
+public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorStateListener, PropertiesOwner {
 
     // Component Variables
     private Point lastDragPoint = new Point(0,0);
@@ -85,133 +95,8 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         this.cmdHist = new CommandHistory(editor);
         this.grid = new Grid(this);
         this.isSubCircuit = isSubCircuit;
-        updateCircuitProperties();
+        createDefaultProperties();
     }
-
-//    public SelectableComponent asSelectableComponent(CircuitPanel parentCircuit) {
-//        
-//        return new VisualComponent(parentCircuit, new Point(0,0), logicalCircuit, newProperties){
-//            private int width, height;
-//            private int spacing = 2*UIConstants.GRID_DOT_SPACING;
-//
-//            @Override
-//            protected void setBoundingBox(){
-//                boundingBox = new java.awt.Rectangle(getOrigin().x-getCentre().x,
-//                        getOrigin().y-getCentre().y,
-//                        getWidth()+10,
-//                        getHeight());
-//                boundingBox = rotate(boundingBox);
-//            }
-//
-//            
-//            @Override
-//            public int getWidth(){
-//                if(width == 0){
-//                    int maxX = 0;
-//                    for(Point p: properties.getInputPins().values()){
-//                        if(p.x > maxX) {
-//                            maxX = p.x;
-//                        }
-//                    }   
-//                    for(Point p: properties.getOutputPins().values()){
-//                        if(p.x > maxX) {
-//                            maxX = p.x;
-//                        }
-//                    }     
-//                    width = maxX + UIConstants.GRID_DOT_SPACING;
-//                }
-//                return width;                
-//            }
-//
-//            @Override
-//            public int getHeight(){
-//                if(width == 0){
-//                    int maxY = 0;
-//                    for(Point p: properties.getInputPins().values()){
-//                        if(p.y > maxY) {
-//                            maxY = p.y;
-//                        }
-//                    }   
-//                    for(Point p: properties.getOutputPins().values()){
-//                        if(p.y > maxY) {
-//                            maxY = p.y;
-//                        }
-//                    }     
-//                    height = maxY + UIConstants.GRID_DOT_SPACING;
-//                }
-//                return height;   
-//            }
-//
-//            @Override
-//            protected void setInvalidAreas() {
-//                invalidArea = new java.awt.Rectangle(getOrigin().x-getCentre().x+9, 
-//                        getOrigin().y-getCentre().y-1, 
-//                        getWidth()-UIConstants.GRID_DOT_SPACING+2, 
-//                        getHeight()+2);
-//                invalidArea = rotate(invalidArea);
-//            }
-//
-//            @Override
-//            public Point getCentre() {
-//                return new Point(30, 30);
-//            }
-//
-//            @Override
-//            public void draw(Graphics2D g) {
-//               if(hasLabel()){
-//                    g.setColor(UIConstants.LABEL_TEXT_COLOUR);
-//                    g.drawString(getLabel(), getOrigin().x, getOrigin().y-2);
-//                }
-//
-//                g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-//                g.translate(getOrigin().x, getOrigin().y);
-//
-//                if(getSelectionState().equals(SelectionState.ACTIVE)){
-//                    g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
-//                    g.drawRect(10, 0, getWidth()-spacing, getHeight());
-//                } else if(getSelectionState().equals(SelectionState.HOVER)){
-//                    g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-//                    g.fillRect(10, 0, getWidth()-spacing, getHeight());
-//                    g.setColor(UIConstants.HOVER_COMPONENT_COLOUR);
-//                    g.drawRect(10, 0, getWidth()-spacing, getHeight());
-//                } else {
-//                    g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-//                    g.fillRect(10, 0, getWidth()-spacing, getHeight());             
-//                    g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-//                    g.drawRect(10, 0, getWidth()-spacing, getHeight());
-//                }            
-//
-//                g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-//                g.drawString( filename, 10, 10);
-//
-//                for(Pin p: localPins){
-//                    if(p.getJoinable() instanceof sim.joinable.InputPin){
-//                        g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
-//                    } else if(p.getJoinable() instanceof sim.joinable.OutputPin){
-//                        g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);
-//                    }
-//                }      
-//
-//                g.translate(-getOrigin().x, -getOrigin().y);
-//                g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-//            }
-//
-//            @Override
-//            protected void setDefaultImage() {
-//                defaultBi = null;
-//            }
-//
-//            @Override
-//            protected void setSelectedImage() {
-//                selectedBi = null;
-//            }
-//
-//            @Override
-//            protected void setActiveImage() {
-//                activeBi = null;
-//            }
-//        };
-//    }
 
     /**
      * Remove any components that are still floating in the workarea and have not been fixed.
@@ -423,6 +308,9 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         return logicalCircuit;
     }
 
+    public boolean isSubCircuit() {
+        return isSubCircuit;
+    }
     public Simulator getSimulator() {
         return simulator;
     }
@@ -471,8 +359,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     /** Save this circuit to disk, required to access hidden component list */
     public void saveAs(String filename) {
         setFilename(filename);
-        FileCreator fc = new FileCreator(filename, drawnComponents);
-        fc.write();
+        FileCreator.write(this, drawnComponents);
         CircuitFrame frame = getParentFrame();
         frame.setTitle(filename);
         cmdHist.setIsDirty(false);
@@ -591,7 +478,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         }
     }
 
-    private void updateCircuitProperties() {
+    public void createDefaultProperties() {
         this.properties = new Properties(getFilename()){
             {
                 setLogicalComponentClass(logicalCircuit.getClass());      
@@ -602,23 +489,70 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                             && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Input){
                         int inputX = (Integer) sc.getProperties().getAttribute("External X").getValue();
                         int inputY = (Integer) sc.getProperties().getAttribute("External Y").getValue();
-                        addInputPin("Input " + i, new Point(inputX, inputY));
-                        i++;
+                        String label;
+                        if(sc.hasLabel()){
+                            label = sc.getLabel();
+                        } else {
+                            label = "Input " + i;
+                            i++;
+                        }
+                        addInputPin(label, new Point(inputX, inputY));                        
                     } else if(sc.isFixed() 
                             && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Output){
                         int inputX = (Integer) sc.getProperties().getAttribute("External X").getValue();
                         int inputY = (Integer) sc.getProperties().getAttribute("External Y").getValue();
-                        addOutputPin("Output " + i, new Point(inputX, inputY));
-                        i++;
+                        String label;
+                        if(sc.hasLabel()){
+                            label = sc.getLabel();
+                        } else {
+                            label = "Ouput " + o;
+                            o++;
+                        }
+                        addOutputPin(label, new Point(inputX, inputY));       
                     }              
                 }
                 
+                addAttribute(new TextAttribute("Title", ""));
+                addAttribute(new ButtonAttribute("Description") {
+                    @Override
+                    protected void buttonClickAction(ActionEvent e) {
+                        JOptionPane.showInputDialog(jcomponent, getValue(), "Description", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                });
+                addAttribute(new ButtonAttribute("Subcircuit Image") {
+                    @Override
+                    protected void buttonClickAction(ActionEvent e) {
+                        JFileChooser c = new JFileChooser();
+                        FileFilter jpgFilter = new JPGFileFilter();        
+                        c.setFileFilter(jpgFilter);
+                        c.setDialogType(JFileChooser.SAVE_DIALOG);
+                        c.setSelectedFile(new java.io.File(filename));
+                        int rVal = c.showOpenDialog(jcomponent);
+                        if (rVal == JFileChooser.APPROVE_OPTION) {
+                            changeValue(c.getSelectedFile().getAbsolutePath());
+                        }
+                    }
+                });    
+                if(getAttribute("Subcircuit Image").getValue()!=null){
+                    addImage("default", (String)properties.getAttribute("Subcircuit Image").getValue());
+                }
             }          
         };
     }
     
+    @Override
     public Properties getProperties(){
         return properties;
+    }
+    
+    @Override
+    public void setProperties(Properties properties){
+        this.properties = properties;
+    }
+    
+    @Override
+    public String getKeyName(){
+        return "Circuit Panel";
     }
     
      /** This inner class handles all MouseListener events */

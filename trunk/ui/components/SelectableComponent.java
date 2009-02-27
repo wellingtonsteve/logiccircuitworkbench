@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.xml.transform.sax.TransformerHandler;
 import netlist.properties.Properties;
+import netlist.properties.PropertiesOwner;
 import sim.joinable.*;
 import sim.SimItem;
 import sim.LogicState;
@@ -25,7 +26,7 @@ import ui.grid.Grid;
  * 
  * @author Matt
  */
-public abstract class SelectableComponent implements Labeled, Cloneable {
+public abstract class SelectableComponent implements Labeled, Cloneable, PropertiesOwner {
     
 
     /** Set the default selection state of this component */

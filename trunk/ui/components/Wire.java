@@ -11,8 +11,6 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -24,7 +22,7 @@ import ui.grid.Grid;
  * This special drawable component simulates a wire between components. Wires are
  * contructed in L-shaped legs between waypoints. Legs take a horizontal path first 
  * and then a vertical path joining points on the Grid. This class also 
- * optomises some wires by removing loops and duplicate waypoints. 
+ * optimises some wires by removing loops and duplicate waypoints. 
  * 
  * Wires can be moved by selecting the "handle" in the middle of a leg section 
  * (excluding the initial and final segments), or by selecting the start or end 
