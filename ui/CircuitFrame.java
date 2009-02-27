@@ -1,6 +1,7 @@
  package ui;
 
 import java.beans.PropertyVetoException;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -22,6 +23,7 @@ public class CircuitFrame extends JInternalFrame{
     private JScrollPane jScrollPane2 = new JScrollPane();
     private Editor editor;
     private int untitledIndex;
+    private JFrame propertiesDialog;
     
     public CircuitFrame(final Editor editor, int untitledIndex, boolean isSubCircuit){
         super();
@@ -29,6 +31,9 @@ public class CircuitFrame extends JInternalFrame{
         this.editor = editor;
         this.untitledIndex = untitledIndex;
         this.circuitPanel = new CircuitPanel(this, isSubCircuit);
+        this.propertiesDialog = new CircuitProperties(circuitPanel.getProperties());
+        this.propertiesDialog.setLocationRelativeTo(this);
+        this.propertiesDialog.setVisible(false);
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -131,5 +136,14 @@ public class CircuitFrame extends JInternalFrame{
      */
     public boolean isDirty(){
         return circuitPanel.getCommandHistory().isDirty();
+    }
+    
+    public void openCircuitPreferencesDialog(){
+        propertiesDialog.setLocationRelativeTo(this);
+        propertiesDialog.setVisible(true);
+    }
+    
+    public void closeCircuitPreferencesDialog(){
+        propertiesDialog.setVisible(false);
     }
 }

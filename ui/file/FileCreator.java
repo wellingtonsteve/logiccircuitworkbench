@@ -43,7 +43,7 @@ public class FileCreator {
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("dd MMMMM yyyy',' HH:mm");
             atts.addAttribute("", "", "author", "CDATA",  System.getProperty("user.name"));
-            atts.addAttribute("", "", "createdOn", "CDATA",  sdf.format(cal.getTime()));
+            atts.addAttribute("", "", "modifiedOn", "CDATA",  sdf.format(cal.getTime()));
             atts.addAttribute("", "", "version", "CDATA", UIConstants.FILE_FORMAT_VERSION);
             hd.startElement("", "", "circuit", atts);        
 
@@ -52,9 +52,19 @@ public class FileCreator {
             hd.startElement("", "", "components", atts); 
             
             // Add description, title and image url from circuit Attributes
-            atts.addAttribute("", "", "title", "CDATA", (String) circuitPanel.getProperties().getAttribute("Title").getValue());
-            atts.addAttribute("", "", "description", "CDATA", (String) circuitPanel.getProperties().getAttribute("Description").getValue());
-            atts.addAttribute("", "", "image", "CDATA", (String) circuitPanel.getProperties().getAttribute("Subcircuit Image").getValue());
+            atts.clear();
+            atts.addAttribute("", "", "name", "CDATA", "Title");
+            atts.addAttribute("", "", "value", "CDATA", (String) circuitPanel.getProperties().getAttribute("Title").getValue());
+            hd.startElement("", "", "attr", atts);
+            hd.endElement("","","attr");
+            atts.clear();
+            atts.addAttribute("", "", "name", "CDATA", "Description");
+            atts.addAttribute("", "", "value", "CDATA", (String) circuitPanel.getProperties().getAttribute("Description").getValue());
+            hd.startElement("", "", "attr", atts);
+            hd.endElement("","","attr");
+            atts.clear();
+            atts.addAttribute("", "", "name", "CDATA", "Subcircuit Image");
+            atts.addAttribute("", "", "value", "CDATA", (String) circuitPanel.getProperties().getAttribute("Subcircuit Image").getValue());
             hd.startElement("", "", "attr", atts);
             hd.endElement("","","attr");
             
