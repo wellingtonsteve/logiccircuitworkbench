@@ -33,6 +33,7 @@ import ui.components.SelectableComponent.Pin;
 import ui.command.CommandHistory;
 import ui.command.CreateComponentCommand;
 import ui.command.SelectionTranslateCommand;
+import ui.command.SubcircuitOpenCommand.SubcircuitComponent;
 import ui.components.standard.PinLogger;
 import ui.error.ErrorHandler;
 import ui.components.standard.log.ViewerFrame;
@@ -79,7 +80,8 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     private ViewerFrame loggerWindow;
     private SimulatorState simulatorState = SimulatorState.STOPPED;
     private Properties properties;
-    private boolean isSubCircuit;
+    private boolean isSubcircuit;
+    private CircuitPanel subcircuitParent;
 
     public CircuitPanel(CircuitFrame parentFrame, boolean isSubCircuit){
         addMouseMotionListener(new CircuitPanelMouseMotionAdapter());
@@ -94,7 +96,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         this.editor = ((CircuitFrame) getParentFrame()).getEditor();
         this.cmdHist = new CommandHistory(editor);
         this.grid = new Grid(this);
-        this.isSubCircuit = isSubCircuit;
+        this.isSubcircuit = isSubCircuit;
         createDefaultProperties();
     }
 
@@ -308,9 +310,23 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         return logicalCircuit;
     }
 
-    public boolean isSubCircuit() {
-        return isSubCircuit;
+    public boolean isSubcircuit() {
+        return isSubcircuit;
     }
+    
+    public void setSubcircuitParent(CircuitPanel parent) {
+        this.subcircuitParent = parent;
+    }
+    
+    private void updateSubcircuits(String filename) {
+        for(SelectableComponent sc: drawnComponents){
+            if(sc instanceof SubcircuitComponent){
+                ((SubcircuitComponent) sc).updateSource(filename);
+            }
+        }
+    }
+    
+        
     public Simulator getSimulator() {
         return simulator;
     }
@@ -363,6 +379,10 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         CircuitFrame frame = getParentFrame();
         frame.setTitle(filename);
         cmdHist.setIsDirty(false);
+        
+        if(isSubcircuit()){
+            subcircuitParent.updateSubcircuits(filename);
+        }
     }
     
     /** {@inheritDoc} 
@@ -423,7 +443,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         // Background Colour
         if (getSimulatorState().equals(simulatorState.STOPPED)) {
             g2.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-        } else if(isSubCircuit){
+        } else if(isSubcircuit){
             g2.setColor(UIConstants.SUBCIRCUIT_BACKGROUND_COLOUR);
         }else {
             g2.setColor(UIConstants.CIRCUIT_PLAYING_BACKGROUND_COLOUR);
@@ -487,8 +507,8 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                 for(SelectableComponent sc: drawnComponents){                    
                     if(sc.isFixed() 
                             && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Input){
-                        int inputX = (Integer) sc.getProperties().getAttribute("External X").getValue();
-                        int inputY = (Integer) sc.getProperties().getAttribute("External Y").getValue();
+                        int inputX = Integer.parseInt((String)sc.getProperties().getAttribute("External X").getValue());
+                        int inputY = Integer.parseInt((String)sc.getProperties().getAttribute("External Y").getValue());
                         String label;
                         if(sc.hasLabel()){
                             label = sc.getLabel();
@@ -499,8 +519,8 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                         addInputPin(label, new Point(inputX, inputY));                        
                     } else if(sc.isFixed() 
                             && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Output){
-                        int inputX = (Integer) sc.getProperties().getAttribute("External X").getValue();
-                        int inputY = (Integer) sc.getProperties().getAttribute("External Y").getValue();
+                        int inputX = Integer.parseInt((String)sc.getProperties().getAttribute("External X").getValue());
+                        int inputY = Integer.parseInt((String)sc.getProperties().getAttribute("External Y").getValue());
                         String label;
                         if(sc.hasLabel()){
                             label = sc.getLabel();
@@ -554,13 +574,12 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     public String getKeyName(){
         return "Circuit Panel";
     }
-    
+
      /** This inner class handles all MouseListener events */
     private class CircuitPanelMouseAdapter extends MouseAdapter {
 
         public void mouseClicked(MouseEvent e) {
             if (isActiveCircuit() && !currentTool.equals("Wire")) {
-
                 // Area we clicking empty space?
                 boolean clickingEmptySpace = true;
                 temporaryComponent = null;
@@ -578,7 +597,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     // Fix floating selection
                     if (!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed()) {
                         editor.fixComponent(drawnComponents.peek());
-                        
+
                         if (!currentTool.equals("Select")) {
                             // Add another new component
                             CreateComponentCommand ccc = new CreateComponentCommand(CircuitPanel.this,currentTool,editor.getComponentRotation(),new Point(0, 0));
@@ -586,19 +605,26 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                             // To redraw new component at workarea origin
                             previousCurrentPoint = new Point(0,0);
                         }
-                        
+
                         repaint(drawnComponents.peek().getBoundingBox());
                     }
                 } else {
-                    // Activate selected component
-                    temporaryComponent.mouseClicked(e);
-                    resetActiveComponents();
-                    activeComponents.add(temporaryComponent);
-                    editor.getClipboard().setHasSelection(true);
-                    repaint(temporaryComponent.getBoundingBox());
-                    
-                    // Update the current selection options panel
-                    editor.setComponent(temporaryComponent);
+                    // Single Click
+                    if(e.getClickCount() == 1){
+                        // Activate selected component
+                        temporaryComponent.mouseClicked(e);
+                        resetActiveComponents();
+                        activeComponents.add(temporaryComponent);
+                        editor.getClipboard().setHasSelection(true);
+                        repaint(temporaryComponent.getBoundingBox());
+
+                        // Update the current selection options panel
+                        editor.setComponent(temporaryComponent);
+                    // Double Click
+                    } else if(e.getClickCount() == 2 
+                            && temporaryComponent instanceof SubcircuitComponent){
+                        ((SubcircuitComponent) temporaryComponent).openEditor();
+                    }
                 }
             } 
         }

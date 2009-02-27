@@ -1,24 +1,42 @@
 package ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import netlist.properties.Attribute;
+import netlist.properties.AttributeListener;
 import netlist.properties.Properties;
+import ui.file.JPGFileFilter;
 
 /**
  *
  * @author  matt
  */
-public class CircuitProperties extends javax.swing.JFrame {
+public class CircuitProperties extends javax.swing.JFrame implements AttributeListener {
     private Properties properties;
 
     /** Creates new form CircuitProperties */
     public CircuitProperties(Properties properties) {
         this.properties = properties;
         initComponents();
+        
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMMMM yyyy',' HH:mm");
         AuthorField.setText(System.getProperty("user.name")); 
         ModifiedField.setText(sdf.format(cal.getTime()));
+        
+        properties.getAttribute("Title").addAttributeListener(this);
+        properties.getAttribute("Description").addAttributeListener(this);
+        properties.getAttribute("Subcircuit Image").addAttributeListener(this);
+        
+        FileChooser.setFileFilter(new JPGFileFilter());
+        FileChooser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ImageField.setText(FileChooser.getSelectedFile().getAbsolutePath());
+            }
+        });        
     }
 
     /** This method is called from within the constructor to
@@ -29,7 +47,6 @@ public class CircuitProperties extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     private void initComponents() {//GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
-        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         FileChooser = new javax.swing.JFileChooser();
         TitleField = new javax.swing.JTextField();
@@ -87,10 +104,6 @@ public class CircuitProperties extends javax.swing.JFrame {
         getContentPane().add(ImageLabel, gridBagConstraints);
 
         ImageField.setName("ImageField"); // NOI18N
-
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, FileChooser, org.jdesktop.beansbinding.ELProperty.create("${selectedFile.absolutePath}"), ImageField, org.jdesktop.beansbinding.BeanProperty.create("text"));
-        bindingGroup.addBinding(binding);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
@@ -234,20 +247,9 @@ public class CircuitProperties extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 15, 0);
         getContentPane().add(jSeparator1, gridBagConstraints);
 
-        bindingGroup.bind();
-
         pack();
     }//GEN-END:initComponents
 
-    @Override
-    public void setVisible(boolean b) {
-        super.setVisible(b);
-        if(b){
-            TitleField.setText((String) properties.getAttribute("Title").getValue());
-            DescTextArea.setText((String) properties.getAttribute("Description").getValue());
-            ImageField.setText((String) properties.getAttribute("Subcircuit Image").getValue());
-        }
-    }    
     
 private void OkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OkButtonActionPerformed
     properties.getAttribute("Title").changeValue(TitleField.getText());
@@ -282,7 +284,17 @@ private void ImageDialogButtonActionPerformed(java.awt.event.ActionEvent evt) {/
     private javax.swing.JTextField TitleField;
     private javax.swing.JLabel TitleLabel;
     private javax.swing.JSeparator jSeparator1;
-    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void attributeValueChanged(Attribute attr, Object value) {
+        if(attr.getName().equals("Title")){
+            TitleField.setText((String)value);
+        } else if(attr.getName().equals("Description")){
+            DescTextArea.setText((String)value);
+        } else if(attr.getName().equals("Subcircuit Image")){
+            ImageField.setText((String)value);
+        }
+    }
 
 }

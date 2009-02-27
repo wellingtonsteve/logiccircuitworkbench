@@ -72,7 +72,7 @@ public class CreateComponentCommand extends Command {
                     }                     
                     sc.setProperties(props);
                 // Is this a subcircuit?
-                } else if(parentCircuit.isSubCircuit()){
+                } else if(parentCircuit.isSubcircuit()){
                         // TODO something
                 } else {
                     throw new InvalidComponentException();

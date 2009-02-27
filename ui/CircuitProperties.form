@@ -72,11 +72,6 @@
       <Properties>
         <Property name="name" type="java.lang.String" value="ImageField" noResource="true"/>
       </Properties>
-      <BindingProperties>
-        <BindingProperty name="text" source="FileChooser" sourcePath="${selectedFile.absolutePath}" target="ImageField" targetPath="text" updateStrategy="0" immediately="false">
-          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-        </BindingProperty>
-      </BindingProperties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="2" gridY="3" gridWidth="3" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="2" insetsLeft="0" insetsBottom="2" insetsRight="3" anchor="10" weightX="0.0" weightY="0.0"/>
