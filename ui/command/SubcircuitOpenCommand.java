@@ -58,10 +58,11 @@ public class SubcircuitOpenCommand extends Command {
             activeCircuit.createDefaultProperties();
             Properties properties = activeCircuit.getProperties();
             SimItem logicalCircuit = activeCircuit.getLogicalCircuit();
+            logicalCircuit.setProperties(properties);
+            activeCircuit.selectAllComponents();
 
-            // Create a new component
+            // Create a new component.
             VisualComponent subcircuitComponent = new SubcircuitComponent(loadingCircuit, new Point(0, 0), logicalCircuit, properties);
-
             loadingCircuit.addComponent(subcircuitComponent);
             subcircuitComponent.translate(100, 100, true);
 

@@ -70,7 +70,7 @@ public class CreateComponentCommand extends Command {
                     } else { 
                         sc = new DefaultVisualComponent(parentCircuit, point, simItem, props);
                     }                     
-                    sc.setProperties(props);
+
                 // Is this a subcircuit?
                 } else if(parentCircuit.isSubcircuit()){
                         // TODO something

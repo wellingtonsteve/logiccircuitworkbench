@@ -40,7 +40,7 @@ public class PreviewPanel extends JPanel{
 
     public void setComponent(SelectableComponent sc) {
         this.sc = sc.copy();
-        this.sc.setParent(null);
+        //this.sc.setParent(null);
         this.sc.setSelectionState(SelectionState.DEFAULT);
     }
 }

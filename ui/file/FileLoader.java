@@ -43,17 +43,17 @@ public class FileLoader extends DefaultHandler{
     public boolean loadFile(String filename){
         stack.clear();
         try {
-	    File file = new File(filename);
-	    InputSource src = new InputSource( new FileInputStream( file ) );
+            File file = new File(filename);
+            InputSource src = new InputSource( new FileInputStream( file ) );
 
-            XMLReader rdr = XMLReaderFactory.createXMLReader();
-            rdr.setContentHandler( this );
-            rdr.parse( src );
-           
-	}catch( Exception ex ) {
-	    ErrorHandler.newError("File Load Error","Please see the system error below.", ex);
-            successful = false;    
-	} 
+                XMLReader rdr = XMLReaderFactory.createXMLReader();
+                rdr.setContentHandler( this );
+                rdr.parse( src );
+
+        }catch( Exception ex ) {
+            ErrorHandler.newError("File Load Error","Please see the system error below.", ex);
+                successful = false;
+        }
         
         return successful;
                 
@@ -138,7 +138,7 @@ public class FileLoader extends DefaultHandler{
                 PropertiesOwner top = stack.peek();
 
                 try{
-                    top.getProperties().getAttribute(attrName).changeValue(attrValue);
+                    top.getProperties().getAttribute(attrName).setValue(attrValue);
                 } catch (Exception e){
                     successful = false;           
                     ErrorHandler.newError("File Load Error",
@@ -178,6 +178,8 @@ public class FileLoader extends DefaultHandler{
         // Fix the wire only after we've added all the waypoints
         if(successful && qName.equals("wire")){
             ((Wire) stack.peek()).translate(0, 0, true);
+        } else if(successful && qName.equals("component")){
+            ((VisualComponent) stack.peek()).addLogicalComponentToCircuit();
         }
     }    
 }

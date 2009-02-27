@@ -79,14 +79,12 @@ public abstract class SelectableComponent implements Labeled, Cloneable, Propert
         this.parent = parent;
         this.logicalComponent = logicalComponent;
         this.properties = properties;
+        if(logicalComponent != null){ this.logicalComponent.setProperties(properties); }
         if(origin == null){
             this.origin = new Point(0,0);
         } else {
             this.origin = origin;
         }
-        if(logicalComponent!=null){
-            this.parent.getLogicalCircuit().addSimItem(logicalComponent);
-        }                
         setLocalPins();
         setGlobalPins();        
         addListeners();
@@ -113,7 +111,12 @@ public abstract class SelectableComponent implements Labeled, Cloneable, Propert
         } catch (Exception ex) {
             Logger.getLogger(SelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(parent != null) parent.getLogicalCircuit().addSimItem(logicalComponent);
+        if(parent != null){
+            parent.getLogicalCircuit().addSimItem(logicalComponent);
+            System.out.println("GUI adding " + logicalComponent);
+        } else {
+            System.out.println("GUI not adding " + logicalComponent);
+        }
         this.parent = parent;
         refreshLocalPins();
         setLocalPins();    
