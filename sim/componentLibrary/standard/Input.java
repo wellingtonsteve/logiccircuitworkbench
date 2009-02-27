@@ -1,7 +1,6 @@
 package sim.componentLibrary.standard;
 
-import netlist.properties.Attribute;
-import netlist.properties.Properties;
+import netlist.properties.*;
 import sim.componentLibrary.Component;
 import sim.*;
 import sim.joinable.*;
@@ -13,6 +12,8 @@ import sim.joinable.*;
 public class Input extends Component {
     
     private LogicState currentValue = LogicState.OFF;
+    private String name = "";
+    private boolean external = false;
 
     //Pins
     private OutputPin output = createOutputPin("Output");
@@ -34,13 +35,13 @@ public class Input extends Component {
         output.setValue(currentValue);
     }
 
-    public String getPinName() {
-        return "";
-    }
-
     @Override
     public void setProperties(Properties properties) {
-        Attribute nameProperty = properties.getAttribute("");
+        name = (String) properties.getAttribute("Label").getValue();
+        external = (Boolean) properties.getAttribute("External?").getValue();
     }
+    
+    public boolean isExternal() { return external; }
+    public String getPinName() { return name; }
 
 }
