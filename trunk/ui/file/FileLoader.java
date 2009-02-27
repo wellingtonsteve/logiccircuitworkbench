@@ -80,6 +80,9 @@ public class FileLoader extends DefaultHandler{
                     ErrorHandler.newError("File Load Error","Invalid File Format: Version is incorrect..."+attribs.getValue("version"));
                     successful = false;                
                 }
+                
+                stack.push(editor.getActiveCircuit()); 
+                
             // Create a new component <component>
             } else if(qName.equals("component")){
 
@@ -135,7 +138,7 @@ public class FileLoader extends DefaultHandler{
                 PropertiesOwner top = stack.peek();
 
                 try{
-                    top.getProperties().getAttribute(attrName).setValue(attrValue);
+                    top.getProperties().getAttribute(attrName).changeValue(attrValue);
                 } catch (Exception e){
                     successful = false;           
                     ErrorHandler.newError("File Load Error",
