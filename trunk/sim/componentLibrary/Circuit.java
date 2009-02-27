@@ -4,6 +4,7 @@ import sim.*;
 import java.util.*;
 import java.util.ArrayList;
 import sim.componentLibrary.standard.Input;
+import sim.componentLibrary.standard.Output;
 import sim.joinable.*;
 
 public class Circuit implements SimItem {
@@ -16,8 +17,26 @@ public class Circuit implements SimItem {
         if(!simItems.contains(simItem)){
             simItems.add(simItem);
             simItem.setSimulator(sim);
-            if(simItem instanceof Input){
-                InputPin connectingInputPin = new InputPin(this, ((Input) simItem).getPinName());
+            if(simItem instanceof Input && ((Input) simItem).isExternal()){
+                //create a input pin for the circuit, that passes its values onto the Input component
+                InputPin connectingPin = new InputPin(this, ((Input) simItem).getPinName());
+                inputPins.put(connectingPin.getName(), connectingPin);
+                //add a listener to the new pin
+                final Input pinCopy = (Input) simItem;
+                connectingPin.addValueListener(new ValueListener() {
+                    //when the new pin changes, pass the value onto the input component
+                    public void valueChanged(Pin pin, LogicState value) { pinCopy.setValue(value); }
+                });
+            }
+            if(simItem instanceof Output && ((Output) simItem).isEXternal()){
+                //create an output pin for the component that listens to the output component
+                final OutputPin connectingPin = new OutputPin(this, ((Output) simItem).getPinName());
+                outputPins.put(connectingPin.getName(), connectingPin);
+                //add listener to the input pin of the output component
+                simItem.getPinByName("Input").addValueListener(new ValueListener() {
+                    //when that pin changes, pass the value onto the new output pin
+                    public void valueChanged(Pin pin, LogicState value) { connectingPin.setValue(value); }
+                });
             }
             return true;
         }
