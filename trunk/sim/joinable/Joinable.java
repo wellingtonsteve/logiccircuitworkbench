@@ -15,13 +15,15 @@ public abstract class Joinable {
 
     public static void connect(Joinable a, Joinable b){
         if(canConnect(a, b)){
+            //System.out.println(a.toString() + " connected to " + b.toString());
             a.connectedToSet.add(b);
             b.connectedToSet.add(a);
             if(a.hasOutputSource()){
                 b.setOutputSource(a.outputSource, new ArrayList<Joinable>());
-            }
-            if(b.hasOutputSource()){
+                //System.out.println(b.toString() + " connected to output source of " + a.toString());
+            } else if(b.hasOutputSource()){
                 a.setOutputSource(b.outputSource, new ArrayList<Joinable>());
+                //System.out.println(a.toString() + " connected to output source of " + b.toString());
             }
         } else {
             throw new Error("Connecting two outputs");

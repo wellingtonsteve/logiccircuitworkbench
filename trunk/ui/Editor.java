@@ -849,6 +849,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
                 getActiveCircuit().resetActiveComponents();
                 CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit(), componentName, getComponentRotation(),new Point(0,0));
                 getActiveCircuit().doCommand(ccc);
+                ((VisualComponent)ccc.getComponent()).addLogicalComponentToCircuit();
                 
                 // Set Options panel (Preview, Component Specific Options etc.)
                 setComponent(ccc.getComponent());

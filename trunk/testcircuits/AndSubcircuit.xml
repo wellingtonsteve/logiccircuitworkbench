@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<circuit description="get some value here" author="matt" createdOn="27 February 2009, 12:00" name="test1" version="LCW v3.0">
+<circuit author="Stephen" modifiedOn="27 February 2009, 20:33" version="LCW v3.0">
     <components>
+        <attr name="Title" value="And Gate"/>
+        <attr name="Description" value="Test subcircuit file, has behaviour of 2-input AND gate"/>
+        <attr name="Subcircuit Image" value=""/>
         <component type="Standard.Button Source" x="210" y="200" rotation="0.0">
             <attr name="Label" value="B"/>
             <attr name="External?" value="true"/>
             <attr name="External X" value="5"/>
-            <attr name="External Y" value="15"/>
+            <attr name="External Y" value="25"/>
         </component>
         <component type="Logic Gates.2 Input.AND" x="305" y="185" rotation="0.0">
             <attr name="Label" value=""/>
         </component>
-        <component type="Standard.Button Source" x="210" y="165" rotation="0.0">
-            <attr name="Label" value="A"/>
-            <attr name="External?" value="true"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
-        </component>
         <component type="Standard.LED" x="385" y="185" rotation="0.0">
             <attr name="Label" value="C"/>
             <attr name="External?" value="true"/>
-            <attr name="External X" value="25"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External X" value="55"/>
+            <attr name="External Y" value="15"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <wire startx="230" starty="165" endx="285" endy="175"/>
@@ -28,5 +25,11 @@
             <waypoint x="285" y="200"/>
         </wire>
         <wire startx="335" starty="185" endx="375" endy="185"/>
+        <component type="Standard.Button Source" x="210" y="165" rotation="0.0">
+            <attr name="Label" value="A"/>
+            <attr name="External?" value="true"/>
+            <attr name="External X" value="5"/>
+            <attr name="External Y" value="5"/>
+        </component>
     </components>
 </circuit>

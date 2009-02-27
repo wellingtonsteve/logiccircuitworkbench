@@ -133,5 +133,11 @@ public abstract class VisualComponent extends SelectableComponent {
         } catch (SAXException ex) {
             ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below.",ex);
         }
-    } 
+    }
+
+    public void addLogicalComponentToCircuit(){
+       if(logicalComponent!=null){
+            this.parent.getLogicalCircuit().addSimItem(logicalComponent);
+        }
+    }
 }

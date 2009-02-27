@@ -324,8 +324,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                 ((SubcircuitComponent) sc).updateSource(filename);
             }
         }
-    }
-    
+    }    
         
     public Simulator getSimulator() {
         return simulator;
@@ -441,11 +440,11 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         }
 
         // Background Colour
-        if (getSimulatorState().equals(simulatorState.STOPPED)) {
-            g2.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-        } else if(isSubcircuit){
+        if(isSubcircuit){
             g2.setColor(UIConstants.SUBCIRCUIT_BACKGROUND_COLOUR);
-        }else {
+        } else if (getSimulatorState().equals(simulatorState.STOPPED)) {
+            g2.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+        } else {
             g2.setColor(UIConstants.CIRCUIT_PLAYING_BACKGROUND_COLOUR);
         }
         g2.fill(g2.getClip());
@@ -507,25 +506,27 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                 for(SelectableComponent sc: drawnComponents){                    
                     if(sc.isFixed() 
                             && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Input){
-                        int inputX = Integer.parseInt((String)sc.getProperties().getAttribute("External X").getValue());
-                        int inputY = Integer.parseInt((String)sc.getProperties().getAttribute("External Y").getValue());
+                        int inputX = (Integer) sc.getProperties().getAttribute("External X").getValue();
+                        int inputY = (Integer) sc.getProperties().getAttribute("External Y").getValue();
                         String label;
                         if(sc.hasLabel()){
                             label = sc.getLabel();
                         } else {
                             label = "Input " + i;
+                            sc.setLabel(label);
                             i++;
                         }
                         addInputPin(label, new Point(inputX, inputY));                        
                     } else if(sc.isFixed() 
                             && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Output){
-                        int inputX = Integer.parseInt((String)sc.getProperties().getAttribute("External X").getValue());
-                        int inputY = Integer.parseInt((String)sc.getProperties().getAttribute("External Y").getValue());
+                        int inputX = (Integer) sc.getProperties().getAttribute("External X").getValue();
+                        int inputY = (Integer) sc.getProperties().getAttribute("External Y").getValue();
                         String label;
                         if(sc.hasLabel()){
                             label = sc.getLabel();
                         } else {
                             label = "Ouput " + o;
+                            sc.setLabel(label);
                             o++;
                         }
                         addOutputPin(label, new Point(inputX, inputY));       
@@ -602,6 +603,8 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                             // Add another new component
                             CreateComponentCommand ccc = new CreateComponentCommand(CircuitPanel.this,currentTool,editor.getComponentRotation(),new Point(0, 0));
                             cmdHist.doCommand(ccc);
+                            ((VisualComponent)ccc.getComponent()).addLogicalComponentToCircuit();
+                            
                             // To redraw new component at workarea origin
                             previousCurrentPoint = new Point(0,0);
                         }
