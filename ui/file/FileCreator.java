@@ -4,11 +4,11 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
-import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 import javax.xml.transform.sax.*;
+import ui.CircuitPanel;
 import ui.UIConstants;
 import ui.components.SelectableComponent;
 /**
@@ -17,12 +17,12 @@ import ui.components.SelectableComponent;
  */
 public class FileCreator {
     
-    private PrintWriter out = null;
-    private TransformerHandler hd = null;
+    private static PrintWriter out = null;
+    private static TransformerHandler hd = null;
    
-    public FileCreator(String filename, LinkedList<SelectableComponent> drawnComponents) {
+    public static void write(CircuitPanel circuitPanel, LinkedList<SelectableComponent> drawnComponents) {
          try {            
-            FileOutputStream fos = new FileOutputStream(filename);
+            FileOutputStream fos = new FileOutputStream(circuitPanel.getFilename());
             out = new PrintWriter(fos);
             StreamResult streamResult = new StreamResult(out);
             SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
@@ -42,16 +42,21 @@ public class FileCreator {
             // "circuit" tag
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("dd MMMMM yyyy',' HH:mm");
-            atts.addAttribute("", "", "description", "CDATA",  "get some value here");
             atts.addAttribute("", "", "author", "CDATA",  System.getProperty("user.name"));
             atts.addAttribute("", "", "createdOn", "CDATA",  sdf.format(cal.getTime()));
-            atts.addAttribute("", "", "name", "CDATA", "test1");
             atts.addAttribute("", "", "version", "CDATA", UIConstants.FILE_FORMAT_VERSION);
             hd.startElement("", "", "circuit", atts);        
 
             // "components" tag
             atts.clear();
-            hd.startElement("", "", "components", atts);       
+            hd.startElement("", "", "components", atts); 
+            
+            // Add description, title and image url from circuit Attributes
+            atts.addAttribute("", "", "title", "CDATA", (String) circuitPanel.getProperties().getAttribute("Title").getValue());
+            atts.addAttribute("", "", "description", "CDATA", (String) circuitPanel.getProperties().getAttribute("Description").getValue());
+            atts.addAttribute("", "", "image", "CDATA", (String) circuitPanel.getProperties().getAttribute("Subcircuit Image").getValue());
+            hd.startElement("", "", "attr", atts);
+            hd.endElement("","","attr");
             
             // Create xml for each component
             for (SelectableComponent sc : drawnComponents) {
@@ -60,23 +65,15 @@ public class FileCreator {
                 }
             }        
             
-        } catch (SAXException ex) {
-            ui.error.ErrorHandler.newError("File Creation Error","Please refer to the system output below.",ex);
-        } catch (TransformerConfigurationException ex) {
-            ui.error.ErrorHandler.newError("File Creation Error","Please refer to the system output below.",ex);
-        } catch (FileNotFoundException ex) {
-            ui.error.ErrorHandler.newError("File Not Found","Please refer to the system output below.",ex);
-        } 
-    }
-
-    public void write() {
-        try {
             hd.endElement("", "", "components"); 
             hd.endElement("", "", "circuit");
             hd.endDocument();
             out.close();
-        } catch (SAXException ex) {
+            
+        } catch (FileNotFoundException ex) {
+            ui.error.ErrorHandler.newError("File Not Found","Please refer to the system output below.",ex);
+        } catch (Exception ex) {
             ui.error.ErrorHandler.newError("File Creation Error","Please refer to the system output below.",ex);
-        }
+        } 
     }
 }

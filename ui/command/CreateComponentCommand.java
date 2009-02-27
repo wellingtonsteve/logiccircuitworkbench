@@ -34,8 +34,7 @@ public class CreateComponentCommand extends Command {
     protected void perform(Editor editor) {
         if(parentCircuit == null){
             parentCircuit = activeCircuit;
-        } 
-       
+        }        
         
         //Remove "Components." from begining
         if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
@@ -43,16 +42,19 @@ public class CreateComponentCommand extends Command {
         }   
         if(parentCircuit != null){
             try {                
+                // Create a new wire
                 if(key.equals("Wire")){                    
                     sc = new ui.components.Wire(parentCircuit);
                     if(point!=null){
                         sc.setOrigin(point);
                     }
+                // The key corresponds to a valid key in a loaded netlist
                 }else if(editor.isValidComponent(key)){
                     
                     Properties props = editor.getNetlistWithKey(key).getProperties(key);
                     SimItem simItem = props.getLogicalComponentClass().getConstructor().newInstance();
                 
+                    // Was there a visual component class specified
                     if(props.getVisualComponentClass() != null && editor.getNetlistWithKey(key).containsKey(key)){
                             sc = props.getVisualComponentClass().getConstructor(
                                 CircuitPanel.class,
@@ -64,12 +66,16 @@ public class CreateComponentCommand extends Command {
                                         point, 
                                         simItem,
                                         props);
+                    // Create a default visual component from the logical properties of the component
                     } else { 
-                        sc = new ImageSelectableComponentImpl(parentCircuit, point, simItem, props);
+                        sc = new DefaultVisualComponent(parentCircuit, point, simItem, props);
                     }                     
                     sc.setProperties(props);
+                // Is this a subcircuit?
+                } else if(parentCircuit.isSubCircuit()){
+                        // TODO something
                 } else {
-                    throw new Exception();
+                    throw new InvalidComponentException();
                 }                            
                 
                 sc.setRotation(rotation, true);                             
@@ -98,10 +104,10 @@ public class CreateComponentCommand extends Command {
     
      /** This class used to create a drawable component when only details of the 
      * logical component are available */
-    private class ImageSelectableComponentImpl extends VisualComponent {
+    private class DefaultVisualComponent extends VisualComponent {
         private int spacing = 2*UIConstants.GRID_DOT_SPACING;
         
-        public ImageSelectableComponentImpl(CircuitPanel parent, Point point, sim.SimItem simItem, netlist.properties.Properties properties) {
+        public DefaultVisualComponent(CircuitPanel parent, Point point, sim.SimItem simItem, netlist.properties.Properties properties) {
             super(parent, point, simItem,properties);            
         }
         

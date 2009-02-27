@@ -40,7 +40,7 @@ public class Input extends Component {
 
     @Override
     public void setProperties(Properties properties) {
-        Attribute nameProperty = properties.getAttribute("")
+        Attribute nameProperty = properties.getAttribute("");
     }
 
 }

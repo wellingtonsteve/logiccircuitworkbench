@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Stack;
+import netlist.properties.PropertiesOwner;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -15,7 +16,6 @@ import ui.UIConstants;
 import ui.command.CreateComponentCommand;
 import ui.error.ErrorHandler;
 import ui.components.*;
-import ui.components.standard.*;
 
 /**
  *
@@ -23,13 +23,13 @@ import ui.components.standard.*;
  */
 public class FileLoader extends DefaultHandler{
 
-    private Stack<SelectableComponent> stack;
+    private Stack<PropertiesOwner> stack;
     private Editor editor;
     private boolean successful = true;
     
     public FileLoader(Editor editor){
         this.editor = editor;
-        stack = new Stack<SelectableComponent>();
+        stack = new Stack<PropertiesOwner>();
     }
     
     /**
@@ -132,7 +132,7 @@ public class FileLoader extends DefaultHandler{
             } else if(qName.equals("attr")){    
                 String attrName = attribs.getValue("name");
                 String attrValue = attribs.getValue("value");
-                SelectableComponent top = stack.peek();
+                PropertiesOwner top = stack.peek();
 
                 try{
                     top.getProperties().getAttribute(attrName).setValue(attrValue);
@@ -148,7 +148,7 @@ public class FileLoader extends DefaultHandler{
                 int x = Integer.parseInt(attribs.getValue("x"));
                 int y = Integer.parseInt(attribs.getValue("y"));
 
-                SelectableComponent top = stack.peek();
+                PropertiesOwner top = stack.peek();
 
                 if(top instanceof Wire){
                     ((Wire) top).addWaypoint(new Point(x,y));
@@ -156,7 +156,7 @@ public class FileLoader extends DefaultHandler{
                     successful = false;           
                     ErrorHandler.newError("File Load Error",
                             "Invalid File Format: The element \"waypoint\" " +
-                            "is not valid for a "+ top.getClass().getSimpleName() +".");
+                            "is not valid for a "+ top.getKeyName() +".");
                 }
             }
         }        
@@ -174,7 +174,7 @@ public class FileLoader extends DefaultHandler{
     public void endElement(String uri, String localName, String qName) throws SAXException {
         // Fix the wire only after we've added all the waypoints
         if(successful && qName.equals("wire")){
-            stack.peek().translate(0, 0, true);
+            ((Wire) stack.peek()).translate(0, 0, true);
         }
     }    
 }
