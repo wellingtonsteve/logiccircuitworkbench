@@ -10,6 +10,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import ui.CircuitPanel;
 import ui.UIConstants;
+import ui.command.SubcircuitOpenCommand.SubcircuitComponent;
 
 /**
  *
@@ -124,6 +125,7 @@ public abstract class VisualComponent extends SelectableComponent {
             atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
             atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
             atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
+            atts.addAttribute("", "", "subcircuit", "CDATA", (this instanceof SubcircuitComponent)+"");
             
             hd.startElement("", "", "component", atts);
             

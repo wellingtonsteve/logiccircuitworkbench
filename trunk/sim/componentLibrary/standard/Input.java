@@ -29,7 +29,9 @@ public class Input extends Component implements AttributeListener{
         if(sim != null && (sim.getCurrentState() == SimulatorState.PLAYING || sim.getCurrentState() == SimulatorState.PAUSED)){
             output.setValue(value);
         }
-        else System.out.println("something funny happened with sim. sim is " + sim + " and state is " + sim.getCurrentState());
+        else {
+            //System.out.println("something funny happened with sim. sim is " + sim + " and state is " + sim.getCurrentState());
+        }
     }
 
     @Override

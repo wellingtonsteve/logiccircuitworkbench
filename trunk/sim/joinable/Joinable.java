@@ -28,7 +28,7 @@ public abstract class Joinable {
     }
 
     public static void disconnect(Joinable a, Joinable b){
-        System.out.println(a + " disconnected from " + b);
+        //System.out.println(a + " disconnected from " + b);
         a.connectedToSet.remove(b);
         b.connectedToSet.remove(a);
         if(!a.canFind(a.outputSource, new ArrayList<Joinable>())) {

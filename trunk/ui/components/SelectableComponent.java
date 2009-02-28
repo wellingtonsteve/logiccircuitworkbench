@@ -75,7 +75,6 @@ public abstract class SelectableComponent implements Labeled, Cloneable, Propert
      * @param origin The initial origin of this component.
      */
     public SelectableComponent(CircuitPanel parent, Point origin, SimItem logicalComponent, Properties properties){
-
         this.parent = parent;
         this.logicalComponent = logicalComponent;
         this.properties = properties;
@@ -113,9 +112,9 @@ public abstract class SelectableComponent implements Labeled, Cloneable, Propert
         }
         if(parent != null){
             parent.getLogicalCircuit().addSimItem(logicalComponent);
-            System.out.println("GUI adding " + logicalComponent);
+            //System.out.println("GUI adding " + logicalComponent);
         } else {
-            System.out.println("GUI not adding " + logicalComponent);
+            //System.out.println("GUI not adding " + logicalComponent);
         }
         this.parent = parent;
         refreshLocalPins();
@@ -667,7 +666,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable, Propert
             super(x,y);
             this.parent = SelectableComponent.this;
             this.simPin = simPin;
-            this.simPin.addValueListener(this);
+            if(simPin!=null){this.simPin.addValueListener(this);}
             this.joinable = simPin;
         }
 

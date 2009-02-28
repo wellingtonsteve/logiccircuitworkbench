@@ -121,6 +121,12 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         drawnComponents.addAll(fixedComponents);
         repaint();
     }
+    
+    public void moveComponentToFront(SelectableComponent sc) {
+        if(drawnComponents.remove(sc)){
+            drawnComponents.add(sc);
+        }
+    }
 
     /**
      * Unselect active selection of components. Also tell the editor so that it can 
@@ -207,7 +213,6 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         grid.clear();
         logicalCircuit.clear();
         editor.getClipboard().setHasSelection(false);
-
         repaint();      
     }    
     
@@ -318,10 +323,11 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         this.subcircuitParent = parent;
     }
     
-    private void updateSubcircuits(CircuitPanel cp) {
+    private void updateSubcircuits(CircuitPanel subcircuitPanel) {
         for(SelectableComponent sc: drawnComponents){
-            if(sc instanceof SubcircuitComponent){
-                ((SubcircuitComponent) sc).updateSource(cp);
+            if(sc instanceof SubcircuitComponent 
+                    && sc.getKeyName().equals(subcircuitPanel.getFilename())){
+                ((SubcircuitComponent) sc).updateSource(subcircuitPanel);
             }
         }
         repaint();
@@ -503,6 +509,45 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
             {
                 setLogicalComponentClass(logicalCircuit.getClass());      
                 
+                addAttribute(new TextAttribute("Title", ""));
+                addAttribute(new ButtonAttribute("Description") {
+                    @Override
+                    protected void buttonClickAction(ActionEvent e) {
+                        JOptionPane.showInputDialog(jcomponent, getValue(), "Description", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                });
+                addAttribute(new ButtonAttribute("Subcircuit Image") {
+                    @Override
+                    protected void buttonClickAction(ActionEvent e) {
+                        JFileChooser c = new JFileChooser();
+                        FileFilter jpgFilter = new JPGFileFilter();        
+                        c.setFileFilter(jpgFilter);
+                        c.setDialogType(JFileChooser.SAVE_DIALOG);
+                        c.setSelectedFile(new java.io.File(filename));
+                        int rVal = c.showOpenDialog(jcomponent);
+                        if (rVal == JFileChooser.APPROVE_OPTION) {
+                            changeValue(c.getSelectedFile().getAbsolutePath());
+                        }
+                    }
+                });    
+                if(getAttribute("Subcircuit Image").getValue()!=null){
+                    addImage("default", (String)properties.getAttribute("Subcircuit Image").getValue());
+                }
+            }          
+        };
+    }
+    
+    public void updateProperties(){
+         Properties newproperties = new Properties(getFilename()){
+             {
+                setLogicalComponentClass(properties.getLogicalComponentClass());
+                addAttribute(properties.getAttribute("Title"));
+                addAttribute(properties.getAttribute("Description"));
+                addAttribute(properties.getAttribute("Subcircuit Image"));
+                if(getAttribute("Subcircuit Image").getValue()!=null){
+                    addImage("default", (String)properties.getAttribute("Subcircuit Image").getValue());
+                }
+                
                 int i = 0, o = 0;
                 for(SelectableComponent sc: drawnComponents){                    
                     if(sc.isFixed() 
@@ -533,33 +578,9 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                         addOutputPin(label, new Point(inputX, inputY));       
                     }              
                 }
-                
-                addAttribute(new TextAttribute("Title", ""));
-                addAttribute(new ButtonAttribute("Description") {
-                    @Override
-                    protected void buttonClickAction(ActionEvent e) {
-                        JOptionPane.showInputDialog(jcomponent, getValue(), "Description", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                });
-                addAttribute(new ButtonAttribute("Subcircuit Image") {
-                    @Override
-                    protected void buttonClickAction(ActionEvent e) {
-                        JFileChooser c = new JFileChooser();
-                        FileFilter jpgFilter = new JPGFileFilter();        
-                        c.setFileFilter(jpgFilter);
-                        c.setDialogType(JFileChooser.SAVE_DIALOG);
-                        c.setSelectedFile(new java.io.File(filename));
-                        int rVal = c.showOpenDialog(jcomponent);
-                        if (rVal == JFileChooser.APPROVE_OPTION) {
-                            changeValue(c.getSelectedFile().getAbsolutePath());
-                        }
-                    }
-                });    
-                if(getAttribute("Subcircuit Image").getValue()!=null){
-                    addImage("default", (String)properties.getAttribute("Subcircuit Image").getValue());
-                }
-            }          
-        };
+             }
+         };
+         this.properties = newproperties;
     }
     
     @Override
@@ -586,7 +607,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                 boolean clickingEmptySpace = true;
                 temporaryComponent = null;
                 for (SelectableComponent sc : drawnComponents) {
-                    if (sc.isFixed() && sc.containsPoint(lastDragPoint)) {//Should this be 
+                    if (sc.isFixed() && sc.containsPoint(lastDragPoint)) {
                         clickingEmptySpace = false;
                         temporaryComponent = sc;
                         break;
@@ -598,23 +619,25 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
 
                     // Fix floating selection
                     if (!drawnComponents.isEmpty() && !drawnComponents.peek().isFixed()) {
-                        editor.fixComponent(drawnComponents.peek());
-
+                        SelectableComponent top = drawnComponents.peek();
+                        editor.fixComponent(top);                        
                         if (!currentTool.equals("Select")) {
                             // Add another new component
-                            if(!(drawnComponents.peek() instanceof SubcircuitComponent)){
-                                CreateComponentCommand ccc = new CreateComponentCommand(CircuitPanel.this,currentTool,editor.getComponentRotation(),new Point(0, 0));
+                            if(!(top instanceof SubcircuitComponent)){
+                                CreateComponentCommand ccc = new CreateComponentCommand(
+                                        CircuitPanel.this,
+                                        currentTool,
+                                        editor.getComponentRotation(),
+                                        new Point(0, 0));
                                 cmdHist.doCommand(ccc);
                                 ((VisualComponent)ccc.getComponent()).addLogicalComponentToCircuit();
                             } else {
                                 // TODO: Add another subcomponent?
                             }                           
                             
-                            // To redraw new component at workarea origin
+                            // To redraw the new component at workarea origin
                             previousCurrentPoint = new Point(0,0);
                         }
-
-                        repaint(drawnComponents.peek().getBoundingBox());
                     }
                 } else {
                     // Single Click

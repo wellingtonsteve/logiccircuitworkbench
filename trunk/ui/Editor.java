@@ -50,9 +50,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     private CommandHistory cmdHist;
     private Clipboard clipboard = new Clipboard();
     private LinkedList<JInternalFrame> circuitwindows = new LinkedList<JInternalFrame>();
-    private sim.SimItem simitem;
     private boolean playPause = false;
-    private String ImageSelectableComponentImplKeyName;
     private WindowAdapter loggerWindowListener = new WindowAdapter(){
         public void windowClosed(WindowEvent e) {RecordButton.setSelected(getActiveCircuit().getLoggerWindow().isShowing()); }
     };
@@ -847,6 +845,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
             if(isValidComponent(componentName)){
                 getActiveCircuit().removeUnfixedComponents();
                 getActiveCircuit().resetActiveComponents();
+                getActiveCircuit().setCurrentTool(componentName);
                 CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit(), componentName, getComponentRotation(),new Point(0,0));
                 getActiveCircuit().doCommand(ccc);
                 ((VisualComponent)ccc.getComponent()).addLogicalComponentToCircuit();
@@ -854,10 +853,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
                 // Set Options panel (Preview, Component Specific Options etc.)
                 setComponent(ccc.getComponent());
                 optionsPanel.setVisible(true);
-                optionsPanel.repaint();
-
-                getActiveCircuit().setCurrentTool(componentName);
-
+                optionsPanel.repaint();         
                 repaint();
             }       
         }   
@@ -1194,6 +1190,7 @@ private void PreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         InsertComponent.setSelected(false);
         RotateRight.setEnabled(true);
         RotateLeft.setEnabled(true);
+        InsertSubComponent.setSelected(false);
 
         // Select this button
         button.setSelected(true);
@@ -1278,7 +1275,7 @@ private void PreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     }
 
     /**
-     * Make the specified circuit active     * 
+     * Make the specified circuit active
      * @param circuit
      */
     public void setActiveCircuit(CircuitPanel circuit) {

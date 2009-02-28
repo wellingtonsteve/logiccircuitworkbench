@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<circuit author="Stephen" modifiedOn="28 February 2009, 15:38" version="LCW v3.0">
+<circuit author="matt" modifiedOn="28 February 2009, 18:15" version="LCW v3.0">
     <components>
         <attr name="Title" value="Or Gate"/>
         <attr name="Description" value="Test subcircuit file, has behaviour of 2-input OR gate"/>
-        <attr name="Subcircuit Image" value=""/>
+        <attr name="Subcircuit Image" value="/home/matt/NetBeansProjects/trunk/testcircuits/orsubcircuitimage.png"/>
         <component type="Standard.Button Source" x="210" y="200" rotation="0.0">
             <attr name="Label" value="B"/>
             <attr name="External?" value="true"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="100"/>
+            <attr name="External X" value="10"/>
+            <attr name="External Y" value="25"/>
         </component>
         <component type="Logic Gates.2 Input.OR" x="305" y="185" rotation="0.0">
             <attr name="Label" value=""/>
@@ -28,7 +28,7 @@
         <component type="Standard.Button Source" x="210" y="165" rotation="0.0">
             <attr name="Label" value="A"/>
             <attr name="External?" value="true"/>
-            <attr name="External X" value="5"/>
+            <attr name="External X" value="10"/>
             <attr name="External Y" value="5"/>
         </component>
     </components>
