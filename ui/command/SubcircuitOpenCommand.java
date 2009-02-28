@@ -66,9 +66,7 @@ public class SubcircuitOpenCommand extends Command {
             // Create a new component.
             VisualComponent subcircuitComponent = new SubcircuitComponent(loadingCircuit, new Point(0, 0), logicalCircuit, properties);
             loadingCircuit.addComponent(subcircuitComponent);
-
-            ///STEVE'S HACKED FIX
-            loadingCircuit.getLogicalCircuit().addSimItem(activeCircuit.getLogicalCircuit());
+            subcircuitComponent.addLogicalComponentToCircuit();
 
             //subcircuitComponent.translate(100, 100, true);
 

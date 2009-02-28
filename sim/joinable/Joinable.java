@@ -17,7 +17,6 @@ public abstract class Joinable {
         if(canConnect(a, b)){
             a.connectedToSet.add(b);
             b.connectedToSet.add(a);
-            //System.out.println("     " + a + " connected to " + b);
             if(a.hasOutputSource()){
                 b.setOutputSource(a.outputSource, new ArrayList<Joinable>());
             } else if(b.hasOutputSource()){
@@ -29,6 +28,7 @@ public abstract class Joinable {
     }
 
     public static void disconnect(Joinable a, Joinable b){
+        System.out.println(a + " disconnected from " + b);
         a.connectedToSet.remove(b);
         b.connectedToSet.remove(a);
         if(!a.canFind(a.outputSource, new ArrayList<Joinable>())) {
