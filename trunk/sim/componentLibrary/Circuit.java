@@ -15,7 +15,7 @@ public class Circuit implements SimItem {
      
     public boolean addSimItem(SimItem simItem){
         if(!simItems.contains(simItem)){
-            System.out.println(simItem + " added to " + this);
+            System.out.println("Adding " + simItem.getLongName() + "(" + simItem +") to " + this);
             simItems.add(simItem);
             simItem.setSimulator(sim);
             if(simItem instanceof Input && ((Input) simItem).isExternal()){
@@ -42,7 +42,6 @@ public class Circuit implements SimItem {
             //when the new pin changes, pass the value onto the input component
             public void valueChanged(Pin pin, LogicState value) {
                 pinCopy.setValue(value);
-                //System.out.println("input changed to " + value);
             }
         });
     }
@@ -57,7 +56,6 @@ public class Circuit implements SimItem {
             //when that pin changes, pass the value onto the new output pin
             public void valueChanged(Pin pin, LogicState value) {
                 connectingPin.setValue(value);
-                //System.out.println("output changed to " + value);
             }
         });
     }
@@ -103,7 +101,7 @@ public class Circuit implements SimItem {
 
     public void setSimulator(Simulator sim) {
         this.sim = sim;
-        System.out.println(this.getShortName() + "("+ this.toString() +")'S SIMULATOR WAS CHANGED TO " + sim);
+        System.out.println("Circuit " + this + " is using simulator " + sim);
         for(SimItem simItem:simItems){
             simItem.setSimulator(sim);
         }
