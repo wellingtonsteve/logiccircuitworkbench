@@ -20,7 +20,7 @@ public abstract class Pin extends Joinable {
     public String getName() { return this.name; }
 
     public void addValueListener(ValueListener listener) {
-        //System.out.println("listener added to " + name);
+        //System.out.println("          " + listener + " is listening to " + this + " (" + name + ")");
         this.listeners.add(listener);
     }
 
@@ -31,7 +31,7 @@ public abstract class Pin extends Joinable {
     }
 
     public void setValue(LogicState value) {
-        //System.out.println(name + "'s value changed to " + value);
+        System.out.println("pin " + name + " of " + owner.toString() + " changed to " + value);
         this.value = value;
         for (ValueListener listener : this.listeners) {
             listener.valueChanged(this, this.value);

@@ -25,12 +25,11 @@ public class Input extends Component implements AttributeListener{
     //Set Input value
     public void setValue(LogicState value) {
         currentValue = value;
-        System.out.println("sim is " + sim);
-        System.out.println("sim state is " + sim.getCurrentState());
+        //System.out.println("INPUT COMPONENT " + name + " CHANGED TO " + value);
         if(sim != null && (sim.getCurrentState() == SimulatorState.PLAYING || sim.getCurrentState() == SimulatorState.PAUSED)){
-            System.out.println("Input Component "+ name + " changed to "+value);
             output.setValue(value);
         }
+        else System.out.println("something funny happened with sim. sim is " + sim + " and state is " + sim.getCurrentState());
     }
 
     @Override
