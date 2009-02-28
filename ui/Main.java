@@ -47,9 +47,9 @@ public class Main {
             loadingBar.setValue(85);
 
             if (UIConstants.DO_OFFSCREEN_DRAWING_TEST) {
-                loadingBar.setString("Testing Offscreen Drawing...");
+                loadingBar.setString("Speed Drawing Test...");
                 editor.doAutoDetect();
-                loadingBar.setString("Testing Offscreen Drawing: " + ((editor.drawDirect())?"Drawing Directly":"Drawing Offscreen"));
+                loadingBar.setString("Speed Drawing Test: " + ((editor.drawDirect())?"Drawing Directly":"Drawing Offscreen"));
                 loadingBar.setValue(100);
             }
             

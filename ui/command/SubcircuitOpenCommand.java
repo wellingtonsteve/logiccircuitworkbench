@@ -1,5 +1,6 @@
 package ui.command;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -8,6 +9,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import netlist.properties.Properties;
 import sim.SimItem;
+import sim.componentLibrary.Circuit;
 import ui.CircuitPanel;
 import ui.Editor;
 import ui.UIConstants;
@@ -68,7 +70,7 @@ public class SubcircuitOpenCommand extends Command {
             ///STEVE'S HACKED FIX
             loadingCircuit.getLogicalCircuit().addSimItem(activeCircuit.getLogicalCircuit());
 
-            subcircuitComponent.translate(100, 100, true);
+            //subcircuitComponent.translate(100, 100, true);
 
             activeCircuit.getParentFrame().doDefaultCloseAction();
             activeCircuit.getParentFrame().dispose();
@@ -88,14 +90,13 @@ public class SubcircuitOpenCommand extends Command {
         public SubcircuitComponent(CircuitPanel parent, Point point, SimItem logicalComponent, Properties properties) {
             super(parent, point, logicalComponent, properties);
         }
-        private int width = 40;
-        private int height = 40;
-        private int spacing = 2 * UIConstants.GRID_DOT_SPACING;
+        private int width = 0;
+        private int height = 0;
         private String filename = activeCircuit.getFilename();
 
         @Override
         protected void setBoundingBox() {
-            boundingBox = new java.awt.Rectangle(getOrigin().x - getCentre().x, getOrigin().y - getCentre().y, getWidth() + 10, getHeight());
+            boundingBox = new java.awt.Rectangle(getOrigin().x - getCentre().x, getOrigin().y - getCentre().y, getWidth(), getHeight());
             boundingBox = rotate(boundingBox);
         }
 
@@ -113,14 +114,14 @@ public class SubcircuitOpenCommand extends Command {
                         maxX = p.x;
                     }
                 }
-                width = Math.max(maxX + UIConstants.GRID_DOT_SPACING, 40);
+                width = Math.max(maxX, 30);
             }
             return width;
         }
 
         @Override
         public int getHeight() {
-            if (width == 0) {
+            if (height == 0) {
                 int maxY = 0;
                 for (Point p : properties.getInputPins().values()) {
                     if (p.y > maxY) {
@@ -132,14 +133,14 @@ public class SubcircuitOpenCommand extends Command {
                         maxY = p.y;
                     }
                 }
-                height = Math.max(maxY + UIConstants.GRID_DOT_SPACING, 40);
+                height = Math.max(maxY+5, 30);
             }
             return height;
         }
 
         @Override
         protected void setInvalidAreas() {
-            invalidArea = new java.awt.Rectangle(getOrigin().x - getCentre().x + 9, getOrigin().y - getCentre().y - 1, getWidth() - 20 + 2, getHeight() + 2);
+            invalidArea = new java.awt.Rectangle(getOrigin().x - getCentre().x + 14, getOrigin().y - getCentre().y - 1, getWidth() - 25 + 2, getHeight() +2);
             invalidArea = rotate(invalidArea);
         }
 
@@ -157,23 +158,24 @@ public class SubcircuitOpenCommand extends Command {
 
             g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
             g.translate(getOrigin().x, getOrigin().y);
+            g.setStroke(new BasicStroke(1.0f));
 
             if (properties.getImage("default") != null) {
                 g.drawImage(properties.getImage("default"), getOrigin().x, getOrigin().y, null);
             } else {
                 if (getSelectionState().equals(SelectionState.ACTIVE)) {
                     g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
-                    g.drawRect(10, 0, getWidth() - spacing, getHeight());
+                    g.drawRect(15, 0, getWidth() - 25, getHeight());
                 } else if (getSelectionState().equals(SelectionState.HOVER)) {
                     g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-                    g.fillRect(10, 0, getWidth() - spacing, getHeight());
+                    g.fillRect(15, 0, getWidth() - 25, getHeight());
                     g.setColor(UIConstants.HOVER_COMPONENT_COLOUR);
-                    g.drawRect(10, 0, getWidth() - spacing, getHeight());
+                    g.drawRect(15, 0, getWidth() - 25, getHeight());
                 } else {
                     g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-                    g.fillRect(10, 0, getWidth() - spacing, getHeight());
+                    g.fillRect(15, 0, getWidth() - 25, getHeight());
                     g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-                    g.drawRect(10, 0, getWidth() - spacing, getHeight());
+                    g.drawRect(15, 0, getWidth() - 25, getHeight());
                 }
             }
 
@@ -183,8 +185,12 @@ public class SubcircuitOpenCommand extends Command {
 
             for (Pin p : localPins) {
                 if (p.getJoinable() instanceof sim.joinable.InputPin) {
+                    String label = ((sim.joinable.InputPin)p.getJoinable()).getName();
+                    g.drawString(label, p.x + (2 * UIConstants.GRID_DOT_SPACING)+1, p.y+3);
                     g.drawLine(p.x, p.y, p.x + (2 * UIConstants.GRID_DOT_SPACING), p.y);
                 } else if (p.getJoinable() instanceof sim.joinable.OutputPin) {
+                    String label = ((sim.joinable.OutputPin)p.getJoinable()).getName();
+                    g.drawString(label, p.x - (2 * UIConstants.GRID_DOT_SPACING)-8, p.y+3);
                     g.drawLine(p.x, p.y, p.x - (2 * UIConstants.GRID_DOT_SPACING), p.y);
                 }
             }
@@ -209,13 +215,11 @@ public class SubcircuitOpenCommand extends Command {
         }
         
         public void openEditor(){
-            System.out.println("double clicked. now open " + filename);
             Editor editor = getParent().getParentFrame().getEditor();
             FileLoader cfh = new FileLoader(editor);
             CircuitPanel subCircuit = editor.createBlankCircuit(true);    
             if(cfh.loadFile(filename)){
                 subCircuit.setFilename(filename);
-                subCircuit.createDefaultProperties();
                 subCircuit.setSubcircuitParent(parent);
             } else {
                 // Close bad circuit
@@ -223,10 +227,17 @@ public class SubcircuitOpenCommand extends Command {
             }         
         }
         
-        public void updateSource(String filename){
-            SelectableComponent sc = createSubcircuitComponent(getParent().getParentFrame().getEditor(), filename);
+        public void updateSource(CircuitPanel cp){
+            SelectableComponent sc = createSubcircuitComponent(getParent().getParentFrame().getEditor(), cp.getFilename());
             setProperties(sc.getProperties());
+            parent.getLogicalCircuit().removeSimItem(logicalComponent);
             this.logicalComponent = sc.getLogicalComponent();
+            addLogicalComponentToCircuit();
+            height = 0;
+            width = 0;
+            unsetGlobalPins();
+            setLocalPins();
+            setGlobalPins();
         }
     }
 
