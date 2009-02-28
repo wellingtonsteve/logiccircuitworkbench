@@ -2,6 +2,7 @@ package ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import netlist.properties.Attribute;
@@ -30,11 +31,15 @@ public class CircuitProperties extends javax.swing.JFrame implements AttributeLi
         properties.getAttribute("Description").addAttributeListener(this);
         properties.getAttribute("Subcircuit Image").addAttributeListener(this);
         
-        FileChooser.setFileFilter(new JPGFileFilter());
+        if(properties.getAttribute("Subcircuit Image").getValue() != null){
+            FileChooser.setSelectedFile(new File((String) properties.getAttribute("Subcircuit Image").getValue()));
+        }
         FileChooser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ImageField.setText(FileChooser.getSelectedFile().getAbsolutePath());
+                if(FileChooser.getSelectedFile()!=null){
+                    ImageField.setText(FileChooser.getSelectedFile().getAbsolutePath());
+                }
             }
         });        
     }

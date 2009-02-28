@@ -1,7 +1,6 @@
 package ui.command;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import javax.swing.JDesktopPane;
@@ -9,7 +8,6 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import netlist.properties.Properties;
 import sim.SimItem;
-import sim.componentLibrary.Circuit;
 import ui.CircuitPanel;
 import ui.Editor;
 import ui.UIConstants;
@@ -36,8 +34,7 @@ public class SubcircuitOpenCommand extends Command {
         c.setFileFilter(xmlFilter);
         c.setDialogType(JFileChooser.OPEN_DIALOG);
         int rVal = c.showOpenDialog(editor);
-        if (rVal == JFileChooser.APPROVE_OPTION) {
-            
+        if (rVal == JFileChooser.APPROVE_OPTION) {            
             // Create the subcircuit
             filename = c.getSelectedFile().getAbsolutePath();
             createSubcircuitComponent(editor, filename);
@@ -57,23 +54,23 @@ public class SubcircuitOpenCommand extends Command {
             activeCircuit.setFilename(filename);
 
             // Get the things we need from the circuit panel
-            activeCircuit.createDefaultProperties();
+            activeCircuit.updateProperties();
             Properties properties = activeCircuit.getProperties();
             SimItem logicalCircuit = activeCircuit.getLogicalCircuit();
             logicalCircuit.setProperties(properties);
             activeCircuit.selectAllComponents();
 
-            // Create a new component.
-            VisualComponent subcircuitComponent = new SubcircuitComponent(loadingCircuit, new Point(0, 0), logicalCircuit, properties);
+            // Create a new component
+            VisualComponent subcircuitComponent = new SubcircuitComponent(
+                    loadingCircuit, new Point(0, 0), logicalCircuit, properties);
             loadingCircuit.addComponent(subcircuitComponent);
             subcircuitComponent.addLogicalComponentToCircuit();
-
-            //subcircuitComponent.translate(100, 100, true);
 
             activeCircuit.getParentFrame().doDefaultCloseAction();
             activeCircuit.getParentFrame().dispose();
             editor.setActiveCircuit(loadingCircuit);
             loadingCircuit.repaint();
+            editor.setComponent(subcircuitComponent);
             
             return subcircuitComponent;
         } else {
@@ -94,7 +91,8 @@ public class SubcircuitOpenCommand extends Command {
 
         @Override
         protected void setBoundingBox() {
-            boundingBox = new java.awt.Rectangle(getOrigin().x - getCentre().x, getOrigin().y - getCentre().y, getWidth(), getHeight());
+            boundingBox = new java.awt.Rectangle(getOrigin().x - getCentre().x,
+                    getOrigin().y - getCentre().y, getWidth(), getHeight());
             boundingBox = rotate(boundingBox);
         }
 
@@ -138,7 +136,8 @@ public class SubcircuitOpenCommand extends Command {
 
         @Override
         protected void setInvalidAreas() {
-            invalidArea = new java.awt.Rectangle(getOrigin().x - getCentre().x + 14, getOrigin().y - getCentre().y - 1, getWidth() - 25 + 2, getHeight() +2);
+            invalidArea = new java.awt.Rectangle(getOrigin().x - getCentre().x + 14, 
+                    getOrigin().y - getCentre().y - 1, getWidth() - 25 + 2, getHeight() +2);
             invalidArea = rotate(invalidArea);
         }
 
@@ -159,7 +158,7 @@ public class SubcircuitOpenCommand extends Command {
             g.setStroke(new BasicStroke(1.0f));
 
             if (properties.getImage("default") != null) {
-                g.drawImage(properties.getImage("default"), getOrigin().x, getOrigin().y, null);
+                g.drawImage(properties.getImage("default"), 0, 0, null);
             } else {
                 if (getSelectionState().equals(SelectionState.ACTIVE)) {
                     g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
@@ -178,8 +177,8 @@ public class SubcircuitOpenCommand extends Command {
             }
 
             g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-            String name = (String) properties.getAttribute("Title").getValue();
-            g.drawString(name, 10, 10);
+            //String name = (String) properties.getAttribute("Title").getValue();
+            //g.drawString(name, 10, 10);
 
             for (Pin p : localPins) {
                 if (p.getJoinable() instanceof sim.joinable.InputPin) {

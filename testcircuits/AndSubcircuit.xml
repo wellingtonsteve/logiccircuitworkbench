@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<circuit author="Stephen" modifiedOn="28 February 2009, 02:31" version="LCW v3.0">
+<circuit author="matt" modifiedOn="28 February 2009, 17:38" version="LCW v3.0">
     <components>
         <attr name="Title" value="And Gate"/>
         <attr name="Description" value="Test subcircuit file, has behaviour of 2-input AND gate"/>
@@ -16,7 +16,7 @@
         </wire>
         <wire startx="230" starty="165" endx="285" endy="175"/>
         <component type="Standard.LED" x="385" y="185" rotation="0.0">
-            <attr name="Label" value="C"/>
+            <attr name="Label" value="D"/>
             <attr name="External?" value="true"/>
             <attr name="External X" value="55"/>
             <attr name="External Y" value="15"/>

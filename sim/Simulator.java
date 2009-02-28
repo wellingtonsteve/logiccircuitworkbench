@@ -72,7 +72,7 @@ public class Simulator {
     }
     
     private void setState(SimulatorState state){
-        System.out.println("  STATE OF SIMULATOR " + this + " is now " + state);
+        //System.out.println("  STATE OF SIMULATOR " + this + " is now " + state);
         currentState = state;
         for(SimulatorStateListener stateListener: stateListeners){
             stateListener.SimulatorStateChanged(state);

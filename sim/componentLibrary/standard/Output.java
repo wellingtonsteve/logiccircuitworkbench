@@ -17,10 +17,14 @@ public class Output extends Component implements AttributeListener{
 
     @Override
     public void setProperties(Properties properties) {
-        name = (String) properties.getAttribute("Label").getValue();
-        external = (Boolean) properties.getAttribute("External?").getValue();
-        properties.getAttribute("Label").addAttributeListener(this);
-        properties.getAttribute("External?").addAttributeListener(this);
+        if(properties.hasAttribute("Label")){
+            name = (String) properties.getAttribute("Label").getValue();
+            properties.getAttribute("Label").addAttributeListener(this);
+        }
+        if(properties.hasAttribute("External?")){
+            external = (Boolean) properties.getAttribute("External?").getValue();        
+            properties.getAttribute("External?").addAttributeListener(this);
+        }
     }
 
     public boolean isExternal() { return external; }
