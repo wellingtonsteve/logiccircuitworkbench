@@ -42,7 +42,7 @@ public abstract class Component implements SimItem, ValueListener {
         }
     }
 
-    public void setSimulator(Simulator sim) { this.sim = sim; System.out.println("Component " + this + " is using simulator " + sim);}
+    public void setSimulator(Simulator sim) { this.sim = sim;}
     
     //Input pin changed.
     public void valueChanged(Pin pin, LogicState value) { }

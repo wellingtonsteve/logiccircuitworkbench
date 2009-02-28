@@ -15,7 +15,6 @@ public class Circuit implements SimItem {
      
     public boolean addSimItem(SimItem simItem){
         if(!simItems.contains(simItem)){
-            System.out.println("Adding " + simItem.getLongName() + "(" + simItem +") to " + this);
             simItems.add(simItem);
             simItem.setSimulator(sim);
             if(simItem instanceof Input && ((Input) simItem).isExternal()){
@@ -101,7 +100,6 @@ public class Circuit implements SimItem {
 
     public void setSimulator(Simulator sim) {
         this.sim = sim;
-        System.out.println("Circuit " + this + " is using simulator " + sim);
         for(SimItem simItem:simItems){
             simItem.setSimulator(sim);
         }
