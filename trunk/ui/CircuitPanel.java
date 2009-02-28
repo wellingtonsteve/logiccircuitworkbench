@@ -318,12 +318,13 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         this.subcircuitParent = parent;
     }
     
-    private void updateSubcircuits(String filename) {
+    private void updateSubcircuits(CircuitPanel cp) {
         for(SelectableComponent sc: drawnComponents){
             if(sc instanceof SubcircuitComponent){
-                ((SubcircuitComponent) sc).updateSource(filename);
+                ((SubcircuitComponent) sc).updateSource(cp);
             }
         }
+        repaint();
     }    
         
     public Simulator getSimulator() {
@@ -380,7 +381,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         cmdHist.setIsDirty(false);
         
         if(isSubcircuit()){
-            subcircuitParent.updateSubcircuits(filename);
+            subcircuitParent.updateSubcircuits(this);
         }
     }
     
@@ -601,9 +602,13 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
 
                         if (!currentTool.equals("Select")) {
                             // Add another new component
-                            CreateComponentCommand ccc = new CreateComponentCommand(CircuitPanel.this,currentTool,editor.getComponentRotation(),new Point(0, 0));
-                            cmdHist.doCommand(ccc);
-                            ((VisualComponent)ccc.getComponent()).addLogicalComponentToCircuit();
+                            if(!(drawnComponents.peek() instanceof SubcircuitComponent)){
+                                CreateComponentCommand ccc = new CreateComponentCommand(CircuitPanel.this,currentTool,editor.getComponentRotation(),new Point(0, 0));
+                                cmdHist.doCommand(ccc);
+                                ((VisualComponent)ccc.getComponent()).addLogicalComponentToCircuit();
+                            } else {
+                                // TODO: Add another subcomponent?
+                            }                           
                             
                             // To redraw new component at workarea origin
                             previousCurrentPoint = new Point(0,0);
@@ -613,7 +618,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     }
                 } else {
                     // Single Click
-                    if(e.getClickCount() == 1){
+                    if(e.getClickCount() != 2){
                         // Activate selected component
                         temporaryComponent.mouseClicked(e);
                         resetActiveComponents();
