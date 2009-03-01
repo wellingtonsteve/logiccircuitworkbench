@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.lang.Math;
 
 public class Simulator {
     // The circuit we are going to simulate - created by the constructor. All 
@@ -13,6 +14,11 @@ public class Simulator {
     private long currentSimulationTime;
     private CollectionPriorityQueue<Long, SimItemEvent> eventQueue = new CollectionPriorityQueue<Long, SimItemEvent>();
     private ArrayList<SimulatorStateListener> stateListeners = new ArrayList<SimulatorStateListener>();
+    private SimulatorState currentState = SimulatorState.STOPPED;
+
+    private int simulatorSpeed = 0;
+    private double unsimulatedTime = 0;
+
 
     public boolean addEvent(long time, SimItemEvent event) {
         if (time > this.currentSimulationTime) {
@@ -28,15 +34,12 @@ public class Simulator {
         simItem.setSimulator(this);
     }
 
-    public void changeSimulatorSpeed(int value) {
-        System.out.println(value);
-        if(value<5){
-            
-        }
+    public void setSimulatorSpeed(int value) {
+        simulatorSpeed = value-9;
     }
     
     public int getSimulatorSpeed(){
-        return 0;
+        return simulatorSpeed + 9;
     }
 
     public long getSimulationTime() {
@@ -53,17 +56,12 @@ public class Simulator {
         }
     }
     
-    
-    
     //Simulator control
-    
-    private SimulatorState currentState = SimulatorState.STOPPED;
     public SimulatorState getCurrentState() {
         return currentState;
     }
 
     private Timer timer;
-    private Simulator thisPtr = this;
 
     private void runUntilSimTime(long time)
     {
@@ -80,6 +78,15 @@ public class Simulator {
             else break;
         }
         setSimulationTime(time);
+    }
+
+    private void update(){
+        unsimulatedTime += Math.pow(10,simulatorSpeed);
+        double simulatableTime = Math.floor(unsimulatedTime);
+        if(simulatableTime > 0){
+            unsimulatedTime -= simulatableTime;
+            runUntilSimTime((long) (currentSimulationTime + simulatableTime));
+        }
     }
     
     private void setState(SimulatorState state){
@@ -105,7 +112,8 @@ public class Simulator {
             timer.schedule(new TimerTask(){
                 public void run() {
                     //System.out.println(thisPtr.currentSimulationTime+100000000);
-                    thisPtr.runUntilSimTime(thisPtr.currentSimulationTime+100000000);
+                    //thisPtr.runUntilSimTime(thisPtr.currentSimulationTime+100000000);
+                    update();
                 }
             }, 0, 100);
             setState(SimulatorState.PLAYING);
