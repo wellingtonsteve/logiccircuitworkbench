@@ -1173,7 +1173,7 @@ private void PreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
 private void SimulatorSpeedStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_SimulatorSpeedStateChanged
     if(getActiveCircuit() != null && !SimulatorSpeed.getValueIsAdjusting()){
-        getActiveCircuit().getSimulator().changeSimulatorSpeed(SimulatorSpeed.getValue());
+        getActiveCircuit().getSimulator().setSimulatorSpeed(SimulatorSpeed.getValue());
     }
 }//GEN-LAST:event_SimulatorSpeedStateChanged
 
