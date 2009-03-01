@@ -667,11 +667,17 @@
         </Component>
         <Component class="javax.swing.JSlider" name="SimulatorSpeed">
           <Properties>
-            <Property name="majorTickSpacing" type="int" value="10"/>
+            <Property name="majorTickSpacing" type="int" value="1"/>
+            <Property name="maximum" type="int" value="10"/>
+            <Property name="paintTicks" type="boolean" value="true"/>
+            <Property name="snapToTicks" type="boolean" value="true"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[200, 33]"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="caretPositionChanged" listener="java.awt.event.InputMethodListener" parameters="java.awt.event.InputMethodEvent" handler="SimulatorSpeedCaretPositionChanged"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -879,7 +885,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="typeLabel" min="-2" pref="14" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="AttributesPanel" pref="120" max="32767" attributes="0"/>
+                      <Component id="AttributesPanel" pref="121" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="Preview" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -980,7 +986,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="statusMessageLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="761" max="32767" attributes="0"/>
+                  <EmptySpace pref="777" max="32767" attributes="0"/>
                   <Component id="progressBar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="statusAnimationLabel" min="-2" max="-2" attributes="0"/>
