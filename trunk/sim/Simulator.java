@@ -36,6 +36,7 @@ public class Simulator {
 
     public void setSimulatorSpeed(int value) {
         simulatorSpeed = value-9;
+        System.out.println(simulatorSpeed);
     }
     
     public int getSimulatorSpeed(){
@@ -65,7 +66,7 @@ public class Simulator {
 
     private void runUntilSimTime(long time)
     {
-        //System.out.println(time);
+        System.out.println(time);
         while(time > currentSimulationTime && !eventQueue.isEmpty()){
             long nextQueueTime = eventQueue.peekK();
             if(nextQueueTime <= time){
@@ -81,7 +82,8 @@ public class Simulator {
     }
 
     private void update(){
-        unsimulatedTime += Math.pow(10,simulatorSpeed);
+        System.out.println("updating");
+        unsimulatedTime += Math.pow(10,simulatorSpeed+8);
         double simulatableTime = Math.floor(unsimulatedTime);
         if(simulatableTime > 0){
             unsimulatedTime -= simulatableTime;
