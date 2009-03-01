@@ -107,26 +107,22 @@ public class Properties implements Cloneable{
 
     public void createAttributesPanel() {
         attrPanel = new JPanel();
-        attrPanel.setLayout(new BoxLayout(attrPanel, BoxLayout.PAGE_AXIS));
-
+        attrPanel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        
         int i = 0;
         for (Attribute a : attributes.values()) {
-            JPanel subPanel = new JPanel();
-            subPanel.setLayout(new GridBagLayout());
-            GridBagConstraints c = new GridBagConstraints();
             c.anchor = GridBagConstraints.WEST;
             c.gridx = 0;
             c.gridy = i;
-            subPanel.add(new JLabel(a.getName() + "   "), c);
+            attrPanel.add(new JLabel(a.getName() + "   "), c);
 
             c.weightx = 0.5;
             c.fill = GridBagConstraints.BOTH;
             c.anchor = GridBagConstraints.EAST;
             c.gridx = 1;
             c.gridy = i;
-            subPanel.add(a.getJComponent(), c);
-
-            attrPanel.add(subPanel);
+            attrPanel.add(a.getJComponent(), c);
             i++;
         }
     }
