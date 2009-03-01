@@ -6,6 +6,7 @@
 
 package ui;
 
+import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -93,6 +94,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         OptionsPane = new javax.swing.JScrollPane();
         Toolbar = new javax.swing.JToolBar();
@@ -118,13 +120,13 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         StepForwardButton = new javax.swing.JButton();
         SimulatorSpeed = new javax.swing.JSlider();
         Toolbox = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         ToolboxButtons = new javax.swing.JPanel();
         Selection = new javax.swing.JButton();
         Wire = new javax.swing.JButton();
         InsertSubComponent = new javax.swing.JButton();
         RotateLeft = new javax.swing.JButton();
         RotateRight = new javax.swing.JButton();
-        InsertComponent = new javax.swing.JButton();
         SelectionTreeScrollPane = new javax.swing.JScrollPane();
         ComponentSelectionTree = new javax.swing.JTree();
         optionsPanel = new JPanel();
@@ -403,11 +405,9 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         SimulatorSpeed.setPaintTicks(true);
         SimulatorSpeed.setSnapToTicks(true);
         SimulatorSpeed.setMaximumSize(new java.awt.Dimension(200, 33));
-        SimulatorSpeed.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-                SimulatorSpeedCaretPositionChanged(evt);
-            }
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+        SimulatorSpeed.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                SimulatorSpeedStateChanged(evt);
             }
         });
         Toolbar.add(SimulatorSpeed);
@@ -416,84 +416,98 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         Toolbox.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        ToolboxButtons.setLayout(new java.awt.GridLayout(2, 3));
+        jLabel1.setForeground(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow"));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText(bundle.getString("Editor.jLabel1.text")); // NOI18N
+        Toolbox.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 170, -1));
+
+        ToolboxButtons.setLayout(new java.awt.GridBagLayout());
 
         Selection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_select.png"))); // NOI18N
         Selection.setText(bundle.getString("TestJFrameForm.Selection.text")); // NOI18N
         Selection.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Selection.setMaximumSize(new java.awt.Dimension(26, 28));
-        Selection.setMinimumSize(new java.awt.Dimension(26, 28));
-        Selection.setPreferredSize(new java.awt.Dimension(26, 28));
+        Selection.setMaximumSize(new java.awt.Dimension(32, 32));
+        Selection.setMinimumSize(new java.awt.Dimension(32, 32));
+        Selection.setPreferredSize(new java.awt.Dimension(32, 32));
         Selection.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 SelectionMouseClicked(evt);
             }
         });
-        ToolboxButtons.add(Selection);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        ToolboxButtons.add(Selection, gridBagConstraints);
 
         Wire.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/sml_wire.png"))); // NOI18N
         Wire.setText(bundle.getString("TestJFrameForm.Wire.text")); // NOI18N
         Wire.setToolTipText(bundle.getString("TestJFrameForm.Wire.toolTipText")); // NOI18N
         Wire.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Wire.setMaximumSize(new java.awt.Dimension(26, 28));
-        Wire.setMinimumSize(new java.awt.Dimension(26, 28));
-        Wire.setPreferredSize(new java.awt.Dimension(26, 28));
+        Wire.setMaximumSize(new java.awt.Dimension(32, 32));
+        Wire.setMinimumSize(new java.awt.Dimension(32, 32));
+        Wire.setPreferredSize(new java.awt.Dimension(32, 32));
         Wire.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 WireMouseClicked(evt);
             }
         });
-        ToolboxButtons.add(Wire);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        ToolboxButtons.add(Wire, gridBagConstraints);
 
-        InsertSubComponent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-link.png"))); // NOI18N
+        InsertSubComponent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-object.png"))); // NOI18N
         InsertSubComponent.setText(bundle.getString("Editor.InsertSubComponent.text")); // NOI18N
         InsertSubComponent.setFocusable(false);
         InsertSubComponent.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        InsertSubComponent.setMaximumSize(new java.awt.Dimension(32, 32));
+        InsertSubComponent.setMinimumSize(new java.awt.Dimension(32, 32));
+        InsertSubComponent.setPreferredSize(new java.awt.Dimension(32, 32));
         InsertSubComponent.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         InsertSubComponent.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 InsertSubComponentMouseClicked(evt);
             }
         });
-        ToolboxButtons.add(InsertSubComponent);
+        ToolboxButtons.add(InsertSubComponent, new java.awt.GridBagConstraints());
 
         RotateLeft.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-left.png"))); // NOI18N
         RotateLeft.setText(bundle.getString("Editor.RotateLeft.text")); // NOI18N
         RotateLeft.setFocusable(false);
         RotateLeft.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        RotateLeft.setMaximumSize(new java.awt.Dimension(32, 32));
+        RotateLeft.setMinimumSize(new java.awt.Dimension(32, 32));
+        RotateLeft.setPreferredSize(new java.awt.Dimension(32, 32));
         RotateLeft.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         RotateLeft.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 RotateLeftMouseClicked(evt);
             }
         });
-        ToolboxButtons.add(RotateLeft);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        ToolboxButtons.add(RotateLeft, gridBagConstraints);
 
         RotateRight.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-right.png"))); // NOI18N
         RotateRight.setText(bundle.getString("Editor.RotateRight.text")); // NOI18N
         RotateRight.setFocusable(false);
         RotateRight.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        RotateRight.setMaximumSize(new java.awt.Dimension(32, 32));
+        RotateRight.setMinimumSize(new java.awt.Dimension(32, 32));
+        RotateRight.setPreferredSize(new java.awt.Dimension(32, 32));
         RotateRight.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         RotateRight.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 RotateRightMouseClicked(evt);
             }
         });
-        ToolboxButtons.add(RotateRight);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        ToolboxButtons.add(RotateRight, gridBagConstraints);
 
-        InsertComponent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/insert-object.png"))); // NOI18N
-        InsertComponent.setText(bundle.getString("Editor.InsertComponent.text")); // NOI18N
-        InsertComponent.setFocusable(false);
-        InsertComponent.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        InsertComponent.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        InsertComponent.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                InsertComponentMouseClicked(evt);
-            }
-        });
-        ToolboxButtons.add(InsertComponent);
-
-        Toolbox.add(ToolboxButtons, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 170, 70));
+        Toolbox.add(ToolboxButtons, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 20, 170, 30));
 
         SelectionTreeScrollPane.setAutoscrolls(true);
 
@@ -511,10 +525,12 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         ComponentSelectionTree.setRootVisible(false);
         SelectionTreeScrollPane.setViewportView(ComponentSelectionTree);
 
-        Toolbox.add(SelectionTreeScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 74, 170, 250));
+        Toolbox.add(SelectionTreeScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 170, 250));
 
         optionsPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 2, 1, 2));
-        optionsPanel.setPreferredSize(new java.awt.Dimension(104, 232));
+        optionsPanel.setMaximumSize(new java.awt.Dimension(72, 232));
+        optionsPanel.setMinimumSize(new java.awt.Dimension(72, 232));
+        optionsPanel.setPreferredSize(new java.awt.Dimension(72, 232));
 
         titleLabel.setText(titleNew);
         titleLabel.setForeground(new java.awt.Color(108, 108, 108));
@@ -522,19 +538,21 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         typeLabel.setText(bundle.getString("OptionsPanel.jLabel2.text"));
 
-        AttributesPanel.setMinimumSize(new java.awt.Dimension(100, 100));
-        AttributesPanel.setLayout(new javax.swing.BoxLayout(AttributesPanel, javax.swing.BoxLayout.LINE_AXIS));
+        AttributesPanel.setMaximumSize(new java.awt.Dimension(72, 500));
+        AttributesPanel.setMinimumSize(new java.awt.Dimension(72, 72));
+        AttributesPanel.setPreferredSize(new java.awt.Dimension(72, 72));
+        AttributesPanel.setLayout(new java.awt.BorderLayout());
 
-        Preview.setMinimumSize(new java.awt.Dimension(100, 500));
-        Preview.setPreferredSize(new java.awt.Dimension(100, 80));
+        Preview.setMinimumSize(new java.awt.Dimension(72, 80));
+        Preview.setPreferredSize(new java.awt.Dimension(72, 80));
 
         org.jdesktop.layout.GroupLayout optionsPanelLayout = new org.jdesktop.layout.GroupLayout(optionsPanel);
         optionsPanel.setLayout(optionsPanelLayout);
         optionsPanelLayout.setHorizontalGroup(
             optionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(Preview, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
-            .add(titleLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
-            .add(typeLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+            .add(Preview, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 166, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(titleLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 166, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(typeLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 166, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
             .add(AttributesPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 166, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
         );
         optionsPanelLayout.setVerticalGroup(
@@ -544,13 +562,13 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(typeLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 14, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(AttributesPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+                .add(AttributesPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(Preview, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
-        Toolbox.add(optionsPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 330, 170, 260));
+        Toolbox.add(optionsPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 320, 170, 290));
 
         getContentPane().add(Toolbox, java.awt.BorderLayout.WEST);
 
@@ -839,7 +857,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
     if(getActiveCircuit()!=null){
         RotateRight.setEnabled(true);
         RotateLeft.setEnabled(true);
-        toggleToolboxButton(InsertComponent);
+//        toggleToolboxButton(InsertComponent);
 
         TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
         if(currentSelection != null){
@@ -1002,13 +1020,6 @@ private void NewButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     cmdHist.doCommand(new NewCircuitCommand());
 }//GEN-LAST:event_NewButtonMouseClicked
 
-private void InsertComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertComponentMouseClicked
-    if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
-        toggleToolboxButton(InsertComponent);
-        ComponentSelectionTreeFocusGained(null);
-    }    
-}//GEN-LAST:event_InsertComponentMouseClicked
-
 private void MakeImageButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MakeImageButtonMouseClicked
     if(getActiveCircuit()!=null && evt.getComponent().isEnabled()){
         getActiveCircuit().doCommand(new MakeImageCommand());
@@ -1160,9 +1171,11 @@ private void PreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     }
 }//GEN-LAST:event_PreferencesActionPerformed
 
-private void SimulatorSpeedCaretPositionChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_SimulatorSpeedCaretPositionChanged
-
-}//GEN-LAST:event_SimulatorSpeedCaretPositionChanged
+private void SimulatorSpeedStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_SimulatorSpeedStateChanged
+    if(getActiveCircuit() != null && !SimulatorSpeed.getValueIsAdjusting()){
+        getActiveCircuit().getSimulator().changeSimulatorSpeed(SimulatorSpeed.getValue());
+    }
+}//GEN-LAST:event_SimulatorSpeedStateChanged
 
     /** 
      * Repopulate the windows menu in the toolbar with the opened circuits
@@ -1201,7 +1214,7 @@ private void SimulatorSpeedCaretPositionChanged(java.awt.event.InputMethodEvent 
         // Reset Selections
         Selection.setSelected(false);
         Wire.setSelected(false);
-        InsertComponent.setSelected(false);
+//        InsertComponent.setSelected(false);
         RotateRight.setEnabled(true);
         RotateLeft.setEnabled(true);
         InsertSubComponent.setSelected(false);
@@ -1210,10 +1223,10 @@ private void SimulatorSpeedCaretPositionChanged(java.awt.event.InputMethodEvent 
         button.setSelected(true);
         
         // Remove floating components
-        if(!button.equals(InsertComponent)){
-            optionsPanel.setVisible(false);
-            circuitPanel.removeUnfixedComponents();
-        }
+//        if(!button.equals(InsertComponent)){
+//            optionsPanel.setVisible(false);
+//            circuitPanel.removeUnfixedComponents();
+//        }
     }
 
     /**
@@ -1341,6 +1354,9 @@ private void SimulatorSpeedCaretPositionChanged(java.awt.event.InputMethodEvent 
                 StepForwardButton.setEnabled(true);
                 StepForward.setEnabled(true);                
             }
+            
+            // Update Simulator speed slider
+            SimulatorSpeed.setValue(circuitPanel.getSimulator().getSimulatorSpeed());
             
             // Is logger window open?
             RecordButton.setSelected(getActiveCircuit().getLoggerWindow().isShowing());
@@ -1666,7 +1682,7 @@ private void SimulatorSpeedCaretPositionChanged(java.awt.event.InputMethodEvent 
             if(sc instanceof VisualComponent){
                 AttributesPanel.removeAll();
                 JPanel test = sc.getOptionsPanel();
-                AttributesPanel.add(test);
+                AttributesPanel.add(test, BorderLayout.NORTH);
                 ((PreviewPanel)Preview).setComponent(sc);
                 AttributesPanel.repaint();
                 Preview.repaint();
@@ -1724,7 +1740,6 @@ private void SimulatorSpeedCaretPositionChanged(java.awt.event.InputMethodEvent 
     private javax.swing.JMenuItem Exit;
     private javax.swing.JMenu File;
     private javax.swing.JMenu Help;
-    private javax.swing.JButton InsertComponent;
     private javax.swing.JButton InsertSubComponent;
     private javax.swing.JScrollPane MainScrollPane;
     private javax.swing.JButton MakeImageButton;
@@ -1767,6 +1782,7 @@ private void SimulatorSpeedCaretPositionChanged(java.awt.event.InputMethodEvent 
     private javax.swing.JButton UndoButton;
     private javax.swing.JMenu Window;
     private javax.swing.JButton Wire;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;

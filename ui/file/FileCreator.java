@@ -54,17 +54,17 @@ public class FileCreator {
             // Add description, title and image url from circuit Attributes
             atts.clear();
             atts.addAttribute("", "", "name", "CDATA", "Title");
-            atts.addAttribute("", "", "value", "CDATA", (String) circuitPanel.getProperties().getAttribute("Title").getValue());
+            atts.addAttribute("", "", "value", "CDATA", circuitPanel.getProperties().getAttribute("Title").getValue().toString());
             hd.startElement("", "", "attr", atts);
             hd.endElement("","","attr");
             atts.clear();
             atts.addAttribute("", "", "name", "CDATA", "Description");
-            atts.addAttribute("", "", "value", "CDATA", (String) circuitPanel.getProperties().getAttribute("Description").getValue());
+            atts.addAttribute("", "", "value", "CDATA", circuitPanel.getProperties().getAttribute("Description").getValue().toString());
             hd.startElement("", "", "attr", atts);
             hd.endElement("","","attr");
             atts.clear();
             atts.addAttribute("", "", "name", "CDATA", "Subcircuit Image");
-            atts.addAttribute("", "", "value", "CDATA", (String) circuitPanel.getProperties().getAttribute("Subcircuit Image").getValue());
+            atts.addAttribute("", "", "value", "CDATA", circuitPanel.getProperties().getAttribute("Subcircuit Image").getValue().toString());
             hd.startElement("", "", "attr", atts);
             hd.endElement("","","attr");
             

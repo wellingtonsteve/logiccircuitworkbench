@@ -11,7 +11,7 @@ import javax.swing.JButton;
 public abstract class ButtonAttribute extends Attribute{
     
     public ButtonAttribute(String name){
-        super(name, null);     
+        super(name, "");     
     }
 
     @Override
