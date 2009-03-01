@@ -28,6 +28,17 @@ public class Simulator {
         simItem.setSimulator(this);
     }
 
+    public void changeSimulatorSpeed(int value) {
+        System.out.println(value);
+        if(value<5){
+            
+        }
+    }
+    
+    public int getSimulatorSpeed(){
+        return 0;
+    }
+
     public long getSimulationTime() {
         return currentSimulationTime;
     }
