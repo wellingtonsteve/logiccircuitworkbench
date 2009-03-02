@@ -36,7 +36,8 @@ public class TextAttribute extends Attribute{
                 changeValue(tf.getText());
             }            
         });
-        tf.setMaximumSize(new Dimension(tf.getMaximumSize().width, 25));
+        tf.setPreferredSize(new Dimension(50, 25));
+//        tf.setMaximumSize(new Dimension(100, 25));
         jcomponent = tf;
     }
     

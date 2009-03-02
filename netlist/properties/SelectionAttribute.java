@@ -25,7 +25,8 @@ public class SelectionAttribute extends Attribute{
                 changeValue(cb.getSelectedItem());
             }
         });
-        cb.setMaximumSize(new Dimension(100, 25));
+        cb.setPreferredSize(new Dimension(50, 25));
+//        cb.setMaximumSize(new Dimension(100, 25));
         jcomponent = cb;
     }
     

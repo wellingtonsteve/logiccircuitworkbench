@@ -1214,7 +1214,6 @@ private void SimulatorSpeedStateChanged(javax.swing.event.ChangeEvent evt) {//GE
         // Reset Selections
         Selection.setSelected(false);
         Wire.setSelected(false);
-//        InsertComponent.setSelected(false);
         RotateRight.setEnabled(true);
         RotateLeft.setEnabled(true);
         InsertSubComponent.setSelected(false);
@@ -1222,11 +1221,8 @@ private void SimulatorSpeedStateChanged(javax.swing.event.ChangeEvent evt) {//GE
         // Select this button
         button.setSelected(true);
         
-        // Remove floating components
-//        if(!button.equals(InsertComponent)){
-//            optionsPanel.setVisible(false);
-//            circuitPanel.removeUnfixedComponents();
-//        }
+        optionsPanel.setVisible(false);
+        circuitPanel.removeUnfixedComponents();
     }
 
     /**
