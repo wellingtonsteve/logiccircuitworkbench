@@ -37,8 +37,8 @@ public class SpinnerAttribute extends Attribute{
             }
         });
         js.setModel(model);
-        js.setPreferredSize(new Dimension(100, 25));
-        js.setMaximumSize(new Dimension(100, 25));
+        js.setPreferredSize(new Dimension(50, 25));
+//        js.setMaximumSize(new Dimension(100, 25));
         jcomponent = js;
     }
     

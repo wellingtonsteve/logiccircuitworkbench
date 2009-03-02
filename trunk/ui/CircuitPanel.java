@@ -530,7 +530,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                         }
                     }
                 });    
-                if(getAttribute("Subcircuit Image").getValue()!=null){
+                if(!getAttribute("Subcircuit Image").getValue().equals("")){
                     addImage("default", (String)properties.getAttribute("Subcircuit Image").getValue());
                 }
             }          
@@ -544,7 +544,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                 addAttribute(properties.getAttribute("Title"));
                 addAttribute(properties.getAttribute("Description"));
                 addAttribute(properties.getAttribute("Subcircuit Image"));
-                if(getAttribute("Subcircuit Image").getValue()!=null){
+                if(!getAttribute("Subcircuit Image").getValue().equals("")){
                     addImage("default", (String)properties.getAttribute("Subcircuit Image").getValue());
                 }
                 
