@@ -45,7 +45,7 @@ public class TextAttribute extends Attribute{
     public void setValue(Object val) {
         if(validate(val)){
             ((JTextField) jcomponent).setText((String) val);
-        }
-        super.setValue(val);        
+            super.setValue(val);
+        }      
     }
 }

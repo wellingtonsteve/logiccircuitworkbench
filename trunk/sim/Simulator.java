@@ -37,6 +37,10 @@ public class Simulator {
     public void setSimulatorSpeed(int value) {
         simulatorSpeed = value-9;
         System.out.println(simulatorSpeed);
+        for(SimulatorStateListener stateListener : stateListeners) {
+            stateListener.SimulationRateChanged(simulatorSpeed);
+        }
+
     }
     
     public int getSimulatorSpeed(){

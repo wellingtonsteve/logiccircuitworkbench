@@ -7,4 +7,5 @@ package sim;
 public interface SimulatorStateListener {
     void SimulatorStateChanged(SimulatorState state);
     void SimulationTimeChanged(long time);
+    void SimulationRateChanged(int rate);
 }
