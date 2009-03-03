@@ -18,9 +18,10 @@ import ui.components.standard.PinLogger;
  * @author matt
  */
 public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
-    public static final double scaleFactor = 1.0E-7;
+    private double scaleFactor = 1.0E-7;
     private JPanel rowHeader = new JPanel();
     private ViewerFrame parent;
+    private int simulationRate = 9;
 
     public ViewerPanel(ViewerFrame parent){
         this.parent = parent;
@@ -53,10 +54,10 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
                 
         // Draw Vertical Grid Lines
         g2.setColor(UIConstants.LOGGER_GRID_COLOUR);
-        double d = (startTime*(scaleFactor/100));
+        double d = startTime*1.0E-7;
         for(int i=(int)((g2.getClipBounds().x-d)%20)*20; i< g2.getClipBounds().getMaxX(); i+=20){
             if(i % 100 == 0){                
-                g2.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
+                g2.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);                
                 String label = ((double)(i/(double) 100)) + "\u00D710\u2079ns";
                 g2.drawString(label, i+1, 15);
                 g2.drawLine(i, 0, i, g2.getClipBounds().height);            
@@ -150,7 +151,7 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
 
     @Override
     public void SimulationTimeChanged(long time) {
-        if(time % 10E7 == 0){// Don't update too quickly!!
+        if(time % Math.pow(10, simulationRate -2 ) == 0  || simulationRate < 2){// Don't update too quickly!!
             Long startTime = parent.getStartTime();
             Long endTime = parent.getEndTime();
 
@@ -163,7 +164,13 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
             parent.setEndTime(time);
             repaint(((JScrollPane)getParent().getParent()).getViewport().getViewRect());    
         }
-    }
+    }    
+    
+    @Override
+    public void SimulationRateChanged(int rate){
+        simulationRate = rate;
+        scaleFactor = Math.pow(10, -(rate - 2));
+    }  
     
     public JPanel getRowHeader(){
         return rowHeader;

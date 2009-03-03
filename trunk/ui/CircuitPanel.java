@@ -82,6 +82,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     private Properties properties;
     private boolean isSubcircuit;
     private CircuitPanel subcircuitParent;
+    private int simulationRate;
 
     public CircuitPanel(CircuitFrame parentFrame, boolean isSubCircuit){
         addMouseMotionListener(new CircuitPanelMouseMotionAdapter());
@@ -96,6 +97,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         this.editor = ((CircuitFrame) getParentFrame()).getEditor();
         this.cmdHist = new CommandHistory(editor);
         this.grid = new Grid(this);
+        this.simulationRate = simulator.getSimulatorSpeed();
         this.isSubcircuit = isSubCircuit;
         createDefaultProperties();
     }
@@ -343,8 +345,8 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     
     /** {@inheritDoc } */
     @Override
-    public void SimulationTimeChanged(long time) {        
-        if(time % 10E7 == 0){// Don't change too quickly!
+    public void SimulationTimeChanged(long time) {     
+        if(time % Math.pow(10, simulationRate -2 ) == 0  || simulationRate < 2){// Don't change too quickly!
             ErrorHandler.changeStatus("message", "Simulator Time: " + ((double) (time / (double) 1000000000)) + "×10⁹ns");
         }
     }
@@ -354,6 +356,12 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     public void SimulatorStateChanged(SimulatorState state) {
         this.simulatorState = state;
     }
+    
+    /** {@inheritDoc } */
+    @Override
+    public void SimulationRateChanged(int rate){
+       this.simulationRate = rate;
+    }    
 
     /** Returns true if and only if this circuit is currently active in the editor. */
     protected boolean isActiveCircuit() {

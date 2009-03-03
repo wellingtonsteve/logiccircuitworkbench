@@ -36,9 +36,9 @@ public class Simulator {
 
     public void setSimulatorSpeed(int value) {
         simulatorSpeed = value-9;
-        System.out.println(simulatorSpeed);
+        //System.out.println(simulatorSpeed);
         for(SimulatorStateListener stateListener : stateListeners) {
-            stateListener.SimulationRateChanged(simulatorSpeed);
+            stateListener.SimulationRateChanged(value);
         }
 
     }
@@ -70,7 +70,7 @@ public class Simulator {
 
     private void runUntilSimTime(long time)
     {
-        System.out.println(time);
+        //System.out.println(time);
         while(time > currentSimulationTime && !eventQueue.isEmpty()){
             long nextQueueTime = eventQueue.peekK();
             if(nextQueueTime <= time){
@@ -86,7 +86,7 @@ public class Simulator {
     }
 
     private void update(){
-        System.out.println("updating");
+        //System.out.println("updating");
         unsimulatedTime += Math.pow(10,simulatorSpeed+8);
         double simulatableTime = Math.floor(unsimulatedTime);
         if(simulatableTime > 0){
