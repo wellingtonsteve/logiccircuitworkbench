@@ -96,6 +96,7 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
     public void valueChanged(sim.joinable.Pin pin, LogicState value) {
         setValue(value.equals(sim.LogicState.ON));
         parent.repaint(getBoundingBox());
+        System.out.println(value);
     }
 
     @Override
@@ -108,8 +109,7 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
     }
 
     @Override
-    public void SimulationTimeChanged(long time) {
-    }
+    public void SimulationTimeChanged(long time) {}
 
     @Override
     public void attributeValueChanged(Attribute attr, Object value) {
@@ -117,4 +117,7 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
            setColour((String) attr.getValue());
         }
     }
+
+    @Override
+    public void SimulationRateChanged(int rate){}    
 }

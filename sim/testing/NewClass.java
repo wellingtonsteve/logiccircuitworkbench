@@ -88,7 +88,10 @@ public static void main(String[] args){
                 if(time == 3000000000l)  
                     in2copy.setValue(LogicState.OFF);
             }
-        });
+           
+            @Override
+            public void SimulationRateChanged(int rate){}  
+    });
     
     if(sim.play()){
         System.out.println("Yes");
