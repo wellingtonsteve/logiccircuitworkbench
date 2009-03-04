@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -49,10 +50,10 @@ import ui.file.JPGFileFilter;
 public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorStateListener, PropertiesOwner {
 
     // Component Variables
-    private Point lastDragPoint = new Point(0,0);
-    private Point dragStartPoint = new Point(0,0);
-    private Point currentPoint;
-    private Point previousCurrentPoint = new Point(0,0);    
+    private Point lastDragPoint = Wire.DEFAULT_ORIGIN;
+    private Point dragStartPoint = Wire.DEFAULT_ORIGIN;
+    private Point currentPoint = Wire.DEFAULT_ORIGIN;
+    private Point previousCurrentPoint = Wire.DEFAULT_ORIGIN;    
     private LinkedList<SelectableComponent> drawnComponents = new LinkedList<SelectableComponent>();
     private LinkedList<SelectableComponent> activeComponents = new LinkedList<SelectableComponent>();     
     private SelectableComponent temporaryComponent; // Used for reference to a selection from list of drawn components
@@ -99,7 +100,19 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         this.grid = new Grid(this);
         this.simulationRate = simulator.getSimulatorSpeed();
         this.isSubcircuit = isSubCircuit;
-        createDefaultProperties();
+        createDefaultProperties();        
+        if(isSubcircuit){
+            setBackground(UIConstants.SUBCIRCUIT_BACKGROUND_COLOUR);
+        } else {
+            setBackground(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+        }
+        setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+    }
+
+    public void fixAllComponents() {
+        for(SelectableComponent sc: drawnComponents){
+            sc.translate(0, 0, true);
+        }
     }
 
     /**
@@ -221,7 +234,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     /** Add a list of components to this circuit */
     public void addComponentList(Collection<SelectableComponent> list){
         drawnComponents.addAll(list);
-        previousCurrentPoint = new Point(0,0);
+        previousCurrentPoint = SelectableComponent.DEFAULT_ORIGIN;
         activeComponents.clear();
         for(SelectableComponent sc: list){
             if(!sc.isFixed()){
@@ -238,7 +251,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     /** Add a single component to this circuit */
     public void addComponent(SelectableComponent sc) {
         drawnComponents.push(sc);
-        previousCurrentPoint = new Point(0,0);
+        previousCurrentPoint = SelectableComponent.DEFAULT_ORIGIN;
         sc.getInvalidArea();
         sc.getBoundingBox();
         setCurrentTool(sc.getKeyName());
@@ -347,7 +360,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     @Override
     public void SimulationTimeChanged(long time) {     
         if(time % Math.pow(10, simulationRate -2 ) == 0  || simulationRate < 2){// Don't change too quickly!
-            ErrorHandler.changeStatus("message", "Simulator Time: " + ((double) (time / (double) 1000000000)) + "×10⁹ns");
+            ErrorHandler.changeStatus("message", "Simulator Time: " + ((double) (time / (double) 1000000000)) + "×10�?�ns");
         }
     }
 
@@ -355,6 +368,15 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     @Override
     public void SimulatorStateChanged(SimulatorState state) {
         this.simulatorState = state;
+        if (getSimulatorState().equals(simulatorState.STOPPED)) {
+            setBackground(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
+        } else {
+            if(isSubcircuit){
+                setBackground(UIConstants.SUBCIRCUIT_BACKGROUND_COLOUR);
+            } else {
+                setBackground(UIConstants.CIRCUIT_PLAYING_BACKGROUND_COLOUR);
+            }
+        }
     }
     
     /** {@inheritDoc } */
@@ -421,8 +443,8 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
             // Copy the offscreen image to the screen
             g.drawImage(offscreenImage, 0, 0, this);
         }
-    }
-
+    }  
+    
     /**
      * TODO: javadoc
      */
@@ -453,16 +475,6 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         if (g2.getClip() == null) {
             g2.setClip(0, 0, getWidth(), getHeight());
         }
-
-        // Background Colour
-        if(isSubcircuit){
-            g2.setColor(UIConstants.SUBCIRCUIT_BACKGROUND_COLOUR);
-        } else if (getSimulatorState().equals(simulatorState.STOPPED)) {
-            g2.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-        } else {
-            g2.setColor(UIConstants.CIRCUIT_PLAYING_BACKGROUND_COLOUR);
-        }
-        g2.fill(g2.getClip());
         
         // Draw the grid dots
         if (UIConstants.DRAW_GRID_DOTS) {
@@ -506,7 +518,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         BufferedImage bi = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         paint(bi.getGraphics());
         try {
-            ImageIO.write(bi, "jpg", new File(filename));
+            ImageIO.write(bi, "png", new File(filename + ".png"));
         } catch (IOException ex) {
             ErrorHandler.newError("Image Creation Error", "Please refer to the system output below.", ex);
         }
@@ -644,7 +656,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                             }                           
                             
                             // To redraw the new component at workarea origin
-                            previousCurrentPoint = new Point(0,0);
+                            previousCurrentPoint = SelectableComponent.DEFAULT_ORIGIN;
                         }
                     }
                 } else {
@@ -711,7 +723,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     Wire w = (Wire) drawnComponents.peek();
                     
                     // Start drawing the new wire
-                    if(w.getOrigin().equals(new Point(0,0)) && grid.isConnectionPoint(currentPoint)){
+                    if(w.getOrigin().equals(SelectableComponent.DEFAULT_ORIGIN) && grid.isConnectionPoint(currentPoint)){
                         w.setStartPoint(currentPoint);
                     // We have chosen the start point again, remove the wire
                     }else if (w.getOrigin().equals(currentPoint)) {
@@ -771,35 +783,31 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                                     && grid.getConnectionPoint(p).noOfConnections() > 1){
                                 grid.setActivePoint(p,true);
                             }
-                        }
-                        
+                        }                        
                         repaintDirtyAreas();
                         if(canMove){ previousCurrentPoint = currentPoint;}
 
                     // Hover highlights    
-                    } else if (currentTool.equals("Select")){
-       
+                    } else if (currentTool.equals("Select")){       
+                        // Reset the last component to be hovered over
                         temporaryComponent = null;
                         if(getHighlightedComponent()!=null){
                             getHighlightedComponent().revertHoverState();
                             repaint(getHighlightedComponent().getBoundingBox());
                         }
-
                         // Determine which component the mouse lies in
                         for(SelectableComponent sc: drawnComponents){
                             if(sc.containsPoint(currentPoint)){
                                 temporaryComponent = sc;
                                 break;
                             }                            
-                        }                           
-
+                        }  
                         // Pass the "Highlight Token"
                         if(temporaryComponent!=null){
                             setHighlightedComponent(temporaryComponent);
                             temporaryComponent.mouseMoved(e);
                             repaint(temporaryComponent.getBoundingBox());
-                        }
-                        
+                        }                        
                     }             
                     
                 } else if(currentTool.equals("Wire") 
@@ -809,7 +817,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     Wire w = (Wire) drawnComponents.peek();
                     w.setEndPoint(currentPoint);
                     if(grid.isConnectionPoint(currentPoint) 
-                            && (w.getOrigin().equals(new Point(0,0))
+                            && (w.getOrigin().equals(SelectableComponent.DEFAULT_ORIGIN)
                             || grid.getConnectionPoint(currentPoint).noOfConnections() > 1)){
                         grid.setActivePoint(currentPoint, true);
                     }
@@ -828,13 +836,11 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         public void mouseDragged(MouseEvent e) {
             if(isActiveCircuit()){
                 currentPoint = Grid.snapToGrid(e.getPoint());
-
                 if(currentTool.equals("Select")){
-
                     if(nowDragingComponent){
+                        // Continue Drag
                         dragActiveSelection(e,false,false);
                     }  else {
-
                         // Area we dragging from a fixed component?
                         boolean clickingEmptySpace = true;
                         temporaryComponent = null;
@@ -847,7 +853,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                                 } 
                             }  
                         }                            
-
+                        // Create a selection box or Start dragging selection
                         if(clickingEmptySpace){
                             multipleSelection = true;                            
                             setSelectionBox();
@@ -862,23 +868,19 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                                 // Move active dragged components to the top of the stack
                                 drawnComponents.removeAll(activeComponents);
                                 drawnComponents.addAll(activeComponents);
-                            }
-                            
+                            }                            
                             // Start drag
                             dragActiveSelection(e, true, false);
-                        }
-                    }
-                    
-                } else if (currentTool.equals("Wire") 
-                     && !drawnComponents.isEmpty()){
-
+                       }
+                    }                    
+                } else if (currentTool.equals("Wire") && !drawnComponents.isEmpty()){
                     Wire w = (Wire) drawnComponents.peek();
+                    
                     // Start drawing the new wire
-                    if(w.getOrigin().equals(new Point(0,0)) && grid.isConnectionPoint(dragStartPoint)){
+                    if(w.getOrigin().equals(SelectableComponent.DEFAULT_ORIGIN) && grid.isConnectionPoint(dragStartPoint)){
                         w.setStartPoint(dragStartPoint);                           
                     }
                     w.setEndPoint(currentPoint);                        
-
                     // Highlight connection point?
                     if(grid.isConnectionPoint(currentPoint)
                             && grid.getConnectionPoint(currentPoint).noOfConnections() > 1){

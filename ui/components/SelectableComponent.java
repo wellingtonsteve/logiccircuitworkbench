@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.xml.transform.sax.TransformerHandler;
+import netlist.properties.Attribute;
 import netlist.properties.Properties;
 import netlist.properties.PropertiesOwner;
 import sim.joinable.*;
@@ -17,6 +18,7 @@ import sim.SimItem;
 import sim.LogicState;
 import ui.CircuitPanel;
 import ui.UIConstants;
+import ui.command.EditAttributeCommand;
 import ui.grid.ConnectionPoint;
 import ui.grid.Grid;
 
@@ -26,8 +28,8 @@ import ui.grid.Grid;
  * 
  * @author Matt
  */
-public abstract class SelectableComponent implements Labeled, Cloneable, PropertiesOwner {
-    
+public abstract class SelectableComponent implements Labeled, Cloneable, 
+        PropertiesOwner, netlist.properties.AttributeListener {    
 
     /** Set the default selection state of this component */
     protected SelectionState selectionState = SelectionState.DEFAULT;
@@ -68,6 +70,8 @@ public abstract class SelectableComponent implements Labeled, Cloneable, Propert
     /** The properties collection for this component **/    
     protected Properties properties;
     
+    public static final Point DEFAULT_ORIGIN = new Point(0,0);
+    
     /**
      * Default constructor for a SelectableComponent. 
      * 
@@ -77,15 +81,13 @@ public abstract class SelectableComponent implements Labeled, Cloneable, Propert
     public SelectableComponent(CircuitPanel parent, Point origin, SimItem logicalComponent, Properties properties){
         this.parent = parent;
         this.logicalComponent = logicalComponent;
-        this.properties = properties;
-        if(logicalComponent != null){ this.logicalComponent.setProperties(properties); }
+        setProperties(properties);
         if(origin == null){
-            this.origin = new Point(0,0);
+            this.origin = DEFAULT_ORIGIN;
         } else {
             this.origin = origin;
         }
-        setLocalPins();
-        setGlobalPins();        
+        setLocalPins();     
         addListeners();
     }
     
@@ -214,7 +216,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable, Propert
         ui.grid.Grid grid = parent.getGrid();
 
         if(grid.canTranslateComponent(this, dx, dy) || (dx == 0 && dy == 0)){
-            unsetGlobalPins();
+            if(this.fixed && !fixed) { unsetGlobalPins();}
             grid.unmarkInvalidAreas(this);
             // Rememeber my position at the moment I started to move
             if(this.fixed && !fixed){
@@ -228,7 +230,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable, Propert
                 grid.markInvalidAreas(this);                 
             }            
             this.fixed = fixed; 
-            setGlobalPins();
+            if(fixed){ setGlobalPins();}
 
         // Alert the user that this was an invalid move and we cannot fix the 
         // component here
@@ -424,14 +426,18 @@ public abstract class SelectableComponent implements Labeled, Cloneable, Propert
      * Remove all old pins from the connection point grid and then recreate the 
      * pins from the local pins of this component.
      */
-    protected void setGlobalPins(){           
-        for(Pin p: localPins){
-            parent.getGrid().addPin(p);
-        }    
+    protected void setGlobalPins(){    
+        if(fixed){
+            for(Pin p: localPins){
+                parent.getGrid().addPin(p);
+            }    
+        }
     }
     protected void unsetGlobalPins() {
-        for (Pin p : localPins) {
-            parent.getGrid().removePin(p);
+        if(fixed){
+            for (Pin p : localPins) {
+                parent.getGrid().removePin(p);
+            }
         }
     }
     
@@ -585,13 +591,21 @@ public abstract class SelectableComponent implements Labeled, Cloneable, Propert
     
     /** Change the properties of this component */
     public void setProperties(Properties properties) {
+        if(this.properties != null) {this.properties.removeAttributesListener(this);}
         this.properties = properties;
-        this.logicalComponent.setProperties(this.properties);
+        if(logicalComponent != null){ this.logicalComponent.setProperties(properties); }
+        if(this.properties != null) {this.properties.addAttributesListener(this);}
     }
     
     /** @return the properties of this component */
     public Properties getProperties(){
         return properties;
+    }
+    
+    @Override
+    public void attributeValueChanged(Attribute attr, Object value) {
+        EditAttributeCommand eac = new EditAttributeCommand(attr, attr.getOldValue(), value);
+        parent.doCommand(eac);
     }
     
     /**

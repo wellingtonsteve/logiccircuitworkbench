@@ -31,10 +31,9 @@ public class UIConstants {
     public static final Color GRID_DOT_COLOUR = Color.GRAY;    
     public static final int GRID_DOT_SPACING = 5; // Recommended only 2, 5 or 10
     public static final boolean SNAP_TO_GRID = true;
-    public static final int GRID_STANDARD_WIDTH = 70;
-    public static final int GRID_STANDARD_HEIGHT = 60;
     public static boolean DRAW_GRID_DOTS = false;
     public static boolean DRAW_PIN_LOGIC_VALUES = true;
+    public static boolean DRAW_WIRE_CROSSOVERS = false;
     public static final Color CONNECTION_POINT_COLOUR = Color.RED;
     public static final Stroke CONNECTED_POINT_STROKE = new BasicStroke(2.0f); 
     public static final boolean DO_SYSTEM_BEEP = true;

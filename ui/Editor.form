@@ -940,7 +940,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="typeLabel" min="-2" pref="14" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="AttributesPanel" pref="150" max="32767" attributes="0"/>
+                      <Component id="AttributesPanel" pref="151" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="Preview" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -1020,7 +1020,7 @@
               <Color blue="e3" green="df" id="Panel.background" palette="3" red="e0" type="palette"/>
             </Property>
             <Property name="autoscrolls" type="boolean" value="true"/>
-            <Property name="dragMode" type="int" value="1"/>
+            <Property name="doubleBuffered" type="boolean" value="true"/>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[600, 400]"/>
             </Property>
@@ -1047,7 +1047,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="statusMessageLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="761" max="32767" attributes="0"/>
+                  <EmptySpace pref="777" max="32767" attributes="0"/>
                   <Component id="progressBar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="statusAnimationLabel" min="-2" max="-2" attributes="0"/>
