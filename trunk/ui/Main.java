@@ -14,7 +14,7 @@ import ui.error.ErrorHandler;
 public class Main {
 
     public static void main(String[] args){
-       try {          
+       try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             UIManager.put("Slider.paintValue", Boolean.FALSE);
             

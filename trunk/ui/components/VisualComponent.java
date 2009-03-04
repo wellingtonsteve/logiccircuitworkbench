@@ -36,15 +36,15 @@ public abstract class VisualComponent extends SelectableComponent {
     }    
 
     protected void setDefaultImage(){        
-        defaultBi = properties.getImage("default");
+        defaultBi = properties.getImage(getKeyName()+"."+"default");
     }
     
     protected void setSelectedImage(){
-        selectedBi = properties.getImage("selected");
+        selectedBi = properties.getImage(getKeyName()+"."+"selected");
     }
     
     protected void setActiveImage(){
-        activeBi = properties.getImage("active");
+        activeBi = properties.getImage(getKeyName()+"."+"active");
     }
     
     @Override

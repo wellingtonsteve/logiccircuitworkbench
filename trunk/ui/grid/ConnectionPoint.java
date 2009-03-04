@@ -27,25 +27,23 @@ public class ConnectionPoint extends GridObject {
 
     public ConnectionPoint(Grid grid, Point p){
         super(grid, p);        
-        try {
-            defaultCrossover = ImageIO.read(
-                    getClass().getResource("/ui/images/components/default_wire_crossover.png"));
-        } catch (IOException ex) {
-            defaultCrossover = new BufferedImage(0,0,BufferedImage.TYPE_INT_RGB);
-            ui.error.ErrorHandler.newError("Initialisation Error",
-                    "Could not load \"Connection Point Crossover\" image.", ex);    
+        if(UIConstants.DRAW_WIRE_CROSSOVERS){
+            try {
+                defaultCrossover = ImageIO.read(
+                        getClass().getResource("/ui/images/components/default_wire_crossover.png"));
+            } catch (IOException ex) {
+                defaultCrossover = new BufferedImage(0,0,BufferedImage.TYPE_INT_RGB);
+                ui.error.ErrorHandler.newError("Initialisation Error",
+                        "Could not load \"Connection Point Crossover\" image.", ex);    
+            }
         }
     }
     
     public void addConnection(Pin p){         
         if(!hasConnection(p)){          
             p.setConnectionPoint(this);
-            connections.add(p);
-            
+            connections.add(p);            
             setIsCrossover();
-            
-            // TODO: Test all connections with canconnect()
-            
             if(isConnected() && p.getParent().isFixed() && !isCrossover){
                 for(Pin pin: connections){
                     if(!pin.equals(p)){
@@ -165,13 +163,12 @@ public class ConnectionPoint extends GridObject {
     @Override
     public void draw(Graphics2D g2) {
         super.draw(g2);        
-        if(!isCrossover){        
-            if(noOfDifferentConnections() > 1){
+        if(!UIConstants.DRAW_WIRE_CROSSOVERS || !isCrossover){        
+            if(!isCrossover && noOfDifferentConnections() > 1){
                  g2.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
                  g2.drawOval(x-2, y-2, 5, 5);
                  g2.fillOval(x-2, y-2, 5, 5);
             }
-
             if(isActive){
                 Stroke def = g2.getStroke();
                 g2.setStroke(UIConstants.CONNECTED_POINT_STROKE);
@@ -180,7 +177,6 @@ public class ConnectionPoint extends GridObject {
                 g2.setStroke(def);
                 isActive = false;
             }
-
             if(UIConstants.SHOW_GRID_OBJECTS){ 
                 g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
                 g2.drawOval(x-1, y-1, 3, 3);
@@ -208,14 +204,14 @@ public class ConnectionPoint extends GridObject {
 
     private void setIsCrossover() {
        int noOfWireNonTerminus = 0;
-        for(Pin p: connections){
-            if(p.getParent() instanceof Wire // The current pin belongs to a wire       
-                && !((Wire) p.getParent()).getEndPoint().equals(p.getGlobalLocation()) // Not the end point of a wire
-                && !((Wire) p.getParent()).getOrigin().equals(p.getGlobalLocation()) // Not the start point of a wire
-                ){ 
-                noOfWireNonTerminus++;
-            }
-        }
-        isCrossover = (noOfWireNonTerminus>1);
-    }
+       for(Pin p: connections){
+           if(p.getParent() instanceof Wire // The current pin belongs to a wire       
+               && !((Wire) p.getParent()).getEndPoint().equals(p.getGlobalLocation()) // Not the end point of a wire
+               && !((Wire) p.getParent()).getOrigin().equals(p.getGlobalLocation()) // Not the start point of a wire
+               ){ 
+               noOfWireNonTerminus++;
+           }
+       }
+       isCrossover = (noOfWireNonTerminus>1);
+   }
 }

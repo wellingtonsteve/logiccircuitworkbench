@@ -26,7 +26,6 @@ public class SelectionAttribute extends Attribute{
             }
         });
         cb.setPreferredSize(new Dimension(50, 25));
-//        cb.setMaximumSize(new Dimension(100, 25));
         jcomponent = cb;
     }
     

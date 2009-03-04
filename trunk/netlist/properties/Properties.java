@@ -2,16 +2,13 @@ package netlist.properties;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.xml.transform.sax.TransformerHandler;
@@ -28,7 +25,7 @@ public class Properties implements Cloneable{
     private HashMap<String, Attribute> attributes = new LinkedHashMap<String, Attribute>();
     private HashMap<String, Point> inputPins = new HashMap<String, Point>();
     private HashMap<String, Point> outputPins = new HashMap<String, Point>();
-    private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();
+    private static HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();
     private Class<? extends SimItem> simItem;
     private Class<? extends SelectableComponent> selectableComponent;
     private JPanel attrPanel = new JPanel();
@@ -36,6 +33,18 @@ public class Properties implements Cloneable{
     public Properties(String key){
         this.key = key;
         createAttributesPanel();
+    }
+
+    public void addAttributesListener(AttributeListener al) {
+        for(Attribute a: attributes.values()){
+            a.addAttributeListener(al);
+        }
+    }
+
+    public void removeAttributesListener(AttributeListener al) {
+        for(Attribute a: attributes.values()){
+            a.removeAttributeListener(al);
+        }
     }
     
     protected void setVisualComponentClass(Class<? extends SelectableComponent> sc){
@@ -73,20 +82,31 @@ public class Properties implements Cloneable{
     
     protected void addImage(String name, String imageFilename){
         try {
-            BufferedImage image = ImageIO.read(getClass().getResource(imageFilename));
-            images.put(name, image);
+            if(!images.containsKey(key + "." + name)){
+                BufferedImage image = ImageIO.read(getClass().getResource(imageFilename));
+                images.put(key + "." + name, image);
+            }
         } catch (Exception e) {
             try{
                 BufferedImage image = ImageIO.read(new File(imageFilename));
                 images.put(name, image);
             } catch (Exception ex) {
-                ErrorHandler.newError(new ui.error.Error("Initialisation Error", "Could not load image: \n" + imageFilename + ".\n\nComponent not loaded.", ex));    
+                ErrorHandler.newError(new ui.error.Error("Initialisation Error", 
+                        "Could not load image: \n" + imageFilename + ".\n\nComponent not loaded.", ex));    
             }                        
         }          
     }
     
     public BufferedImage getImage(String name){
-        return images.get(name);
+        if(images.containsKey(name)){
+            return images.get(name);
+        } else if (images.containsKey(key + "." + name)){
+            return images.get(key + "." + name);
+        } else {
+            ErrorHandler.newError(new ui.error.Error("Initialisation Error",
+                    "Could not find image with key : \n" + name)); 
+            return null;
+        }
     }
 
     protected void addInputPin(String name, Point p){

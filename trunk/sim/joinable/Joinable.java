@@ -3,6 +3,7 @@ package sim.joinable;
 
 import java.util.*;
 import java.util.ArrayList;
+import ui.error.ErrorHandler;
 
 /**
  *
@@ -23,7 +24,7 @@ public abstract class Joinable {
                 a.setOutputSource(b.outputSource, new ArrayList<Joinable>());
             }
         } else {
-            throw new Error("Connecting two outputs");
+            ErrorHandler.newError("Simulation Error", "Cannot connect two outputs together.");
         }
     }
 

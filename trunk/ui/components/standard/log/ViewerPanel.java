@@ -70,8 +70,8 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
         float xOffset = 0f;
         float yOffset = 0.5f * UIConstants.LOGGER_VIEWER_MARGIN;
         
-        rowHeader.getGraphics().clearRect(0, 0, rowHeader.getPreferredSize().width,rowHeader.getPreferredSize().height);
-        
+        //rowHeader.getGraphics().clearRect(0, 0, rowHeader.getPreferredSize().width,rowHeader.getPreferredSize().height);
+            
         for(PinLogger p: loggers){            
             
             if(p.isEnabled()){
@@ -131,7 +131,7 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
                 // Move down to next pin logger
                 yOffset += UIConstants.LOGGER_VIEWER_MARGIN+UIConstants.LOGGER_HEIGHT;
             }                        
-        }                
+        } 
     }
     
     public void clear(){
@@ -154,7 +154,6 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
         if(time % Math.pow(10, simulationRate -2 ) == 0  || simulationRate < 2){// Don't update too quickly!!
             Long startTime = parent.getStartTime();
             Long endTime = parent.getEndTime();
-
             // Auto-Scrolling policy
             Dimension b = getPreferredSize();
             if((endTime-startTime)*scaleFactor > b.width){

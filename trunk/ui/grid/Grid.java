@@ -36,35 +36,30 @@ public class Grid {
      * @param dy The y-direction displacement
      * @return Is the move valid?
      */
-    public boolean canTranslateComponent(SelectableComponent sc, int dx, int dy){
-        
-        // Check connections with simulator
-        for(Pin local: sc.getPins()){
-            Joinable thisPin = local.getJoinable();
-            Point location = new Point(local.getGlobalLocation().x + dx, local.getGlobalLocation().y + dy);
-            ConnectionPoint cp = getConnectionPoint(location);
-            if(cp != null){
-                for(Pin otherPin : cp.getConnections()){
-                    if(!Joinable.canConnect(thisPin, otherPin.getJoinable())) return false;
-                }
-            }
-        }
-        
-        
+    public boolean canTranslateComponent(SelectableComponent sc, int dx, int dy){       
         // Check each pin
         for(Pin local: sc.getPins()){
             Point p = local.getGlobalLocation();
             Point temp = new Point(p.x + dx, p.y + dy);
-            GridObject go = grid.get(temp);  
-           
+            GridObject go = grid.get(temp);             
             if(go != null){
                 boolean b1 = sc.getParent().hasActiveSelection();
                 boolean b2 = go.hasParentInCollection(sc.getParent().getActiveComponents());
                 boolean b3 = go.hasParent(sc);                
-                // Pins can overlap other pins but not invalid points
-                if( go instanceof InvalidPoint 
-                    && ((b1 && !b2) || (!b1 && !b3))){
-                    return false; 
+                if((b1 && !b2) || (!b1 && !b3)){
+                    // Pins can overlap other pins but not invalid points
+                    if(go instanceof InvalidPoint){
+                        return false; 
+                    } else if(go instanceof ConnectionPoint){
+                        // Check connections with simulator
+                        Joinable thisPin = local.getJoinable();        
+                        ConnectionPoint cp = (ConnectionPoint) go;
+                        for(Pin otherPin : cp.getConnections()){
+                            if(!Joinable.canConnect(thisPin, otherPin.getJoinable())) {
+                                return false;
+                            }
+                        }
+                    }
                 }
             }           
         }
@@ -90,8 +85,7 @@ public class Grid {
                     }
                 }
             }
-        }        
-        
+        }                      
         return true;
     }
     

@@ -15,8 +15,7 @@ import netlist.properties.Properties;
  * @author Matt
  */
 public class LED extends VisualComponent implements sim.joinable.ValueListener, 
-                                                    sim.SimulatorStateListener,
-                                                    netlist.properties.AttributeListener{
+                                                    sim.SimulatorStateListener{
     private boolean isOn = true;
     private String colour = "yellow";
     private BufferedImage yellow, red, green;
@@ -72,7 +71,7 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
 
     @Override
     protected BufferedImage getCurrentImage(){
-        if(isOn){
+        if(isOn && !selectionState.equals(selectionState.ACTIVE)){
             if(colour.equals("yellow")){
                 return yellow;
             } else if(colour.equals("red")){
@@ -96,7 +95,6 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
     public void valueChanged(sim.joinable.Pin pin, LogicState value) {
         setValue(value.equals(sim.LogicState.ON));
         parent.repaint(getBoundingBox());
-        System.out.println(value);
     }
 
     @Override
@@ -110,6 +108,10 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
 
     @Override
     public void SimulationTimeChanged(long time) {}
+    
+    /** {@inheritDoc } */
+    @Override
+    public void SimulationRateChanged(int rate) {}
 
     @Override
     public void attributeValueChanged(Attribute attr, Object value) {
@@ -117,7 +119,4 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
            setColour((String) attr.getValue());
         }
     }
-
-    @Override
-    public void SimulationRateChanged(int rate){}    
 }

@@ -25,52 +25,51 @@ public class CircuitFrame extends JInternalFrame{
     private int untitledIndex;
     private JFrame propertiesDialog;
     
-    public CircuitFrame(final Editor editor, int untitledIndex, boolean isSubCircuit){
-        super();
-        
+    public CircuitFrame(final Editor editor, int untitledIndex, boolean isSubCircuit){        
         this.editor = editor;
         this.untitledIndex = untitledIndex;
         this.circuitPanel = new CircuitPanel(this, isSubCircuit);
         this.propertiesDialog = new CircuitProperties(circuitPanel.getProperties());
         this.propertiesDialog.setLocationRelativeTo(this);
         this.propertiesDialog.setVisible(false);
-
+        this.circuitPanel.setPreferredSize(new java.awt.Dimension(1000, 800));
+        
+        // Set frame properties
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
         setFrameIcon(null);
-        setPreferredSize(new java.awt.Dimension(600, 450));
         setVisible(true);        
         setTitle("Untitled"+untitledIndex+".xml");
-        circuitPanel.setMinimumSize(new java.awt.Dimension(1000, 800));
-        circuitPanel.setPreferredSize(new java.awt.Dimension(1000, 800));
-
+        
+        // Set the layout and add the circuit panel
         org.jdesktop.layout.GroupLayout circuitPanelLayout = new org.jdesktop.layout.GroupLayout(circuitPanel);
-        circuitPanel.setLayout(circuitPanelLayout);
+        circuitPanel.setLayout(null);
         circuitPanelLayout.setHorizontalGroup(
             circuitPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 1000, Short.MAX_VALUE)
+            .add(0, 790, Short.MAX_VALUE)
         );
         circuitPanelLayout.setVerticalGroup(
             circuitPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 800, Short.MAX_VALUE)
+            .add(0, 600, Short.MAX_VALUE)
         );
-
         jScrollPane2.setViewportView(circuitPanel);
 
         org.jdesktop.layout.GroupLayout circuitFrameLayout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(circuitFrameLayout);
         circuitFrameLayout.setHorizontalGroup(
             circuitFrameLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 772, Short.MAX_VALUE)
+            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE)
         );
         circuitFrameLayout.setVerticalGroup(
             circuitFrameLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
+            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
         );
 
+        // Show save dialog when frame is closing?
+        // Also tell the editor when a different frame is activated.
         addInternalFrameListener(new InternalFrameAdapter(){
             public void internalFrameClosing(InternalFrameEvent e) {
                 if(isDirty()){
@@ -94,14 +93,13 @@ public class CircuitFrame extends JInternalFrame{
                     dispose();
                 }              
             }
-
             public void internalFrameActivated(InternalFrameEvent e) {
                 editor.setActiveCircuit(circuitPanel);
             }            
         });
-        
-        setBounds(0, 0, 780, 600);
-
+        // Set the initial size of the frame 
+        setBounds(0, 0, 785, 585);
+        pack();
     }
     /**
      * @return The circuit panel that this frame contains

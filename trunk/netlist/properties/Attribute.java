@@ -17,10 +17,12 @@ public abstract class Attribute implements Cloneable {
     private Object value;
     protected JComponent jcomponent;
     protected LinkedList<AttributeListener> attributeListeners = new LinkedList<AttributeListener>();
+    private Object oldValue;
     
     public Attribute(String name, Object value){
         this.name = name;
         this.value = value;
+        this.oldValue = value;
         setJComponent();
     }
     
@@ -30,6 +32,10 @@ public abstract class Attribute implements Cloneable {
     
     public Object getValue(){
         return value;
+    }
+    
+    public Object getOldValue(){
+        return oldValue;
     }
 
     protected abstract void setJComponent();
@@ -51,12 +57,13 @@ public abstract class Attribute implements Cloneable {
     }
     
     public void setValue(Object val){
-        changeValue(val);
+        this.oldValue = value;
+        this.value = val;        
     }
      
     public void changeValue(Object val){
         if(validate(val)){
-            this.value = val;
+            setValue(val);
             for(AttributeListener al: attributeListeners){
                 al.attributeValueChanged(this, value);
             }

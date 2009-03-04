@@ -105,8 +105,7 @@ public class FileLoader extends DefaultHandler{
                 
                 // fix it to the circuit
                 ccc.getComponent().translate(0, 0, true);
-                stack.push(ccc.getComponent());
-                
+                stack.push(ccc.getComponent());                
                 
             // Create a new wire <wire>
             } else if(qName.equals("wire")){
