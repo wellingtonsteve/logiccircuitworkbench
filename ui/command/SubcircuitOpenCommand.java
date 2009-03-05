@@ -37,7 +37,7 @@ public class SubcircuitOpenCommand extends Command {
         if (rVal == JFileChooser.APPROVE_OPTION) {            
             // Create the subcircuit
             filename = c.getSelectedFile().getAbsolutePath();
-            createSubcircuitComponent(editor, filename);
+            createSubcircuitComponent(editor, filename, activeCircuit);
         }
     }
 
@@ -46,9 +46,8 @@ public class SubcircuitOpenCommand extends Command {
         return "Load Sub-circuit";
     }
 
-    private SelectableComponent createSubcircuitComponent(Editor editor, String filename) {
+    public SelectableComponent createSubcircuitComponent(Editor editor, String filename, CircuitPanel loadingCircuit) {
         FileLoader cfh = new FileLoader(editor);
-        CircuitPanel loadingCircuit = activeCircuit;
         activeCircuit = editor.createBlankCircuit(true);
         if (cfh.loadFile(filename)) {
             activeCircuit.setFilename(filename);
@@ -58,14 +57,14 @@ public class SubcircuitOpenCommand extends Command {
             Properties properties = activeCircuit.getProperties();
             SimItem logicalCircuit = activeCircuit.getLogicalCircuit();
             logicalCircuit.setProperties(properties);
-            activeCircuit.selectAllComponents();
 
             // Create a new component
             VisualComponent subcircuitComponent = new SubcircuitComponent(
-                    loadingCircuit, new Point(0, 0), logicalCircuit, properties);
+                    loadingCircuit, SelectableComponent.DEFAULT_ORIGIN(), logicalCircuit, properties);
             loadingCircuit.addComponent(subcircuitComponent);
             subcircuitComponent.addLogicalComponentToCircuit();
-
+            
+            activeCircuit.getCommandHistory().setIsDirty(false);
             activeCircuit.getParentFrame().doDefaultCloseAction();
             activeCircuit.getParentFrame().dispose();
             editor.setActiveCircuit(loadingCircuit);
@@ -225,7 +224,7 @@ public class SubcircuitOpenCommand extends Command {
         }
         
         public void updateSource(CircuitPanel cp){
-            SelectableComponent sc = createSubcircuitComponent(getParent().getParentFrame().getEditor(), cp.getFilename());
+            SelectableComponent sc = createSubcircuitComponent(getParent().getParentFrame().getEditor(), cp.getFilename(), parent);
             setProperties(sc.getProperties());
             parent.getLogicalCircuit().removeSimItem(logicalComponent);
             this.logicalComponent = sc.getLogicalComponent();
@@ -236,6 +235,11 @@ public class SubcircuitOpenCommand extends Command {
             setLocalPins();
             setGlobalPins();
         }
+        
+//        @Override
+//        public SelectableComponent copy() {
+//            return createSubcircuitComponent(getParent().getParentFrame().getEditor(), filename);
+//        }
     }
 
 }

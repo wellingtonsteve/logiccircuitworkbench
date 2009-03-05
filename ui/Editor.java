@@ -9,7 +9,6 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyVetoException;
@@ -68,8 +67,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
             public void windowClosing(WindowEvent e) {
                 ExitActionPerformed(null);
             }
-        }); 
-        
+        });         
         optionsPanel.setVisible(false);
         
         titleNew = bundle.getString("OptionsPanel.titleNew.text"); // NOI18N
@@ -467,6 +465,11 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
                 InsertSubComponentMouseClicked(evt);
             }
         });
+        InsertSubComponent.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                InsertSubComponentActionPerformed(evt);
+            }
+        });
         ToolboxButtons.add(InsertSubComponent, new java.awt.GridBagConstraints());
 
         RotateLeft.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/images/buttons/toolbar/object-rotate-left.png"))); // NOI18N
@@ -581,6 +584,8 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         MainScrollPane.setViewportView(DesktopPane);
 
         getContentPane().add(MainScrollPane, java.awt.BorderLayout.CENTER);
+
+        statusMessageLabel.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
 
         statusAnimationLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 
@@ -837,7 +842,7 @@ private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
         circuitPanel.removeUnfixedComponents();
         String componentName = "Wire";
 
-        CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit(), componentName, getComponentRotation(),SelectableComponent.DEFAULT_ORIGIN);
+        CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit(), componentName, getComponentRotation(),SelectableComponent.DEFAULT_ORIGIN());
         getActiveCircuit().doCommand(ccc);
 
         // Set Options panel (Preview, Component Specific Options etc.)
@@ -856,9 +861,10 @@ private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
 private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_ComponentSelectionTreeValueChanged
     if(getActiveCircuit()!=null){
         RotateRight.setEnabled(true);
-        RotateLeft.setEnabled(true);
-//        toggleToolboxButton(InsertComponent);
-
+        RotateLeft.setEnabled(true);    
+        toggleToolboxButton(Selection);
+        Selection.setSelected(false);
+        
         TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
         if(currentSelection != null){
 
@@ -871,10 +877,9 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
             componentName = componentName.substring(0, componentName.length() - 1);
 
             if(isValidComponent(componentName)){
-                getActiveCircuit().removeUnfixedComponents();
                 getActiveCircuit().resetActiveComponents();
                 getActiveCircuit().setCurrentTool(componentName);
-                CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit(), componentName, getComponentRotation(),SelectableComponent.DEFAULT_ORIGIN);
+                CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit(), componentName, getComponentRotation(),SelectableComponent.DEFAULT_ORIGIN());
                 getActiveCircuit().doCommand(ccc);
                 ((VisualComponent)ccc.getComponent()).addLogicalComponentToCircuit();
                 
@@ -1159,10 +1164,7 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 }//GEN-LAST:event_ToggleGridActionPerformed
 
 private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertSubComponentMouseClicked
-    if(getActiveCircuit()!=null){
-        toggleToolboxButton(InsertSubComponent);
-        getActiveCircuit().doCommand(new SubcircuitOpenCommand());
-    }
+
 }//GEN-LAST:event_InsertSubComponentMouseClicked
 
 private void PreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PreferencesActionPerformed
@@ -1176,6 +1178,13 @@ private void SimulatorSpeedStateChanged(javax.swing.event.ChangeEvent evt) {//GE
         getActiveCircuit().getSimulator().setSimulatorSpeed(SimulatorSpeed.getValue());
     }
 }//GEN-LAST:event_SimulatorSpeedStateChanged
+
+private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InsertSubComponentActionPerformed
+    if(getActiveCircuit()!=null){
+        toggleToolboxButton(InsertSubComponent);
+        getActiveCircuit().doCommand(new SubcircuitOpenCommand());
+    }
+}//GEN-LAST:event_InsertSubComponentActionPerformed
 
     /** 
      * Repopulate the windows menu in the toolbar with the opened circuits
@@ -1302,7 +1311,6 @@ private void SimulatorSpeedStateChanged(javax.swing.event.ChangeEvent evt) {//GE
      * @param circuit
      */
     public void setActiveCircuit(CircuitPanel circuit) {
-
         if(circuitwindows.contains(circuit.getParentFrame())){
             // Set application's title
             setTitle("Logic Circuit Workbench - " + circuit.getParentFrame().getTitle());
@@ -1361,8 +1369,7 @@ private void SimulatorSpeedStateChanged(javax.swing.event.ChangeEvent evt) {//GE
             ErrorHandler.newError("Editor Error",
                     "Error whilst setting an active circuit. \n " +
                     "Please close and reopen all open circuits.");
-        }
-              
+        }              
     }
 
     /**
@@ -1603,7 +1610,7 @@ private void SimulatorSpeedStateChanged(javax.swing.event.ChangeEvent evt) {//GE
             for(int i = 0; i<stacktrace.length; i++){
                 exceptionTextArea.append("   " + stacktrace[i].toString() + "\n");
             }
-            exceptionPane.getViewport().setViewPosition(SelectableComponent.DEFAULT_ORIGIN);
+            exceptionPane.getViewport().setViewPosition(SelectableComponent.DEFAULT_ORIGIN());
             exceptionTextArea.setColumns(20);
             exceptionTextArea.setRows(5);
             exceptionPane.setViewportView(exceptionTextArea);
@@ -1645,7 +1652,7 @@ private void SimulatorSpeedStateChanged(javax.swing.event.ChangeEvent evt) {//GE
     /** Reset the value of the Component Label Attribute */
     public void resetLabel(){
         if(sc!= null && sc.getProperties().getAttribute("Label") != null){
-                sc.getProperties().getAttribute("Label").setValue("");
+                sc.getProperties().getAttribute("Label").changeValue("");
         }
     }
     

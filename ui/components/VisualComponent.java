@@ -125,12 +125,9 @@ public abstract class VisualComponent extends SelectableComponent {
             atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
             atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
             atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
-            atts.addAttribute("", "", "subcircuit", "CDATA", (this instanceof SubcircuitComponent)+"");
-            
-            hd.startElement("", "", "component", atts);
-            
-            properties.createXML(hd);
-            
+            atts.addAttribute("", "", "subcircuit", "CDATA", (this instanceof SubcircuitComponent)+"");            
+            hd.startElement("", "", "component", atts);            
+            properties.createXML(hd);            
             hd.endElement("", "", "component");
         } catch (SAXException ex) {
             ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below.",ex);
@@ -140,6 +137,8 @@ public abstract class VisualComponent extends SelectableComponent {
     public void addLogicalComponentToCircuit(){
        if(logicalComponent!=null){
             this.parent.getLogicalCircuit().addSimItem(logicalComponent);
+        } else {
+           System.out.println("no logical component");
         }
     }
 }

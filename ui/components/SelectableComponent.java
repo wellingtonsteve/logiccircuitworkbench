@@ -70,7 +70,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
     /** The properties collection for this component **/    
     protected Properties properties;
     
-    public static final Point DEFAULT_ORIGIN = new Point(0,0);
+    public static final Point DEFAULT_ORIGIN() { return new Point(0,0).getLocation(); }
     
     /**
      * Default constructor for a SelectableComponent. 
@@ -83,7 +83,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         this.logicalComponent = logicalComponent;
         setProperties(properties);
         if(origin == null){
-            this.origin = DEFAULT_ORIGIN;
+            this.origin = DEFAULT_ORIGIN();
         } else {
             this.origin = origin;
         }
@@ -114,9 +114,6 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         }
         if(parent != null){
             parent.getLogicalCircuit().addSimItem(logicalComponent);
-            //System.out.println("GUI adding " + logicalComponent);
-        } else {
-            //System.out.println("GUI not adding " + logicalComponent);
         }
         this.parent = parent;
         refreshLocalPins();

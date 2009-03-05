@@ -2,6 +2,7 @@ package ui.command;
 
 import java.util.LinkedList;
 import ui.Editor;
+import ui.command.SubcircuitOpenCommand.SubcircuitComponent;
 import ui.components.SelectableComponent;
 
 /**
@@ -19,8 +20,13 @@ public class SelectionPasteCommand extends Command {
         int dy = activeCircuit.getMousePosition().y - pasted.getFirst().getOrigin().y;
         for(SelectableComponent sc: pasted){
             sc.setParent(activeCircuit);  
-            if(!sc.getKeyName().equals("Wire")){ 
+            if(!sc.getKeyName().equals("Wire") && !(sc instanceof SubcircuitComponent)){ 
+                // Get a new properties object from the netlist
                 sc.setProperties(editor.getNetlistWithKey(sc.getKeyName()).getProperties(sc.getKeyName()));
+            } else if (sc instanceof SubcircuitComponent){
+                //Create a new sub circuit
+                SubcircuitOpenCommand soc = new SubcircuitOpenCommand();
+                sc = soc.createSubcircuitComponent(editor, sc.getKeyName(), activeCircuit);
             }
             sc.translate(dx, dy, false);  
             sc.addListeners();
