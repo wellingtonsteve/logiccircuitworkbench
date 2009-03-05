@@ -216,7 +216,6 @@ public class CreateComponentCommand extends Command {
         @Override
         protected void setActiveImage() {
             activeBi = null;
-        }
+        }        
     }   
-
 }

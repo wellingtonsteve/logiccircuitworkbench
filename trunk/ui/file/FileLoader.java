@@ -85,22 +85,17 @@ public class FileLoader extends DefaultHandler{
                 
             // Create a new component <component>
             } else if(qName.equals("component")){
-
                 // Get co-ordinate attributes
                 int x = Integer.parseInt(attribs.getValue("x"));
                 int y = Integer.parseInt(attribs.getValue("y"));
                 Point p = new Point(x,y);
-
                 // Get rotation attribute
                 double rotation = Double.parseDouble(attribs.getValue("rotation"));
-
                 // Get textual attributes
                 String type = attribs.getValue("type");
                                 
                 // Create a new component with the desired attributes
                 CreateComponentCommand ccc = new CreateComponentCommand(null,type,rotation,p);
-                
-                // Perform the creation
                 ccc.execute(editor);
                 
                 // fix it to the circuit
@@ -109,7 +104,6 @@ public class FileLoader extends DefaultHandler{
                 
             // Create a new wire <wire>
             } else if(qName.equals("wire")){
-
                 // Get the coordinates attributes for the wire
                 int startx = Integer.parseInt(attribs.getValue("startx"));
                 int starty = Integer.parseInt(attribs.getValue("starty"));
@@ -118,8 +112,6 @@ public class FileLoader extends DefaultHandler{
                 
                 // Create a new component with the desired attributes
                 CreateComponentCommand ccc = new CreateComponentCommand(null,"Wire",0.0,new Point(startx, starty));
-                
-                // Perform the creation
                 ccc.execute(editor);
                 
                 // Create the wire
@@ -137,7 +129,7 @@ public class FileLoader extends DefaultHandler{
                 PropertiesOwner top = stack.peek();
 
                 try{
-                    top.getProperties().getAttribute(attrName).setValue(attrValue);
+                    top.getProperties().getAttribute(attrName).changeValue(attrValue);
                 } catch (Exception e){
                     successful = false;           
                     ErrorHandler.newError("File Load Error",

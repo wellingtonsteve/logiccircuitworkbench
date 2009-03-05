@@ -35,11 +35,11 @@ import ui.grid.Grid;
  */
 public class Wire extends SelectableComponent {
 
-    private Point endPoint = new Point(0, 0);
+    private Point endPoint = SelectableComponent.DEFAULT_ORIGIN();
     private LinkedList<Point> waypoints = new LinkedList<Point>(); // NOTE: Waypoints are specified in Global (World) Co-ordinates
     private int x1 = 0,  y1 = 0,  x2 = 0,  y2 = 0,  x3 = 0,  y3 = 0;
     private Point hoverWaypoint;
-    private Point hoverMousePoint = SelectableComponent.DEFAULT_ORIGIN;
+    private Point hoverMousePoint = SelectableComponent.DEFAULT_ORIGIN();
     private Point reportedSelfCrossover = null;
     private Color wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
     private sim.joinable.Wire logicalWire;
@@ -124,7 +124,7 @@ public class Wire extends SelectableComponent {
      */
     public void setEndPoint(Point endPoint) {
         this.endPoint = endPoint;      
-        if(!origin.equals(SelectableComponent.DEFAULT_ORIGIN)){
+        if(!origin.equals(SelectableComponent.DEFAULT_ORIGIN())){
             setLastLegPins();
         }
         
@@ -316,8 +316,10 @@ public class Wire extends SelectableComponent {
             }        
             
             // Add new pins to grid
-            for(int i = waypointIndex; i<localPins.size(); i++){
-                parent.getGrid().addPin(localPins.get(i));
+            if(isFixed()){
+                for(int i = waypointIndex; i<localPins.size(); i++){
+                    parent.getGrid().addPin(localPins.get(i));
+                }
             }
         } else {
             unsetGlobalPins();
