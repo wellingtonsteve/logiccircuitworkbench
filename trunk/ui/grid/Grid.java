@@ -247,8 +247,10 @@ public class Grid {
     public void draw(Graphics2D g2){
        g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
         
+       Rectangle extClip = g2.getClipBounds().getBounds();
+       extClip.grow(5, 5);
        for(GridObject p: grid.values()){           
-           if(g2.getClipBounds().contains(p)){
+           if(extClip.contains(p)){
             p.draw(g2);
            }
        }               

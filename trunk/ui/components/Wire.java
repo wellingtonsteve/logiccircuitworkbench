@@ -228,7 +228,10 @@ public class Wire extends SelectableComponent {
             removeCommonLineWaypoints(start, waypoints.getLast(), wp, true);
         }  
             
-        waypoints.add(wp);        
+        waypoints.add(wp);   
+        
+        setInvalidAreas();
+        setBoundingBox();  
     }
     
     /** {@inheritDoc} */
