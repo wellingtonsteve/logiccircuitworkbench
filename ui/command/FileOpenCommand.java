@@ -31,6 +31,7 @@ public class FileOpenCommand extends Command {
                 activeCircuit.setFilename(filename);
                 editor.refreshWindowsMenu();
                 activeCircuit.getParentFrame().setTitle(filename);
+                activeCircuit.getCommandHistory().clearHistory();
                 parentHistory.stageChange("message", getName() + ": " + filename);
             } else {
                 // Close bad circuit

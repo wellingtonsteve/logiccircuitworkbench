@@ -64,7 +64,7 @@ public class SubcircuitOpenCommand extends Command {
             loadingCircuit.addComponent(subcircuitComponent);
             subcircuitComponent.addLogicalComponentToCircuit();
             
-            activeCircuit.getCommandHistory().setIsDirty(false);
+            activeCircuit.getCommandHistory().clearHistory();
             activeCircuit.getParentFrame().doDefaultCloseAction();
             activeCircuit.getParentFrame().dispose();
             editor.setActiveCircuit(loadingCircuit);

@@ -32,62 +32,56 @@ public class CreateComponentCommand extends Command {
     
     @Override
     protected void perform(Editor editor) {
-        if(parentCircuit == null){
-            parentCircuit = activeCircuit;
-        }        
+        if(parentCircuit == null){ parentCircuit = activeCircuit;}        
         
         //Remove "Components." from begining
         if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
             key = key.substring(11); 
-        }   
-        if(parentCircuit != null){
-            try {                
-                // Create a new wire
-                if(key.equals("Wire")){                    
-                    sc = new ui.components.Wire(parentCircuit);
-                    if(point!=null){
-                        sc.setOrigin(point);
-                    }
-                // The key corresponds to a valid key in a loaded netlist
-                }else if(editor.isValidComponent(key)){
-                    
-                    Properties props = editor.getNetlistWithKey(key).getProperties(key);
-                    SimItem simItem = props.getLogicalComponentClass().getConstructor().newInstance();
-                
-                    // Was there a visual component class specified
-                    if(props.getVisualComponentClass() != null && editor.getNetlistWithKey(key).containsKey(key)){
-                            sc = props.getVisualComponentClass().getConstructor(
-                                CircuitPanel.class,
-                                Point.class, 
-                                SimItem.class,
-                                Properties.class)
-                                    .newInstance(
-                                        parentCircuit, 
-                                        point, 
-                                        simItem,
-                                        props);
-                    // Create a default visual component from the logical properties of the component
-                    } else { 
-                        sc = new DefaultVisualComponent(parentCircuit, point, simItem, props);
-                    }                     
+        }         
+        try {                
+            // Create a new wire
+            if(key.equals("Wire")){                    
+                sc = new ui.components.Wire(parentCircuit);
+                if(point!=null){
+                    sc.setOrigin(point);
+                }
+            // The key corresponds to a valid key in a loaded netlist
+            }else if(editor.isValidComponent(key)){
 
-                // Is this a subcircuit?
-                } else if(parentCircuit.isSubcircuit()){
-                        // TODO something
-                } else {
-                    throw new InvalidComponentException();
-                }                            
-                
-                sc.setRotation(rotation, true);                             
-                parentCircuit.addComponent(sc);
-                editor.setComponent(sc);
-                
-            } catch (Exception ex){
-                editor.clearComponentSelection();
-                ErrorHandler.newError("Component Creation Error",
-                        "An error occured whilst creating a new component.", ex);
-            }       
-        } 
+                Properties props = editor.getNetlistWithKey(key).getProperties(key);
+                SimItem simItem = props.getLogicalComponentClass().getConstructor().newInstance();
+
+                // Was there a visual component class specified
+                if(props.getVisualComponentClass() != null && editor.getNetlistWithKey(key).containsKey(key)){
+                        sc = props.getVisualComponentClass().getConstructor(
+                            CircuitPanel.class,
+                            Point.class, 
+                            SimItem.class,
+                            Properties.class)
+                                .newInstance(
+                                    parentCircuit, 
+                                    point, 
+                                    simItem,
+                                    props);
+                // Create a default visual component from the logical properties of the component
+                } else { 
+                    sc = new DefaultVisualComponent(parentCircuit, point, simItem, props);
+                }                     
+            // Is this a subcircuit?
+            } else {
+                SubcircuitOpenCommand soc = new SubcircuitOpenCommand();
+                sc = soc.createSubcircuitComponent(editor, key, activeCircuit);
+                sc.translate(point.x, point.y, sc.isFixed());
+            }                      
+            sc.setRotation(rotation, true);                             
+            parentCircuit.addComponent(sc);
+            editor.setComponent(sc);                
+        } catch (Exception ex){
+            editor.clearComponentSelection();
+            ErrorHandler.newError("Component Creation Error",
+                    "An error occured whilst creating a new component.", ex);
+        }       
+        
     }
     
     /**

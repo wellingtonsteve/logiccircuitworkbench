@@ -103,8 +103,6 @@ public class Properties implements Cloneable{
         } else if (images.containsKey(key + "." + name)){
             return images.get(key + "." + name);
         } else {
-            ErrorHandler.newError(new ui.error.Error("Initialisation Error",
-                    "Could not find image with key : \n" + name)); 
             return null;
         }
     }
