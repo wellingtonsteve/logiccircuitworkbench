@@ -733,7 +733,12 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                             w.addWaypoint(currentPoint);
                         } else if (grid.getConnectionPoint(currentPoint).canConnect(w.getLogicalWire())) {
                             w.setEndPoint(currentPoint);
-                            w.translate(0, 0, true);
+                            // Remove zero-length wires created by wire optimisation
+                            if(w.getOrigin().equals(w.getEndPoint())){
+                                drawnComponents.pop();
+                            } else {
+                                w.translate(0, 0, true);
+                            }
                             drawnComponents.push(new Wire(CircuitPanel.this));
                         }
                     }
@@ -809,19 +814,18 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                         && drawnComponents.peek() instanceof Wire){
 
                     Wire w = (Wire) drawnComponents.peek();
+                    Rectangle dirtyArea = w.getBoundingBox();
                     w.setEndPoint(currentPoint);
                     if(grid.isConnectionPoint(currentPoint)){
                         grid.setActivePoint(currentPoint, true);
                     }
 
-                    Rectangle dirtyArea = w.getBoundingBox();
+                    dirtyArea.add(w.getBoundingBox());
                     dirtyArea.add(currentPoint);
                     repaint(dirtyArea);
-                    repaintDirtyAreas();
+                    //repaintDirtyAreas();
                 }
-            } else if(nowDragingComponent){
-                dragActiveSelection(e,false,false);
-            }
+            } 
         }                   
 
         @Override
@@ -829,8 +833,8 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
             if(isActiveCircuit()){
                 currentPoint = Grid.snapToGrid(e.getPoint());
                 if(currentTool.equals("Select")){
+                    // Continue Drag
                     if(nowDragingComponent){
-                        // Continue Drag
                         dragActiveSelection(e,false,false);
                     }  else {
                         // Area we dragging from a fixed component?
@@ -867,6 +871,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     }                    
                 } else if (currentTool.equals("Wire") && !drawnComponents.isEmpty()){
                     Wire w = (Wire) drawnComponents.peek();
+                    Rectangle dirtyArea = w.getBoundingBox();
                     
                     // Start drawing the new wire
                     if(w.getOrigin().equals(SelectableComponent.DEFAULT_ORIGIN()) && grid.isConnectionPoint(dragStartPoint)){
@@ -877,12 +882,13 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     if(grid.isConnectionPoint(currentPoint)
                             && grid.getConnectionPoint(currentPoint).noOfConnections() > 1){
                         grid.setActivePoint(currentPoint, true);
-                    }
+                    }                    
                     
-                    Rectangle dirtyArea = w.getBoundingBox();
+                    dirtyArea.add(w.getBoundingBox());
                     dirtyArea.add(currentPoint);
                     repaint(dirtyArea);
-                    repaintDirtyAreas();
+                    
+                    //repaintDirtyAreas();
                     lastDragPoint = currentPoint;
                 }
             }       
@@ -912,6 +918,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         // Translate selection
         } else {
             Point anchor = (temporaryComponent==null)?null:temporaryComponent.getOrigin().getLocation();
+            // Check whether all the moves can be made
             boolean canMoveAll = true;
             for (SelectableComponent sc : activeComponents) {
                 if(anchor==null){ anchor = sc.getOrigin().getLocation(); }
@@ -921,29 +928,35 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
             }
             if (canMoveAll) {
                 SelectionTranslateCommand stc = null;
+                // Perform appropriate actions to the start, middle of end of a translation
                 if(finish && !start){
                     stc = new SelectionTranslateCommand();
                 }
                 for (SelectableComponent sc : activeComponents) {
                     int dx = currentPoint.x - anchor.x;
                     int dy = currentPoint.y - anchor.y;
+                    // Start
                     if(start && !finish){
                         sc.translate(currentPoint.x - lastDragPoint.x, currentPoint.y - lastDragPoint.y, false);
                         sc.mouseDragged(e);
                         nowDragingComponent = true;
+                    // End    
                     } else if(finish && !start){
                         sc.translate(0, 0, true);
                         stc.translate(sc, dx, dy);
                         nowDragingComponent = false;
+                    // Invalid
                     } else if(start && finish){
                         ErrorHandler.newError("Drag Error", 
                                 "You cannot start and finish a drag at the same time");
+                    // Middle
                     } else {
                         sc.translate(dx, dy, false);
                         sc.mouseDragged(e);
                         nowDragingComponent = true;
                     }
                 }
+                // Save the translation to the command history
                 if(finish && !start){
                     cmdHist.doCommand(stc);
                     resetActiveComponents();
@@ -951,12 +964,14 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                 repaintDirtyAreas();
                 lastDragPoint = currentPoint;
                 previousCurrentPoint = currentPoint;
+            // Catch finish translations if the move was invalid
             } else if(finish && !start) {
+                SelectionTranslateCommand stc = new SelectionTranslateCommand();
                 for (SelectableComponent sc : activeComponents) {
-                    sc.translate(0, 0, true);
-                    //stc.translate(sc, dx, dy);
+                    stc.translate(sc, 0, 0);
                     nowDragingComponent = false;
                 }
+                cmdHist.doCommand(stc);
                 resetActiveComponents();
             }
         }
