@@ -128,6 +128,35 @@ public class Wire extends SelectableComponent {
             setLastLegPins();
         }
         
+        // Check overlap of middle point of first leg with other wires
+        Grid grid = parent.getGrid();
+        if(waypoints.size() > 0){
+            createLeg(origin, waypoints.get(0));
+        } else {
+            createLeg(origin, endPoint);
+        }        
+        if(grid.isConnectionPoint(new Point(x2, y2))){
+            for(Pin p: grid.getConnectionPoint(new Point(x2,y2)).getConnections()){
+                if(p.getParent() instanceof Wire){
+                   origin = new Point(x2,y2);
+                }
+            }
+        }
+        
+        // Check overlap of middle point of last leg with other wires
+        if(waypoints.size() > 0){
+            createLeg(waypoints.getLast(), endPoint);
+        } else {
+            createLeg(origin, endPoint);
+        }
+        if(grid.isConnectionPoint(new Point(x2, y2))){
+            for(Pin p: grid.getConnectionPoint(new Point(x2,y2)).getConnections()){
+                if(p.getParent() instanceof Wire){
+                   endPoint = new Point(x2,y2);
+                }
+            }
+        }
+        
         // Remove Common line waypoints for tail of wire
         int len = waypoints.size();
         Point start = null;

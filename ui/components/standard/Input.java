@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import netlist.properties.Properties;
+import sim.SimulatorState;
 
 /**
  *
@@ -68,6 +69,16 @@ public class Input extends VisualComponent{
 
     public void setIsOn(boolean isOn) {
         this.isOn = isOn;
+    }
+    
+    @Override
+    public void SimulatorStateChanged(SimulatorState state) {
+        if(state.equals(SimulatorState.STOPPED)){
+            isOn = false;
+        } else if(state.equals(SimulatorState.PLAYING)){
+            isOn = true;
+        }
+        resetDefaultState();
     }
 
 }

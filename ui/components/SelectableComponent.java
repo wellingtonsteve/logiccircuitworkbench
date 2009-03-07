@@ -13,9 +13,11 @@ import javax.xml.transform.sax.TransformerHandler;
 import netlist.properties.Attribute;
 import netlist.properties.Properties;
 import netlist.properties.PropertiesOwner;
+import sim.SimulatorState;
 import sim.joinable.*;
 import sim.SimItem;
 import sim.LogicState;
+import sim.SimulatorStateListener;
 import ui.CircuitPanel;
 import ui.UIConstants;
 import ui.command.EditAttributeCommand;
@@ -29,7 +31,7 @@ import ui.grid.Grid;
  * @author Matt
  */
 public abstract class SelectableComponent implements Labeled, Cloneable, 
-        PropertiesOwner, netlist.properties.AttributeListener {    
+        PropertiesOwner, netlist.properties.AttributeListener, SimulatorStateListener {    
 
     /** Set the default selection state of this component */
     protected SelectionState selectionState = SelectionState.DEFAULT;
@@ -604,6 +606,15 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         EditAttributeCommand eac = new EditAttributeCommand(attr, attr.getOldValue(), value);
         parent.doCommand(eac);
     }
+
+    @Override
+    public void SimulationRateChanged(int rate) {}
+
+    @Override
+    public void SimulationTimeChanged(long time) {}
+
+    @Override
+    public void SimulatorStateChanged(SimulatorState state) {}    
     
     /**
      * Similar to clone except that the exception is caught and the Cast to 
