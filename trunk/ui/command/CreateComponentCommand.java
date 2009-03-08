@@ -47,22 +47,17 @@ public class CreateComponentCommand extends Command {
                 }
             // The key corresponds to a valid key in a loaded netlist
             }else if(editor.isValidComponent(key)){
-
                 Properties props = editor.getNetlistWithKey(key).getProperties(key);
                 SimItem simItem = props.getLogicalComponentClass().getConstructor().newInstance();
 
                 // Was there a visual component class specified
                 if(props.getVisualComponentClass() != null && editor.getNetlistWithKey(key).containsKey(key)){
-                        sc = props.getVisualComponentClass().getConstructor(
-                            CircuitPanel.class,
-                            Point.class, 
-                            SimItem.class,
-                            Properties.class)
-                                .newInstance(
-                                    parentCircuit, 
-                                    point, 
-                                    simItem,
-                                    props);
+                    sc = props.getVisualComponentClass().getConstructor(
+                                CircuitPanel.class,
+                                Point.class, 
+                                SimItem.class,
+                                Properties.class)
+                        .newInstance(parentCircuit, point, simItem, props);
                 // Create a default visual component from the logical properties of the component
                 } else { 
                     sc = new DefaultVisualComponent(parentCircuit, point, simItem, props);
@@ -80,8 +75,7 @@ public class CreateComponentCommand extends Command {
             editor.clearComponentSelection();
             ErrorHandler.newError("Component Creation Error",
                     "An error occured whilst creating a new component.", ex);
-        }       
-        
+        }               
     }
     
     /**
@@ -97,60 +91,29 @@ public class CreateComponentCommand extends Command {
     }
     
      /** This class used to create a drawable component when only details of the 
-     * logical component are available */
-    private class DefaultVisualComponent extends VisualComponent {
-        private int spacing = 2*UIConstants.GRID_DOT_SPACING;
-        
+     *   logical component are available 
+     */
+    private class DefaultVisualComponent extends VisualComponent {        
         public DefaultVisualComponent(CircuitPanel parent, Point point, sim.SimItem simItem, netlist.properties.Properties properties) {
-            super(parent, point, simItem,properties);            
-        }
-        
-        @Override
-        protected void setLocalPins() {
-            localPins.clear();
-            spacing = 2*UIConstants.GRID_DOT_SPACING;
-            int inputPinNo = logicalComponent.getInputs().size();
-            int outputPinNo = logicalComponent.getOutputs().size();
-
-            for (int i = 0; i < inputPinNo; i++) {
-                Pin p = new Pin(0, (i + 1) * spacing, logicalComponent.getPinByName("Input" + ((inputPinNo>1)?" " +(i+1):"")));
-                localPins.add(p);
-            }
-
-            for (int i = 0; i < outputPinNo; i++) {
-                Pin p = new Pin(getWidth() + spacing, (i + 1) * spacing, logicalComponent.getPinByName("Output" + ((outputPinNo>1)?" " +(i+1):"")));
-                localPins.add(p);
-            }
+            super(parent, point, simItem,properties);    
         }
         
         @Override
         protected void setBoundingBox(){
-            boundingBox = new java.awt.Rectangle(getOrigin().x-getCentre().x,
-                    getOrigin().y-getCentre().y,
-                    getWidth()+10,
-                    getHeight());
+            boundingBox = new java.awt.Rectangle(getOrigin().x, getOrigin().y,
+                    getWidth()+12, getHeight());
             boundingBox = rotate(boundingBox);
         }
         
         @Override
-        public int getWidth(){
-            return 50;
-        }
-
-        @Override
-        public int getHeight(){
-            return (Math.max(logicalComponent.getInputs().size(), logicalComponent.getOutputs().size()) + 1) * spacing;
-        }
-        
-        @Override
         protected void setInvalidAreas() {
-            invalidArea = new java.awt.Rectangle(getOrigin().x-getCentre().x+9, 
-                    getOrigin().y-getCentre().y-1, 
-                    getWidth()-spacing+2, 
+            invalidArea = new java.awt.Rectangle(getOrigin().x+9, 
+                    getOrigin().y-1, 
+                    getWidth()+2, 
                     getHeight()+2);
             invalidArea = rotate(invalidArea);
         }
-
+        
         @Override
         public Point getCentre() {
             return new Point(30, 30);
@@ -168,48 +131,40 @@ public class CreateComponentCommand extends Command {
               
             if(getSelectionState().equals(SelectionState.ACTIVE)){
                 g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
-                g.drawRect(10, 0, getWidth()-spacing, getHeight());
+                g.drawRect(10, 0, getWidth(), getHeight());
             } else if(getSelectionState().equals(SelectionState.HOVER)){
                 g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-                g.fillRect(10, 0, getWidth()-spacing, getHeight());
+                g.fillRect(10, 0, getWidth(), getHeight());
                 g.setColor(UIConstants.HOVER_COMPONENT_COLOUR);
-                g.drawRect(10, 0, getWidth()-spacing, getHeight());
+                g.drawRect(10, 0, getWidth(), getHeight());
             } else {
                 g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-                g.fillRect(10, 0, getWidth()-spacing, getHeight());             
+                g.fillRect(10, 0, getWidth(), getHeight());             
                 g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-                g.drawRect(10, 0, getWidth()-spacing, getHeight());
+                g.drawRect(10, 0, getWidth(), getHeight());
             }            
             
             g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
             String name = logicalComponent.getShortName();
-            g.drawString(name.substring(0, Math.min(6,name.length()-1)), 10, 10);
-            
+            g.drawString(name.substring(0, Math.min(6,name.length()-1)), 10, 10);            
             for(Pin p: localPins){
-                if(p.getJoinable() instanceof sim.joinable.InputPin){
-                    g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
-                } else if(p.getJoinable() instanceof sim.joinable.OutputPin){
-                    g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);
+                switch(p.getEdge()){
+                    case North:
+                        g.drawLine(p.x, p.y, p.x, p.y+(2*UIConstants.GRID_DOT_SPACING));
+                        break;
+                    case South:
+                        g.drawLine(p.x, p.y, p.x, p.y-(2*UIConstants.GRID_DOT_SPACING)); 
+                        break;
+                    case West:
+                        g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
+                        break;
+                    case East:
+                        g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);                  
+                        break;
                 }
-            }      
-
+            }        
             g.translate(-getOrigin().x, -getOrigin().y);
             g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-        }
-
-        @Override
-        protected void setDefaultImage() {
-            defaultBi = null;
-        }
-
-        @Override
-        protected void setSelectedImage() {
-            selectedBi = null;
-        }
-
-        @Override
-        protected void setActiveImage() {
-            activeBi = null;
-        }        
+        }       
     }   
 }

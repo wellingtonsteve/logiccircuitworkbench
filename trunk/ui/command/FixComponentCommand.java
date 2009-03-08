@@ -25,7 +25,7 @@ public class FixComponentCommand extends Command {
             if(!activeCircuit.containsComponent(sc)){
                 activeCircuit.addComponent(sc);
             } else {
-                activeCircuit.moveComponentToFront(sc);
+                activeCircuit.bringComponentToFront(sc);
             }
             if(sc.isFixed() && sc instanceof PinLogger){
                  ViewerFrame loggerWindow = activeCircuit.getLoggerWindow();

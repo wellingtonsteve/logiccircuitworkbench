@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.xml.transform.sax.TransformerHandler;
 import netlist.properties.Attribute;
+import netlist.properties.PinPosition;
 import netlist.properties.Properties;
 import netlist.properties.PropertiesOwner;
 import sim.SimulatorState;
@@ -21,6 +22,7 @@ import sim.SimulatorStateListener;
 import ui.CircuitPanel;
 import ui.UIConstants;
 import ui.command.EditAttributeCommand;
+import ui.error.ErrorHandler;
 import ui.grid.ConnectionPoint;
 import ui.grid.Grid;
 
@@ -90,7 +92,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
             this.origin = origin;
         }
         setLocalPins();     
-        addListeners();
+        addListeners(); 
     }
     
     /**
@@ -221,15 +223,16 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
             if(this.fixed && !fixed){
                 unFixedPoint = origin.getLocation();
             }
-            this.origin.translate(dx, dy);
-            setInvalidAreas();
-            setBoundingBox();
-
-            if (fixed){ 
-                grid.markInvalidAreas(this);                 
-            }            
+            if(dx != 0 || dy != 0){ 
+                this.origin.translate(dx, dy);
+                setInvalidAreas();
+                setBoundingBox();
+            } 
             this.fixed = fixed; 
-            if(fixed){ setGlobalPins();}
+            if(fixed){ 
+                grid.markInvalidAreas(this);  
+                setGlobalPins();
+            }
 
         // Alert the user that this was an invalid move and we cannot fix the 
         // component here
@@ -321,7 +324,8 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
      * upon translation or rotation.
      */    
     protected void setInvalidAreas(){
-        this.invalidArea = new Rectangle(getOrigin().x,getOrigin().y,getWidth(),getHeight());   
+        invalidArea = new Rectangle(getOrigin().x,getOrigin().y,getWidth(),getHeight());   
+        invalidArea = rotate(invalidArea);
     }
     
     /**
@@ -344,7 +348,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
      * upon translation or rotation.
      */
     protected void setBoundingBox() {
-        boundingBox = new Rectangle(getOrigin().x-getCentre().x,getOrigin().y-getCentre().y,getWidth(),getHeight());
+        boundingBox = new Rectangle(getOrigin().x,getOrigin().y,getWidth(),getHeight());
         boundingBox = rotate(boundingBox);        
     } 
     
@@ -510,6 +514,40 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         return properties.getAttributesPanel();
     }
     
+    protected Point createPointFromPinPosition(PinPosition pp){
+        int x=0, y=0;
+        Point topLeft = Grid.snapToGrid(new Point((int)getInvalidArea().getMinX(), (int)getInvalidArea().getMinY()));
+        Point bottomRight = Grid.snapToGrid(new Point((int)getInvalidArea().getMaxX(), (int)getInvalidArea().getMaxY()));
+        int minX = topLeft.x-getOrigin().x;
+        int maxX = bottomRight.x-getOrigin().x;
+        int minY = topLeft.y-getOrigin().y;
+        int maxY = bottomRight.y-getOrigin().y;
+        int space = UIConstants.GRID_DOT_SPACING;
+        int pos = pp.getN();
+        
+        switch(pp.getEdge()){
+            case North:
+                x = minX+(space * (pos + 1));
+                y = minY-(2*space);
+                break;
+            case East:
+                x = maxX+(2*space);
+                y = minY+(space * (pos + 1));
+                break;
+            case South:
+                x = minX+(space * (pos + 1)); 
+                y = maxY+(2*space);
+                break;
+            case West:
+                x = minX-(2*space);
+                y = minY+(space * (pos + 1));
+                break;
+            default:
+                ErrorHandler.newError("Component Creation Error", "Invalid external pin edge location: " + pp.getEdge());
+        }       
+        return Grid.snapToGrid(new Point(x,y));
+    }
+    
     /**
      * Helper method to calculate the rotation of Point p about the centre Point
      * of the component in the clockwise direction.
@@ -536,7 +574,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
     protected Rectangle rotate(Rectangle src){
         Rectangle retval;
         java.awt.geom.AffineTransform rotationTransformation = new java.awt.geom.AffineTransform();
-        rotationTransformation.rotate(rotation, getOrigin().x, getOrigin().y);
+        rotationTransformation.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y+ getCentre().y);
         retval = rotationTransformation.createTransformedShape(new Rectangle(src)).getBounds();
         
         return retval;
@@ -665,6 +703,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         private sim.joinable.Pin simPin;
         private sim.joinable.Wire wire;
         private Joinable joinable;
+        private ComponentEdge edge;
 
         /**
          * Constructor for Wire Pins.
@@ -684,16 +723,18 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
          * @param y The y-coordinate (local)
          * @param simPin The logical pin associated with this pin
          */
-        public Pin(int x, int y, sim.joinable.Pin simPin){
+        public Pin(int x, int y, sim.joinable.Pin simPin, ComponentEdge edge){
             super(x,y);
             this.parent = SelectableComponent.this;
             this.simPin = simPin;
             if(simPin!=null){this.simPin.addValueListener(this);}
             this.joinable = simPin;
+            this.edge = edge;
         }
 
-        public Pin(Point p, sim.joinable.Pin pinByName) {
-            this(p.x, p.y, pinByName);
+        /** Convience constuctor for Component pins.*/
+        public Pin(Point p, sim.joinable.Pin pinByName, ComponentEdge edge) {
+            this(p.x, p.y, pinByName, edge);
         }
 
         /**
@@ -734,16 +775,17 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
          */
         public Point getGlobalLocation() {
             Point rotP;
+            Point about = getLocation();
             if(rotation != 0.0){
                 cosTheta = Math.cos(rotation);
                 sinTheta = Math.sin(rotation);
-                rotP = rotate(getLocation()); 
+                rotP = rotate(about); 
             } else {
-                rotP = getLocation();
+                rotP = about;
             }
             Point retval = new Point(
-                        rotP.x +getOrigin().x-getCentre().x,
-                        rotP.y +getOrigin().y-getCentre().y);
+                        rotP.x +getOrigin().x,
+                        rotP.y +getOrigin().y);
             return retval;
         } 
 
@@ -767,6 +809,13 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
          */
         public sim.joinable.Joinable getJoinable(){
             return joinable;
+        }
+        
+        /**
+         * @return The edge of the component that this pin is to be positioned on.
+         */
+        public ComponentEdge getEdge(){
+            return edge;
         }
     }
 }

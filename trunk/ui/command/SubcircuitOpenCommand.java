@@ -89,27 +89,9 @@ public class SubcircuitOpenCommand extends Command {
         private String filename = activeCircuit.getFilename();
 
         @Override
-        protected void setBoundingBox() {
-            boundingBox = new java.awt.Rectangle(getOrigin().x - getCentre().x,
-                    getOrigin().y - getCentre().y, getWidth(), getHeight());
-            boundingBox = rotate(boundingBox);
-        }
-
-        @Override
         public int getWidth() {
             if (width == 0) {
-                int maxX = 0;
-                for (Point p : properties.getInputPins().values()) {
-                    if (p.x > maxX) {
-                        maxX = p.x;
-                    }
-                }
-                for (Point p : properties.getOutputPins().values()) {
-                    if (p.x > maxX) {
-                        maxX = p.x;
-                    }
-                }
-                width = Math.max(maxX, 30);
+                width = (Integer) properties.getAttribute("Subcircuit Width").getValue();
             }
             return width;
         }
@@ -117,26 +99,15 @@ public class SubcircuitOpenCommand extends Command {
         @Override
         public int getHeight() {
             if (height == 0) {
-                int maxY = 0;
-                for (Point p : properties.getInputPins().values()) {
-                    if (p.y > maxY) {
-                        maxY = p.y;
-                    }
-                }
-                for (Point p : properties.getOutputPins().values()) {
-                    if (p.y > maxY) {
-                        maxY = p.y;
-                    }
-                }
-                height = Math.max(maxY+5, 30);
+                height = (Integer) properties.getAttribute("Subcircuit Height").getValue();
             }
             return height;
         }
 
         @Override
         protected void setInvalidAreas() {
-            invalidArea = new java.awt.Rectangle(getOrigin().x - getCentre().x + 14, 
-                    getOrigin().y - getCentre().y - 1, getWidth() - 25 + 2, getHeight() +2);
+            invalidArea = new java.awt.Rectangle(getOrigin().x + 14, 
+                    getOrigin().y- 1, getWidth() - 25 + 2, getHeight() +2);
             invalidArea = rotate(invalidArea);
         }
 
@@ -180,34 +151,33 @@ public class SubcircuitOpenCommand extends Command {
             //g.drawString(name, 10, 10);
 
             for (Pin p : localPins) {
+                String label = new String();
                 if (p.getJoinable() instanceof sim.joinable.InputPin) {
-                    String label = ((sim.joinable.InputPin)p.getJoinable()).getName();
-                    g.drawString(label, p.x + (2 * UIConstants.GRID_DOT_SPACING)+1, p.y+3);
-                    g.drawLine(p.x, p.y, p.x + (2 * UIConstants.GRID_DOT_SPACING), p.y);
+                    label = ((sim.joinable.InputPin)p.getJoinable()).getName();                    
                 } else if (p.getJoinable() instanceof sim.joinable.OutputPin) {
-                    String label = ((sim.joinable.OutputPin)p.getJoinable()).getName();
-                    g.drawString(label, p.x - (2 * UIConstants.GRID_DOT_SPACING)-8, p.y+3);
-                    g.drawLine(p.x, p.y, p.x - (2 * UIConstants.GRID_DOT_SPACING), p.y);
+                    label = ((sim.joinable.OutputPin)p.getJoinable()).getName();
                 }
+                switch(p.getEdge()){
+                    case North:
+                        g.drawString(label, p.x+3, p.y+ (2 * UIConstants.GRID_DOT_SPACING)+1);
+                        g.drawLine(p.x, p.y, p.x, p.y+(2*UIConstants.GRID_DOT_SPACING));
+                        break;
+                    case South:
+                        g.drawString(label, p.x+3, p.y-(2 * UIConstants.GRID_DOT_SPACING)-8);
+                        g.drawLine(p.x, p.y, p.x, p.y-(2*UIConstants.GRID_DOT_SPACING)); 
+                        break;
+                    case West:
+                        g.drawString(label, p.x + (2 * UIConstants.GRID_DOT_SPACING)+1, p.y+3);
+                        g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
+                        break;
+                    case East:
+                        g.drawString(label, p.x - (2 * UIConstants.GRID_DOT_SPACING)-8, p.y+3);
+                        g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);                        
+                        break;
+                }      
             }
-
             g.translate(-getOrigin().x, -getOrigin().y);
             g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-        }
-
-        @Override
-        protected void setDefaultImage() {
-            defaultBi = null;
-        }
-
-        @Override
-        protected void setSelectedImage() {
-            selectedBi = null;
-        }
-
-        @Override
-        protected void setActiveImage() {
-            activeBi = null;
         }
         
         public void openEditor(){
@@ -233,13 +203,6 @@ public class SubcircuitOpenCommand extends Command {
             width = 0;
             unsetGlobalPins();
             setLocalPins();
-            setGlobalPins();
         }
-        
-//        @Override
-//        public SelectableComponent copy() {
-//            return createSubcircuitComponent(getParent().getParentFrame().getEditor(), filename);
-//        }
     }
-
 }

@@ -16,7 +16,7 @@ public class DefaultLogicGate extends VisualComponent{
 
     @Override
     protected void setInvalidAreas(){
-        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+18,(int)getOrigin().getY()+18-getCentre().y,34,24);
+        invalidArea = new Rectangle(getOrigin().x+18,getOrigin().y+18,34,24);
         invalidArea = rotate(invalidArea);        
     }
     

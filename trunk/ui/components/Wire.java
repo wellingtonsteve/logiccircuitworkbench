@@ -44,12 +44,10 @@ public class Wire extends SelectableComponent {
     private Color wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
     private sim.joinable.Wire logicalWire;
 
-    public sim.joinable.Wire getLogicalWire() {
-        return logicalWire;
-    }
-
     public Wire(CircuitPanel parent){
         super(parent, null, null, null);
+        setLocalPins();     
+        addListeners();
         logicalWire = new sim.joinable.Wire();
     }
     
@@ -67,6 +65,10 @@ public class Wire extends SelectableComponent {
     public String getKeyName() {
         return "Wire";
     } 
+    
+    public sim.joinable.Wire getLogicalWire() {
+        return logicalWire;
+    }
    
     /** Don't do anything, we don't want to rotate wires */
     @Override
@@ -106,6 +108,7 @@ public class Wire extends SelectableComponent {
             }           
             this.fixed = fixed; 
             if(fixed){
+                optimiseWireEnds();
                 setLocalPins();
                 setGlobalPins();  
             }
@@ -124,38 +127,11 @@ public class Wire extends SelectableComponent {
      */
     public void setEndPoint(Point endPoint) {
         this.endPoint = endPoint;      
+        // We only need to update the pins on the last leg of the wire
         if(!origin.equals(SelectableComponent.DEFAULT_ORIGIN())){
             setLastLegPins();
-        }
-        
-        // Check overlap of middle point of first leg with other wires
-        Grid grid = parent.getGrid();
-        if(waypoints.size() > 0){
-            createLeg(origin, waypoints.get(0));
-        } else {
-            createLeg(origin, endPoint);
         }        
-        if(grid.isConnectionPoint(new Point(x2, y2))){
-            for(Pin p: grid.getConnectionPoint(new Point(x2,y2)).getConnections()){
-                if(p.getParent() instanceof Wire){
-                   origin = new Point(x2,y2);
-                }
-            }
-        }
-        
-        // Check overlap of middle point of last leg with other wires
-        if(waypoints.size() > 0){
-            createLeg(waypoints.getLast(), endPoint);
-        } else {
-            createLeg(origin, endPoint);
-        }
-        if(grid.isConnectionPoint(new Point(x2, y2))){
-            for(Pin p: grid.getConnectionPoint(new Point(x2,y2)).getConnections()){
-                if(p.getParent() instanceof Wire){
-                   endPoint = new Point(x2,y2);
-                }
-            }
-        }
+        optimiseWireEnds();
         
         // Remove Common line waypoints for tail of wire
         int len = waypoints.size();
@@ -241,8 +217,7 @@ public class Wire extends SelectableComponent {
      * 
      * @param wp The waypoint to add
      */
-    public void addWaypoint(Point wp) {
-               
+    public void addWaypoint(Point wp) {               
         // Set start equal to the penultimate waypoint (possibly the start point)
         int len = waypoints.size();
         Point start = null;
@@ -250,8 +225,7 @@ public class Wire extends SelectableComponent {
             start = origin;
         } else if (len > 1){
             start = waypoints.get(len - 2);
-        }
-        
+        }        
         // Remove waypoints that lie on the same line
         if(start != null){ 
             removeCommonLineWaypoints(start, waypoints.getLast(), wp, true);
@@ -271,10 +245,9 @@ public class Wire extends SelectableComponent {
         if (waypoints != null) {
             Point current = origin;
             Point next = origin;
-            Point last = endPoint;
-        
+            Point last = endPoint;        
             LinkedList<Point> oldwaypoints = new LinkedList<Point>();
-            oldwaypoints.addAll(waypoints);
+            oldwaypoints.addAll(waypoints);                      
             
             for (Point waypoint : waypoints) {                
                 next = waypoint;
@@ -283,12 +256,12 @@ public class Wire extends SelectableComponent {
             }
             setPinsOnLeg(next, last);
             
-            localPins.add(new Pin(endPoint.x-getOrigin().x-getCentre().x,
-                    endPoint.y-getOrigin().y-getCentre().y));
+            localPins.add(new Pin(endPoint.x-getOrigin().x,
+                    endPoint.y-getOrigin().y));
             
             fixSelfCrossover();
         
-             // If waypoints have changed, we need to reset the local, and global pins again
+            // If waypoints have changed, we need to reset the local, and global pins again
             boolean waypointsHaveChanged = false;
             for(Point p: oldwaypoints){
                 if(!waypoints.contains(p)){
@@ -300,7 +273,44 @@ public class Wire extends SelectableComponent {
                 setLocalPins();
             }        
         }     
-    }   
+    }
+
+    private void optimiseWireEnds() {
+        // Check overlap of middle point of first leg with other wires
+        if(!waypoints.isEmpty()){
+            Grid grid = parent.getGrid();
+            if (waypoints.size() > 0) {
+                createLeg(origin, waypoints.getFirst());
+            } else {
+                createLeg(origin, endPoint);
+            }
+            if (grid.isConnectionPoint(new Point(x2, y2))) {
+                for (Pin p : grid.getConnectionPoint(new Point(x2, y2)).getConnections()) {
+                    if (p.getParent() instanceof Wire) {
+                        origin = new Point(x2, y2);
+                        break;
+                    }
+                }
+            }
+
+            // Check overlap of middle point of last leg with other wires
+            if(fixed){
+                if (waypoints.size() > 0) {
+                    createLeg(waypoints.getLast(), endPoint);
+                } else {
+                    createLeg(origin, endPoint);
+                }
+                if (grid.isConnectionPoint(new Point(x2, y2))) {
+                    for (Pin p : grid.getConnectionPoint(new Point(x2, y2)).getConnections()) {
+                        if (p.getParent() instanceof Wire) {
+                            endPoint = new Point(x2, y2);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
         
     /**
      * Similar to setLocalPins() except it only does so for the last leg. 
@@ -308,13 +318,14 @@ public class Wire extends SelectableComponent {
      * does not have to be replotted.
      */
     private void setLastLegPins() {
+        // Create pins between last waypoint and end point
         if(!waypoints.isEmpty()){
-            int waypointIndex = 0;
-            
+            // Backup waypoints, for later test of changes
+            int waypointIndex = 0;            
             LinkedList<Point> oldwaypoints = new LinkedList<Point>();
             oldwaypoints.addAll(waypoints);
             
-            // Remove old pins            
+            // Remove old pins, and note the index of the last waypoint pin
             LinkedList<Pin> oldPins = new LinkedList<Pin>();
             Point wp = waypoints.getLast();
             for(int i = localPins.size()-1;i>=0;i--){
@@ -330,8 +341,7 @@ public class Wire extends SelectableComponent {
             
             // Create new local pins
             setPinsOnLeg(waypoints.getLast(), endPoint);
-            localPins.add(new Pin(endPoint.x-getOrigin().x-getCentre().x,
-                    endPoint.y-getOrigin().y-getCentre().y));
+            localPins.add(new Pin(endPoint.x-getOrigin().x,endPoint.y-getOrigin().y));
             
             fixSelfCrossover();
         
@@ -353,12 +363,12 @@ public class Wire extends SelectableComponent {
                     parent.getGrid().addPin(localPins.get(i));
                 }
             }
+        // Set pins between the start and end point
         } else {
             unsetGlobalPins();
             localPins.clear();            
             setPinsOnLeg(origin, endPoint);
-            localPins.add(new Pin(endPoint.x-getOrigin().x-getCentre().x,
-                    endPoint.y-getOrigin().y-getCentre().y));
+            localPins.add(new Pin(endPoint.x-getOrigin().x, endPoint.y-getOrigin().y));
             setGlobalPins();
         }      
     }
@@ -631,8 +641,8 @@ public class Wire extends SelectableComponent {
 
         if (waypoints != null && reportedSelfCrossover != null) {            
             // Translate crossover point to world (circuit) co-ordintates.
-            Point p = new Point(reportedSelfCrossover.x+getOrigin().x+getCentre().x,
-                    reportedSelfCrossover.y+getOrigin().y+getCentre().y);            
+            Point p = new Point(reportedSelfCrossover.x+getOrigin().x,
+                    reportedSelfCrossover.y+getOrigin().y);            
             Point current = origin;
             Point next = null;
 

@@ -4,8 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import sim.joinable.Joinable;
 import ui.CircuitPanel;
 import ui.UIConstants;

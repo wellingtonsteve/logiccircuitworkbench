@@ -16,7 +16,7 @@ public class DefaultFlipFlop extends VisualComponent{
 
     @Override
     protected void setInvalidAreas(){
-        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+13,(int)getOrigin().getY()+8-getCentre().y,34,54);
+        invalidArea = new Rectangle((int)getOrigin().getX()+13,(int)getOrigin().getY()+8,34,54);
         invalidArea = rotate(invalidArea);        
     }
     

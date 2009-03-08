@@ -21,7 +21,7 @@ public class Oscillator extends VisualComponent{
     
     @Override
     protected void setInvalidAreas(){
-        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x-1,(int)getOrigin().getY()-getCentre().y-1,22,22);
+        invalidArea = new Rectangle((int)getOrigin().getX()-1,(int)getOrigin().getY()-1,22,22);
         invalidArea = rotate(invalidArea);   
     }
     
