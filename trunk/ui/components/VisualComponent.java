@@ -17,8 +17,7 @@ import ui.command.SubcircuitOpenCommand.SubcircuitComponent;
  *
  * @author matt
  */
-public abstract class VisualComponent extends SelectableComponent {
-    
+public abstract class VisualComponent extends SelectableComponent {    
     protected BufferedImage defaultBi = null;
     protected BufferedImage selectedBi = null;
     protected BufferedImage activeBi = null;
@@ -169,7 +168,6 @@ public abstract class VisualComponent extends SelectableComponent {
                        break;
                 } 
             }
-
             Map<String, PinPosition> outpins = properties.getOutputPins();
             for (String k : outpins.keySet()) {
                 PinPosition pp = outpins.get(k);
