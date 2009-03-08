@@ -907,7 +907,8 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                             && grid.isConnectionPoint(dragStartPoint)){
                         w.setStartPoint(dragStartPoint);                           
                     }
-                    w.setEndPoint(currentPoint);                        
+                    w.setEndPoint(currentPoint); 
+                    
                     // Highlight connection point?
                     if(grid.isConnectionPoint(currentPoint)
                             && grid.getConnectionPoint(currentPoint).noOfConnections() > 1){
@@ -917,8 +918,6 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     dirtyArea.add(w.getBoundingBox());
                     dirtyArea.add(currentPoint);
                     repaint(dirtyArea);
-                    
-                    //repaintDirtyAreas();
                     lastDragPoint = currentPoint;
                 }
             }       
@@ -947,26 +946,29 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
             previousCurrentPoint = lastDragPoint;
         // Translate selection
         } else {
-            Point anchor = (temporaryComponent==null)?null:temporaryComponent.getOrigin().getLocation();
+            Point anchor = null;
+            if(temporaryComponent!=null){
+                anchor = temporaryComponent.getOrigin().getLocation();
+                anchor.translate(temporaryComponent.getCentre().x, temporaryComponent.getCentre().y);
+            }
             // Check whether all the moves can be made
             boolean canMoveAll = true;
             for (SelectableComponent sc : activeComponents) {
                 if(anchor==null){ 
                     anchor = sc.getOrigin().getLocation(); 
+                    anchor.translate(sc.getCentre().x, sc.getCentre().y);
                 }
-                int dx = currentPoint.x - anchor.x - sc.getCentre().x;
-                int dy = currentPoint.y - anchor.y - sc.getCentre().y;
+                int dx = currentPoint.x - anchor.x;
+                int dy = currentPoint.y - anchor.y;
                 canMoveAll &= grid.canTranslateComponent(sc, dx, dy);
             }
             if (canMoveAll) {
                 SelectionTranslateCommand stc = null;
+                if(finish && !start){ stc = new SelectionTranslateCommand(); }
                 // Perform appropriate actions to the start, middle of end of a translation
-                if(finish && !start){
-                    stc = new SelectionTranslateCommand();
-                }
                 for (SelectableComponent sc : activeComponents) {
-                    int dx = currentPoint.x - anchor.x - sc.getCentre().x;
-                    int dy = currentPoint.y - anchor.y - sc.getCentre().y;
+                    int dx = currentPoint.x - anchor.x;
+                    int dy = currentPoint.y - anchor.y;
                     // Start
                     if(start && !finish){
                         sc.translate(currentPoint.x - lastDragPoint.x, currentPoint.y - lastDragPoint.y, false);

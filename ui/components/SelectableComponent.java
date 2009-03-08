@@ -215,13 +215,13 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
      */
     public void translate(int dx, int dy, boolean fixed) {     
         ui.grid.Grid grid = parent.getGrid();
-
+        
         if(grid.canTranslateComponent(this, dx, dy) || (dx == 0 && dy == 0)){
-            if(this.fixed && !fixed) { unsetGlobalPins();}
             grid.unmarkInvalidAreas(this);
             // Rememeber my position at the moment I started to move
             if(this.fixed && !fixed){
                 unFixedPoint = origin.getLocation();
+                unsetGlobalPins();
             }
             if(dx != 0 || dy != 0){ 
                 this.origin.translate(dx, dy);
@@ -233,7 +233,6 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
                 grid.markInvalidAreas(this);  
                 setGlobalPins();
             }
-
         // Alert the user that this was an invalid move and we cannot fix the 
         // component here
         } else if(!this.fixed && fixed && UIConstants.DO_SYSTEM_BEEP){

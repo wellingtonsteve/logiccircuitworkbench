@@ -88,9 +88,9 @@ public class Wire extends SelectableComponent {
         ui.grid.Grid grid = parent.getGrid();
         if(grid.canTranslateComponent(this, dx, dy)|| (dx == 0 && dy == 0)){
             if(this.fixed && !fixed) {
-                unsetGlobalPins();
                 // Rememeber my position at the moment I started to move
                 unFixedPoint = origin.getLocation();
+                unsetGlobalPins();
             }         
             // Fix loops if finished drawing wire
             if(!this.fixed && fixed){
