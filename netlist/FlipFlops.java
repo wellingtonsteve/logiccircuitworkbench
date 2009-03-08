@@ -1,6 +1,5 @@
 package netlist;
 
-import java.awt.Point;
 import netlist.properties.Properties;
 import netlist.properties.TextAttribute;
 
@@ -30,11 +29,11 @@ public class FlipFlops extends Netlist{
             addImage("selected", "/ui/images/components/selected_d_flipflop.png");
             addImage("active", "/ui/images/components/active_d_flipflop.png");
 
-            addInputPin("D", new Point(5,20));
-            addInputPin("Clock", new Point(5,50));
-
-            addOutputPin("Q", new Point(55,20));
-            addOutputPin("NotQ", new Point(55,50));
+//            addInputPin("D", new Point(5,20));
+//            addInputPin("Clock", new Point(5,50));
+//
+//            addOutputPin("Q", new Point(55,20));
+//            addOutputPin("NotQ", new Point(55,50));
         }
     }
     
@@ -50,12 +49,12 @@ public class FlipFlops extends Netlist{
             addImage("selected", "/ui/images/components/selected_jk_flipflop.png");
             addImage("active", "/ui/images/components/active_jk_flipflop.png");
 
-            addInputPin("Input 1", new Point(5,20));
-            addInputPin("Input 1", new Point(5,35));
-            addInputPin("Input 2", new Point(5,50));
-
-            addOutputPin("Output", new Point(55,20));
-            addOutputPin("Output", new Point(55,20));
+//            addInputPin("Input 1", new Point(5,20));
+//            addInputPin("Input 1", new Point(5,35));
+//            addInputPin("Input 2", new Point(5,50));
+//
+//            addOutputPin("Output", new Point(55,20));
+//            addOutputPin("Output", new Point(55,20));
         }
     }
     
@@ -71,11 +70,11 @@ public class FlipFlops extends Netlist{
             addImage("selected", "/ui/images/components/selected_sr_latch.png");
             addImage("active", "/ui/images/components/active_sr_latch.png");
 
-            addInputPin("Input 1", new Point(15,20));
-            addInputPin("Input 2", new Point(15,40));
-
-            addOutputPin("Output", new Point(65,20));
-            addOutputPin("Output", new Point(65,20));
+//            addInputPin("Input 1", new Point(15,20));
+//            addInputPin("Input 2", new Point(15,40));
+//
+//            addOutputPin("Output", new Point(65,20));
+//            addOutputPin("Output", new Point(65,20));
         }
     }
 }

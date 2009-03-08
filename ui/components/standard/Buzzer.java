@@ -23,7 +23,7 @@ public class Buzzer extends VisualComponent implements sim.joinable.ValueListene
 
     @Override
     protected void setInvalidAreas(){
-        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+16,(int)getOrigin().getY()-getCentre().y-1,22,22);
+        invalidArea = new Rectangle((int)getOrigin().getX()+16,(int)getOrigin().getY()-1,22,22);
         invalidArea = rotate(invalidArea);   
     }
     

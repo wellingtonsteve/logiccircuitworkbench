@@ -12,13 +12,12 @@ import java.awt.Stroke;
  * 
  * @author Matt
  */
-public class UIConstants {
-    
+public class UIConstants {    
     // Debugging
-    public static final boolean SHOW_GRID_OBJECTS = false;
+    public static final boolean SHOW_GRID_OBJECTS = true;
     public static final boolean SHOW_WIRE_HOVER_BOXES = false;
-    public static final boolean SHOW_INVALID_AREA_BOXES = false;
-    public static final boolean SHOW_BOUNDING_BOXES = false;
+    public static final boolean SHOW_INVALID_AREA_BOXES = true;
+    public static final boolean SHOW_BOUNDING_BOXES = true;
     public static final boolean SHOW_WIRE_WAYPOINTS = false;
     
     // Startup Options
@@ -54,8 +53,9 @@ public class UIConstants {
      *  LCW v2.0  -  Netlist support, Component names match keys in netlists. Not backwards compatible with v1.0
      *  LCW v2.1  -  As 2.0, "Standard.Wire" moved to "Wire", backwards compatible with renaming of wire
      *  LCW v3.0  -  Attributes use netlist properties, no more special cases, not backwards compatible
+     *  LCW v3.1  -  As 3.0, "with Orientation-Position pairs for dynamically created components
      */
-    public static String FILE_FORMAT_VERSION = "LCW v3.0";
+    public static String FILE_FORMAT_VERSION = "LCW v3.1";
     public static String FILE_EXTENSION = ".xml";
     
     // Component Options

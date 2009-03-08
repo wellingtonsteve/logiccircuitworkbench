@@ -47,6 +47,10 @@ public class ConnectionPoint extends GridObject {
             if(isConnected() && p.getParent().isFixed() && !isCrossover){
                 for(Pin pin: connections){
                     if(!pin.equals(p)){
+                        if(pin.getJoinable().hasOutputSource() && p.getJoinable().hasOutputSource() &&
+                                pin.getJoinable().outputSource.equals(p.getJoinable().outputSource)){
+                         System.out.println("crossover");
+                        }
                         sim.joinable.Joinable.connect(pin.getJoinable(), p.getJoinable());
                     }
                 }

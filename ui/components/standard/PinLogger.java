@@ -1,6 +1,5 @@
 package ui.components.standard;
 
-import java.awt.Graphics2D;
 import sim.LogicState;
 import ui.components.*;
 import java.awt.Point;
@@ -8,7 +7,6 @@ import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
 import sim.Simulator;
-import ui.UIConstants;
 
 /**
  *
@@ -42,31 +40,14 @@ public class PinLogger extends VisualComponent implements sim.joinable.ValueList
 
     @Override
     protected void setInvalidAreas(){
-        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x,(int)getOrigin().getY()-getCentre().y,21,21);
+        invalidArea = new Rectangle((int)getOrigin().getX(),(int)getOrigin().getY(),21,21);
         invalidArea = rotate(invalidArea);   
     }
     
     @Override
     public Point getCentre(){
         return new Point(10,10);
-    }
-            
-    @Override
-    public void draw(Graphics2D g) {
-        if(hasLabel()){
-            g.setColor(UIConstants.LABEL_TEXT_COLOUR);
-            g.drawString(getLabel(), 
-                    getOrigin().x+UIConstants.LABEL_COMPONENT_X_OFFSET-10,
-                    getOrigin().y+UIConstants.LABEL_COMPONENT_Y_OFFSET);
-        }
-        g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);      
-        g.translate(getOrigin().x, getOrigin().y);               
-        g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-        g.drawLine(10, 30, 10, 20);
-        g.translate(-getOrigin().x, -getOrigin().y);
-        g.drawImage(getCurrentImage(), getOrigin().x, getOrigin().y, null);
-        g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
-    }    
+    }  
     
     @Override
     public void addListeners() {
@@ -177,5 +158,4 @@ public class PinLogger extends VisualComponent implements sim.joinable.ValueList
     public boolean isEnabled(){
         return enabled;
     }
-    
 }

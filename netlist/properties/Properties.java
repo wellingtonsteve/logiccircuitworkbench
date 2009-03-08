@@ -2,7 +2,6 @@ package netlist.properties;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.HashMap;
@@ -13,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.xml.transform.sax.TransformerHandler;
 import sim.SimItem;
+import ui.components.ComponentEdge;
 import ui.components.SelectableComponent;
 import ui.error.ErrorHandler;
 
@@ -23,8 +23,8 @@ import ui.error.ErrorHandler;
 public class Properties implements Cloneable{
     private String key;
     private HashMap<String, Attribute> attributes = new LinkedHashMap<String, Attribute>();
-    private HashMap<String, Point> inputPins = new HashMap<String, Point>();
-    private HashMap<String, Point> outputPins = new HashMap<String, Point>();
+    private HashMap<String, PinPosition> inputPins = new HashMap<String, PinPosition>();
+    private HashMap<String, PinPosition> outputPins = new HashMap<String, PinPosition>();
     private static HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();
     private Class<? extends SimItem> simItem;
     private Class<? extends SelectableComponent> selectableComponent;
@@ -106,23 +106,23 @@ public class Properties implements Cloneable{
             return null;
         }
     }
-
-    protected void addInputPin(String name, Point p){
-        inputPins.put(name, p);
+    
+    protected void addInputPin(String name, ComponentEdge edge, int n){
+        inputPins.put(name, new PinPosition(edge, n));
     }
     
-    public Map<String, Point> getInputPins(){
+    public Map<String, PinPosition> getInputPins(){
         return inputPins;
     }
     
-    protected void addOutputPin(String name, Point p){
-        outputPins.put(name, p);
+    protected void addOutputPin(String name, ComponentEdge edge, int n){
+        outputPins.put(name, new PinPosition(edge, n));
     }
     
-    public Map<String, Point> getOutputPins(){
+    public Map<String, PinPosition> getOutputPins(){
         return outputPins;
     }
-
+    
     public void createAttributesPanel() {
         attrPanel = new JPanel();
         attrPanel.setLayout(new GridBagLayout());
@@ -133,7 +133,7 @@ public class Properties implements Cloneable{
             c.anchor = GridBagConstraints.WEST;
             c.gridx = 0;
             c.gridy = i;
-            attrPanel.add(new JLabel(a.getName() + "   "), c);
+            attrPanel.add(new JLabel(a.getName()), c);
 
             c.weightx = 0.5;
             c.fill = GridBagConstraints.BOTH;

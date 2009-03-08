@@ -40,8 +40,8 @@ public class Main {
             loadingBar.setValue(50);
 
             loadingBar.setString("Loading Latches and Flip-Flops Netlist...");
-            editor.addNetlist(new netlist.FlipFlops());
-             loadingBar.setValue(60);
+            //editor.addNetlist(new netlist.FlipFlops());
+            loadingBar.setValue(60);
             
             loadingBar.setString("Creating Blank Circuit...");
             editor.createBlankCircuit(false);

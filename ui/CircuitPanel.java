@@ -22,6 +22,7 @@ import javax.swing.filechooser.FileFilter;
 import netlist.properties.ButtonAttribute;
 import netlist.properties.Properties;
 import netlist.properties.PropertiesOwner;
+import netlist.properties.SpinnerAttribute;
 import netlist.properties.TextAttribute;
 import sim.Simulator;
 import sim.SimulatorState;
@@ -132,7 +133,11 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         repaint();
     }
     
-    public void moveComponentToFront(SelectableComponent sc) {
+    /**
+     * Change the z-order of the component and bring it to the front.
+     * @param sc The component to change.
+     */
+    public void bringComponentToFront(SelectableComponent sc) {
         if(drawnComponents.remove(sc)){
             drawnComponents.add(sc);
         }
@@ -247,8 +252,6 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     public void addComponent(SelectableComponent sc) {
         drawnComponents.push(sc);
         previousCurrentPoint = SelectableComponent.DEFAULT_ORIGIN();
-        sc.getInvalidArea();
-        sc.getBoundingBox();
         setCurrentTool(sc.getKeyName());
         repaint(sc.getBoundingBox());
     }
@@ -317,22 +320,27 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         this.currentTool = tool;
     }
 
+    /** The Frame containing any logger graphs **/
     public ViewerFrame getLoggerWindow() {
         return loggerWindow;
     }
 
+    /** The logical represenation of the circuit */
     public Circuit getLogicalCircuit() {
         return logicalCircuit;
     }
 
+    /** Does this panel contain a sub circuit? */
     public boolean isSubcircuit() {
         return isSubcircuit;
     }
     
+    /** Set the parent which contains this circuit as a sub circuit */
     public void setSubcircuitParent(CircuitPanel parent) {
         this.subcircuitParent = parent;
     }
     
+    /** Update any subcircuit that this panel has to reflect changes made to the source */
     private void updateSubcircuits(CircuitPanel subcircuitPanel) {
         for(SelectableComponent sc: drawnComponents){
             if(sc instanceof SubcircuitComponent 
@@ -343,10 +351,12 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         repaint();
     }    
         
+    /** @return The logical simulator, responsible for changes in time, state and tiggering changes */
     public Simulator getSimulator() {
         return simulator;
     }
 
+    /** @return The current state of the logical simulator. */
     public SimulatorState getSimulatorState() {
         return simulatorState;
     }
@@ -483,15 +493,15 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         // Draw the components
         for (SelectableComponent sc : drawnComponents) {
             if (sc.getBoundingBox().intersects(g2.getClipBounds())) {
-                g2.translate(-sc.getCentre().x, -sc.getCentre().y);
+                //g2.translate(-sc.getCentre().x, -sc.getCentre().y);
                 sc.draw(g2);
-                g2.translate(sc.getCentre().x, sc.getCentre().y);
                 if (UIConstants.SHOW_INVALID_AREA_BOXES) {
                     g2.draw(sc.getInvalidArea());
                 }
                 if (UIConstants.SHOW_BOUNDING_BOXES) {
                     g2.draw(sc.getBoundingBox());
                 }
+                //g2.translate(sc.getCentre().x, sc.getCentre().y);                
             }
         }
 
@@ -517,11 +527,14 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         }
     }
 
-    public void createDefaultProperties() {
+    /** Create a standard set of properties for this circuit if it was to be used as a subcircuit */
+    private void createDefaultProperties() {
         this.properties = new Properties(getFilename()){
             {
+                // Default logical description
                 setLogicalComponentClass(logicalCircuit.getClass());      
                 
+                // Circuit Attributes
                 addAttribute(new TextAttribute("Title", ""));
                 addAttribute(new ButtonAttribute("Description") {
                     @Override
@@ -542,7 +555,11 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                             changeValue(c.getSelectedFile().getAbsolutePath());
                         }
                     }
-                });    
+                });
+                addAttribute(new SpinnerAttribute("Subcircuit Width", 40, 10, Short.MAX_VALUE, UIConstants.GRID_DOT_SPACING));
+                addAttribute(new SpinnerAttribute("Subcircuit Height", 40, 10, Short.MAX_VALUE, UIConstants.GRID_DOT_SPACING));
+                
+                // Subcircuit Image?
                 if(!getAttribute("Subcircuit Image").getValue().equals("")){
                     File imagefile = new File((String)getAttribute("Subcircuit Image").getValue());
                     if(imagefile.exists()){
@@ -553,13 +570,21 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         };
     }
     
+    /** Refresh the subcircuit properties of this panel to reflect any changes to the circuit contents. */
     public void updateProperties(){
          Properties newproperties = new Properties(getFilename()){
              {
+                // Default logical description
                 setLogicalComponentClass(properties.getLogicalComponentClass());
+                
+                // Circuit Attributes
                 addAttribute(properties.getAttribute("Title"));
                 addAttribute(properties.getAttribute("Description"));
                 addAttribute(properties.getAttribute("Subcircuit Image"));
+                addAttribute(properties.getAttribute("Subcircuit Width"));
+                addAttribute(properties.getAttribute("Subcircuit Height"));
+                
+                // Subcircuit Image?
                 if(!getAttribute("Subcircuit Image").getValue().equals("")){
                     File imagefile = new File((String)getAttribute("Subcircuit Image").getValue());
                     if(imagefile.exists()){
@@ -570,12 +595,14 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     }
                 }
                 
+                // Create external pins
                 int i = 0, o = 0;
                 for(SelectableComponent sc: drawnComponents){                    
+                    // Input Pins
                     if(sc.isFixed() 
                             && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Input){
-                        int inputX = (Integer) sc.getProperties().getAttribute("External X").getValue();
-                        int inputY = (Integer) sc.getProperties().getAttribute("External Y").getValue();
+                        int pos = (Integer) sc.getProperties().getAttribute("External Position").getValue();
+                        String edge = (String) sc.getProperties().getAttribute("External Edge").getValue();
                         String label;
                         if(sc.hasLabel()){
                             label = sc.getLabel();
@@ -584,27 +611,28 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                             sc.setLabel(label);
                             i++;
                         }
-                        addInputPin(label, new Point(inputX, inputY));                        
+                        addInputPin(label, ComponentEdge.convertStringToEdge(edge), pos);                        
+                    // Output Pins    
                     } else if(sc.isFixed() 
                             && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Output){
-                        int inputX = (Integer) sc.getProperties().getAttribute("External X").getValue();
-                        int inputY = (Integer) sc.getProperties().getAttribute("External Y").getValue();
+                        int pos = (Integer) sc.getProperties().getAttribute("External Position").getValue();
+                        String edge = (String) sc.getProperties().getAttribute("External Edge").getValue();
                         String label;
                         if(sc.hasLabel()){
                             label = sc.getLabel();
                         } else {
-                            label = "Ouput " + o;
+                            label = "Output " + o;
                             sc.setLabel(label);
                             o++;
                         }
-                        addOutputPin(label, new Point(inputX, inputY));       
+                        addOutputPin(label, ComponentEdge.convertStringToEdge(edge), pos);       
                     }              
                 }
              }
          };
          this.properties = newproperties;
     }
-    
+        
     @Override
     public Properties getProperties(){
         return properties;
@@ -649,7 +677,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                                     CircuitPanel.this,
                                     currentTool,
                                     editor.getComponentRotation(),
-                                    new Point(0, 0));
+                                    SelectableComponent.DEFAULT_ORIGIN());
                             cmdHist.doCommand(ccc);
                             ((VisualComponent)ccc.getComponent()).addLogicalComponentToCircuit();
 
@@ -662,9 +690,11 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     if(e.getClickCount() != 2){
                         // Activate selected component
                         temporaryComponent.mouseClicked(e);
-                        resetActiveComponents();
-                        activeComponents.add(temporaryComponent);
-                        editor.getClipboard().setHasSelection(true);
+                        if(simulatorState.equals(SimulatorState.STOPPED)){
+                            resetActiveComponents();
+                            activeComponents.add(temporaryComponent);
+                            editor.getClipboard().setHasSelection(true);                            
+                        }                        
                         repaint(temporaryComponent.getBoundingBox());
 
                         // Update the current selection options panel
@@ -690,7 +720,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                 currentPoint = Grid.snapToGrid(e.getPoint());
 
                 // Drop draged components
-                if (nowDragingComponent || !activeComponents.isEmpty()) {
+                if (nowDragingComponent) {
                     dragActiveSelection(e,false,true);
                 // Activate all components within the selection box
                 } else if (multipleSelection) {
@@ -767,13 +797,13 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                             && !drawnComponents.peek().isFixed() 
                             && !nowDragingComponent){
                         SelectableComponent sc = drawnComponents.peek();
-                        boolean canMove = grid.canTranslateComponent(sc,
-                                currentPoint.x-sc.getOrigin().x,
-                                currentPoint.y-sc.getOrigin().y);
+                        int dx = currentPoint.x-sc.getOrigin().x-sc.getCentre().x;
+                        int dy = currentPoint.y-sc.getOrigin().y-sc.getCentre().y;
+                        boolean canMove = grid.canTranslateComponent(sc,dx,dy);
                         
                         // Move the component
                         if(canMove){                     
-                            sc.moveTo(currentPoint, false);
+                            sc.translate(dx, dy, false);
                             sc.mouseMoved(e);                            
                         }
 
@@ -823,7 +853,6 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     dirtyArea.add(w.getBoundingBox());
                     dirtyArea.add(currentPoint);
                     repaint(dirtyArea);
-                    //repaintDirtyAreas();
                 }
             } 
         }                   
@@ -874,7 +903,8 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     Rectangle dirtyArea = w.getBoundingBox();
                     
                     // Start drawing the new wire
-                    if(w.getOrigin().equals(SelectableComponent.DEFAULT_ORIGIN()) && grid.isConnectionPoint(dragStartPoint)){
+                    if(w.getOrigin().equals(SelectableComponent.DEFAULT_ORIGIN())
+                            && grid.isConnectionPoint(dragStartPoint)){
                         w.setStartPoint(dragStartPoint);                           
                     }
                     w.setEndPoint(currentPoint);                        
@@ -921,9 +951,11 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
             // Check whether all the moves can be made
             boolean canMoveAll = true;
             for (SelectableComponent sc : activeComponents) {
-                if(anchor==null){ anchor = sc.getOrigin().getLocation(); }
-                int dx = currentPoint.x - anchor.x;
-                int dy = currentPoint.y - anchor.y;
+                if(anchor==null){ 
+                    anchor = sc.getOrigin().getLocation(); 
+                }
+                int dx = currentPoint.x - anchor.x - sc.getCentre().x;
+                int dy = currentPoint.y - anchor.y - sc.getCentre().y;
                 canMoveAll &= grid.canTranslateComponent(sc, dx, dy);
             }
             if (canMoveAll) {
@@ -933,8 +965,8 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     stc = new SelectionTranslateCommand();
                 }
                 for (SelectableComponent sc : activeComponents) {
-                    int dx = currentPoint.x - anchor.x;
-                    int dy = currentPoint.y - anchor.y;
+                    int dx = currentPoint.x - anchor.x - sc.getCentre().x;
+                    int dy = currentPoint.y - anchor.y - sc.getCentre().y;
                     // Start
                     if(start && !finish){
                         sc.translate(currentPoint.x - lastDragPoint.x, currentPoint.y - lastDragPoint.y, false);

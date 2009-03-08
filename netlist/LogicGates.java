@@ -1,8 +1,8 @@
 package netlist;
 
-import java.awt.Point;
 import netlist.properties.Properties;
 import netlist.properties.TextAttribute;
+import ui.components.ComponentEdge;
 
 /**
  *
@@ -27,16 +27,15 @@ public class LogicGates extends Netlist{
         public And2Props(String key){
             super(key);
             setLogicalComponentClass(sim.componentLibrary.logicgates.AndGate2Input.class);
-            setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
+//            setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
             addAttribute(new TextAttribute("Label", ""));
             addImage("default", "/ui/images/components/default_2in_and.png");
             addImage("selected", "/ui/images/components/selected_2in_and.png");
             addImage("active", "/ui/images/components/active_2in_and.png");
 
-            addInputPin("Input 1", new Point(10,20));
-            addInputPin("Input 2", new Point(10,40));
-
-            addOutputPin("Output", new Point(60,30));
+            addInputPin("Input 1", ComponentEdge.West, -1);
+            addInputPin("Input 2", ComponentEdge.West, 3);
+            addOutputPin("Output", ComponentEdge.East, 1);
         }
     }
     
@@ -53,10 +52,9 @@ public class LogicGates extends Netlist{
             addImage("selected", "/ui/images/components/selected_2in_or.png");
             addImage("active", "/ui/images/components/active_2in_or.png");
 
-            addInputPin("Input 1", new Point(10,20));
-            addInputPin("Input 2", new Point(10,40));
-
-            addOutputPin("Output", new Point(60,30));
+            addInputPin("Input 1", ComponentEdge.West, -1);
+            addInputPin("Input 2", ComponentEdge.West, 3);
+            addOutputPin("Output", ComponentEdge.East, 1);
         }
     }
     
@@ -73,10 +71,9 @@ public class LogicGates extends Netlist{
             addImage("selected", "/ui/images/components/selected_2in_nand.png");
             addImage("active", "/ui/images/components/active_2in_nand.png");
 
-            addInputPin("Input 1", new Point(10,20));
-            addInputPin("Input 2", new Point(10,40));
-
-            addOutputPin("Output", new Point(60,30));
+            addInputPin("Input 1", ComponentEdge.West, -1);
+            addInputPin("Input 2", ComponentEdge.West, 3);
+            addOutputPin("Output", ComponentEdge.East, 1);
         }
     }
    
@@ -93,10 +90,9 @@ public class LogicGates extends Netlist{
             addImage("selected", "/ui/images/components/selected_2in_nor.png");
             addImage("active", "/ui/images/components/active_2in_nor.png");
 
-            addInputPin("Input 1", new Point(10,20));
-            addInputPin("Input 2", new Point(10,40));
-
-            addOutputPin("Output", new Point(60,30));
+            addInputPin("Input 1", ComponentEdge.West, -1);
+            addInputPin("Input 2", ComponentEdge.West, 3);
+            addOutputPin("Output", ComponentEdge.East, 1);
         }
     }
     
@@ -113,11 +109,9 @@ public class LogicGates extends Netlist{
             addImage("selected", "/ui/images/components/selected_2in_and.png");
             addImage("active", "/ui/images/components/active_2in_and.png");
 
-            addInputPin("Input 1", new Point(10,20));
-            addInputPin("Input 2", new Point(10,30));
-            addInputPin("Input 2", new Point(10,40));
-
-            addOutputPin("Output", new Point(60,30));
+            addInputPin("Input 1", ComponentEdge.West, -1);
+            addInputPin("Input 2", ComponentEdge.West, 3);
+            addOutputPin("Output", ComponentEdge.East, 1);
         }
     }
 
@@ -134,8 +128,8 @@ public class LogicGates extends Netlist{
             addImage("selected", "/ui/images/components/selected_not.png");
             addImage("active", "/ui/images/components/active_not.png");
 
-            addInputPin("Input 1", new Point(15,30));
-            addOutputPin("Output", new Point(60,30));
+            addInputPin("Input 1", ComponentEdge.West, 0);
+            addOutputPin("Output", ComponentEdge.East, 0);
         }
     }
     
@@ -153,10 +147,9 @@ public class LogicGates extends Netlist{
             addImage("selected", "/ui/images/components/selected_xor.png");
             addImage("active", "/ui/images/components/active_xor.png");
 
-            addInputPin("Input 1", new Point(10,20));
-            addInputPin("Input 2", new Point(10,40));
-
-            addOutputPin("Output", new Point(60,30));
+            addInputPin("Input 1", ComponentEdge.West, -1);
+            addInputPin("Input 2", ComponentEdge.West, 3);
+            addOutputPin("Output", ComponentEdge.East, 1);
         }
     }
     
@@ -173,11 +166,10 @@ public class LogicGates extends Netlist{
             addImage("selected", "/ui/images/components/selected_2in_or.png");
             addImage("active", "/ui/images/components/active_2in_or.png");
 
-            addInputPin("Input 1", new Point(10,20));
-            addInputPin("Input 2", new Point(10,30));
-            addInputPin("Input 2", new Point(10,40));
-
-            addOutputPin("Output", new Point(60,30));
+            addInputPin("Input 1", ComponentEdge.West, -1);
+            addInputPin("Input 2", ComponentEdge.West, 1);
+            addInputPin("Input 2", ComponentEdge.West, 3);
+            addOutputPin("Output", ComponentEdge.East, 1);
         }
     }
 }

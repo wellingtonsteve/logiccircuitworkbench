@@ -54,7 +54,7 @@ public class FileLoader extends DefaultHandler{
             ErrorHandler.newError("File Load Error","Please see the system error below.", ex);
                 successful = false;
         }
-        
+        if(!successful){ editor.repaint(); }
         return successful;
                 
     }
@@ -98,7 +98,7 @@ public class FileLoader extends DefaultHandler{
                 CreateComponentCommand ccc = new CreateComponentCommand(null,type,rotation,p);
                 ccc.execute(editor);
                 
-                // fix it to the circuit
+                // Fix it to the circuit
                 ccc.getComponent().translate(0, 0, true);
                 stack.push(ccc.getComponent());                
                 
@@ -119,8 +119,7 @@ public class FileLoader extends DefaultHandler{
 
                 // Set the attributes
                 w.setEndPoint(new Point(endx, endy));
-                stack.push(w);
-                
+                stack.push(w);                
 
             // Set the attributes of a previously created component <attr>
             } else if(qName.equals("attr")){    

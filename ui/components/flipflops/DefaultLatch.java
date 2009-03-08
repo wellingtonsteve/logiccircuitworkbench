@@ -16,7 +16,7 @@ public class DefaultLatch extends VisualComponent{
 
     @Override
     protected void setInvalidAreas(){
-        invalidArea = new Rectangle((int)getOrigin().getX()-getCentre().x+23,(int)getOrigin().getY()-getCentre().y+3,34,54);
+        invalidArea = new Rectangle((int)getOrigin().getX()+23,(int)getOrigin().getY()+3,34,54);
         invalidArea = rotate(invalidArea);        
     }
     

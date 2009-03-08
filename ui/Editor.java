@@ -845,14 +845,8 @@ private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
         CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit(), componentName, getComponentRotation(),SelectableComponent.DEFAULT_ORIGIN());
         getActiveCircuit().doCommand(ccc);
 
-        // Set Options panel (Preview, Component Specific Options etc.)
-        setComponent(ccc.getComponent());
-
-        optionsPanel.setVisible(true);
-        optionsPanel.repaint();
-
+        optionsPanel.setVisible(false);
         circuitPanel.setCurrentTool(componentName);
-
         RotateRight.setEnabled(false);
         RotateLeft.setEnabled(false);
     }

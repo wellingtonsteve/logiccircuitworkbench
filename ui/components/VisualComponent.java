@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.Map;
 import javax.xml.transform.sax.TransformerHandler;
+import netlist.properties.PinPosition;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import ui.CircuitPanel;
@@ -18,20 +19,19 @@ import ui.command.SubcircuitOpenCommand.SubcircuitComponent;
  */
 public abstract class VisualComponent extends SelectableComponent {
     
-    protected BufferedImage defaultBi;
-    protected BufferedImage selectedBi;
-    protected BufferedImage activeBi;
+    protected BufferedImage defaultBi = null;
+    protected BufferedImage selectedBi = null;
+    protected BufferedImage activeBi = null;
+    private int width = 0, height=0;
       
     public VisualComponent(CircuitPanel parent, Point point, sim.SimItem logicalComponent,netlist.properties.Properties properties){
-        super(parent, point, logicalComponent, properties);
-        
+        super(parent, point, logicalComponent, properties);        
         setDefaultImage();
         setSelectedImage();
-        setActiveImage();
-        
+        setActiveImage();       
+        setWidthAndHeight();        
         setInvalidAreas();
-        setBoundingBox();       
-        
+        setBoundingBox(); 
         setSelectionState(SelectionState.DEFAULT);
     }    
 
@@ -49,14 +49,14 @@ public abstract class VisualComponent extends SelectableComponent {
     
     @Override
     public int getWidth(){
-        return getDefaultImage().getWidth();
+        return width;
     }
     
     @Override
     public int getHeight(){
-        return getDefaultImage().getHeight();
+        return height;
     }
-
+        
     protected BufferedImage getActiveImage(){
         return activeBi;
     }
@@ -83,14 +83,15 @@ public abstract class VisualComponent extends SelectableComponent {
     @Override
     protected void setLocalPins() {
         localPins = new LinkedList<Pin>();
-        Map<String, Point> inpins = properties.getInputPins();
+        Map<String, PinPosition> inpins = properties.getInputPins();
         for(String k: inpins.keySet()){
-            localPins.add(new Pin(inpins.get(k), logicalComponent.getPinByName(k)));
-        }
-        
-        Map<String, Point> outpins = properties.getOutputPins();
+            Point p = createPointFromPinPosition(inpins.get(k));
+            localPins.add(new Pin(p, logicalComponent.getPinByName(k), inpins.get(k).getEdge()));
+        }        
+        Map<String, PinPosition> outpins = properties.getOutputPins();
         for(String k: outpins.keySet()){
-            localPins.add(new Pin(outpins.get(k), logicalComponent.getPinByName(k)));
+            Point p = createPointFromPinPosition(outpins.get(k));
+            localPins.add(new Pin(p, logicalComponent.getPinByName(k), outpins.get(k).getEdge()));
         }        
     }
     
@@ -101,10 +102,19 @@ public abstract class VisualComponent extends SelectableComponent {
         g.translate(getOrigin().x, getOrigin().y);               
         g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
         for(Pin p: localPins){
-            if(p.getJoinable() instanceof sim.joinable.InputPin){
-                g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
-            } else if(p.getJoinable() instanceof sim.joinable.OutputPin){
-                g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);
+            switch(p.getEdge()){
+                case North:
+                    g.drawLine(p.x, p.y, p.x, p.y+(2*UIConstants.GRID_DOT_SPACING));
+                    break;
+                case South:
+                    g.drawLine(p.x, p.y, p.x, p.y-(2*UIConstants.GRID_DOT_SPACING)); 
+                    break;
+                case West:
+                    g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
+                    break;
+                case East:
+                    g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);                  
+                    break;
             }
         }        
         g.translate(-getOrigin().x, -getOrigin().y);
@@ -139,6 +149,47 @@ public abstract class VisualComponent extends SelectableComponent {
             this.parent.getLogicalCircuit().addSimItem(logicalComponent);
         } else {
            System.out.println("no logical component");
+        }
+    }
+
+    private void setWidthAndHeight() {
+        if (properties.getVisualComponentClass() == null) {
+            // Calculate the width and height from the position of the pins;
+            Map<String, PinPosition> inpins = properties.getInputPins();
+            for (String k : inpins.keySet()) {
+                PinPosition pp = inpins.get(k);
+                switch(pp.getEdge()){
+                    case East:
+                    case West:
+                       if(pp.getN() > height){ height = pp.getN(); }
+                       break;
+                    case North:
+                    case South:
+                       if(pp.getN() > width){ width = pp.getN(); }
+                       break;
+                } 
+            }
+
+            Map<String, PinPosition> outpins = properties.getOutputPins();
+            for (String k : outpins.keySet()) {
+                PinPosition pp = outpins.get(k);
+                switch(pp.getEdge()){
+                    case East:
+                    case West:
+                       if(pp.getN() > height){ height = pp.getN(); }
+                       break;
+                    case North:
+                    case South:
+                       if(pp.getN() > width){ width = pp.getN(); }
+                       break;
+                }
+            }
+            
+            width = (width + 2)*UIConstants.GRID_DOT_SPACING;
+            height = (height + 2)*UIConstants.GRID_DOT_SPACING;
+        } else {
+            width = getDefaultImage().getWidth();
+            height = getDefaultImage().getHeight();
         }
     }
 }
