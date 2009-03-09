@@ -9,6 +9,8 @@ public class DType extends Component {
     //Pins
     private InputPin d = createInputPin("D");
     private InputPin clock = createInputPin("Clock");
+    private InputPin set = createInputPin("Set");
+    private InputPin reset = createInputPin("Reset");
     private OutputPin q = createOutputPin("Q");
     private OutputPin notq = createOutputPin("NotQ");
 

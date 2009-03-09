@@ -21,7 +21,7 @@ public abstract class VisualComponent extends SelectableComponent {
     protected BufferedImage defaultBi = null;
     protected BufferedImage selectedBi = null;
     protected BufferedImage activeBi = null;
-    private int width = 0, height=0;
+    private int width = 0, height = 0;
       
     public VisualComponent(CircuitPanel parent, Point point, sim.SimItem logicalComponent,netlist.properties.Properties properties){
         super(parent, point, logicalComponent, properties);        
@@ -147,6 +147,7 @@ public abstract class VisualComponent extends SelectableComponent {
        if(logicalComponent!=null){
             this.parent.getLogicalCircuit().addSimItem(logicalComponent);
         } else {
+           // TODO: Add error message
            System.out.println("no logical component");
         }
     }

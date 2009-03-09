@@ -2,6 +2,7 @@ package netlist;
 
 import netlist.properties.Properties;
 import netlist.properties.TextAttribute;
+import ui.components.ComponentEdge;
 
 /**
  *
@@ -15,7 +16,7 @@ public class FlipFlops extends Netlist{
     }
     
     ////////////////////////
-    // And Gate (2 Input)
+    // D-Type Flip Flop
     ////////////////////////
     public class DTypeProps extends Properties{
         public DTypeProps(String key){
@@ -29,11 +30,14 @@ public class FlipFlops extends Netlist{
             addImage("selected", "/ui/images/components/selected_d_flipflop.png");
             addImage("active", "/ui/images/components/active_d_flipflop.png");
 
-//            addInputPin("D", new Point(5,20));
-//            addInputPin("Clock", new Point(5,50));
-//
-//            addOutputPin("Q", new Point(55,20));
-//            addOutputPin("NotQ", new Point(55,50));
+            addInputPin("D", ComponentEdge.West, 1);
+            addInputPin("Clock", ComponentEdge.West, 7);
+            
+            addInputPin("Set", ComponentEdge.North, 2);
+            addInputPin("Reset", ComponentEdge.South, 2);
+
+            addOutputPin("Q", ComponentEdge.East, 1);
+            addOutputPin("NotQ", ComponentEdge.East, 7);
         }
     }
     
