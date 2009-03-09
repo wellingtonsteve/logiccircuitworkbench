@@ -79,6 +79,9 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
                 yOffset += UIConstants.LOGGER_VIEWER_MARGIN;
  
                 Long prevTime =(long) (g2.getClipBounds().x/scaleFactor)-startTime;
+                if(prevTime>endTime){
+                    endTime = prevTime;
+                }
                 LogicState prevState = LogicState.FLOATING;            
                 p.commitBuffersToMemory();
                 if(!p.getSavedTimes().isEmpty()){
@@ -152,7 +155,7 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
 
     @Override
     public void SimulationTimeChanged(long time) {
-        if(time % Math.pow(10, simulationRate -2 ) == 0  || simulationRate < 2){// Don't update too quickly!!
+        if(time % Math.pow(10, 11-simulationRate) == 0  || simulationRate < 2){// Don't update too quickly!!
             Long startTime = parent.getStartTime();
             Long endTime = parent.getEndTime();
             // Auto-Scrolling policy
@@ -170,6 +173,12 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
     public void SimulationRateChanged(int rate){
         simulationRate = rate;
         scaleFactor = Math.pow(10, -(rate - 2));
+        Dimension b = getPreferredSize();
+        Long startTime = parent.getStartTime();
+        Long endTime = parent.getEndTime();
+        setPreferredSize(new Dimension((int)((endTime-startTime)*scaleFactor), b.height));
+        revalidate();
+        
     }  
     
     public JPanel getRowHeader(){
