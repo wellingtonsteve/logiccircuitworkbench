@@ -155,7 +155,8 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
 
     @Override
     public void SimulationTimeChanged(long time) {
-        if(time % Math.pow(10, 11-simulationRate) == 0  || simulationRate < 2){// Don't update too quickly!!
+        //System.out.println(time);
+        //if(time % Math.pow(10, 11-simulationRate) == 0  || simulationRate < 2){// Don't update too quickly!!
             Long startTime = parent.getStartTime();
             Long endTime = parent.getEndTime();
             // Auto-Scrolling policy
@@ -166,7 +167,7 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
             }
             parent.setEndTime(time);
             repaint(((JScrollPane)getParent().getParent()).getViewport().getViewRect());    
-        }
+        //}
     }    
     
     @Override
@@ -177,8 +178,7 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
         Long startTime = parent.getStartTime();
         Long endTime = parent.getEndTime();
         setPreferredSize(new Dimension((int)((endTime-startTime)*scaleFactor), b.height));
-        revalidate();
-        
+        revalidate();        
     }  
     
     public JPanel getRowHeader(){
