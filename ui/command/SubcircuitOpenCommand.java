@@ -37,7 +37,10 @@ public class SubcircuitOpenCommand extends Command {
         if (rVal == JFileChooser.APPROVE_OPTION) {            
             // Create the subcircuit
             filename = c.getSelectedFile().getAbsolutePath();
-            createSubcircuitComponent(editor, filename, activeCircuit);
+            CircuitPanel loadingCircuit = activeCircuit;
+            SelectableComponent sc = createSubcircuitComponent(editor, filename, activeCircuit);
+            loadingCircuit.addComponent(sc);
+            loadingCircuit.repaint();
         }
     }
 
@@ -61,14 +64,12 @@ public class SubcircuitOpenCommand extends Command {
             // Create a new component
             VisualComponent subcircuitComponent = new SubcircuitComponent(
                     loadingCircuit, SelectableComponent.DEFAULT_ORIGIN(), logicalCircuit, properties);
-            loadingCircuit.addComponent(subcircuitComponent);
             subcircuitComponent.addLogicalComponentToCircuit();
             
             activeCircuit.getCommandHistory().clearHistory();
             activeCircuit.getParentFrame().doDefaultCloseAction();
             activeCircuit.getParentFrame().dispose();
             editor.setActiveCircuit(loadingCircuit);
-            loadingCircuit.repaint();
             editor.setComponent(subcircuitComponent);
             
             return subcircuitComponent;
@@ -159,11 +160,11 @@ public class SubcircuitOpenCommand extends Command {
                 }
                 switch(p.getEdge()){
                     case North:
-                        g.drawString(label, p.x+3, p.y+ (2 * UIConstants.GRID_DOT_SPACING)+1);
+                        g.drawString(label, p.x-3, p.y+ (4 * UIConstants.GRID_DOT_SPACING)+1);
                         g.drawLine(p.x, p.y, p.x, p.y+(2*UIConstants.GRID_DOT_SPACING));
                         break;
                     case South:
-                        g.drawString(label, p.x+3, p.y-(2 * UIConstants.GRID_DOT_SPACING)-8);
+                        g.drawString(label, p.x-3, p.y-(2*UIConstants.GRID_DOT_SPACING)-2);
                         g.drawLine(p.x, p.y, p.x, p.y-(2*UIConstants.GRID_DOT_SPACING)); 
                         break;
                     case West:
@@ -187,9 +188,13 @@ public class SubcircuitOpenCommand extends Command {
             if(cfh.loadFile(filename)){
                 subCircuit.setFilename(filename);
                 subCircuit.setSubcircuitParent(parent);
+                editor.refreshWindowsMenu();
+                subCircuit.getParentFrame().setTitle(filename);
+                subCircuit.getCommandHistory().clearHistory();
+                subCircuit.setCurrentTool("Select");
             } else {
                 // Close bad circuit
-                ((JDesktopPane) activeCircuit.getParentFrame().getParent()).remove(activeCircuit.getParentFrame());
+                ((JDesktopPane) subCircuit.getParentFrame().getParent()).remove(subCircuit.getParentFrame());
             }         
         }
         
@@ -203,6 +208,7 @@ public class SubcircuitOpenCommand extends Command {
             width = 0;
             unsetGlobalPins();
             setLocalPins();
+            setGlobalPins();
         }
     }
 }

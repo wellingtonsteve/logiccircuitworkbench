@@ -108,7 +108,7 @@ public class Wire extends SelectableComponent {
             }           
             this.fixed = fixed; 
             if(fixed){
-                optimiseWireEnds();
+//                optimiseWireEnds();
                 setLocalPins();
                 setGlobalPins();  
             }

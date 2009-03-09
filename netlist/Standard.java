@@ -48,7 +48,7 @@ public class Standard extends Netlist{
             setVisualComponentClass(ui.components.standard.Input.class);
             addAttribute(new TextAttribute("Label", ""));  
             addAttribute(new BooleanAttribute("External?", false));
-            addAttribute(new SpinnerAttribute("External Position", 1, -1, Short.MAX_VALUE, UIConstants.GRID_DOT_SPACING));
+            addAttribute(new SpinnerAttribute("External Position", 1, -1, Short.MAX_VALUE, 1));
             addAttribute(new SelectionAttribute("External Edge", new String[]{"West", "North", "East", "South"}));
 
             addImage("default", "/ui/images/components/default_input_off.png");
@@ -70,7 +70,7 @@ public class Standard extends Netlist{
             setVisualComponentClass(ui.components.standard.LED.class);
             addAttribute(new TextAttribute("Label", ""));  
             addAttribute(new BooleanAttribute("External?", false));
-            addAttribute(new SpinnerAttribute("External Position", 1, -1, Short.MAX_VALUE, UIConstants.GRID_DOT_SPACING));
+            addAttribute(new SpinnerAttribute("External Position", 1, -1, Short.MAX_VALUE, 1));
             addAttribute(new SelectionAttribute("External Edge", new String[]{"East", "South", "West", "North"}));
             addAttribute(new SelectionAttribute("Colour", new String[]{"Yellow","Red","Green"}));
 

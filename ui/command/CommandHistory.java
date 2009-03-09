@@ -164,6 +164,7 @@ public class CommandHistory {
     public void clearHistory(){
         undostack.clear();
         redostack.clear();
+        isDirty = false;
     }
     
     /**

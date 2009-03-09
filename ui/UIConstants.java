@@ -17,7 +17,7 @@ public class UIConstants {
     public static final boolean SHOW_GRID_OBJECTS = false;
     public static final boolean SHOW_WIRE_HOVER_BOXES = false;
     public static final boolean SHOW_INVALID_AREA_BOXES = false;
-    public static final boolean SHOW_BOUNDING_BOXES = true;
+    public static final boolean SHOW_BOUNDING_BOXES = false;
     public static final boolean SHOW_WIRE_WAYPOINTS = false;
     
     // Startup Options

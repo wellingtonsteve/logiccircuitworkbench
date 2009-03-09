@@ -49,8 +49,7 @@ public class CreateComponentCommand extends Command {
             }else if(editor.isValidComponent(key)){
                 Properties props = editor.getNetlistWithKey(key).getProperties(key);
                 SimItem simItem = props.getLogicalComponentClass().getConstructor().newInstance();
-
-                // Was there a visual component class specified
+                // Was there a visual component class specified?
                 if(props.getVisualComponentClass() != null && editor.getNetlistWithKey(key).containsKey(key)){
                     sc = props.getVisualComponentClass().getConstructor(
                                 CircuitPanel.class,
@@ -112,6 +111,16 @@ public class CreateComponentCommand extends Command {
                     getWidth()+2, 
                     getHeight()+2);
             invalidArea = rotate(invalidArea);
+        }
+
+        @Override
+        public int getWidth() {
+            return Math.max(super.getWidth(), 20);
+        }
+
+        @Override
+        public int getHeight() {
+            return Math.max(super.getHeight(), 20);
         }
         
         @Override

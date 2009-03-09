@@ -180,7 +180,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     }
     
     /** Delete the current selection from the circuit. */
-        public void deleteActiveComponents(){        
+    public void deleteActiveComponents(){        
         for(SelectableComponent sc: activeComponents){
             grid.removeComponent(sc);
             logicalCircuit.removeSimItem(sc.getLogicalComponent());
@@ -244,7 +244,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
             }
             repaint(sc.getBoundingBox());
         }
-        //if(nowDragingComponent){dragActiveSelection(null, true, false);}            
+        if(nowDragingComponent){dragActiveSelection(null, false, false);}            
         editor.getClipboard().setHasSelection(!activeComponents.isEmpty());
     }
      
@@ -410,7 +410,9 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     public void setFilename(String filename) {
         this.filename = filename;
         this.getParentFrame().setTitle(filename);
-        editor.setTitle("Logic Circuit Workbench - " + filename);
+        if(!isSubcircuit){
+            editor.setTitle("Logic Circuit Workbench - " + filename);
+        }
     }
     
     /** Save this circuit to disk, required to access hidden component list */
