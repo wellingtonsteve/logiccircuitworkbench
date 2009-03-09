@@ -77,6 +77,7 @@ public class CommandHistory {
             setIsDirty(true);
             ui.CircuitFrame frame = cmd.activeCircuit.getParentFrame();
             frame.setTitle(cmd.activeCircuit.getFilename() +  "*");
+            // Renable Parts of the user interface
             if(undostack.size() == 1){
                 for(JComponent c: undolisteners){
                     c.setEnabled(canUndo());
@@ -84,8 +85,9 @@ public class CommandHistory {
             }
         }
         
-        // The state changes when we do new actions so redos are not guarenteed to be safe
+        // The state changes when we do new actions, so redos are not guarenteed to be safe
         redostack.clear();
+        // Tell Listeners
         for(JComponent c: redolisteners){
             c.setEnabled(canRedo());
         }      
@@ -101,6 +103,11 @@ public class CommandHistory {
         return isDirty;
     }
     
+    /**
+     * Artifically dirty or clean this history.
+     * 
+     * @param isDirty The new dirty state of this history.
+     */
     public void setIsDirty(boolean isDirty) {
         this.isDirty = isDirty;
     }
@@ -113,6 +120,7 @@ public class CommandHistory {
             Command cmd = undostack.pop();
             cmd.undo(parentEditor);
             redostack.push(cmd);
+            // Tell listeners
             if(undostack.empty()){
                 for(JComponent c: undolisteners){
                     c.setEnabled(canUndo());
@@ -137,6 +145,7 @@ public class CommandHistory {
             Command cmd = redostack.pop();
             cmd.execute(parentEditor);
             undostack.push(cmd);
+            // Tell listeners
             if(undostack.size() == 1){
                 for(JComponent c: undolisteners){
                     c.setEnabled(canUndo());
@@ -153,14 +162,17 @@ public class CommandHistory {
         }
     }
     
+    /** Can an undo be done? */
     public boolean canUndo(){
         return !undostack.empty();
     }
     
+    /** Can a redo be done? */
     public boolean canRedo(){
         return !redostack.empty();
     }
     
+    /** Reset this command history */
     public void clearHistory(){
         undostack.clear();
         redostack.clear();
@@ -187,29 +199,40 @@ public class CommandHistory {
         redolisteners.add(redolistener);
     }
     
-    public void stageChange(String stage, Object value) {
-        if ("started".equals(stage)) {
-            if (!busyIconTimer.isRunning()) {
-                statusAnimationLabel.setIcon(busyIcons[0]);
-                busyIconIndex = 0;
-                busyIconTimer.start();
-            }
-            progressBar.setVisible(true);
-            progressBar.setIndeterminate(true);
-        } else if ("done".equals(stage)) {
-            busyIconTimer.stop();
-            statusAnimationLabel.setIcon(idleIcon);
-            progressBar.setVisible(false);
-            progressBar.setValue(0);
-        } else if ("message".equals(stage)) {
-            String text = (String)value;
-            statusMessageLabel.setText((text == null) ? "" : text);
-            messageTimer.restart();
-        } else if ("progress".equals(stage)) {
-            int i = (Integer)value;
-            progressBar.setVisible(true);
-            progressBar.setIndeterminate(false);
-            progressBar.setValue(i);
+    /** This method can be called by a command if it wants to provide feedback to
+     * the user whilst it is preforming its action. 
+     * 
+     * @param stage The stage that an action has reached. 
+     * @param value
+     */
+    public void stageChange(CommandStage stage, Object value) {
+        switch(stage){
+            case Started:
+                if (!busyIconTimer.isRunning()) {
+                    statusAnimationLabel.setIcon(busyIcons[0]);
+                    busyIconIndex = 0;
+                    busyIconTimer.start();
+                }
+                progressBar.setVisible(true);
+                progressBar.setIndeterminate(true);
+                break;
+            case Done:
+                busyIconTimer.stop();
+                statusAnimationLabel.setIcon(idleIcon);
+                progressBar.setVisible(false);
+                progressBar.setValue(0);
+                break;
+            case Message:
+                String text = (String)value;
+                statusMessageLabel.setText((text == null) ? "" : text);
+                messageTimer.restart();
+                break;
+            case Progress:
+                int i = (Integer)value;
+                progressBar.setVisible(true);
+                progressBar.setIndeterminate(false);
+                progressBar.setValue(i);
+                break;
         }
     }
 }

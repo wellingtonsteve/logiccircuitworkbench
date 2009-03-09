@@ -9,8 +9,7 @@ import ui.components.SelectableComponent;
  *
  * @author matt
  */
-public class InvalidPoint extends GridObject {
-    
+public class InvalidPoint extends GridObject {    
     private SelectableComponent parent;
     
     public InvalidPoint(Grid grid, Point p, SelectableComponent parent){
@@ -34,5 +33,4 @@ public class InvalidPoint extends GridObject {
     public boolean hasParent(SelectableComponent sc){
         return sc.equals(parent);
     }
-
 }

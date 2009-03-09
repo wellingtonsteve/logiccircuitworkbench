@@ -51,11 +51,6 @@ public class Wire extends SelectableComponent {
         logicalWire = new sim.joinable.Wire();
     }
     
-    public Wire(CircuitPanel parent, Point o) {
-        this(parent);
-    }
-    
-    /** {@inheritDoc} */
     @Override
     public String getName(){
         return "Wire";
@@ -82,7 +77,6 @@ public class Wire extends SelectableComponent {
         setLocalPins();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void translate(int dx, int dy, boolean fixed) {        
         ui.grid.Grid grid = parent.getGrid();
@@ -108,7 +102,6 @@ public class Wire extends SelectableComponent {
             }           
             this.fixed = fixed; 
             if(fixed){
-//                optimiseWireEnds();
                 setLocalPins();
                 setGlobalPins();  
             }
@@ -120,43 +113,23 @@ public class Wire extends SelectableComponent {
         return endPoint;
     }
 
-    /**
-     * Change the endpoint of a wire. Once the end point has been set, 
-     * the #moveEndPoint() should be used instead.
-     * @param endPoint The new end point
-     */
+    /** Change the endpoint of a wire. Once the end point has been set, 
+     * the #moveEndPoint() should be used instead. */
     public void setEndPoint(Point endPoint) {
         this.endPoint = endPoint;      
         // We only need to update the pins on the last leg of the wire
         if(!origin.equals(SelectableComponent.DEFAULT_ORIGIN())){
             setLastLegPins();
         }        
-        optimiseWireEnds();
-        
-        // Remove Common line waypoints for tail of wire
-        int len = waypoints.size();
-        Point start = null;
-        if(len == 1){
-            start = origin;
-        } else if (len > 1){
-            start = waypoints.get(len - 2);
-        }
-        if(start != null){
-            removeCommonLineWaypoints(start, waypoints.getLast(), endPoint, isFixed());
-        }  
-        
+        optimiseWireEnds();        
         setBoundingBox();
     }
     
-    /**
-     * Move the end point but also update the waypoints if appropriate.
-     * @param p The new end point.
-     */
+    /** Move the end point but also update the waypoints if appropriate.
+     * @param p The new end point. */
     public void moveEndPoint(Point p) {   
         setEndPoint(p);       
-        if(!waypoints.isEmpty() 
-                && waypoints.getLast().x == endPoint.x 
-                && waypoints.getLast().y == endPoint.y){
+        if(!waypoints.isEmpty() && waypoints.getLast().equals(endPoint)){
             Point last = waypoints.removeLast();
             Point lastButOne;
             if(waypoints.size()==0){
@@ -166,39 +139,22 @@ public class Wire extends SelectableComponent {
             } 
             createLeg(lastButOne, last);
             addWaypoint(new Point(x2,x2));                                
-        }             
-        
+        }
         removeDuplicateWaypoints();        
         setLocalPins();
         setGlobalPins();         
         setBoundingBox();
     }
 
-    /**
-     * Change the start point of a wire. Once the start point has been set, 
+    /** Change the start point of a wire. Once the start point has been set, 
      * the #moveStartPoint() should be used instead.
-     * @param startPoint The new start point
-     */
+     * @param startPoint The new start point */
     public void setStartPoint(Point startPoint) {
-        this.origin = startPoint;
-        
-        // Remove Common line waypoints for head of wire
-        int len = waypoints.size();
-        Point last = null;
-        if(len == 1 && isFixed()){
-            last = endPoint;
-        } else if (len > 1){
-            last = waypoints.get(1);
-        }
-        if(last != null){
-            removeCommonLineWaypoints(startPoint, waypoints.get(0), last, true);
-        }         
+        this.origin = startPoint;    
     }
     
-    /**
-     * Move the start point but also update the waypoints if appropriate.
-     * @param p The new start point.
-     */
+    /** Move the start point but also update the waypoints if appropriate.
+     * @param p The new start point. */
     public void moveStartPoint(Point p) {
         setStartPoint(p);
         setLocalPins();
@@ -206,17 +162,12 @@ public class Wire extends SelectableComponent {
         setBoundingBox();
     }
     
-    /** {@inheritDoc} */
     @Override
     public Point getCentre() {
         return new Point(0, 0);
     }
     
-    /**
-     * Append a waypoint to the end of the waypoint list for this wire.
-     * 
-     * @param wp The waypoint to add
-     */
+    /** Append a waypoint to the end of the waypoint list for this wire. */
     public void addWaypoint(Point wp) {               
         // Set start equal to the penultimate waypoint (possibly the start point)
         int len = waypoints.size();
@@ -231,13 +182,11 @@ public class Wire extends SelectableComponent {
             removeCommonLineWaypoints(start, waypoints.getLast(), wp, true);
         }  
             
-        waypoints.add(wp);   
-        
+        waypoints.add(wp);           
         setInvalidAreas();
         setBoundingBox();  
     }
     
-    /** {@inheritDoc} */
     @Override
     protected void setLocalPins() {
         localPins = new LinkedList<Pin>();
@@ -254,10 +203,8 @@ public class Wire extends SelectableComponent {
                 setPinsOnLeg(current, next);
                 current = waypoint;
             }
-            setPinsOnLeg(next, last);
-            
-            localPins.add(new Pin(endPoint.x-getOrigin().x,
-                    endPoint.y-getOrigin().y));
+            setPinsOnLeg(next, last);            
+            localPins.add(new Pin(endPoint.x-getOrigin().x, endPoint.y-getOrigin().y));
             
             fixSelfCrossover();
         
@@ -285,7 +232,7 @@ public class Wire extends SelectableComponent {
                 createLeg(origin, endPoint);
             }
             if (grid.isConnectionPoint(new Point(x2, y2))) {
-                for (Pin p : grid.getConnectionPoint(new Point(x2, y2)).getConnections()) {
+                for (Pin p: grid.getConnectionPoint(new Point(x2, y2)).getConnections()) {
                     if (p.getParent() instanceof Wire) {
                         origin = new Point(x2, y2);
                         break;
@@ -312,11 +259,9 @@ public class Wire extends SelectableComponent {
         }
     }
         
-    /**
-     * Similar to setLocalPins() except it only does so for the last leg. 
+    /** Similar to setLocalPins() except it only does so for the last leg. 
      * used when adding waypoints and moving the end point so that the whole wire
-     * does not have to be replotted.
-     */
+     * does not have to be replotted. */
     private void setLastLegPins() {
         // Create pins between last waypoint and end point
         if(!waypoints.isEmpty()){
@@ -345,7 +290,7 @@ public class Wire extends SelectableComponent {
             
             fixSelfCrossover();
         
-             // If waypoints have changed, we need to reset the local, and global pins again
+            // If waypoints have changed, we need to reset the local, and global pins again
             boolean waypointsHaveChanged = false;
             for(Point p: oldwaypoints){
                 if(!waypoints.contains(p)){
@@ -373,11 +318,7 @@ public class Wire extends SelectableComponent {
         }      
     }
     
-    /** 
-     * hoverMousePoint is the current mouse point hovering over the wire
-     * 
-     * @param e
-     */
+    /**  hoverMousePoint is the current mouse point hovering over the wire */
     @Override
     public void mouseDragged(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);
@@ -401,8 +342,7 @@ public class Wire extends SelectableComponent {
                 hoverMousePoint = p;
             } else if (isOverEndPoint){
                 moveEndPoint(p);
-                hoverMousePoint = p;
-                
+                hoverMousePoint = p;                
             // Moving a segment of the wire
             } else if(hoverWaypoint!=null && !hoverWaypoint.equals(endPoint)){
                 parent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
@@ -466,7 +406,6 @@ public class Wire extends SelectableComponent {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void mouseDraggedDropped(MouseEvent e) {
         setSelectionState(selectionState.ACTIVE);
@@ -480,7 +419,6 @@ public class Wire extends SelectableComponent {
         }
         hoverMousePoint = Grid.snapToGrid(e.getPoint());
     }
-    /** {@inheritDoc} */
     @Override
     public void mouseMoved(MouseEvent e) {
         if (!isFixed() && !getSelectionState().equals(SelectionState.ACTIVE)) {
@@ -489,7 +427,6 @@ public class Wire extends SelectableComponent {
         }
         hoverMousePoint = Grid.snapToGrid(e.getPoint());
     }
-    /** {@inheritDoc} */
     @Override
     public void mouseClicked(MouseEvent e) {
         if (isFixed()) {
@@ -502,29 +439,22 @@ public class Wire extends SelectableComponent {
             }
         }
     }
-    /** {@inheritDoc} */
     @Override
-    public void mousePressed(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    /** {@inheritDoc} */
+    public void mousePressed(MouseEvent e) {throw new UnsupportedOperationException("Not supported yet.");  }
     @Override
     public void mouseReleased(MouseEvent e) {
         setSelectionState(SelectionState.ACTIVE);
         wireColour = UIConstants.ACTIVE_COMPONENT_COLOUR;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void resetDefaultState() {
         super.resetDefaultState();
         wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
     }
 
-    /**
-     * Detect whether the mid points in two line legs lie on the same line. If so
-     * remove the mid waypoint as it is unneeded. 
-     */
+    /** Detect whether the mid points in two line legs lie on the same line. If so
+     * remove the mid waypoint as it is unneeded. */
     private void removeCommonLineWaypoints() {
         if (waypoints != null && isFixed()) {
             Point previous = origin;
@@ -540,8 +470,7 @@ public class Wire extends SelectableComponent {
                 while(i<len){
                     if(i > 0){                       
                         previous = waypoints.get(i-1);
-                    }
-                    
+                    }                    
                     current = waypoints.get(i);
                     
                     if(i==(len-1)){
@@ -558,16 +487,14 @@ public class Wire extends SelectableComponent {
         }
     }
     
-    /**
-     * Detect whether the mid points in two line legs lie on the same line. If so
+    /** Detect whether the mid points in two line legs lie on the same line. If so
      * remove the mid waypoint as it is unneeded. 
      * 
      * @param last    - The waypoint at position i-1
      * @param current - The waypoint at position i
      * @param next    - The waypoint at position i+1
      * @param deleteWaypoint - Should we delete or just move the waypoint?
-     * @return Were waypoints removed?
-     */
+     * @return Were waypoints removed? */
     private boolean removeCommonLineWaypoints(Point last, Point current, Point next, Boolean deleteWaypoint) {       
         createLeg(last, current);        
         int l_x2 = x2;
@@ -585,19 +512,16 @@ public class Wire extends SelectableComponent {
         return false;
     }
     
-    /**
-     * Remove points that occur in the waypoint list more than once
-     */
+    /** Remove points that occur in the waypoint list more than once */
     private void removeDuplicateWaypoints() {
         // Find waypoints
         int i = 0;
         int j = 0;
-        dups:
         for (Point ptA : waypoints) {
             i = waypoints.indexOf(ptA);
             j = waypoints.lastIndexOf(ptA) - 1;
             if (i < j) {
-                break dups;
+                break;
             }
         }
 
@@ -619,22 +543,17 @@ public class Wire extends SelectableComponent {
         }
     }
     
-    /**
-     * Store the location of a reported crossover of the wire (a self loop)
-     * 
-     * @param p The crossover point (in Line co-ordinates)
-     */
-    public void reportSelfCrossover(Point p){        
+    /** Store the location of a reported crossover of the wire (a self loop) 
+     * @param p The crossover point (in Line co-ordinates) */
+    private void reportSelfCrossover(Point p){        
         if(reportedSelfCrossover == null){        
             reportedSelfCrossover = p;       
         }
     }
     
-    /**
-     * Finds the waypoints succeeding and preceding the crossover point p and 
+    /** Finds the waypoints succeeding and preceding the crossover point p and 
      * removes all waypoints between them.
-     * A waypoint is then added at point p.
-     */
+     * A waypoint is then added at point p.*/
     private void fixSelfCrossover(){        
         Point start = null; // The first waypoint after the crossover
         Point end = null; // The waypoint just before the crossover (but after start)
@@ -800,13 +719,11 @@ public class Wire extends SelectableComponent {
                 g.setStroke(def);   
             } else if(horizontalHoverRectangle.contains(hoverMousePoint)){
                                     
-                int handleX0, handleX1, handleY0, handleY1;
-                
+                int handleX0, handleX1, handleY0, handleY1;                
                 handleX0 = (x1 + x2 - UIConstants.WIRE_HANDLE_LENGTH) / 2;
                 handleX1 = handleX0 + UIConstants.WIRE_HANDLE_LENGTH;
                 handleY0 = y1;
-                handleY1 = y2;
-                
+                handleY1 = y2;                
                 // Allow for very short wires
                 if(handleX0 < x1 && x1 < x2){
                     handleX0 = x1;
@@ -837,13 +754,11 @@ public class Wire extends SelectableComponent {
                 
             } else if(verticalHoverRectangle.contains(hoverMousePoint)){
                 
-                int handleX0, handleX1, handleY0, handleY1;
-            
+                int handleX0, handleX1, handleY0, handleY1;            
                 handleX0 = x2;
                 handleX1 = x3;
                 handleY0 = (y2 + y3 - UIConstants.WIRE_HANDLE_LENGTH) / 2;
-                handleY1 = handleY0 + UIConstants.WIRE_HANDLE_LENGTH;
- 
+                handleY1 = handleY0 + UIConstants.WIRE_HANDLE_LENGTH; 
                 // Allow for very short wires
                 if(handleY0 < y2 && y2 < y3){
                     handleY0 = y2;
@@ -879,8 +794,7 @@ public class Wire extends SelectableComponent {
         g.drawLine(x2, y2, x3, y3);
 
     }
-    
-    /** {@inheritDoc} */
+
     @Override
     public void draw(Graphics2D g) {
 
@@ -922,47 +836,37 @@ public class Wire extends SelectableComponent {
         if (x2 - x1 > 0) {
             for (int x = 0; x < x2 - x1; x += UIConstants.GRID_DOT_SPACING) {
                 p = new Pin(x + dx, dy);
-                if(localPins.contains(p)){
-                    reportSelfCrossover(p);
-                } 
+                if(localPins.contains(p)){ reportSelfCrossover(p); } 
                 localPins.add(p);
             }
         } else {
             for (int x = 0; x < x1 - x2; x += UIConstants.GRID_DOT_SPACING) {
                 p = new Pin(-x + dx, dy);
-                if(localPins.contains(p)){
-                    reportSelfCrossover(p);
-                } 
+                if(localPins.contains(p)){ reportSelfCrossover(p);} 
                 localPins.add(p);
             }
         }
         if (y3 - y2 > 0) {
             for (int y = 0; y < y3 - y2; y += UIConstants.GRID_DOT_SPACING) {
                 p = new Pin(x2 - x1 + dx, y + dy);
-                if(localPins.contains(p)){
-                    reportSelfCrossover(p);
-                } 
+                if(localPins.contains(p)){reportSelfCrossover(p);} 
                 localPins.add(p);
             }
         } else {
             for (int y = 0; y < y2 - y3; y += UIConstants.GRID_DOT_SPACING) {
                 p = new Pin(x2 - x1 + dx, -y + dy);
-                if(localPins.contains(p)){
-                    reportSelfCrossover(p);
-                } 
+                if(localPins.contains(p)){reportSelfCrossover(p);} 
                 localPins.add(p);
             }
         }
     }
     
-    /** {@inheritDoc}
-     * A wire does not have any invalid areas. */
+    /** A wire does not have any invalid areas. */
     @Override
     protected void setInvalidAreas(){
         this.invalidArea = new Rectangle();
     }
-    
-    /** {@inheritDoc} */
+
     @Override
     public boolean containsPoint(Point point) {
         boolean retval = false; 
@@ -999,7 +903,6 @@ public class Wire extends SelectableComponent {
         return retval;
     }
     
-    /** {@inheritDoc} */
     @Override
     public boolean containedIn(Rectangle selBox) {
         boolean retval = false;
@@ -1022,7 +925,6 @@ public class Wire extends SelectableComponent {
         return retval;
     }
     
-    /** {@inheritDoc} */
     public void createXML(TransformerHandler hd) {
         try {
             AttributesImpl atts = new AttributesImpl();
@@ -1055,14 +957,11 @@ public class Wire extends SelectableComponent {
         boundingBox = rotate(boundingBox);  
     }
 
-        
-    /** {@inheritDoc} */
     @Override
     public int getWidth() {
         return (int) boundingBox.getWidth();
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getHeight() {
         return (int) boundingBox.getHeight();
@@ -1077,12 +976,6 @@ public class Wire extends SelectableComponent {
          waypoints = newwaypoints;
     }
     
-    /**
-     * Similar to clone except that the exception is caught and the Cast to 
-     * SelectableComponent is also performed.
-     * 
-     * @return Return an exact copy of this component. 
-     */
     @Override
     public SelectableComponent copy(){
         try {

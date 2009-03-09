@@ -3,11 +3,8 @@ package ui.grid;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
-import javax.imageio.ImageIO;
 import sim.joinable.Joinable;
 import ui.UIConstants;
 import ui.components.SelectableComponent;
@@ -22,21 +19,10 @@ public class ConnectionPoint extends GridObject {
     private LinkedList<Pin> connections = new LinkedList<Pin>();
     private boolean isActive = false;
     private boolean isCrossover = false;
-    private static BufferedImage defaultCrossover;
     private String label = new String();
 
     public ConnectionPoint(Grid grid, Point p){
         super(grid, p);        
-        if(UIConstants.DRAW_WIRE_CROSSOVERS){
-            try {
-                defaultCrossover = ImageIO.read(
-                        getClass().getResource("/ui/images/components/default_wire_crossover.png"));
-            } catch (IOException ex) {
-                defaultCrossover = new BufferedImage(0,0,BufferedImage.TYPE_INT_RGB);
-                ui.error.ErrorHandler.newError("Initialisation Error",
-                        "Could not load \"Connection Point Crossover\" image.", ex);    
-            }
-        }
     }
     
     public void addConnection(Pin p){         
@@ -47,10 +33,6 @@ public class ConnectionPoint extends GridObject {
             if(isConnected() && p.getParent().isFixed() && !isCrossover){
                 for(Pin pin: connections){
                     if(!pin.equals(p)){
-//                        if(pin.getJoinable().hasOutputSource() && p.getJoinable().hasOutputSource() &&
-//                                pin.getJoinable().outputSource.equals(p.getJoinable().outputSource)){
-//                         System.out.println("crossover");
-//                        }
                         sim.joinable.Joinable.connect(pin.getJoinable(), p.getJoinable());
                     }
                 }
@@ -63,8 +45,7 @@ public class ConnectionPoint extends GridObject {
             if(!Joinable.canConnect(pin.getJoinable(), logicalWire)){
                 return false;
             }
-        }
-        return true;
+        } return true;
     }
     
     public boolean removeConnection(Pin p){
@@ -89,26 +70,8 @@ public class ConnectionPoint extends GridObject {
         return connections.size();
     }
     
-    @SuppressWarnings("unchecked")
     public Collection<Pin> getConnections(){
         return (Collection<Pin>) connections.clone();
-    }
-    
-    protected void moveWireEnds(Point newPoint){        
-        for(Pin pin: connections){
-            if(pin.getParent() instanceof Wire){
-                Wire w = (Wire) pin.getParent();
-                if(w.isFixed()){
-                    if(w.getEndPoint().equals(this)){
-                        w.moveEndPoint(newPoint);
-                        break;
-                    } else if(w.getOrigin().equals(this)){
-                        w.moveStartPoint(newPoint);
-                        break;
-                    }     
-                }                               
-            } 
-        } 
     }
     
     public boolean isConnected(){
@@ -121,18 +84,7 @@ public class ConnectionPoint extends GridObject {
             if(!found.contains(p.getParent())){
                 found.add(p.getParent());
             }
-        }        
-        return found.size();
-    }
-        
-    protected boolean hasDifferentWire(SelectableComponent wire){
-        for(Pin p: connections){
-            if(p.getParent() instanceof Wire
-                    && !p.getParent().equals(wire)){
-                return true;
-            }
-        }
-        return false;
+        } return found.size();
     }
     
     @Override
@@ -141,19 +93,9 @@ public class ConnectionPoint extends GridObject {
             if(p.getParent().equals(sc)){
                 return true;
             }
-        }
-        return false;
+        } return false;
     }
-    
-    protected boolean hasAnyWirePins(){       
-        for(Pin p: connections){
-            if(p.getParent() instanceof Wire){
-                return true;
-            }
-        }
-        return false;
-    }
-    
+        
     public void setActive(boolean isActive){
         if(!isCrossover){
             this.isActive = isActive;
@@ -166,29 +108,25 @@ public class ConnectionPoint extends GridObject {
 
     @Override
     public void draw(Graphics2D g2) {
-        super.draw(g2);        
-        if(!UIConstants.DRAW_WIRE_CROSSOVERS || !isCrossover){        
-            if(!isCrossover && noOfDifferentConnections() > 1){
-                 g2.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-                 g2.drawOval(x-2, y-2, 5, 5);
-                 g2.fillOval(x-2, y-2, 5, 5);
-            }
-            if(isActive){
-                Stroke def = g2.getStroke();
-                g2.setStroke(UIConstants.CONNECTED_POINT_STROKE);
-                g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
-                g2.drawRect(x-3, y-3, 7, 7); 
-                g2.setStroke(def);
-                isActive = false;
-            }
-            if(UIConstants.SHOW_GRID_OBJECTS){ 
-                g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
-                g2.drawOval(x-1, y-1, 3, 3);
-                g2.fillOval(x-1, y-1, 3, 3);
-            }            
-        } else {
-            g2.drawImage(defaultCrossover, x-9, y-10, null);
+        super.draw(g2);               
+        if(!isCrossover && noOfDifferentConnections() > 1){
+             g2.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
+             g2.drawOval(x-2, y-2, 5, 5);
+             g2.fillOval(x-2, y-2, 5, 5);
         }
+        if(isActive){
+            Stroke def = g2.getStroke();
+            g2.setStroke(UIConstants.CONNECTED_POINT_STROKE);
+            g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
+            g2.drawRect(x-3, y-3, 7, 7); 
+            g2.setStroke(def);
+            isActive = false;
+        }
+        if(UIConstants.SHOW_GRID_OBJECTS){ 
+            g2.setColor(UIConstants.CONNECTION_POINT_COLOUR);
+            g2.drawOval(x-1, y-1, 3, 3);
+            g2.fillOval(x-1, y-1, 3, 3);
+        }            
     }
  
     @Override

@@ -27,7 +27,7 @@ public class FileSaveAsCommand extends Command {
                 filename = filename + ui.UIConstants.FILE_EXTENSION;
             }            
             activeCircuit.saveAs(filename);
-            parentHistory.stageChange("message", getName() + ": " + filename);
+            parentHistory.stageChange(CommandStage.Message, getName() + ": " + filename);
         }
     }
 

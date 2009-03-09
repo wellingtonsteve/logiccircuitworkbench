@@ -26,9 +26,9 @@ public abstract class Command implements Cloneable{
             } else {
                 parentHistory = editor.getCommandHistory();
             }      
-            parentHistory.stageChange("started", "");           
+            parentHistory.stageChange(CommandStage.Started, "");           
             perform(editor);            
-            parentHistory.stageChange("done", "");
+            parentHistory.stageChange(CommandStage.Done, "");
         }       
     }
     

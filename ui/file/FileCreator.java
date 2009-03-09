@@ -15,8 +15,7 @@ import ui.components.SelectableComponent;
  *
  * @author matt
  */
-public class FileCreator {
-    
+public class FileCreator {    
     private static PrintWriter out = null;
     private static TransformerHandler hd = null;
    
@@ -32,7 +31,7 @@ public class FileCreator {
             hd = tf.newTransformerHandler();
             Transformer serializer = hd.getTransformer();
             serializer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
-            //serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "circuit.dtd");
+            serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "circuit.dtd");
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
 
             hd.setResult(streamResult);
@@ -83,13 +82,13 @@ public class FileCreator {
                 if (sc.isFixed()) {
                     sc.createXML(hd);   
                 }
-            }        
+            }      
             
+            // Close everything
             hd.endElement("", "", "components"); 
             hd.endElement("", "", "circuit");
             hd.endDocument();
-            out.close();
-            
+            out.close();            
         } catch (FileNotFoundException ex) {
             ui.error.ErrorHandler.newError("File Not Found","Please refer to the system output below.",ex);
         } catch (Exception ex) {

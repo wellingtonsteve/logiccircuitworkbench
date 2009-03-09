@@ -350,10 +350,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         boundingBox = new Rectangle(getOrigin().x,getOrigin().y,getWidth(),getHeight());
         boundingBox = rotate(boundingBox);        
     } 
-    
-    /**
-     * {@inheritDoc}
-     */
+
     public String getLabel() {
         if(properties.getAttribute("Label")==null){
             return "";
@@ -361,27 +358,18 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         return (String) properties.getAttribute("Label").getValue();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setLabel(String label) {
         if(properties.getAttribute("Label")!=null){
             properties.getAttribute("Label").changeValue(label);
         }
     }
     
-    /**
-     * {@inheritDoc}
-     */
     public void removeLabel(){
         if(properties.getAttribute("Label")!=null){
             properties.getAttribute("Label").changeValue("");
         }
     }
     
-    /**
-     * {@inheritDoc}
-     */
     public boolean hasLabel(){
         if(properties.getAttribute("Label")==null){
             return false;
@@ -389,21 +377,17 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         return !getLabel().equals("");
     }
  
-    /**
-     * The Component Tree Name is the value that is returned from the Component Tree
+    /** The Component Tree Name is the value that is returned from the Component Tree
      * in the toolbox when this type of component is selected. The name is also the
      * key for all netlist mappings.
      * 
-     * @return The component tree name of this component
-     */
+     * @return The component tree name of this component */
     public String getKeyName() {
         return properties.getKeyName();
     }
 
-    /**
-     * Convience method to record the current state of the object and then to change
-     * the state to SelectionState.HOVER
-     */
+    /** Convience method to record the current state of the object and then to change
+     * the state to SelectionState.HOVER */
     public void setHoverState(){
         if(selectionState != null && !this.selectionState.equals(SelectionState.ACTIVE)){
             this.preHoverState = this.selectionState;
@@ -411,10 +395,8 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         }        
     }
     
-    /**
-     * Undo the change made by the last setHoverState() action and change the state
-     * back to its value immediately before that action.
-     */
+    /** Undo the change made by the last setHoverState() action and change the state
+     * back to its value immediately before that action. */
     public void revertHoverState() {
         if(selectionState!= null && this.selectionState.equals(SelectionState.HOVER)){
             if(this.preHoverState == null){
@@ -424,10 +406,8 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         }
     }
         
-    /**
-     * Remove all old pins from the connection point grid and then recreate the 
-     * pins from the local pins of this component.
-     */
+    /** Remove all old pins from the connection point grid and then recreate the 
+     * pins from the local pins of this component. */
     protected void setGlobalPins(){    
         if(fixed){
             for(Pin p: localPins){
@@ -443,63 +423,46 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         }
     }
     
-    /**
-     * Local pins are used to do all processing (e.g. for crossovers
+    /** Local pins are used to do all processing (e.g. for crossovers
      * of wires) and generation of connection points before they are added to the grid.
      * 
      * @return a list of the pins belonging to this component in their local
-     * co-ordinates.
-     */
+     * co-ordinates.*/
     protected  List<Pin> getLocalPins(){
         return localPins;
     }
     
-    /**
-     * Convience method. 
-     * @see ui.components.SelectableComponent#getLocalPins()
-     */
+    /** Convience method. */
     public List<Pin> getPins(){
         return getLocalPins();
     }
     
-    /**
-     * Set the pins of this component in local co-ordinates. Local pins are used 
+    /** Set the pins of this component in local co-ordinates. Local pins are used 
      * to do all processing (e.g. for crossovers of wires) and generation of 
      * connection points before they are added to the grid. All subclasses must 
      * either call the super.setLocalPins() first or remember to reset the list
-     * of pins themselves.
-     */
+     * of pins themselves. */
     protected void setLocalPins(){
         localPins = new LinkedList<Pin>();
     }
     
-    /**
-     * Register this as a listener to its pins
-     */
+    /** Register this as a listener to its pins */
     public void addListeners(){}
     
-    /**
-     * @param point The point to test.
-     * @return true if, and only if, the specified point lies with in this point.
-     */
+    /** @param point The point to test.
+     * @return true if, and only if, the specified point lies with in this point. */
     public abstract boolean containsPoint(Point point);
     
-    /**
-     * Returns true if, and only if, the invalid areas of this component lie entirely
+    /** Returns true if, and only if, the invalid areas of this component lie entirely
      * within the specified rectangle. Used primarily for testing inclusion in a
-     * selection box.
-     * 
-     * @param rect The rectangle to test for inclusion in
-     */
+     * selection box. */
     public boolean containedIn(Rectangle rect) {
         return rect.contains(getInvalidArea());
     }
         
-    /**
-     * Draw this component to the graphics object specified.
+    /** Draw this component to the graphics object specified.
      * 
-     * @param g The graphics object to draw to.
-     */
+     * @param g The graphics object to draw to.*/
     public void draw(Graphics2D g){            
         if(hasLabel()){
             g.setColor(UIConstants.LABEL_TEXT_COLOUR);
@@ -547,13 +510,11 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         return Grid.snapToGrid(new Point(x,y));
     }
     
-    /**
-     * Helper method to calculate the rotation of Point p about the centre Point
+    /** Helper method to calculate the rotation of Point p about the centre Point
      * of the component in the clockwise direction.
      * 
      * @param p The point to rotate
-     * @return The new rotated location
-     */
+     * @return The new rotated location */
     protected Point rotate(Point p) {
         Point transP = new Point(p.x - getCentre().x, p.y - getCentre().y);
         Point rotP = new Point((int) ((transP.x * cosTheta) - (transP.y * sinTheta)),
@@ -562,14 +523,12 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         return Grid.snapToGrid(ansP);
     }
     
-    /**
-     * Helper method to calculate the rotation of Rectangle src about the centre Point
+    /** Helper method to calculate the rotation of Rectangle src about the centre Point
      * of the component in the clockwise direction. Used to rotate the invalid
      * area and bounding box rectangles.
      * 
      * @param src The rectangle to rotate
-     * @return The new rotated rectangle
-     */
+     * @return The new rotated rectangle */
     protected Rectangle rotate(Rectangle src){
         Rectangle retval;
         java.awt.geom.AffineTransform rotationTransformation = new java.awt.geom.AffineTransform();
@@ -579,12 +538,10 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         return retval;
     }
     
-    /**
-     * Visitor method for saving a file. Each component is visited and must provide
+    /** Visitor method for saving a file. Each component is visited and must provide
      * and XML representation of itself to the TransformerHandler.
      * 
-     * @param hd The TransformerHandler which will record the XML.
-     */
+     * @param hd The TransformerHandler which will record the XML. */
     public abstract void createXML(TransformerHandler hd);   
     
     /**
@@ -653,12 +610,10 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
     @Override
     public void SimulatorStateChanged(SimulatorState state) {}    
     
-    /**
-     * Similar to clone except that the exception is caught and the Cast to 
+    /** Similar to clone except that the exception is caught and the Cast to 
      * SelectableComponent is also done.
      * 
-     * @return Return an exact copy of this component. 
-     */
+     * @return Return an exact copy of this component. */
     public SelectableComponent copy(){
         try {
             SelectableComponent retval = (SelectableComponent) this.clone();
@@ -674,9 +629,6 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         return null;
     }
     
-    /**
-     * {@inheritDoc }
-     */
     @Override
     public Object clone() throws CloneNotSupportedException{
         return super.clone();
@@ -767,11 +719,9 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
             }            
         }
 
-        /**
-         * The global location is the location of the pin with the appropriate 
+        /** The global location is the location of the pin with the appropriate 
          * rotation and translation applied.
-         * @return The global coordinates.
-         */
+         * @return The global coordinates. */
         public Point getGlobalLocation() {
             Point rotP;
             Point about = getLocation();
@@ -788,31 +738,23 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
             return retval;
         } 
 
-        /**
-         * @return The connection point that this pin lies on.
-         */
+        /** @return The connection point that this pin lies on. */
         public ConnectionPoint getConnectionPoint() {
             return cp;
         }
 
-        /**
-         * Change the connection point associated with this pin.
-         * @param cp The new connection point.
-         */
+        /** Change the connection point associated with this pin.
+         * @param cp The new connection point. */
         public void setConnectionPoint(ConnectionPoint cp) {
             this.cp = cp;
         }
         
-        /**
-         * @return Either the wire or simulator pin associated with this pin.
-         */
+        /** @return Either the wire or simulator pin associated with this pin. */
         public sim.joinable.Joinable getJoinable(){
             return joinable;
         }
         
-        /**
-         * @return The edge of the component that this pin is to be positioned on.
-         */
+        /** @return The edge of the component that this pin is to be positioned on.*/
         public ComponentEdge getEdge(){
             return edge;
         }
