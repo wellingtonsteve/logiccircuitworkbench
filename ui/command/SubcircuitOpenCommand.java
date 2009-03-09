@@ -18,7 +18,7 @@ import ui.file.FileLoader;
 import ui.file.CircuitFileFilter;
 
 /**
- *
+ *TODO: Check self-recursion, (depth etc..)
  * @author matt
  */
 public class SubcircuitOpenCommand extends Command {

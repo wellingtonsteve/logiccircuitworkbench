@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<circuit author="Matt" modifiedOn="04 March 2009, 21:19" version="LCW v3.0">
+<circuit author="Matt" modifiedOn="04 March 2009, 21:19" version="LCW v3.1">
     <components>
         <attr name="Title" value=""/>
         <attr name="Description" value=""/>
         <attr name="Subcircuit Image" value=""/>
+        <attr name="Subcircuit Width" value="40"/>
+        <attr name="Subcircuit Height" value="40"/>
         <component type="Standard.LED" x="520" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+            <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <wire startx="335" starty="235" endx="545" endy="100">
@@ -45,15 +47,15 @@
         <component type="Standard.LED" x="445" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <component type="Standard.LED" x="620" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <wire startx="575" starty="265" endx="525" endy="235">
@@ -63,8 +65,8 @@
         <component type="Standard.LED" x="570" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <wire startx="815" starty="265" endx="705" endy="265">
@@ -179,29 +181,29 @@
         <component type="Standard.LED" x="720" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <component type="Standard.LED" x="595" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <component type="Standard.LED" x="645" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <component type="Standard.LED" x="495" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <wire startx="755" starty="265" endx="645" endy="265">
@@ -210,22 +212,22 @@
         <component type="Standard.LED" x="745" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <component type="Standard.LED" x="695" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <component type="Standard.LED" x="670" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <component type="Flip Flops.D Type" x="550" y="245" rotation="0.0" subcircuit="false">
@@ -255,22 +257,22 @@
         <component type="Standard.LED" x="520" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <component type="Standard.LED" x="470" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <component type="Standard.LED" x="520" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <wire startx="275" starty="235" endx="520" endy="100">
@@ -279,15 +281,15 @@
         <component type="Standard.LED" x="520" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <component type="Standard.LED" x="545" y="90" rotation="-1.5707963267948966" subcircuit="false">
             <attr name="Label" value=""/>
             <attr name="External?" value="false"/>
-            <attr name="External X" value="5"/>
-            <attr name="External Y" value="5"/>
+            <attr name="External Position" value="0"/>
+             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
     </components>
