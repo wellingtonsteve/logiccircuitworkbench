@@ -264,5 +264,4 @@ public class Grid {
     public CircuitPanel getParentCircuit() {
         return circuit;
     }
-
 }

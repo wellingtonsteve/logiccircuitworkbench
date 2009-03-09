@@ -37,8 +37,7 @@ public abstract class GridObject extends Point implements Labeled, Cloneable {
             if(hasParent(sc)){
                 return true;
             }
-        }
-        return false;
+        } return false;
     }
     
     public String getLabel() {
@@ -56,7 +55,4 @@ public abstract class GridObject extends Point implements Labeled, Cloneable {
     public boolean hasLabel(){
         return !label.isEmpty() || !label.equals("");
     }
-
- 
-
 }

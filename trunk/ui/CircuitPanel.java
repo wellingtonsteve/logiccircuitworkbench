@@ -33,6 +33,7 @@ import ui.grid.Grid;
 import ui.components.*;
 import ui.components.SelectableComponent.Pin;
 import ui.command.CommandHistory;
+import ui.command.CommandStage;
 import ui.command.CreateComponentCommand;
 import ui.command.SelectionTranslateCommand;
 import ui.command.SubcircuitOpenCommand.SubcircuitComponent;
@@ -289,18 +290,12 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         }
     }
     
-    /**
-     * @return The connection point grid associated with this Circuit.
-     * @see ui.grid.Grid
-     */
+    /** @return The connection point grid associated with this Circuit. */
     public Grid getGrid() {
         return grid;
     }  
         
-    /**
-     * @return The command history of actions in this panel
-     * @see ui.command.CommandHistory;
-     */
+    /** @return The command history of actions in this panel */
     public CommandHistory getCommandHistory() {
         return cmdHist;
     }
@@ -360,16 +355,15 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     public SimulatorState getSimulatorState() {
         return simulatorState;
     }
-    
-    /** {@inheritDoc } */
+
     @Override
     public void SimulationTimeChanged(long time) {     
         if(time % Math.pow(10, simulationRate -2 ) == 0  || simulationRate < 2){// Don't change too quickly!
-            ErrorHandler.changeStatus("message", "Simulator Time: " + ((double) (time / (double) 1000000000)) + "×10\u2079ns");
+            cmdHist.stageChange(CommandStage.Message,
+                    "Simulator Time: " + ((double) (time / (double) 1000000000)) + "×10\u2079ns");
         }
     }
 
-    /** {@inheritDoc } */
     @Override
     public void SimulatorStateChanged(SimulatorState state) {
         this.simulatorState = state;
@@ -384,7 +378,6 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         }
     }
     
-    /** {@inheritDoc } */
     @Override
     public void SimulationRateChanged(int rate){
        this.simulationRate = rate;
@@ -655,7 +648,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
 
         public void mouseClicked(MouseEvent e) {
             if (isActiveCircuit() && !currentTool.equals("Wire")) {
-                // Area we clicking empty space?
+                // Are we clicking empty space?
                 boolean clickingEmptySpace = true;
                 temporaryComponent = null;
                 for (SelectableComponent sc : drawnComponents) {
@@ -868,7 +861,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     if(nowDragingComponent){
                         dragActiveSelection(e,false,false);
                     }  else {
-                        // Area we dragging from a fixed component?
+                        // Are we dragging from a fixed component?
                         boolean clickingEmptySpace = true;
                         temporaryComponent = null;
                         if(!multipleSelection){

@@ -856,7 +856,6 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
         
         TreePath currentSelection = ComponentSelectionTree.getSelectionPath();
         if(currentSelection != null){
-
             // Implode from array path to string delimited by periods.
             Object[] nameArray = currentSelection.getPath();
             String componentName = new String();
@@ -1182,15 +1181,13 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
             windowItem.setText(cf.getTitle()); 
             windowItem.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    try {
-                        cf2.setSelected(true);
+                    try { cf2.setSelected(true);
                     } catch (PropertyVetoException ex) {
                         ErrorHandler.newError("Editor Error","Cannot select circuit " + cf2.getTitle() + ".", ex);
                     }
                 }
             });
-            Window.add(windowItem);
-            
+            Window.add(windowItem);            
         }
         if(circuitwindows.size()==0){
             Window.setEnabled(false);
@@ -1219,11 +1216,8 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
         circuitPanel.removeUnfixedComponents();
     }
 
-    /**
-     * Create a new empty circuit and open it in the Desktop Window Pane.
-     * 
-     * @return The new circuit
-     */
+    /** Create a new empty circuit and open it in the Desktop Window Pane.
+     * @return The new circuit */
     public CircuitPanel createBlankCircuit(boolean isSubCircuit) {
         
         // Construct the containing frame, also set position
@@ -1284,17 +1278,12 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
         SimulatorSpeed.setEnabled(enable);
     }
     
-    /**
-     * @return Tthe currently selected active circuit panel workarea. 
-     */
+    /** @return Tthe currently selected active circuit panel workarea. */
     public CircuitPanel getActiveCircuit() {
         return circuitPanel;
     }
 
-    /**
-     * Make the specified circuit active
-     * @param circuit
-     */
+    /** Make the specified circuit active */
     public void setActiveCircuit(CircuitPanel circuit) {
         if(circuitwindows.contains(circuit.getParentFrame())){
             // Set application's title
@@ -1357,11 +1346,9 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
         }              
     }
 
-    /**
-     * Construct the component tree from the list of netlists associated with this editor.
+    /** Construct the component tree from the list of netlists associated with this editor.
      * 
-     * @return rootNode     A well-formed TreeModel for use in a JTree
-     */
+     * @return rootNode     A well-formed TreeModel for use in a JTree */
     private TreeModel getTreeValues(){
         
         DefaultMutableTreeNode parent;
@@ -1405,19 +1392,15 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
         return new DefaultTreeModel(rootNode);
     }
     
-    /**
-     * Unselect the currently selected component in the component selection tree.
-     */
+    /** Unselect the currently selected component in the component selection tree. */
     public void clearComponentSelection(){
         ComponentSelectionTree.clearSelection();
     }
     
-    /**
-     * Register a new Component Netlist with the editor. All components in the netlist 
+    /** Register a new Component Netlist with the editor. All components in the netlist 
      * will be made available in the toolbox for use in circuits.
      * 
-     * @param nl The netlist to add.
-     */
+     * @param nl The netlist to add. */
     public void addNetlist(Netlist nl){
         if(!nl.keySet().isEmpty()){
             netlists.add(nl);
@@ -1427,16 +1410,14 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
         }
     }
     
-    /**
-     * Checks whether a the key identifies either a valid implementation of a Selectable
+    /**  Checks whether a the key identifies either a valid implementation of a Selectable
      * Component which can be drawn on the circuit or a component which has a logical 
      * implementation but no visual representation. Components without a valid visual
      * (Selectable Component) representation are drawn dynamically from the properties of 
      * the logical component.
      * 
      * @param key
-     * @return is key a valid netlist key?
-     */
+     * @return is key a valid netlist key? */
     public boolean isValidComponent(String key){
         //Remove "Components." from begining
         if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
@@ -1452,11 +1433,9 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
         return false;
     }
     
-    /**
-     * TODO Write javadoc
+    /** TODO Write javadoc
      * @param key
-     * @return
-     */
+     * @return */
     public Netlist getNetlistWithKey(String key){
         //Remove "Components." from begining
         if(key.length() > 11 && key.subSequence(0, 11).equals("Components.")){
@@ -1470,11 +1449,9 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
         return null;
     }
     
-    /**
-     * Fix a Component to the circuit
+    /** Fix a Component to the circuit
      * 
-     * @param sc The component to fix
-     */
+     * @param sc The component to fix */
     public void fixComponent(SelectableComponent sc) {
         getActiveCircuit().doCommand(
                 new FixComponentCommand(sc));
@@ -1488,80 +1465,71 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
         return offscreenImage;
     }
     
-    /**
-     * @return  the result of the fastest place to draw
-     */
+    /** @return  the result of the fastest place to draw */
     public boolean drawDirect() {
         return drawDirect;
     }
         
-    /** 
-     * Tries drawing to the screen and to a
-     * buffer. Whichever one takes the least time (actually, whichever
-     * one it can do the most times within a set time constraint) is
+    /** Tries drawing to the screen and to a buffer. Whichever one takes the least 
+     * time (actually, whichever one it can do the most times within a set time constraint) is
      * the one that is best.
-     * From: Expert Solutions by Mark Wutka, et. al. (http://www.webbasedprogramming.com/Java-Expert-Solutions/)
-     */
+     * From: Expert Solutions by Mark Wutka, et. al. (http://www.webbasedprogramming.com/Java-Expert-Solutions/)*/
      public void doAutoDetect()
      {
-        Graphics g = this.getGraphics();
-        
+        Graphics g = this.getGraphics();        
         // Create the off-screen drawing area
         offscreenImage = createImage(getWidth(), getHeight());
         offscreenGraphics = offscreenImage.getGraphics();
+        long start;
+        long end;
 
-          long start;
-          long end;
+        // Tally the number of times we were able to draw direct and buffered
+        int directCount = 0;
+        int bufferedCount = 0;
 
-          // Tally the number of times we were able to draw direct and buffered
-          int directCount = 0;
-          int bufferedCount = 0;
+        g.setColor(getBackground());
+        // Mark what time we started
+        start = System.currentTimeMillis();
+        end = start;
 
-            // Draw in the applet's background color, makes the autodetection invisible.
+        // Paint patterns directly to the screen, but only for 500 milliseconds
+        while ((end-start) < 500) {
+           paintDetectionDesign(g);
+           end = System.currentTimeMillis();
+           directCount++;
+        }
+        g.setColor(getForeground());
 
-          g.setColor(getBackground());
-          // Mark what time we started
-          start = System.currentTimeMillis();
-          end = start;
+        // record the total time spent drawing directly
+        long directTime = end - start;
 
-          // Paint patterns directly to the screen, but only for 500 milliseconds
-          while ((end-start) < 500) {
-               paintDetectionDesign(g);
-               end = System.currentTimeMillis();
-               directCount++;
-          }
-          g.setColor(getForeground());
+        start = System.currentTimeMillis();
+        end = start;
 
-          // record the total time spent drawing directly
-          long directTime = end - start;
+        // Paint patterns to the offscreen graphics, but only for 500 milliseconds
+        while ((end-start) < 500) {
+           paintDetectionDesign(offscreenGraphics);
+           end = System.currentTimeMillis();
+           bufferedCount++;
+        }
 
-          start = System.currentTimeMillis();
-          end = start;
+        long bufferedTime = end - start;
 
-          // Paint patterns to the offscreen graphics, but only for 500 milliseconds
-          while ((end-start) < 500) {
-               paintDetectionDesign(offscreenGraphics);
-               end = System.currentTimeMillis();
-               bufferedCount++;
-          }
-
-          long bufferedTime = end - start;
-
-          // If we were able to draw more times using the buffered graphics,
-          // or if the drawing counts are the same, but the total time for
-          // the buffering was less, buffering is faster.
-          if ((bufferedCount > directCount) ||
-               ((bufferedCount == directCount) &&
-                (bufferedTime < directTime))) {
-               drawDirect = false;
-          } else {
-          // If we want to draw direct, free the space taken up by the
-          // offscreen image and graphics context.
-               offscreenImage.flush();
-               offscreenImage = null;
-               offscreenGraphics = null;
-               drawDirect = true;
-          }
+        // If we were able to draw more times using the buffered graphics,
+        // or if the drawing counts are the same, but the total time for
+        // the buffering was less, buffering is faster.
+        if ((bufferedCount > directCount) ||
+           ((bufferedCount == directCount) &&
+            (bufferedTime < directTime))) {
+           drawDirect = false;
+        } else {
+        // If we want to draw direct, free the space taken up by the
+        // offscreen image and graphics context.
+           offscreenImage.flush();
+           offscreenImage = null;
+           offscreenGraphics = null;
+           drawDirect = true;
+        }
     }
 
     /** paintDetectionDesign performs some graphical operations to gauge the time
@@ -1577,13 +1545,9 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
           }
      }
 
-     /**
-      * Display any reported errors to the user. Using a Message Dialog, the easily 
+     /** Display any reported errors to the user. Using a Message Dialog, the easily 
       * readable message is always shown and if and Exception is associated with 
-      * the error, it is displayed in a scrollable text box below the message.
-      * 
-      * @param error
-      */
+      * the error, it is displayed in a scrollable text box below the message. */
     @Override
     public void reportError(Error error) {
         Object[] dialogContent;        
@@ -1628,7 +1592,7 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
     }
     
     @Override
-    public void statusChange(String stage, Object value) {
+    public void statusChange(CommandStage stage, Object value) {
         cmdHist.stageChange(stage, value);
     }
     
@@ -1654,12 +1618,8 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
         return (sc!=null)?sc.copy():null;        
     }
     
-    /**
-     * Set the component which this panel shows. This component has already been
-     * created and will normally come from a selection in the circuit workarea.
-     * 
-     * @param sc
-     */
+    /**Set the component which this panel shows. This component has already been
+     * created and will normally come from a selection in the circuit workarea. */
     public void setComponent(SelectableComponent sc){
         // Protect options panel from badly created components
         if(sc != null){
@@ -1686,13 +1646,9 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
         }
     }
 
-    /**
-     * Rotate the component that is displayed in this options panel, also force
+    /** Rotate the component that is displayed in this options panel, also force
      * repaints as necessary. Changes to the component here are reflected in the 
-     * unfixed component in the workarea.
-     * 
-     * @param d
-     */
+     * unfixed component in the workarea. */
     public void setComponentRotation(double d) {
         this.rotation = d;
         if(sc != null){
@@ -1702,9 +1658,7 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
         }        
     }
     
-    /**
-     * @return the current rotation of the component displayed in the panel.
-     */
+    /** @return the current rotation of the component displayed in the panel. */
     public Double getComponentRotation(){
         return rotation;
     }

@@ -27,12 +27,11 @@ public class LogicGates extends Netlist{
         public And2Props(String key){
             super(key);
             setLogicalComponentClass(sim.componentLibrary.logicgates.AndGate2Input.class);
-//            setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
+            setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
             addAttribute(new TextAttribute("Label", ""));
             addImage("default", "/ui/images/components/default_2in_and.png");
             addImage("selected", "/ui/images/components/selected_2in_and.png");
             addImage("active", "/ui/images/components/active_2in_and.png");
-
             addInputPin("Input 1", ComponentEdge.West, -1);
             addInputPin("Input 2", ComponentEdge.West, 3);
             addOutputPin("Output", ComponentEdge.East, 1);
@@ -51,7 +50,6 @@ public class LogicGates extends Netlist{
             addImage("default", "/ui/images/components/default_2in_or.png");
             addImage("selected", "/ui/images/components/selected_2in_or.png");
             addImage("active", "/ui/images/components/active_2in_or.png");
-
             addInputPin("Input 1", ComponentEdge.West, -1);
             addInputPin("Input 2", ComponentEdge.West, 3);
             addOutputPin("Output", ComponentEdge.East, 1);
@@ -70,7 +68,6 @@ public class LogicGates extends Netlist{
             addImage("default", "/ui/images/components/default_2in_nand.png");
             addImage("selected", "/ui/images/components/selected_2in_nand.png");
             addImage("active", "/ui/images/components/active_2in_nand.png");
-
             addInputPin("Input 1", ComponentEdge.West, -1);
             addInputPin("Input 2", ComponentEdge.West, 3);
             addOutputPin("Output", ComponentEdge.East, 1);
@@ -89,7 +86,6 @@ public class LogicGates extends Netlist{
             addImage("default", "/ui/images/components/default_2in_nor.png");
             addImage("selected", "/ui/images/components/selected_2in_nor.png");
             addImage("active", "/ui/images/components/active_2in_nor.png");
-
             addInputPin("Input 1", ComponentEdge.West, -1);
             addInputPin("Input 2", ComponentEdge.West, 3);
             addOutputPin("Output", ComponentEdge.East, 1);
@@ -108,7 +104,6 @@ public class LogicGates extends Netlist{
             addImage("default", "/ui/images/components/default_2in_and.png");
             addImage("selected", "/ui/images/components/selected_2in_and.png");
             addImage("active", "/ui/images/components/active_2in_and.png");
-
             addInputPin("Input 1", ComponentEdge.West, -1);
             addInputPin("Input 2", ComponentEdge.West, 1);
             addInputPin("Input 3", ComponentEdge.West, 3);
@@ -128,7 +123,6 @@ public class LogicGates extends Netlist{
             addImage("default", "/ui/images/components/default_not.png");
             addImage("selected", "/ui/images/components/selected_not.png");
             addImage("active", "/ui/images/components/active_not.png");
-
             addInputPin("Input", ComponentEdge.West, 1);
             addOutputPin("Output", ComponentEdge.East, 1);
         }
@@ -147,7 +141,6 @@ public class LogicGates extends Netlist{
             addImage("default", "/ui/images/components/default_xor.png");
             addImage("selected", "/ui/images/components/selected_xor.png");
             addImage("active", "/ui/images/components/active_xor.png");
-
             addInputPin("Input 1", ComponentEdge.West, -1);
             addInputPin("Input 2", ComponentEdge.West, 3);
             addOutputPin("Output", ComponentEdge.East, 1);
@@ -166,7 +159,6 @@ public class LogicGates extends Netlist{
             addImage("default", "/ui/images/components/default_2in_or.png");
             addImage("selected", "/ui/images/components/selected_2in_or.png");
             addImage("active", "/ui/images/components/active_2in_or.png");
-
             addInputPin("Input 1", ComponentEdge.West, -1);
             addInputPin("Input 2", ComponentEdge.West, 1);
             addInputPin("Input 2", ComponentEdge.West, 3);

@@ -13,7 +13,8 @@ public class FileSaveCommand extends Command {
     
     @Override
     protected void perform(Editor editor) {
-        String filename = activeCircuit.getFilename();      
+        String filename = activeCircuit.getFilename();    
+        // Has a save been performed yet?
         if(filename.substring(0, 8).equals("Untitled") || filename == null || filename.isEmpty()){
                     
             JFileChooser c = new JFileChooser();
@@ -29,18 +30,17 @@ public class FileSaveCommand extends Command {
                     filename = filename + ui.UIConstants.FILE_EXTENSION;
                 }
                 activeCircuit.saveAs(filename);
-                parentHistory.stageChange("message", getName() + ": " + filename);
+                parentHistory.stageChange(CommandStage.Message, getName() + ": " + filename);
             }
+        // Update the saved file
         } else {
             activeCircuit.saveAs(filename);
-            parentHistory.stageChange("message", getName() + ": " + filename);
+            parentHistory.stageChange(CommandStage.Message, getName() + ": " + filename);
         }
-        
     }
 
     @Override
     public String getName() {
         return "Saved Circuit File: filename";
     }
-
 }

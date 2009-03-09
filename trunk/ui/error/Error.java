@@ -1,7 +1,8 @@
 package ui.error;
 
 /**
- *
+ * Data class relating to an error as reported by an error handler to an 
+ * error listener.
  * @author matt
  */
 public class Error {

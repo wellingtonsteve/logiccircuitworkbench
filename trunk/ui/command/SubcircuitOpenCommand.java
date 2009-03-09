@@ -14,11 +14,15 @@ import ui.UIConstants;
 import ui.components.SelectableComponent;
 import ui.components.SelectionState;
 import ui.components.VisualComponent;
+import ui.error.ErrorHandler;
 import ui.file.FileLoader;
 import ui.file.CircuitFileFilter;
 
 /**
- *TODO: Check self-recursion, (depth etc..)
+ * New subcircuits are created by opening the file containing the subcircuit as if it 
+ * were a normal open, collecting its properties and logical description and then 
+ * creating a visual component from that data.
+ * 
  * @author matt
  */
 public class SubcircuitOpenCommand extends Command {
@@ -34,14 +38,19 @@ public class SubcircuitOpenCommand extends Command {
         c.setFileFilter(xmlFilter);
         c.setDialogType(JFileChooser.OPEN_DIALOG);
         int rVal = c.showOpenDialog(editor);
-        if (rVal == JFileChooser.APPROVE_OPTION) {            
-            // Create the subcircuit
+        if (rVal == JFileChooser.APPROVE_OPTION) {                        
             filename = c.getSelectedFile().getAbsolutePath();
-            CircuitPanel loadingCircuit = activeCircuit;
-            loadingCircuit.setCurrentTool(filename);
-            SelectableComponent sc = createSubcircuitComponent(editor, filename, activeCircuit);
-            loadingCircuit.addComponent(sc);
-            loadingCircuit.repaint();
+            if(!filename.equals(activeCircuit.getFilename())){
+                // Create the subcircuit
+                CircuitPanel loadingCircuit = activeCircuit;
+                loadingCircuit.setCurrentTool(filename);
+                SelectableComponent sc = createSubcircuitComponent(editor, filename, activeCircuit);
+                loadingCircuit.addComponent(sc);
+                loadingCircuit.repaint();
+            // Do not allow self recursion
+            } else {
+                ErrorHandler.newError("Subcomponent Insertion Error", "Cannot add a subcomponent to itself.");
+            }
         }
     }
 
@@ -67,9 +76,11 @@ public class SubcircuitOpenCommand extends Command {
                     loadingCircuit, SelectableComponent.DEFAULT_ORIGIN(), logicalCircuit, properties);
             subcircuitComponent.addLogicalComponentToCircuit();
             
+            // Tidy up
             activeCircuit.getCommandHistory().clearHistory();
             activeCircuit.getParentFrame().doDefaultCloseAction();
             activeCircuit.getParentFrame().dispose();
+            editor.refreshWindowsMenu();
             editor.setActiveCircuit(loadingCircuit);
             editor.setComponent(subcircuitComponent);
             
@@ -115,7 +126,7 @@ public class SubcircuitOpenCommand extends Command {
 
         @Override
         public Point getCentre() {
-            return new Point(20, 20);
+            return new Point(35, 35);
         }
 
         @Override
@@ -149,8 +160,6 @@ public class SubcircuitOpenCommand extends Command {
             }
 
             g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-            //String name = (String) properties.getAttribute("Title").getValue();
-            //g.drawString(name, 10, 10);
 
             for (Pin p : localPins) {
                 String label = new String();

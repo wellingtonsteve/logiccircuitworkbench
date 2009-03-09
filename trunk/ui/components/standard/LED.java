@@ -109,7 +109,7 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
     @Override
     public void SimulationTimeChanged(long time) {}
     
-    /** {@inheritDoc } */
+
     @Override
     public void SimulationRateChanged(int rate) {}
 

@@ -32,7 +32,7 @@ public class FileOpenCommand extends Command {
                 editor.refreshWindowsMenu();
                 activeCircuit.getParentFrame().setTitle(filename);
                 activeCircuit.getCommandHistory().clearHistory();
-                parentHistory.stageChange("message", getName() + ": " + filename);
+                parentHistory.stageChange(CommandStage.Message, getName() + ": " + filename);
             } else {
                 // Close bad circuit
                 ((JDesktopPane) activeCircuit.getParentFrame().getParent()).remove(activeCircuit.getParentFrame());
