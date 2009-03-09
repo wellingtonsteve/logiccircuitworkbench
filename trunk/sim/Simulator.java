@@ -86,7 +86,6 @@ public class Simulator {
     }
 
     private void update(){
-        //System.out.println("updating");
         unsimulatedTime += Math.pow(10,simulatorSpeed+8);
         double simulatableTime = Math.floor(unsimulatedTime);
         if(simulatableTime > 0){
