@@ -15,6 +15,7 @@ import sim.SimulatorState;
 public class Input extends VisualComponent{
     private boolean isOn = false;
     private BufferedImage specialBi;
+    private SimulatorState state;
 
     public Input(ui.CircuitPanel parent, Point point, sim.SimItem simItem, Properties properties) {
         super(parent, point, simItem, properties);
@@ -39,7 +40,13 @@ public class Input extends VisualComponent{
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        super.mouseClicked(e);
+        if(isFixed()){
+            if(getSelectionState().equals(SelectionState.ACTIVE)){
+                 setSelectionState(SelectionState.HOVER);
+            } else {
+                 setSelectionState(SelectionState.ACTIVE);
+            }
+        }
         if(e != null){
             if(isOn){
                 ((sim.componentLibrary.standard.Input) logicalComponent).setValue(sim.LogicState.OFF);
@@ -73,6 +80,7 @@ public class Input extends VisualComponent{
     
     @Override
     public void SimulatorStateChanged(SimulatorState state) {
+        this.state = state;
         if(state.equals(SimulatorState.STOPPED)){
             isOn = false;
         } else if(state.equals(SimulatorState.PLAYING)){
@@ -80,5 +88,4 @@ public class Input extends VisualComponent{
         }
         resetDefaultState();
     }
-
 }
