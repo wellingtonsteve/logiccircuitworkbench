@@ -32,9 +32,11 @@ public abstract class Pin extends Joinable {
 
     public void setValue(LogicState value) {
 //        System.out.println("pin " + name + " of " + owner.toString() + " changed to " + value);
+        if(this.value != value){
         this.value = value;
-        for (ValueListener listener : this.listeners) {
-            listener.valueChanged(this, this.value);
+            for (ValueListener listener : this.listeners) {
+                listener.valueChanged(this, this.value);
+            }
         }
     }
 

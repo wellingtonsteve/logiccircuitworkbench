@@ -1,6 +1,10 @@
 package sim.componentLibrary.standard;
 
 import java.util.Random;
+import netlist.properties.Attribute;
+import netlist.properties.AttributeListener;
+import netlist.properties.Properties;
+import netlist.properties.SpinnerAttribute;
 import sim.LogicState;
 import sim.SimItemEvent;
 import sim.componentLibrary.Component;
@@ -56,5 +60,24 @@ public class Oscillator extends Component {
     public String getShortName() {
         return "Oscillator";
     }
+
+    public void setProperties(Properties properties) {
+        Attribute t1Att = properties.getAttribute("t1 (ns)");
+        Attribute t2Att = properties.getAttribute("t2 (ns)");
+        t1 = (Integer) t1Att.getValue();
+        t2 = (Integer) t2Att.getValue();
+        t1Att.addAttributeListener(new AttributeListener() {
+            public void attributeValueChanged(Attribute attr, Object value) {
+                t1 = (Integer) value;
+            }
+        });
+        t2Att.addAttributeListener(new AttributeListener() {
+            public void attributeValueChanged(Attribute attr, Object value) {
+                t2 = (Integer) value;
+            }
+        });
+    }
+
+
 
 }
