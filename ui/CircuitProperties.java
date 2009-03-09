@@ -8,7 +8,6 @@ import java.util.Calendar;
 import netlist.properties.Attribute;
 import netlist.properties.AttributeListener;
 import netlist.properties.Properties;
-import ui.file.JPGFileFilter;
 
 /**
  *
@@ -30,6 +29,8 @@ public class CircuitProperties extends javax.swing.JFrame implements AttributeLi
         properties.getAttribute("Title").addAttributeListener(this);
         properties.getAttribute("Description").addAttributeListener(this);
         properties.getAttribute("Subcircuit Image").addAttributeListener(this);
+        properties.getAttribute("Subcircuit Width").addAttributeListener(this);
+        properties.getAttribute("Subcircuit Height").addAttributeListener(this);
         
         if(properties.getAttribute("Subcircuit Image").getValue() != null){
             FileChooser.setSelectedFile(new File((String) properties.getAttribute("Subcircuit Image").getValue()));
@@ -70,6 +71,10 @@ public class CircuitProperties extends javax.swing.JFrame implements AttributeLi
         OkButton = new javax.swing.JButton();
         Title = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
+        WidthSpinner = new javax.swing.JSpinner();
+        WidthLabel = new javax.swing.JLabel();
+        HeightSpinner = new javax.swing.JSpinner();
+        Height = new javax.swing.JLabel();
 
         FileChooser.setName("FileChooser"); // NOI18N
 
@@ -209,7 +214,7 @@ public class CircuitProperties extends javax.swing.JFrame implements AttributeLi
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(4, 0, 4, 0);
@@ -224,14 +229,14 @@ public class CircuitProperties extends javax.swing.JFrame implements AttributeLi
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(4, 0, 4, 0);
         getContentPane().add(OkButton, gridBagConstraints);
 
-        Title.setFont(new java.awt.Font("DejaVu Sans", 0, 18)); // NOI18N
+        Title.setFont(new java.awt.Font("DejaVu Sans", 0, 18));
         Title.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         Title.setText(bundle.getString("CircuitProperties.Title.text")); // NOI18N
         Title.setName("Title"); // NOI18N
@@ -252,14 +257,54 @@ public class CircuitProperties extends javax.swing.JFrame implements AttributeLi
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 15, 0);
         getContentPane().add(jSeparator1, gridBagConstraints);
 
+        WidthSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(40), Integer.valueOf(10), null, Integer.valueOf(5)));
+        WidthSpinner.setName("WidthSpinner"); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 4);
+        getContentPane().add(WidthSpinner, gridBagConstraints);
+
+        WidthLabel.setText(bundle.getString("CircuitProperties.WidthLabel.text")); // NOI18N
+        WidthLabel.setName("WidthLabel"); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 0);
+        getContentPane().add(WidthLabel, gridBagConstraints);
+
+        HeightSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(40), Integer.valueOf(10), null, Integer.valueOf(5)));
+        HeightSpinner.setName("HeightSpinner"); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 4);
+        getContentPane().add(HeightSpinner, gridBagConstraints);
+
+        Height.setText(bundle.getString("CircuitProperties.Height.text")); // NOI18N
+        Height.setName("Height"); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 0);
+        getContentPane().add(Height, gridBagConstraints);
+
         pack();
     }//GEN-END:initComponents
-
     
 private void OkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OkButtonActionPerformed
     properties.getAttribute("Title").changeValue(TitleField.getText());
     properties.getAttribute("Description").changeValue(DescTextArea.getText());
     properties.getAttribute("Subcircuit Image").changeValue(ImageField.getText());
+    properties.getAttribute("Subcircuit Width").changeValue(WidthSpinner.getValue());
+    properties.getAttribute("Subcircuit Height").changeValue(HeightSpinner.getValue());
     setVisible(false);
 }//GEN-LAST:event_OkButtonActionPerformed
 
@@ -279,6 +324,8 @@ private void ImageDialogButtonActionPerformed(java.awt.event.ActionEvent evt) {/
     private javax.swing.JScrollPane DescScrollPane;
     private javax.swing.JTextArea DescTextArea;
     private javax.swing.JFileChooser FileChooser;
+    private javax.swing.JLabel Height;
+    private javax.swing.JSpinner HeightSpinner;
     private javax.swing.JButton ImageDialogButton;
     private javax.swing.JTextField ImageField;
     private javax.swing.JLabel ImageLabel;
@@ -288,6 +335,8 @@ private void ImageDialogButtonActionPerformed(java.awt.event.ActionEvent evt) {/
     private javax.swing.JLabel Title;
     private javax.swing.JTextField TitleField;
     private javax.swing.JLabel TitleLabel;
+    private javax.swing.JLabel WidthLabel;
+    private javax.swing.JSpinner WidthSpinner;
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 
@@ -299,7 +348,10 @@ private void ImageDialogButtonActionPerformed(java.awt.event.ActionEvent evt) {/
             DescTextArea.setText((String)value);
         } else if(attr.getName().equals("Subcircuit Image")){
             ImageField.setText((String)value);
+        } else if(attr.getName().equals("Subcircuit Width")){
+            WidthSpinner.setValue((Integer) value);
+        } else if(attr.getName().equals("Subcircuit Height")){
+            HeightSpinner.setValue((Integer) value);
         }
     }
-
 }

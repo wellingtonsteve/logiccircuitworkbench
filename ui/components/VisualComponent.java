@@ -12,6 +12,7 @@ import org.xml.sax.helpers.AttributesImpl;
 import ui.CircuitPanel;
 import ui.UIConstants;
 import ui.command.SubcircuitOpenCommand.SubcircuitComponent;
+import ui.error.ErrorHandler;
 
 /**
  *
@@ -139,7 +140,7 @@ public abstract class VisualComponent extends SelectableComponent {
             properties.createXML(hd);            
             hd.endElement("", "", "component");
         } catch (SAXException ex) {
-            ui.error.ErrorHandler.newError("XML Creation Error","Please refer to the system output below.",ex);
+            ErrorHandler.newError("XML Creation Error","Please refer to the system output below.",ex);
         }
     }
 
@@ -147,8 +148,8 @@ public abstract class VisualComponent extends SelectableComponent {
        if(logicalComponent!=null){
             this.parent.getLogicalCircuit().addSimItem(logicalComponent);
         } else {
-           // TODO: Add error message
-           System.out.println("no logical component");
+           ErrorHandler.newError("Component Creation Error",
+                   "The logical component was not specified for " + getKeyName());
         }
     }
 

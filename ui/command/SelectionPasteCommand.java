@@ -42,6 +42,10 @@ public class SelectionPasteCommand extends Command {
                 sc.moveTo(oldOrigin, false);
                 sc.translate(dx, dy, false);
                 sc.addListeners();
+            } else {
+                sc.setParent(activeCircuit);
+                sc.translate(dx, dy, false);
+                sc.addListeners(); 
             }
         }
         activeCircuit.addComponentList(pasted);

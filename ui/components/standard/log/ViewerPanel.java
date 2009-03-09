@@ -57,8 +57,9 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
         double d = startTime*1.0E-7;
         for(int i=(int)((g2.getClipBounds().x-d)%20)*20; i< g2.getClipBounds().getMaxX(); i+=20){
             if(i % 100 == 0){                
-                g2.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);                
-                String label = ((double)(i/(double) 100)) + "\u00D710\u2079ns";
+                g2.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);            
+                double scale = i / Math.pow(10, 11-simulationRate);
+                String label = scale + "\u00D710\u2079ns";
                 g2.drawString(label, i+1, 15);
                 g2.drawLine(i, 0, i, g2.getClipBounds().height);            
             } else {

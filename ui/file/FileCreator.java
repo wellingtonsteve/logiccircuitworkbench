@@ -67,6 +67,16 @@ public class FileCreator {
             atts.addAttribute("", "", "value", "CDATA", circuitPanel.getProperties().getAttribute("Subcircuit Image").getValue().toString());
             hd.startElement("", "", "attr", atts);
             hd.endElement("","","attr");
+            atts.clear();
+            atts.addAttribute("", "", "name", "CDATA", "Subcircuit Width");
+            atts.addAttribute("", "", "value", "CDATA", circuitPanel.getProperties().getAttribute("Subcircuit Width").getValue().toString());
+            hd.startElement("", "", "attr", atts);
+            hd.endElement("","","attr");
+            atts.clear();
+            atts.addAttribute("", "", "name", "CDATA", "Subcircuit Height");
+            atts.addAttribute("", "", "value", "CDATA", circuitPanel.getProperties().getAttribute("Subcircuit Height").getValue().toString());
+            hd.startElement("", "", "attr", atts);
+            hd.endElement("","","attr");
             
             // Create xml for each component
             for (SelectableComponent sc : drawnComponents) {

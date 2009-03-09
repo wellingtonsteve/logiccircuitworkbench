@@ -167,7 +167,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         OptionsPane.setBorder(null);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
         setTitle(bundle.getString("Editor.title")); // NOI18N
         setBounds(new java.awt.Rectangle(0, 0, 985, 750));
@@ -459,11 +459,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
         InsertSubComponent.setMinimumSize(new java.awt.Dimension(32, 32));
         InsertSubComponent.setPreferredSize(new java.awt.Dimension(32, 32));
         InsertSubComponent.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        InsertSubComponent.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                InsertSubComponentMouseClicked(evt);
-            }
-        });
         InsertSubComponent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 InsertSubComponentActionPerformed(evt);
@@ -584,7 +579,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
 
         getContentPane().add(MainScrollPane, java.awt.BorderLayout.CENTER);
 
-        statusMessageLabel.setFont(new java.awt.Font("Lucida Sans", 0, 11)); // NOI18N
+        statusMessageLabel.setFont(new java.awt.Font("Lucida Sans", 0, 11));
         statusMessageLabel.setText(bundle.getString("Editor.statusMessageLabel.text")); // NOI18N
 
         statusAnimationLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -923,9 +918,9 @@ private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:ev
     // Perform close action for each window
     for(JInternalFrame jif: DesktopPane.getAllFrames()){
             jif.doDefaultCloseAction();
-    }
-    
-    int openCircuits = DesktopPane.getAllFrames().length;  // Ignore the toolbox
+    }    
+    // Check if any closes were cancelled
+    int openCircuits = DesktopPane.getAllFrames().length;  
     if(openCircuits == 0){
         System.exit(0);
     }
@@ -1156,10 +1151,6 @@ private void ToggleGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     UIConstants.DRAW_GRID_DOTS = !UIConstants.DRAW_GRID_DOTS;
     repaint();
 }//GEN-LAST:event_ToggleGridActionPerformed
-
-private void InsertSubComponentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InsertSubComponentMouseClicked
-
-}//GEN-LAST:event_InsertSubComponentMouseClicked
 
 private void PreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PreferencesActionPerformed
     if(getActiveCircuit()!=null){
@@ -1675,18 +1666,19 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
             this.sc = sc;
             titleLabel.setText((getActiveCircuit().getActiveComponents().contains(sc))?titleOld:titleNew);
             typeLabel.setText(sc.getName());
-            optionsPanel.setVisible(true);
-            if(sc instanceof VisualComponent){
-                AttributesPanel.removeAll();
-                JPanel test = sc.getOptionsPanel();
-                AttributesPanel.add(test, BorderLayout.NORTH);
-                ((PreviewPanel)Preview).setComponent(sc);
-                AttributesPanel.repaint();
-                Preview.repaint();
-                AttributesPanel.setPreferredSize(test.getSize());
-                Toolbox.revalidate();
-            }
-            
+            if(!(sc instanceof SubcircuitOpenCommand.SubcircuitComponent)){
+                optionsPanel.setVisible(true);
+                if(sc instanceof VisualComponent){
+                    AttributesPanel.removeAll();
+                    JPanel test = sc.getOptionsPanel();
+                    AttributesPanel.add(test, BorderLayout.NORTH);
+                    ((PreviewPanel)Preview).setComponent(sc);
+                    AttributesPanel.repaint();
+                    Preview.repaint();
+                    AttributesPanel.setPreferredSize(test.getSize());
+                    Toolbox.revalidate();
+                }
+            }            
             getActiveCircuit().repaint();
         } else {
             ErrorHandler.newError("Options Panel Error",

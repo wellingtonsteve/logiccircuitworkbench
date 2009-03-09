@@ -1,26 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<circuit author="matt" modifiedOn="09 March 2009, 11:44" version="LCW v3.1">
+<circuit author="matt" modifiedOn="09 March 2009, 12:25" version="LCW v3.1">
     <components>
         <attr name="Title" value=""/>
         <attr name="Description" value=""/>
         <attr name="Subcircuit Image" value=""/>
-        <wire startx="175" starty="150" endx="150" endy="160"/>
-        <wire startx="150" starty="115" endx="175" endy="130"/>
-        <component type="Standard.Button Source" x="120" y="150" rotation="0.0" subcircuit="false">
-            <attr name="Label" value="B"/>
-            <attr name="External?" value="true"/>
-            <attr name="External Position" value="6"/>
-            <attr name="External Edge" value="West"/>
-        </component>
-        <component type="Logic Gates.2 Input.OR" x="165" y="110" rotation="0.0" subcircuit="false">
-            <attr name="Label" value=""/>
-        </component>
-        <component type="Standard.Button Source" x="120" y="105" rotation="0.0" subcircuit="false">
-            <attr name="Label" value="A"/>
-            <attr name="External?" value="true"/>
-            <attr name="External Position" value="0"/>
-            <attr name="External Edge" value="West"/>
-        </component>
+        <attr name="Subcircuit Width" value="40"/>
+        <attr name="Subcircuit Height" value="40"/>
+        <wire startx="225" starty="140" endx="245" endy="125"/>
         <component type="Standard.LED" x="235" y="115" rotation="0.0" subcircuit="false">
             <attr name="Label" value="C"/>
             <attr name="External?" value="true"/>
@@ -28,6 +14,22 @@
             <attr name="External Edge" value="East"/>
             <attr name="Colour" value="Yellow"/>
         </component>
-        <wire startx="225" starty="140" endx="245" endy="125"/>
+        <component type="Standard.Button Source" x="120" y="105" rotation="0.0" subcircuit="false">
+            <attr name="Label" value="A"/>
+            <attr name="External?" value="true"/>
+            <attr name="External Position" value="0"/>
+            <attr name="External Edge" value="West"/>
+        </component>
+        <component type="Logic Gates.2 Input.OR" x="165" y="110" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+        </component>
+        <component type="Standard.Button Source" x="120" y="150" rotation="0.0" subcircuit="false">
+            <attr name="Label" value="B"/>
+            <attr name="External?" value="true"/>
+            <attr name="External Position" value="6"/>
+            <attr name="External Edge" value="West"/>
+        </component>
+        <wire startx="150" starty="115" endx="175" endy="130"/>
+        <wire startx="175" starty="150" endx="150" endy="160"/>
     </components>
 </circuit>

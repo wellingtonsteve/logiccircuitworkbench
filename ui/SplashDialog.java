@@ -48,9 +48,13 @@ public class SplashDialog extends javax.swing.JFrame {
         setTitle(bundle.getString("Main.ApplicationTitle")); // NOI18N
         setBackground(new java.awt.Color(204, 204, 255));
         setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        setMinimumSize(new java.awt.Dimension(471, 233));
+        setResizable(false);
         setUndecorated(true);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel2.setMaximumSize(new java.awt.Dimension(471, 233));
+        jPanel2.setMinimumSize(new java.awt.Dimension(471, 233));
 
         jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 24));
         jLabel1.setText(bundle.getString("Main.ApplicationTitle")); // NOI18N
@@ -108,7 +112,7 @@ public class SplashDialog extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
