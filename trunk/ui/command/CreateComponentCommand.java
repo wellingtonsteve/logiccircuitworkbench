@@ -100,39 +100,39 @@ public class CreateComponentCommand extends Command {
         @Override
         protected void setBoundingBox(){
             boundingBox = new java.awt.Rectangle(getOrigin().x, getOrigin().y,
-                    getWidth()+12, getHeight());
+                    getWidth(), getHeight());
             boundingBox = rotate(boundingBox);
         }
         
         @Override
         protected void setInvalidAreas() {
-            invalidArea = new java.awt.Rectangle(getOrigin().x+9, 
-                    getOrigin().y-1, 
-                    getWidth()+2, 
-                    getHeight()+2);
+            invalidArea = new java.awt.Rectangle(getOrigin().x+14, 
+                    getOrigin().y+14, 
+                    getWidth()-28, 
+                    getHeight()-28);
             invalidArea = rotate(invalidArea);
         }
 
         @Override
         public int getWidth() {
-            return Math.max(super.getWidth(), 20);
+            return Math.max(super.getWidth(), 20)+30;
         }
 
         @Override
         public int getHeight() {
-            return Math.max(super.getHeight(), 20);
+            return Math.max(super.getHeight(), 20)+30;
         }
         
         @Override
         public Point getCentre() {
-            return new Point(30, 30);
+            return new Point(20, 20);
         }
 
         @Override
         public void draw(Graphics2D g) {
            if(hasLabel()){
                 g.setColor(UIConstants.LABEL_TEXT_COLOUR);
-                g.drawString(getLabel(), getOrigin().x, getOrigin().y-2);
+                g.drawString(getLabel(), getOrigin().x+15, getOrigin().y);
             }
             
             g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
@@ -140,17 +140,17 @@ public class CreateComponentCommand extends Command {
               
             if(getSelectionState().equals(SelectionState.ACTIVE)){
                 g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
-                g.drawRect(10, 0, getWidth(), getHeight());
+                g.drawRect(15, 15, getWidth()-30, getHeight()-30);
             } else if(getSelectionState().equals(SelectionState.HOVER)){
                 g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-                g.fillRect(10, 0, getWidth(), getHeight());
+                g.fillRect(15, 15, getWidth()-30, getHeight()-30);
                 g.setColor(UIConstants.HOVER_COMPONENT_COLOUR);
-                g.drawRect(10, 0, getWidth(), getHeight());
+                g.drawRect(15, 15, getWidth()-30, getHeight()-30);
             } else {
                 g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-                g.fillRect(10, 0, getWidth(), getHeight());             
+                g.fillRect(15, 15, getWidth()-30, getHeight()-30);             
                 g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-                g.drawRect(10, 0, getWidth(), getHeight());
+                g.drawRect(15, 15, getWidth()-30, getHeight()-30);
             }            
             
             g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);

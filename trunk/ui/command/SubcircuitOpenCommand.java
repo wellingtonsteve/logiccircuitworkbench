@@ -38,6 +38,7 @@ public class SubcircuitOpenCommand extends Command {
             // Create the subcircuit
             filename = c.getSelectedFile().getAbsolutePath();
             CircuitPanel loadingCircuit = activeCircuit;
+            loadingCircuit.setCurrentTool(filename);
             SelectableComponent sc = createSubcircuitComponent(editor, filename, activeCircuit);
             loadingCircuit.addComponent(sc);
             loadingCircuit.repaint();
@@ -94,7 +95,7 @@ public class SubcircuitOpenCommand extends Command {
             if (width == 0) {
                 width = (Integer) properties.getAttribute("Subcircuit Width").getValue();
             }
-            return width;
+            return width+30;
         }
 
         @Override
@@ -102,13 +103,13 @@ public class SubcircuitOpenCommand extends Command {
             if (height == 0) {
                 height = (Integer) properties.getAttribute("Subcircuit Height").getValue();
             }
-            return height;
+            return height+30;
         }
 
         @Override
         protected void setInvalidAreas() {
             invalidArea = new java.awt.Rectangle(getOrigin().x + 14, 
-                    getOrigin().y- 1, getWidth() - 25 + 2, getHeight() +2);
+                    getOrigin().y+ 14, getWidth() - 28, getHeight() -28);
             invalidArea = rotate(invalidArea);
         }
 
@@ -133,17 +134,17 @@ public class SubcircuitOpenCommand extends Command {
             } else {
                 if (getSelectionState().equals(SelectionState.ACTIVE)) {
                     g.setColor(UIConstants.ACTIVE_COMPONENT_COLOUR);
-                    g.drawRect(15, 0, getWidth() - 25, getHeight());
+                    g.drawRect(15, 15, getWidth() - 30, getHeight()-30);
                 } else if (getSelectionState().equals(SelectionState.HOVER)) {
                     g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-                    g.fillRect(15, 0, getWidth() - 25, getHeight());
+                    g.fillRect(15, 15, getWidth() - 30, getHeight()-30);
                     g.setColor(UIConstants.HOVER_COMPONENT_COLOUR);
-                    g.drawRect(15, 0, getWidth() - 25, getHeight());
+                    g.drawRect(15, 15, getWidth() - 30, getHeight()-30);
                 } else {
                     g.setColor(UIConstants.CIRCUIT_BACKGROUND_COLOUR);
-                    g.fillRect(15, 0, getWidth() - 25, getHeight());
+                    g.fillRect(15, 15, getWidth() - 30, getHeight()-30);
                     g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
-                    g.drawRect(15, 0, getWidth() - 25, getHeight());
+                    g.drawRect(15, 15, getWidth() - 30, getHeight()-30);
                 }
             }
 
