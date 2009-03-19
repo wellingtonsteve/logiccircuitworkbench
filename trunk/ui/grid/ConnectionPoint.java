@@ -70,8 +70,9 @@ public class ConnectionPoint extends GridObject {
         return connections.size();
     }
     
+
     public Collection<Pin> getConnections(){
-        return (Collection<Pin>) connections.clone();
+        return (LinkedList<Pin>) connections.clone();
     }
     
     public boolean isConnected(){

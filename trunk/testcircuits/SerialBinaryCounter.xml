@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE circuit SYSTEM "circuit.dtd">
-<circuit author="Matt" modifiedOn="19 March 2009, 11:21" version="LCW v3.1">
+<circuit author="Matt" modifiedOn="19 March 2009, 11:48" version="LCW v3.1">
     <components>
-        <attr name="Title" value=""/>
-        <attr name="Description" value=""/>
+        <attr name="Title" value="4-bit Binary Counter"/>
+        <attr name="Description" value="A 4-bit serial binary counter with external enable switch and clock input"/>
         <attr name="Subcircuit Image" value=""/>
         <attr name="Subcircuit Width" value="40"/>
-        <attr name="Subcircuit Height" value="40"/>
+        <attr name="Subcircuit Height" value="50"/>
         <wire startx="155" starty="420" endx="395" endy="425">
             <waypoint x="155" y="425"/>
         </wire>
@@ -56,7 +56,7 @@
         <component type="Standard.Oscillator" x="70" y="435" rotation="0.0" subcircuit="false">
             <attr name="Label" value="CLK"/>
             <attr name="External?" value="true"/>
-            <attr name="External Position" value="9"/>
+            <attr name="External Position" value="5"/>
             <attr name="External Edge" value="West"/>
             <attr name="t1 (ns)" value="100000000"/>
             <attr name="t2 (ns)" value="100000000"/>
@@ -123,8 +123,8 @@
         <component type="Standard.LED" x="385" y="415" rotation="0.0" subcircuit="false">
             <attr name="Label" value="CO"/>
             <attr name="External?" value="true"/>
-            <attr name="External Position" value="9"/>
-            <attr name="External Edge" value="East"/>
+            <attr name="External Position" value="7"/>
+            <attr name="External Edge" value="West"/>
             <attr name="Colour" value="Yellow"/>
         </component>
         <component type="Standard.LED" x="385" y="340" rotation="0.0" subcircuit="false">
