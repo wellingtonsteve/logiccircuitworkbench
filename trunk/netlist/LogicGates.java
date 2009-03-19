@@ -10,11 +10,11 @@ import ui.components.ComponentEdge;
  */
 public class LogicGates extends Netlist{
     public LogicGates() {
+        netlist.put("Logic Gates.1 Input.NOT", NotProps.class);
         netlist.put("Logic Gates.2 Input.AND", And2Props.class);
         netlist.put("Logic Gates.2 Input.OR", Or2Props.class);
         netlist.put("Logic Gates.2 Input.NAND", Nand2Props.class);
         netlist.put("Logic Gates.2 Input.NOR", Nor2Props.class);   
-        netlist.put("Logic Gates.1 Input.NOT", NotProps.class);
         netlist.put("Logic Gates.2 Input.XOR", Xor2Props.class);   
         netlist.put("Logic Gates.3 Input.AND", And3Props.class);   
         netlist.put("Logic Gates.3 Input.OR", Or3Props.class);   

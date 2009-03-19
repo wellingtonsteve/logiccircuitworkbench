@@ -73,7 +73,7 @@ public class SubcircuitOpenCommand extends Command {
 
             // Create a new component
             VisualComponent subcircuitComponent = new SubcircuitComponent(
-                    loadingCircuit, SelectableComponent.DEFAULT_ORIGIN(), logicalCircuit, properties);
+                    loadingCircuit, SelectableComponent.getDefaultOrigin(), logicalCircuit, properties);
             subcircuitComponent.addLogicalComponentToCircuit();
             
             // Tidy up

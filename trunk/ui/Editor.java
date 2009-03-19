@@ -837,7 +837,7 @@ private void WireMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_
         circuitPanel.removeUnfixedComponents();
         String componentName = "Wire";
 
-        CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit(), componentName, getComponentRotation(),SelectableComponent.DEFAULT_ORIGIN());
+        CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit(), componentName, getComponentRotation(),SelectableComponent.getDefaultOrigin());
         getActiveCircuit().doCommand(ccc);
 
         optionsPanel.setVisible(false);
@@ -867,7 +867,7 @@ private void ComponentSelectionTreeValueChanged(javax.swing.event.TreeSelectionE
             if(isValidComponent(componentName)){
                 getActiveCircuit().resetActiveComponents();
                 getActiveCircuit().setCurrentTool(componentName);
-                CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit(), componentName, getComponentRotation(),SelectableComponent.DEFAULT_ORIGIN());
+                CreateComponentCommand ccc = new CreateComponentCommand(getActiveCircuit(), componentName, getComponentRotation(),SelectableComponent.getDefaultOrigin());
                 getActiveCircuit().doCommand(ccc);
                 ((VisualComponent)ccc.getComponent()).addLogicalComponentToCircuit();
                 
@@ -1559,7 +1559,7 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
             for(int i = 0; i<stacktrace.length; i++){
                 exceptionTextArea.append("   " + stacktrace[i].toString() + "\n");
             }
-            exceptionPane.getViewport().setViewPosition(SelectableComponent.DEFAULT_ORIGIN());
+            exceptionPane.getViewport().setViewPosition(SelectableComponent.getDefaultOrigin());
             exceptionTextArea.setColumns(20);
             exceptionTextArea.setRows(5);
             exceptionPane.setViewportView(exceptionTextArea);
