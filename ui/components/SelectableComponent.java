@@ -6,8 +6,6 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.xml.transform.sax.TransformerHandler;
 import netlist.properties.Attribute;
@@ -74,7 +72,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
     /** The properties collection for this component **/    
     protected Properties properties;
     
-    public static final Point DEFAULT_ORIGIN() { return new Point(0,0).getLocation(); }
+    public static final Point getDefaultOrigin() { return new Point(0,0).getLocation(); }
     
     /**
      * Default constructor for a SelectableComponent. 
@@ -87,7 +85,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         this.logicalComponent = logicalComponent;
         setProperties(properties);
         if(origin == null){
-            this.origin = DEFAULT_ORIGIN();
+            this.origin = getDefaultOrigin();
         } else {
             this.origin = origin;
         }
@@ -114,11 +112,11 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         try {
             this.logicalComponent = properties.getLogicalComponentClass().getConstructor().newInstance();
         } catch (Exception ex) {
-            Logger.getLogger(SelectableComponent.class.getName()).log(Level.SEVERE, null, ex);
+            ErrorHandler.newError("Component Error", "An error occured whilst trying " +
+                    "to change a component's parent circuit. \n A new logical component " +
+                    "could not be instantiated.", ex);
         }
-        if(parent != null){
-            parent.getLogicalCircuit().addSimItem(logicalComponent);
-        }
+        if(parent != null){  parent.getLogicalCircuit().addSimItem(logicalComponent); }
         this.parent = parent;
         refreshLocalPins();
         setLocalPins();    

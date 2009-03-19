@@ -52,10 +52,10 @@ import ui.file.JPGFileFilter;
 public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorStateListener, PropertiesOwner {
 
     // Component Variables
-    private Point lastDragPoint = Wire.DEFAULT_ORIGIN();
-    private Point dragStartPoint = Wire.DEFAULT_ORIGIN();
-    private Point currentPoint = Wire.DEFAULT_ORIGIN();
-    private Point previousCurrentPoint = Wire.DEFAULT_ORIGIN();    
+    private Point lastDragPoint = Wire.getDefaultOrigin();
+    private Point dragStartPoint = Wire.getDefaultOrigin();
+    private Point currentPoint = Wire.getDefaultOrigin();
+    private Point previousCurrentPoint = Wire.getDefaultOrigin();    
     private LinkedList<SelectableComponent> drawnComponents = new LinkedList<SelectableComponent>();
     private LinkedList<SelectableComponent> activeComponents = new LinkedList<SelectableComponent>();     
     private SelectableComponent temporaryComponent; // Used for reference to a selection from list of drawn components
@@ -235,7 +235,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     /** Add a list of components to this circuit */
     public void addComponentList(Collection<SelectableComponent> list){
         drawnComponents.addAll(list);
-        previousCurrentPoint = SelectableComponent.DEFAULT_ORIGIN();
+        previousCurrentPoint = SelectableComponent.getDefaultOrigin();
         activeComponents.clear();
         for(SelectableComponent sc: list){
             if(!sc.isFixed()){
@@ -252,7 +252,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
     /** Add a single component to this circuit */
     public void addComponent(SelectableComponent sc) {
         drawnComponents.push(sc);
-        previousCurrentPoint = SelectableComponent.DEFAULT_ORIGIN();
+        previousCurrentPoint = SelectableComponent.getDefaultOrigin();
         setCurrentTool(sc.getKeyName());
         repaint(sc.getBoundingBox());
     }
@@ -458,7 +458,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                 currentArea.add(sc.getBoundingBox());
             }
         }
-
+        
         previousArea = currentArea.getBounds();
         previousArea.translate(dx, dy);
         currentArea.add(previousArea);
@@ -672,12 +672,12 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                                     CircuitPanel.this,
                                     currentTool,
                                     editor.getComponentRotation(),
-                                    SelectableComponent.DEFAULT_ORIGIN());
+                                    SelectableComponent.getDefaultOrigin());
                             cmdHist.doCommand(ccc);
                             ((VisualComponent)ccc.getComponent()).addLogicalComponentToCircuit();
 
                             // To redraw the new component at workarea origin
-                            previousCurrentPoint = SelectableComponent.DEFAULT_ORIGIN();
+                            previousCurrentPoint = SelectableComponent.getDefaultOrigin();
                         }
                     }
                 } else {
@@ -744,13 +744,13 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     Wire w = (Wire) drawnComponents.peek();
                     
                     // Start drawing the new wire
-                    if(w.getOrigin().equals(Wire.DEFAULT_ORIGIN()) && grid.isConnectionPoint(currentPoint)){
+                    if(w.getOrigin().equals(Wire.getDefaultOrigin()) && grid.isConnectionPoint(currentPoint)){
                         w.setStartPoint(currentPoint);
                     // We have chosen the start point again, remove the wire
                     } else if (w.getOrigin().equals(currentPoint)) {
                         drawnComponents.pop();
                         drawnComponents.push(new Wire(CircuitPanel.this));
-                    } else if (!w.getOrigin().equals(Wire.DEFAULT_ORIGIN())) {
+                    } else if (!w.getOrigin().equals(Wire.getDefaultOrigin())) {
                         // Should we continue to draw the wire?
                         //      Only if we have not released on a connection point
                         if (!grid.isConnectionPoint(currentPoint)  || 
@@ -898,7 +898,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     Rectangle dirtyArea = w.getBoundingBox();
                     
                     // Start drawing the new wire
-                    if(w.getOrigin().equals(SelectableComponent.DEFAULT_ORIGIN())
+                    if(w.getOrigin().equals(SelectableComponent.getDefaultOrigin())
                             && grid.isConnectionPoint(dragStartPoint)){
                         w.setStartPoint(dragStartPoint);                           
                     }

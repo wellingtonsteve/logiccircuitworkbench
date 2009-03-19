@@ -35,11 +35,12 @@ import ui.grid.Grid;
  */
 public class Wire extends SelectableComponent {
 
-    private Point endPoint = SelectableComponent.DEFAULT_ORIGIN();
-    private LinkedList<Point> waypoints = new LinkedList<Point>(); // NOTE: Waypoints are specified in Global (World) Co-ordinates
+    private Point endPoint = SelectableComponent.getDefaultOrigin();
+    // NOTE: Waypoints are specified in Global (World) Co-ordinates
+    private LinkedList<Point> waypoints = new LinkedList<Point>(); 
     private int x1 = 0,  y1 = 0,  x2 = 0,  y2 = 0,  x3 = 0,  y3 = 0;
     private Point hoverWaypoint;
-    private Point hoverMousePoint = SelectableComponent.DEFAULT_ORIGIN();
+    private Point hoverMousePoint = SelectableComponent.getDefaultOrigin();
     private Point reportedSelfCrossover = null;
     private Color wireColour = UIConstants.DEFAULT_COMPONENT_COLOUR;
     private sim.joinable.Wire logicalWire;
@@ -118,7 +119,7 @@ public class Wire extends SelectableComponent {
     public void setEndPoint(Point endPoint) {
         this.endPoint = endPoint;      
         // We only need to update the pins on the last leg of the wire
-        if(!origin.equals(SelectableComponent.DEFAULT_ORIGIN())){
+        if(!origin.equals(SelectableComponent.getDefaultOrigin())){
             setLastLegPins();
         }        
         optimiseWireEnds();        

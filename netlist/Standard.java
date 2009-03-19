@@ -1,7 +1,6 @@
 package netlist;
 
 import netlist.properties.*;
-import ui.UIConstants;
 import ui.components.ComponentEdge;
 /**
  *
@@ -27,6 +26,9 @@ public class Standard extends Netlist{
             setLogicalComponentClass(sim.componentLibrary.standard.Oscillator.class);
             setVisualComponentClass(ui.components.standard.Oscillator.class);
             addAttribute(new TextAttribute("Label", ""));
+            addAttribute(new BooleanAttribute("External?", false));
+            addAttribute(new SpinnerAttribute("External Position", 1, -1, Short.MAX_VALUE, 1));
+            addAttribute(new SelectionAttribute("External Edge", new String[]{"West", "North", "East", "South"}));
             addAttribute(new SpinnerAttribute("t1 (ns)",100000000, 0, Integer.MAX_VALUE, 1000));
             addAttribute(new SpinnerAttribute("t2 (ns)",100000000, 0, Integer.MAX_VALUE, 1000));
 
