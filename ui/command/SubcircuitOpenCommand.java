@@ -182,7 +182,8 @@ public class SubcircuitOpenCommand extends Command {
                         g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
                         break;
                     case East:
-                        g.drawString(label, p.x - (2 * UIConstants.GRID_DOT_SPACING)-8, p.y+3);
+                        int d = (label.length() + 1)* UIConstants.GRID_DOT_SPACING;
+                        g.drawString(label, p.x -d-8, p.y+3);
                         g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);                        
                         break;
                 }      

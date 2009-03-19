@@ -52,7 +52,7 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
 
     @Override
     protected void setInvalidAreas(){
-        invalidArea = new Rectangle((int)getOrigin().getX()+18,(int)getOrigin().getY()-1,14,22);
+        invalidArea = new Rectangle((int)getOrigin().getX()+18,(int)getOrigin().getY()+2,14,14);
         invalidArea = rotate(invalidArea);   
     }
     

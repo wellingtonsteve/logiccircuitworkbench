@@ -488,15 +488,13 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         // Draw the components
         for (SelectableComponent sc : drawnComponents) {
             if (sc.getBoundingBox().intersects(g2.getClipBounds())) {
-                //g2.translate(-sc.getCentre().x, -sc.getCentre().y);
                 sc.draw(g2);
                 if (UIConstants.SHOW_INVALID_AREA_BOXES) {
                     g2.draw(sc.getInvalidArea());
                 }
                 if (UIConstants.SHOW_BOUNDING_BOXES) {
                     g2.draw(sc.getBoundingBox());
-                }
-                //g2.translate(sc.getCentre().x, sc.getCentre().y);                
+                }              
             }
         }
 
@@ -595,7 +593,8 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                 for(SelectableComponent sc: drawnComponents){                    
                     // Input Pins
                     if(sc.isFixed() 
-                            && sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Input){
+                            && (sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Input)){
+                            //|| sc.getLogicalComponent() instanceof sim.componentLibrary.standard.Oscillator)){
                         int pos = (Integer) sc.getProperties().getAttribute("External Position").getValue();
                         String edge = (String) sc.getProperties().getAttribute("External Edge").getValue();
                         String label;

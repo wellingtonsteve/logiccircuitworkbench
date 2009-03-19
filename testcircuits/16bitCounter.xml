@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE circuit SYSTEM "circuit.dtd">
+<circuit author="Matt" modifiedOn="19 March 2009, 12:34" version="LCW v3.1">
+    <components>
+        <attr name="Title" value=""/>
+        <attr name="Description" value=""/>
+        <attr name="Subcircuit Image" value=""/>
+        <attr name="Subcircuit Width" value="40"/>
+        <attr name="Subcircuit Height" value="40"/>
+        <component type="Standard.Oscillator" x="65" y="120" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="West"/>
+            <attr name="t1 (ns)" value="100000000"/>
+            <attr name="t2 (ns)" value="100000000"/>
+        </component>
+        <wire startx="95" starty="105" endx="115" endy="105"/>
+        <component type="C:\Documents and Settings\Matt\My Documents\NetBeansProjects\trunk\testcircuits\SerialBinaryCounter.xml" x="110" y="200" rotation="0.0" subcircuit="true">
+            <attr name="Title" value="4-bit Binary Counter"/>
+            <attr name="Description" value="A 4-bit serial binary counter with external enable switch and clock input"/>
+            <attr name="Subcircuit Image" value=""/>
+            <attr name="Subcircuit Width" value="40"/>
+            <attr name="Subcircuit Height" value="50"/>
+        </component>
+        <wire startx="115" starty="255" endx="115" endy="285"/>
+        <wire startx="115" starty="195" endx="115" endy="225"/>
+        <wire startx="115" starty="135" endx="115" endy="165"/>
+        <wire startx="175" starty="225" endx="185" endy="210">
+            <waypoint x="175" y="210"/>
+        </wire>
+        <wire startx="175" starty="235" endx="185" endy="225"/>
+        <wire startx="175" starty="245" endx="185" endy="240"/>
+        <wire startx="175" starty="285" endx="185" endy="270">
+            <waypoint x="175" y="270"/>
+        </wire>
+        <wire startx="175" starty="295" endx="185" endy="285"/>
+        <wire startx="175" starty="305" endx="185" endy="300"/>
+        <wire startx="175" starty="315" endx="185" endy="315"/>
+        <wire startx="175" starty="255" endx="185" endy="255"/>
+        <component type="Standard.Button Source" x="65" y="95" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="West"/>
+        </component>
+        <component type="Standard.LED" x="175" y="170" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="175" y="140" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="175" y="155" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="175" y="185" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="175" y="110" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="175" y="80" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="175" y="95" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="175" y="125" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="175" y="245" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="175" y="215" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="175" y="200" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="175" y="230" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="C:\Documents and Settings\Matt\My Documents\NetBeansProjects\trunk\testcircuits\SerialBinaryCounter.xml" x="110" y="140" rotation="0.0" subcircuit="true">
+            <attr name="Title" value="4-bit Binary Counter"/>
+            <attr name="Description" value="A 4-bit serial binary counter with external enable switch and clock input"/>
+            <attr name="Subcircuit Image" value=""/>
+            <attr name="Subcircuit Width" value="40"/>
+            <attr name="Subcircuit Height" value="50"/>
+        </component>
+        <component type="C:\Documents and Settings\Matt\My Documents\NetBeansProjects\trunk\testcircuits\SerialBinaryCounter.xml" x="110" y="80" rotation="0.0" subcircuit="true">
+            <attr name="Title" value="4-bit Binary Counter"/>
+            <attr name="Description" value="A 4-bit serial binary counter with external enable switch and clock input"/>
+            <attr name="Subcircuit Image" value=""/>
+            <attr name="Subcircuit Width" value="40"/>
+            <attr name="Subcircuit Height" value="50"/>
+        </component>
+        <component type="C:\Documents and Settings\Matt\My Documents\NetBeansProjects\trunk\testcircuits\SerialBinaryCounter.xml" x="110" y="260" rotation="0.0" subcircuit="true">
+            <attr name="Title" value="4-bit Binary Counter"/>
+            <attr name="Description" value="A 4-bit serial binary counter with external enable switch and clock input"/>
+            <attr name="Subcircuit Image" value=""/>
+            <attr name="Subcircuit Width" value="40"/>
+            <attr name="Subcircuit Height" value="50"/>
+        </component>
+        <component type="Standard.LED" x="175" y="305" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="175" y="275" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="175" y="260" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="175" y="290" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <wire startx="175" starty="105" endx="185" endy="90">
+            <waypoint x="175" y="90"/>
+        </wire>
+        <wire startx="185" starty="120" endx="175" endy="125">
+            <waypoint x="185" y="125"/>
+        </wire>
+        <wire startx="175" starty="135" endx="185" endy="135"/>
+        <wire startx="175" starty="195" endx="185" endy="195"/>
+        <wire startx="175" starty="185" endx="185" endy="180"/>
+        <wire startx="175" starty="175" endx="185" endy="165"/>
+        <wire startx="175" starty="165" endx="185" endy="150">
+            <waypoint x="175" y="150"/>
+        </wire>
+        <wire startx="185" starty="105" endx="175" endy="115">
+            <waypoint x="185" y="115"/>
+        </wire>
+    </components>
+</circuit>
