@@ -192,14 +192,10 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         return new Point(getWidth()/2, getHeight()/2);
     }
     
-    /**
-     * @return The width of the component.
-     */
+    /** @return The width of the component. */
     public abstract int getWidth();
 
-    /**
-     * @return The height of the component.
-     */
+    /** @return The height of the component. */
     public abstract int getHeight();
     
     /**
@@ -722,13 +718,13 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
          * @return The global coordinates. */
         public Point getGlobalLocation() {
             Point rotP;
-            Point about = getLocation();
+            Point loc = getLocation();
             if(rotation != 0.0){
                 cosTheta = Math.cos(rotation);
                 sinTheta = Math.sin(rotation);
-                rotP = rotate(about); 
+                rotP = rotate(loc); 
             } else {
-                rotP = about;
+                rotP = loc;
             }
             Point retval = new Point(
                         rotP.x +getOrigin().x,

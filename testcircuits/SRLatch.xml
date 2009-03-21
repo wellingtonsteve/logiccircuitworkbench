@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE circuit SYSTEM "circuit.dtd">
+<circuit author="Matt" modifiedOn="19 March 2009, 14:29" version="LCW v3.1">
+    <components>
+        <attr name="Title" value=""/>
+        <attr name="Description" value=""/>
+        <attr name="Subcircuit Image" value=""/>
+        <attr name="Subcircuit Width" value="40"/>
+        <attr name="Subcircuit Height" value="40"/>
+        <component type="Logic Gates.2 Input.NAND" x="145" y="45" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+        </component>
+        <wire startx="155" starty="85" endx="225" endy="140">
+            <waypoint x="140" y="100"/>
+        </wire>
+        <wire startx="270" starty="140" endx="205" endy="140"/>
+        <component type="Logic Gates.2 Input.NAND" x="145" y="110" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+        </component>
+        <component type="Standard.Button Source" x="85" y="140" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="West"/>
+        </component>
+        <component type="Standard.Button Source" x="85" y="55" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="West"/>
+        </component>
+        <component type="Standard.LED" x="260" y="65" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <wire startx="155" starty="130" endx="205" endy="75">
+            <waypoint x="140" y="115"/>
+            <waypoint x="230" y="75"/>
+        </wire>
+        <wire startx="230" starty="75" endx="270" endy="75"/>
+        <wire startx="155" starty="150" endx="115" endy="150"/>
+        <component type="Standard.LED" x="260" y="130" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <wire startx="115" starty="65" endx="155" endy="65"/>
+    </components>
+</circuit>
