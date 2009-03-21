@@ -15,13 +15,10 @@ import ui.components.SelectableComponent.Pin;
  * each point (x,y), has an associated Grid Object which is either a Connection
  * Point or an Invalid Area. 
  * 
- * @see GridObject
- * @see ConnectionPoint
- * @see InvalidPoint
+ * @see GridObject, ConnectionPoint, InvalidPoint
  * @author matt
  */
 public class Grid {
-
     private HashMap<Point,GridObject> grid = new HashMap<Point,GridObject>();
     private CircuitPanel circuit;
     
@@ -29,6 +26,45 @@ public class Grid {
         this.circuit = circuit;
     }
         
+    /**
+     * Add a new pin to the grid. Note: The method local.getLocation() returns the
+     * local co-ordinates of the pin, so the method local.getGlobalLocation() must
+     * be used to get the local in world (grid) co-ordinates.
+     * 
+     * @param local The pin to add.
+     * @return Was the addition successful?
+     */
+    public boolean addPin(Pin local){
+        Point p = local.getGlobalLocation();
+        GridObject go = grid.get(p);
+        // Create a new connection point if it doesn't exist yet
+        if(go==null){
+            grid.put(p.getLocation(), new ConnectionPoint(this, p));
+            go = grid.get(p);
+        }
+        if(go instanceof ConnectionPoint){                 
+            ((ConnectionPoint) go).addConnection(local);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Remove the specified pin from the grid.
+     * @param local The pin to remove.
+     */
+    public void removePin(Pin local){
+        Point p = local.getGlobalLocation();
+        GridObject go = grid.get(p);
+        if(go instanceof ConnectionPoint){
+            ((ConnectionPoint) go).removeConnection(local);
+            if(!((ConnectionPoint) go).isConnected()){
+                grid.remove(p);
+            }
+        } 
+    }
+    
     /**
      * Check whether the specified translation of the component is valid.
      * @param sc The component to test
@@ -105,45 +141,6 @@ public class Grid {
         }        
         unmarkInvalidAreas(sc); 
     }   
-
-    /**
-     * Add a new pin to the grid. Note: The method local.getLocation() returns the
-     * local co-ordinates of the pin, so the method local.getGlobalLocation() must
-     * be used to get the local in world (grid) co-ordinates.
-     * 
-     * @param local The pin to add.
-     * @return Was the addition successful?
-     */
-    public boolean addPin(Pin local){
-        Point p = local.getGlobalLocation();
-        GridObject go = grid.get(p);
-        // Create a new connection point if it doesn't exist yet
-        if(go==null){
-            grid.put(p.getLocation(), new ConnectionPoint(this, p));
-            go = grid.get(p);
-        }
-        if(go instanceof ConnectionPoint){                 
-            ((ConnectionPoint) go).addConnection(local);
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-    /**
-     * Remove the specified pin from the grid.
-     * @param local The pin to remove.
-     */
-    public void removePin(Pin local){
-        Point p = local.getGlobalLocation();
-        GridObject go = grid.get(p);
-        if(go instanceof ConnectionPoint){
-            ((ConnectionPoint) go).removeConnection(local);
-            if(!((ConnectionPoint) go).isConnected()){
-                grid.remove(p);
-            }
-        } 
-    }
     
     /**
      * Set invalid areas for a specified selectable component

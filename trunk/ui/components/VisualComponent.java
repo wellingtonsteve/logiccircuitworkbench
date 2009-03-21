@@ -98,9 +98,12 @@ public abstract class VisualComponent extends SelectableComponent {
     @Override
     public void draw(Graphics2D g) {
         super.draw(g); // Draw labels
+        // Rotate the graphics context about the Centre Point
         g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);      
+        // Translate to allow for local co-ordinates of pins
         g.translate(getOrigin().x, getOrigin().y);               
         g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
+        // Draw all pin lines
         for(Pin p: localPins){
             switch(p.getEdge()){
                 case North:
@@ -117,8 +120,10 @@ public abstract class VisualComponent extends SelectableComponent {
                     break;
             }
         }        
-        g.translate(-getOrigin().x, -getOrigin().y);
+        g.translate(-getOrigin().x, -getOrigin().y); // Undo pin translation
+        // Draw the current image with its origin at the correct place
         g.drawImage(getCurrentImage(), getOrigin().x, getOrigin().y, null);
+        // Undo the rotation
         g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
     }
             
