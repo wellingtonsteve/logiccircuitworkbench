@@ -3,22 +3,26 @@ package ui.command;
 import java.awt.Point;
 import java.util.LinkedList;
 import ui.Editor;
+import ui.clipboard.ClipboardType;
 import ui.command.SubcircuitOpenCommand.SubcircuitComponent;
 import ui.components.SelectableComponent;
 import ui.components.VisualComponent;
 
-/**
- *
- * @author matt
- */
+/** @author matt */
 public class SelectionPasteCommand extends Command {
     private LinkedList<SelectableComponent> pasted = new LinkedList<SelectableComponent>();
+    private ClipboardType action;
     
     @Override
     protected void perform(Editor editor) {
         activeCircuit.removeUnfixedComponents();
         activeCircuit.resetActiveComponents();
-        pasted = (LinkedList<SelectableComponent>) editor.getClipboard().getLastClipboardItem();        
+        
+        if(pasted.isEmpty()){
+            action = editor.getClipboard().getNextAction();
+            pasted = (LinkedList<SelectableComponent>) editor.getClipboard().paste();        
+        }
+        
         int dx = activeCircuit.getMousePosition().x - pasted.getFirst().getOrigin().x;
         int dy = activeCircuit.getMousePosition().y - pasted.getFirst().getOrigin().y;
         for(SelectableComponent sc: pasted){              
@@ -49,6 +53,10 @@ public class SelectionPasteCommand extends Command {
             }
         }
         activeCircuit.addComponentList(pasted);
+        if(action.equals(ClipboardType.Cut)){
+            editor.getClipboard().removeLastClipboardItem();
+        }
+        canUndo = true;
     }
     
     @Override
@@ -56,7 +64,10 @@ public class SelectionPasteCommand extends Command {
         for(SelectableComponent sc: pasted){
             activeCircuit.removeComponent(sc);
         }
-        pasted.clear();
+        // Replace cut selection to clipboard
+        if(action.equals(ClipboardType.Cut)){
+           editor.getClipboard().cut(pasted);
+        }
         canUndo = false;
     }
 
@@ -64,5 +75,4 @@ public class SelectionPasteCommand extends Command {
     public String getName() {
         return "Paste";
     }
-
 }

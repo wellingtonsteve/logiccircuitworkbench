@@ -7,62 +7,53 @@ import javax.swing.JComponent;
 import ui.components.SelectableComponent;
 
 /**
- * A Selectable Component clipboard. Selections of components are stored on a stack
- * and groups are identified by pointers on a seperate stack. A third stack is also
- * maintained to record whether each addition was the result of a copy/paste action.
+ * A Selectable Component clipboard. Selections of components are stored on a stack. 
+ * A second stack records whether each addition was the result of a copy/paste action.
  * 
  * @author matt
  */
 public class Clipboard {
 
-    private Stack<SelectableComponent> clipboard = new Stack<SelectableComponent>();
-    private Stack<Integer> clipboardPointer = new Stack<Integer>();
-    private Stack<ClipboardType> clipboardTypes = new Stack<ClipboardType>();
+    private Stack<Collection<SelectableComponent>> clipboard = new Stack<Collection<SelectableComponent>>();
+    private Stack<ClipboardType> lastAction = new Stack<ClipboardType>();
     private LinkedList<JComponent> selectionlisteners = new LinkedList<JComponent>();
     private LinkedList<JComponent> pastelisteners = new LinkedList<JComponent>();
     
-    public Clipboard(){
-        clipboardPointer.push(0);
+    public void cut(Collection<SelectableComponent> col){
+        lastAction.push(ClipboardType.Cut);
+        clipboard.push(col);
+        updatePasteListeners();
+    }
+    
+    public void copy(Collection<SelectableComponent> col){
+        lastAction.push(ClipboardType.Copy);
+        clipboard.push(col);
+        updatePasteListeners();
+    }
+    
+    public Collection<SelectableComponent> paste(){
+        LinkedList<SelectableComponent> retval = new LinkedList<SelectableComponent>();
+        for(SelectableComponent sc: clipboard.peek()){
+            retval.add(sc.copy());
+        }
+        return retval;                
     }
     
     /** Add a selection of components to the clipboard for later use.
      * @param col The components to be added
      * @param ct The type of the clipboard action */
-    public void addSetToClipboard(Collection<SelectableComponent> col, ClipboardType ct){
-        clipboardPointer.push(clipboard.size());
-        clipboardTypes.push(ct);
-        for(SelectableComponent sc: col){
-            clipboard.add(sc);
-        }
-        if(canPaste()){
-            for(JComponent c: pastelisteners){
-                c.setEnabled(true);
-            }
-        }
-    }
     
     /** @return The last selection of items that was added to the clipboard */
-    public Collection<SelectableComponent> getLastClipboardItem(){
-        int n = clipboard.size();
-        LinkedList<SelectableComponent> retval = new LinkedList<SelectableComponent>();
-        for(SelectableComponent sc: clipboard.subList(clipboardPointer.peek(), n)){
-            retval.add(sc.copy());
-        }
-        if(clipboardTypes.peek().equals(ClipboardType.Cut)){
-            removeLastClipboardItem();
-        }
-        return retval;
+
+    public ClipboardType getNextAction(){
+        return lastAction.peek();
     }
     
     /** Remove the last selection of items that was added to the clipboard. Occurs
      * when a cut/copy action is undone, or a cut item is pasted.*/
     public void removeLastClipboardItem(){
-        int n = clipboard.size();
-        Collection<SelectableComponent> lastSet = new LinkedList<SelectableComponent>();
-        lastSet.addAll(clipboard.subList(clipboardPointer.peek(), n));
-        clipboard.removeAll(lastSet);
-        clipboardPointer.pop();
-        clipboardTypes.pop();
+        clipboard.pop();
+        lastAction.pop();
         if(!canPaste()){
             for(JComponent c: pastelisteners){
                 c.setEnabled(false);
@@ -72,7 +63,7 @@ public class Clipboard {
     
     /** @return true if and only if, the clipboard contains any selections.*/
     private boolean canPaste(){
-        return !clipboardTypes.isEmpty();
+        return !lastAction.isEmpty();
     }
      
     /** Tell the clipboard when a selection is made, so that it can enable/disable 
@@ -94,5 +85,14 @@ public class Clipboard {
      * Paste listeners are disabled when the clipboard is empty. */
     public void addPasteListener(JComponent pastelistener){
         pastelisteners.add(pastelistener);
+    }
+
+    /** Re-enable any paste listeners after a collection has been added to the clipboard*/
+    private void updatePasteListeners() {
+        if (canPaste()) {
+            for (JComponent c : pastelisteners) {
+                c.setEnabled(true);
+            }
+        }
     }
 }

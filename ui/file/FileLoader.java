@@ -17,10 +17,7 @@ import ui.command.CreateComponentCommand;
 import ui.error.ErrorHandler;
 import ui.components.*;
 
-/**
- *
- * @author matt
- */
+/** @author matt */
 public class FileLoader extends DefaultHandler{
 
     private Stack<PropertiesOwner> stack;
@@ -55,9 +52,9 @@ public class FileLoader extends DefaultHandler{
                 successful = false;
         }
         if(!successful){ editor.repaint(); }
-        return successful;
-                
+        return successful;                
     }
+    
     /**
      * This method is called when the start of a new XML tag is encountered.
      * The case analysis performs appropriate action for the creation or 

@@ -33,12 +33,17 @@ public class CommandHistory {
     private final JLabel statusAnimationLabel;
     private final JLabel statusMessageLabel;
     private final JProgressBar progressBar;
+    private CommandHistoryBrowser chb;
 
     public CommandHistory(Editor parentEditor) {
         this.parentEditor = parentEditor;
         this.statusAnimationLabel = parentEditor.getStatusAnimationLabel();
         this.statusMessageLabel = parentEditor.getStatusMessageLabel();
         this.progressBar = parentEditor.getProgressBar();
+        if(UIConstants.SHOW_CLIPBOARD_BROWSERS){
+            chb = new CommandHistoryBrowser();
+            chb.setVisible(true);
+        }        
         
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
         // status bar initialization - message timeout, idle icon and busy animation, etc
@@ -51,7 +56,7 @@ public class CommandHistory {
         messageTimer.setRepeats(false);
         int busyAnimationRate = Integer.parseInt(bundle.getString("StatusBar.busyAnimationRate"));
         for (int i = 0; i < busyIcons.length; i++) {
-            busyIcons[i] = new javax.swing.ImageIcon(getClass().getResource(bundle.getString("StatusBar.busyIcons[" + i + "]")));
+            busyIcons[i] = new javax.swing.ImageIcon(getClass().getResource(bundle.getString("StatusBar.busyIcons["+i+"]")));
         }
         busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -84,13 +89,14 @@ public class CommandHistory {
                 }
             }
         }
-        
+              
         // The state changes when we do new actions, so redos are not guarenteed to be safe
         redostack.clear();
         // Tell Listeners
         for(JComponent c: redolisteners){
             c.setEnabled(canRedo());
-        }      
+        }              
+        updateBrowser();
     }
     
     /**
@@ -103,18 +109,13 @@ public class CommandHistory {
         return isDirty;
     }
     
-    /**
-     * Artifically dirty or clean this history.
-     * 
-     * @param isDirty The new dirty state of this history.
-     */
+    /** Artifically dirty or clean this history.
+     * @param isDirty The new dirty state of this history. */
     public void setIsDirty(boolean isDirty) {
         this.isDirty = isDirty;
     }
     
-    /**
-     * Undo the command at the top of the undo stack.
-     */
+    /** Undo the command at the top of the undo stack. */
     public void undo(){
         if(canUndo() && undostack.peek().canUndo()){
             Command cmd = undostack.pop();
@@ -132,14 +133,13 @@ public class CommandHistory {
                 }
             }
             cmd.activeCircuit.repaint();
+            updateBrowser();
         } else {
             UIConstants.beep();
         }
     }
     
-    /**
-     * Redo the command at the top of the redo stack.
-     */
+    /** Redo the command at the top of the redo stack. */
     public void redo(){
         if(canRedo()){
             Command cmd = redostack.pop();
@@ -157,6 +157,7 @@ public class CommandHistory {
                 }
             }
             cmd.activeCircuit.repaint();
+            updateBrowser();
         } else {
             UIConstants.beep();
         }
@@ -233,6 +234,22 @@ public class CommandHistory {
                 progressBar.setIndeterminate(false);
                 progressBar.setValue(i);
                 break;
+        }
+    }
+
+    private void updateBrowser() {
+        if(UIConstants.SHOW_CLIPBOARD_BROWSERS){
+            String undoString = new String();
+            for (Command c : undostack) {
+                undoString += c.getName() + "\n";
+            }
+            chb.getUndoTextArea().setText(undoString);
+
+            String redoString = new String();
+            for (Command c : redostack) {
+                redoString += c.getName() + "\n";
+            }
+            chb.getRedoTextArea().setText(redoString);
         }
     }
 }

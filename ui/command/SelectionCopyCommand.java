@@ -2,13 +2,9 @@ package ui.command;
 
 import java.util.LinkedList;
 import ui.Editor;
-import ui.clipboard.ClipboardType;
 import ui.components.SelectableComponent;
 
-/**
- *
- * @author matt
- */
+/** @author matt */
 public class SelectionCopyCommand extends Command {
 
     @Override
@@ -19,7 +15,7 @@ public class SelectionCopyCommand extends Command {
             for(SelectableComponent sc: activeCircuit.getActiveComponents()){
                 selection.add(sc.copy());
             }
-            editor.getClipboard().addSetToClipboard(selection, ClipboardType.Copy);
+            editor.getClipboard().copy(selection);
             canUndo = true;
         }
     }
@@ -34,5 +30,4 @@ public class SelectionCopyCommand extends Command {
     public String getName() {
         return "Copy";
     }
-
 }
