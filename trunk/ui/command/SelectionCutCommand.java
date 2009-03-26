@@ -1,15 +1,11 @@
 package ui.command;
 
 import java.util.LinkedList;
-import ui.clipboard.ClipboardType;
 import ui.Editor;
 import ui.components.SelectableComponent;
 import ui.components.standard.PinLogger;
 
-/**
- *
- * @author matt
- */
+/** @author matt */
 public class SelectionCutCommand extends Command {
     private LinkedList<SelectableComponent> selection = new LinkedList<SelectableComponent>();
 
@@ -24,16 +20,14 @@ public class SelectionCutCommand extends Command {
                     activeCircuit.getLoggerWindow().removePinLogger(sc);
                 }
             }  
-            editor.getClipboard().addSetToClipboard(selection, ClipboardType.Cut);
+            editor.getClipboard().cut(selection);
             canUndo = true;
         }
     }
 
     @Override
     protected void undoEffect(Editor editor) {
-        activeCircuit.addComponentList(selection);
-        editor.getClipboard().removeLastClipboardItem();
-        selection.clear();
+        activeCircuit.addComponentList(editor.getClipboard().paste());
         canUndo = false;
     }
     
@@ -41,5 +35,4 @@ public class SelectionCutCommand extends Command {
     public String getName() {
         return "Cut";
     }
-
 }
