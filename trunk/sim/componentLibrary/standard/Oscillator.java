@@ -1,83 +1,92 @@
 package sim.componentLibrary.standard;
 
-import java.util.Random;
-import netlist.properties.Attribute;
-import netlist.properties.AttributeListener;
-import netlist.properties.Properties;
-import netlist.properties.SpinnerAttribute;
-import sim.LogicState;
-import sim.SimItemEvent;
+import netlist.properties.*;
+import sim.*;
 import sim.componentLibrary.Component;
 import sim.joinable.OutputPin;
 
 /**
- *
- * @author Stephen
+ * An Oscillator outputs a square wave at a frequency determined by two properties: t1 and t2.  The output of
+ * the oscillator will be ON for t1 nanoseconds, then off for t2 nanoseconds.
  */
 public class Oscillator extends Component {
 
-    private static Random r = new Random();
-
+    /**
+     * Define the only pin of the oscillator - that is, its output
+     */
     private OutputPin output = createOutputPin("Output");
-    private long t1 = 10000000l;
-    private long t2 = 10000000l;
-    private LogicState initialState = LogicState.OFF;
+
+    /**
+     * Timing properties
+     */
+    private long t1, t2;
     
-
-
+    /**
+     * Simulation event objects for the oscillation
+     */
     private SimItemEvent on = new SimItemEvent() {
         public void RunEvent() {
+            //Set the output ON...
             output.setValue(LogicState.ON);
+            //...and add the OFF event to run in t1 ns time
             sim.addEvent(sim.getSimulationTime()+t1, off);
         }
     };
     private SimItemEvent off = new SimItemEvent() {
+        @Override
         public void RunEvent() {
+            //Set the output OFF...
             output.setValue(LogicState.OFF);
+            //...and add the ON event to run in t1 ns time
             sim.addEvent(sim.getSimulationTime()+t2, on);
         }
     };
 
-    public Oscillator(){
-        //t1 = 100000000l * r.nextInt(20);
-        //t2 = 100000000l * r.nextInt(20);
-    }
-
+    /**
+     * Initization method.  Sets the initial output to OFF and add the next event to the event queue
+     */
+    @Override
     public void initialize(){
-        if(initialState == LogicState.FLOATING) initialState = LogicState.ON;
-        output.setValue(initialState);
-        if(initialState == LogicState.ON){
-            sim.addEvent(t1, off);
-        } else {
-            sim.addEvent(t2, on);
-        }
+        output.setValue(LogicState.OFF);
+        sim.addEvent(sim.getSimulationTime()+t2, on);
     }
 
+    /**
+     * Component names
+     */
+    @Override
     public String getLongName() {
         return "Oscillator";
     }
-
+    @Override
     public String getShortName() {
         return "Oscillator";
     }
 
+    /**
+     * Called when an instance of the component is created.  The properties parameter takes a Properties
+     * object. Here we add listeners to the timing properties that we are interested in.
+     */
+    @Override
     public void setProperties(Properties properties) {
+        //Extract the t1 property from the properties object and read its current value.
         Attribute t1Att = properties.getAttribute("t1 (ns)");
-        Attribute t2Att = properties.getAttribute("t2 (ns)");
         t1 = (Integer) t1Att.getValue();
-        t2 = (Integer) t2Att.getValue();
+        //Create a listener that updates the oscillator when the timing property is changed in the GUI
         t1Att.addAttributeListener(new AttributeListener() {
+            @Override
             public void attributeValueChanged(Attribute attr, Object value) {
                 t1 = (Integer) value;
             }
         });
+        //Same for t2
+        Attribute t2Att = properties.getAttribute("t2 (ns)");
+        t2 = (Integer) t2Att.getValue();
         t2Att.addAttributeListener(new AttributeListener() {
+            @Override
             public void attributeValueChanged(Attribute attr, Object value) {
                 t2 = (Integer) value;
             }
         });
     }
-
-
-
 }
