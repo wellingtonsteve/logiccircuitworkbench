@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.lang.Math;
 
 public class Simulator {
     // The circuit we are going to simulate - created by the constructor. All 
@@ -116,8 +115,6 @@ public class Simulator {
             timer = new Timer();
             timer.schedule(new TimerTask(){
                 public void run() {
-                    //System.out.println(thisPtr.currentSimulationTime+100000000);
-                    //thisPtr.runUntilSimTime(thisPtr.currentSimulationTime+100000000);
                     update();
                 }
             }, 0, 100);
@@ -125,18 +122,42 @@ public class Simulator {
             return true;
         }
         else if(currentState == SimulatorState.PAUSED){
+            timer = new Timer();
+            timer.schedule(new TimerTask(){
+                public void run() {
+                    update();
+                }
+            }, 0, 100);
+            setState(SimulatorState.PLAYING);
             return true;
         }
         else{
             return false;
         }
     }
+
     public boolean pause(){
-        return false;
+        if(currentState == SimulatorState.PLAYING){
+            timer.cancel();
+            setState(SimulatorState.PAUSED);
+            return true;
+        }
+        else{
+            return false;
+        }
     }
+
     public boolean stepthrough(){
-        return false;
+        if(currentState == SimulatorState.PAUSED){
+            unsimulatedTime = 0;
+            runUntilSimTime(eventQueue.peekK());
+            return true;
+        }
+        else{
+            return false;
+        }
     }
+
     public boolean stop(){
         if(currentState == SimulatorState.PLAYING || currentState == SimulatorState.PAUSED){
             timer.cancel();
