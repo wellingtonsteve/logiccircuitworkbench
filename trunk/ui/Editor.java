@@ -1346,8 +1346,7 @@ private void InsertSubComponentActionPerformed(java.awt.event.ActionEvent evt) {
         }              
     }
 
-    /** Construct the component tree from the list of netlists associated with this editor.
-     * 
+    /** Construct the component tree from the list of netlists associated with this editor. 
      * @return rootNode     A well-formed TreeModel for use in a JTree */
     private TreeModel getTreeValues(){
         

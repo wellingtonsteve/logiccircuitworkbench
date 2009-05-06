@@ -15,7 +15,6 @@ public abstract class Command implements Cloneable{
     
     /**
      * Carry out the command (if we are in the correct state to do so)
-     * 
      * @param editor The #Editor executing this command
      */
     public final void execute(Editor editor) {
@@ -32,12 +31,9 @@ public abstract class Command implements Cloneable{
         }       
     }
     
-    /**
-     * Perform the main action of this command. This method must be overwritten
-     * in all classes which extend the Command class.
-     * 
-     * @param editor    The #Editor executing this command
-     */
+    /** Perform the main action of this command. This method must be overwritten
+     * in all classes which extend the Command class.    
+     * @param editor    The #Editor executing this command  */
     protected abstract void perform(Editor editor);
     
     /** After perform, test if command really made a change */
@@ -67,6 +63,6 @@ public abstract class Command implements Cloneable{
        }
     }
 
-    public abstract String getName();
-       
+    /** Return the human readable name of this command */
+    public abstract String getName();       
 }

@@ -479,7 +479,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         int minY = topLeft.y-getOrigin().y;
         int maxY = bottomRight.y-getOrigin().y;
         int space = UIConstants.GRID_DOT_SPACING;
-        int pos = pp.getN();
+        int pos = pp.getPlace();
         
         switch(pp.getEdge()){
             case North:

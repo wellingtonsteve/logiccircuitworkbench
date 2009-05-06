@@ -30,27 +30,23 @@ public class SelectionPasteCommand extends Command {
                 // Get a new properties object from the netlist
                 sc.setProperties(editor.getNetlistWithKey(sc.getKeyName()).getProperties(sc.getKeyName()));
                 sc.setParent(activeCircuit);
-                sc.translate(dx, dy, false);
-                sc.addListeners();
             } else if (sc instanceof SubcircuitComponent){
                 //Create a new sub circuit
                 Point oldOrigin = sc.getOrigin().getLocation();
                 CreateComponentCommand ccc = new CreateComponentCommand(
                         activeCircuit,
                         sc.getKeyName(),
-                         editor.getComponentRotation(),
+                        editor.getComponentRotation(),
                         SelectableComponent.getDefaultOrigin());
                 ccc.execute(editor);
                 ((VisualComponent)ccc.getComponent()).addLogicalComponentToCircuit();
                 sc = ccc.getComponent();
                 sc.moveTo(oldOrigin, false);
-                sc.translate(dx, dy, false);
-                sc.addListeners();
             } else {
                 sc.setParent(activeCircuit);
-                sc.translate(dx, dy, false);
-                sc.addListeners(); 
             }
+            sc.translate(dx, dy, false);
+            sc.addListeners(); 
         }
         activeCircuit.addComponentList(pasted);
         if(action.equals(ClipboardType.Cut)){

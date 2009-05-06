@@ -19,7 +19,7 @@ public class UIConstants {
     public static final boolean SHOW_INVALID_AREA_BOXES = false;
     public static final boolean SHOW_BOUNDING_BOXES = false;
     public static final boolean SHOW_WIRE_WAYPOINTS = false;
-    public static final boolean SHOW_CLIPBOARD_BROWSERS = false;
+    public static final boolean SHOW_COMMAND_BROWSERS = false;
     
     // Startup Options
     public static final boolean DO_OFFSCREEN_DRAWING_TEST = true;

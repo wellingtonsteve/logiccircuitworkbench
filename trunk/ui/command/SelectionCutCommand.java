@@ -5,7 +5,8 @@ import ui.Editor;
 import ui.components.SelectableComponent;
 import ui.components.standard.PinLogger;
 
-/** @author matt */
+/** Remove the current selection from the workarea of the active circuit and add 
+ * the selection to the clipboard.   @author matt */
 public class SelectionCutCommand extends Command {
     private LinkedList<SelectableComponent> selection = new LinkedList<SelectableComponent>();
 
