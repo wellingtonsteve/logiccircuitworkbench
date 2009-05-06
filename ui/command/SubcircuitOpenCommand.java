@@ -29,7 +29,7 @@ public class SubcircuitOpenCommand extends Command {
 
     @Override
     protected void perform(Editor editor) {
-        // Choose the file
+        // Choose the file, and  set attributes of dialog
         String filename;                                    
         JFileChooser c = new JFileChooser();
         FileFilter xmlFilter = new CircuitFileFilter();        

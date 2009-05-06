@@ -3,7 +3,7 @@
 <circuit author="Matt" modifiedOn="26 March 2009, 14:20" version="LCW v3.1">
     <components>
         <attr name="Title" value="SR Latch"/>
-        <attr name="Description" value="SR Latch created from two NAND Gates"/>
+        <attr name="Description" value="SR Latch created from two cross-coupled NOR Gates"/>
         <attr name="Subcircuit Image" value=""/>
         <attr name="Subcircuit Width" value="30"/>
         <attr name="Subcircuit Height" value="40"/>

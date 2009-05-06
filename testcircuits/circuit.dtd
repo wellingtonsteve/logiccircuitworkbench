@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 
-<!--- Put your DTDDoc comment here. -->
 <!ELEMENT circuit (components)*>
 <!ATTLIST circuit
     version CDATA #IMPLIED
@@ -8,17 +7,13 @@
     author CDATA #IMPLIED
   >
 
-<!--- Put your DTDDoc comment here. -->
 <!ELEMENT components (wire|component|attr)*>
 
-<!--- Put your DTDDoc comment here. -->
 <!ELEMENT attr EMPTY>
 <!ATTLIST attr
     value CDATA #IMPLIED
     name CDATA #IMPLIED
   >
-
-<!--- Put your DTDDoc comment here. -->
 <!ELEMENT component (attr)*>
 <!ATTLIST component
     subcircuit CDATA #IMPLIED
@@ -27,8 +22,6 @@
     x CDATA #IMPLIED
     type CDATA #IMPLIED
   >
-
-<!--- Put your DTDDoc comment here. -->
 <!ELEMENT wire (waypoint)*>
 <!ATTLIST wire
     endy CDATA #IMPLIED
@@ -36,8 +29,6 @@
     starty CDATA #IMPLIED
     startx CDATA #IMPLIED
   >
-
-<!--- Put your DTDDoc comment here. -->
 <!ELEMENT waypoint EMPTY>
 <!ATTLIST waypoint
     y CDATA #IMPLIED

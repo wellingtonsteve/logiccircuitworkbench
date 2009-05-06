@@ -211,9 +211,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         this.highlightedComponent.setHoverState();
     }
         
-    /**
-     * Clear everything associated with this circuit.
-     */
+    /** Clear everything associated with this circuit. */
     public void resetCircuit(){
         for(SelectableComponent sc:drawnComponents){
             if(sc instanceof PinLogger){

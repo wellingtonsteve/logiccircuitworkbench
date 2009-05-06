@@ -58,10 +58,7 @@ public class Main {
             editor.setVisible(true);   
                      
         } 
-        catch (Exception e) {
-           // TODO: Remove after debugging 
-            e.printStackTrace();
-            
+        catch (Exception e) {          
             // Report unexpected errors to user
             ErrorHandler.newError("Unknown Error","An unexpected error has occured, please see the system error below.", e);            
         }       

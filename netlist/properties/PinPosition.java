@@ -8,19 +8,19 @@ import ui.components.ComponentEdge;
  */
 public class PinPosition {
     private ComponentEdge edge;
-    private int n;
+    private int place;
     
     public PinPosition(ComponentEdge edge, int n){
         this.edge = edge;
-        this.n = n;
+        this.place = n;
     }
     
     public ComponentEdge getEdge() {
         return edge;
     }
 
-    public int getN() {
-        return n;
+    public int getPlace() {
+        return place;
     }
     
 }

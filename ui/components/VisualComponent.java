@@ -14,10 +14,7 @@ import ui.UIConstants;
 import ui.command.SubcircuitOpenCommand.SubcircuitComponent;
 import ui.error.ErrorHandler;
 
-/**
- *
- * @author matt
- */
+/** @author matt */
 public abstract class VisualComponent extends SelectableComponent {    
     protected BufferedImage defaultBi = null;
     protected BufferedImage selectedBi = null;
@@ -26,9 +23,9 @@ public abstract class VisualComponent extends SelectableComponent {
       
     public VisualComponent(CircuitPanel parent, Point point, sim.SimItem logicalComponent,netlist.properties.Properties properties){
         super(parent, point, logicalComponent, properties);        
-        setDefaultImage();
-        setSelectedImage();
-        setActiveImage();       
+        setDefaultImage(); // Retrieve images from properties
+        setSelectedImage();// Retrieve images from properties
+        setActiveImage();  // Retrieve images from properties
         setWidthAndHeight();        
         setInvalidAreas();
         setBoundingBox(); 
@@ -159,6 +156,8 @@ public abstract class VisualComponent extends SelectableComponent {
     }
 
     private void setWidthAndHeight() {
+        // If there isn't a visual component, we must get the width and height 
+        // from the number of pins we have
         if (properties.getVisualComponentClass() == null) {
             // Calculate the width and height from the position of the pins;
             Map<String, PinPosition> inpins = properties.getInputPins();
@@ -167,11 +166,11 @@ public abstract class VisualComponent extends SelectableComponent {
                 switch(pp.getEdge()){
                     case East:
                     case West:
-                       if(pp.getN() > height){ height = pp.getN(); }
+                       if(pp.getPlace() > height){ height = pp.getPlace(); }
                        break;
                     case North:
                     case South:
-                       if(pp.getN() > width){ width = pp.getN(); }
+                       if(pp.getPlace() > width){ width = pp.getPlace(); }
                        break;
                 } 
             }
@@ -181,17 +180,18 @@ public abstract class VisualComponent extends SelectableComponent {
                 switch(pp.getEdge()){
                     case East:
                     case West:
-                       if(pp.getN() > height){ height = pp.getN(); }
+                       if(pp.getPlace() > height){ height = pp.getPlace(); }
                        break;
                     case North:
                     case South:
-                       if(pp.getN() > width){ width = pp.getN(); }
+                       if(pp.getPlace() > width){ width = pp.getPlace(); }
                        break;
                 }
             }
             
             width = (width + 2)*UIConstants.GRID_DOT_SPACING;
             height = (height + 2)*UIConstants.GRID_DOT_SPACING;
+        // Otherwise, use the dimensions of the default image
         } else {
             width = getDefaultImage().getWidth();
             height = getDefaultImage().getHeight();

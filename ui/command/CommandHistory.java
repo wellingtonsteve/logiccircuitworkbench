@@ -40,7 +40,7 @@ public class CommandHistory {
         this.statusAnimationLabel = parentEditor.getStatusAnimationLabel();
         this.statusMessageLabel = parentEditor.getStatusMessageLabel();
         this.progressBar = parentEditor.getProgressBar();
-        if(UIConstants.SHOW_CLIPBOARD_BROWSERS){
+        if(UIConstants.SHOW_COMMAND_BROWSERS){
             chb = new CommandHistoryBrowser();
             chb.setVisible(true);
         }        
@@ -180,22 +180,16 @@ public class CommandHistory {
         isDirty = false;
     }
     
-    /**
-     * Add a #JComponent which can call an undo operation. Undo Listeners are
-     * disabled when there are no actions to undo.
-     * 
-     * @param undolistener
-     */
+    /** Add a #JComponent which can call an undo operation. Undo Listeners are
+     * disabled when there are no actions to undo. 
+     * @param undolistener */
     public void addUndoEmptyListener(JComponent undolistener){
         undolisteners.add(undolistener);
     }
     
-    /**
-     * Add a #JComponent which can call a redo operation. Redo Listeners are
-     * disabled when there are no actions to redo.
-     * 
-     * @param redolistener
-     */
+    /** Add a #JComponent which can call a redo operation. Redo Listeners are
+     * disabled when there are no actions to redo.    
+     * @param redolistener */
     public void addRedoEmptyListener(JComponent redolistener){
         redolisteners.add(redolistener);
     }
@@ -204,8 +198,7 @@ public class CommandHistory {
      * the user whilst it is preforming its action. 
      * 
      * @param stage The stage that an action has reached. 
-     * @param value
-     */
+     * @param value */
     public void stageChange(CommandStage stage, Object value) {
         switch(stage){
             case Started:
@@ -237,18 +230,15 @@ public class CommandHistory {
         }
     }
 
+    /** Testing method for showing the command history in a window to the user */
     private void updateBrowser() {
-        if(UIConstants.SHOW_CLIPBOARD_BROWSERS){
+        if(UIConstants.SHOW_COMMAND_BROWSERS){
             String undoString = new String();
-            for (Command c : undostack) {
-                undoString += c.getName() + "\n";
-            }
+            for (Command c : undostack) { undoString += c.getName() + "\n";}
             chb.getUndoTextArea().setText(undoString);
 
             String redoString = new String();
-            for (Command c : redostack) {
-                redoString += c.getName() + "\n";
-            }
+            for (Command c : redostack) { redoString += c.getName() + "\n"; }
             chb.getRedoTextArea().setText(redoString);
         }
     }
