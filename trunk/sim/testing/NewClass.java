@@ -93,12 +93,7 @@ public static void main(String[] args){
             public void SimulationRateChanged(int rate){}  
     });
     
-    if(sim.play()){
         System.out.println("Yes");
-    }
-    else{
-        System.out.println("No");
-    }
     
     
 }

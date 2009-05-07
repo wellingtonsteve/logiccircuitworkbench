@@ -1,22 +1,23 @@
 package sim;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
+/**
+ * The Simulator class controls the simulation of a given SimItem.  When running, the simulation can
+ * be paused or stopped.  When paused, the stepthrough() method causes the simulator to skip on
+ * until the next event due to happen.
+ *
+ * We simulate the delay as a signal propagates through a component using a priority queue of
+ * 'events' (See the class sim.SimItemEvent)
+ */
 public class Simulator {
-    // The circuit we are going to simulate - created by the constructor. All 
-    // SimItems (components, sub-circuits etc..) are added to this.
-    private SimItem simItem;    // The time we are in nanoseconds in the simulation - will let us run the 
-    // simulation for about 290 years (probably long enough!)
+    private SimItem simItem;
     private long currentSimulationTime;
     private CollectionPriorityQueue<Long, SimItemEvent> eventQueue = new CollectionPriorityQueue<Long, SimItemEvent>();
     private ArrayList<SimulatorStateListener> stateListeners = new ArrayList<SimulatorStateListener>();
     private SimulatorState currentState = SimulatorState.STOPPED;
 
-    private int simulatorSpeed = 0;
-    private double unsimulatedTime = 0;
+    private int simulatorSpeed = 9;
 
 
     public boolean addEvent(long time, SimItemEvent event) {
@@ -27,15 +28,15 @@ public class Simulator {
             return false;
         }
     }
-    //some priority queue object here
     public Simulator(SimItem simItem) {
         this.simItem = simItem;
         simItem.setSimulator(this);
     }
 
     public void setSimulatorSpeed(int value) {
-        simulatorSpeed = value-9;
-        //System.out.println(simulatorSpeed);
+        if(timerRunning) stopTimer();
+        simulatorSpeed = value;
+        if(timerRunning) startTimer();
         for(SimulatorStateListener stateListener : stateListeners) {
             stateListener.SimulationRateChanged(value);
         }
@@ -43,7 +44,7 @@ public class Simulator {
     }
     
     public int getSimulatorSpeed(){
-        return simulatorSpeed + 9;
+        return simulatorSpeed;
     }
 
     public long getSimulationTime() {
@@ -60,12 +61,12 @@ public class Simulator {
         }
     }
     
-    //Simulator control
     public SimulatorState getCurrentState() {
         return currentState;
     }
 
     private Timer timer;
+    private boolean timerRunning;
 
     private void runUntilSimTime(long time)
     {
@@ -83,18 +84,8 @@ public class Simulator {
         }
         setSimulationTime(time);
     }
-
-    private void update(){
-        unsimulatedTime += Math.pow(10,simulatorSpeed+8);
-        double simulatableTime = Math.floor(unsimulatedTime);
-        if(simulatableTime > 0){
-            unsimulatedTime -= simulatableTime;
-            runUntilSimTime((long) (currentSimulationTime + simulatableTime));
-        }
-    }
     
     private void setState(SimulatorState state){
-        //System.out.println("  STATE OF SIMULATOR " + this + " is now " + state);
         currentState = state;
         for(SimulatorStateListener stateListener: stateListeners){
             stateListener.SimulatorStateChanged(state);
@@ -107,65 +98,61 @@ public class Simulator {
             stateListener.SimulationTimeChanged(time);
         }
     }
+
+    private void startTimer(){
+        timer = new Timer();
+        if(simulatorSpeed == 0){
+            timer.schedule(new TimerTask(){
+                public void run() {
+                    runUntilSimTime(currentSimulationTime + 1);
+                }
+            }, 0, 1000);
+        }
+        else{
+            timer.schedule(new TimerTask(){
+                public void run() {
+                    runUntilSimTime(currentSimulationTime + (long)(Math.pow(10,simulatorSpeed-1)));
+                }
+            }, 0, 100);
+        }
+        timerRunning = true;
+    }
+
+    private void stopTimer(){
+        timer.cancel();
+        timerRunning = false;
+    }
     
-    public boolean play(){
+    public void play(){
         if(currentState == SimulatorState.STOPPED){
             setSimulationTime(0);
             simItem.initialize();
-            timer = new Timer();
-            timer.schedule(new TimerTask(){
-                public void run() {
-                    update();
-                }
-            }, 0, 100);
+            startTimer();
             setState(SimulatorState.PLAYING);
-            return true;
         }
         else if(currentState == SimulatorState.PAUSED){
-            timer = new Timer();
-            timer.schedule(new TimerTask(){
-                public void run() {
-                    update();
-                }
-            }, 0, 100);
+            startTimer();
             setState(SimulatorState.PLAYING);
-            return true;
-        }
-        else{
-            return false;
         }
     }
 
-    public boolean pause(){
+    public void pause(){
         if(currentState == SimulatorState.PLAYING){
-            timer.cancel();
+            stopTimer();
             setState(SimulatorState.PAUSED);
-            return true;
-        }
-        else{
-            return false;
         }
     }
 
-    public boolean stepthrough(){
-        if(currentState == SimulatorState.PAUSED){
-            unsimulatedTime = 0;
+    public void stepthrough(){
+        if(currentState == SimulatorState.PAUSED && !eventQueue.isEmpty()){
             runUntilSimTime(eventQueue.peekK());
-            return true;
-        }
-        else{
-            return false;
         }
     }
 
-    public boolean stop(){
+    public void stop(){
         if(currentState == SimulatorState.PLAYING || currentState == SimulatorState.PAUSED){
-            timer.cancel();
+            stopTimer();
             setState(SimulatorState.STOPPED);
-            return true;
-        }
-        else{
-            return false;
         }
     }
 }
