@@ -82,7 +82,7 @@ public class SubcircuitOpenCommand extends Command {
             activeCircuit.getParentFrame().dispose();
             editor.refreshWindowsMenu();
             editor.setActiveCircuit(loadingCircuit);
-            editor.setComponent(subcircuitComponent);
+            editor.setOptionsPanelComponent(subcircuitComponent);
             
             return subcircuitComponent;
         } else {
