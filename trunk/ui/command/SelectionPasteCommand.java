@@ -36,7 +36,7 @@ public class SelectionPasteCommand extends Command {
                 CreateComponentCommand ccc = new CreateComponentCommand(
                         activeCircuit,
                         sc.getKeyName(),
-                        editor.getComponentRotation(),
+                        editor.getOptionsPanelComponentRotation(),
                         SelectableComponent.getDefaultOrigin());
                 ccc.execute(editor);
                 ((VisualComponent)ccc.getComponent()).addLogicalComponentToCircuit();

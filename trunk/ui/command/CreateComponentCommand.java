@@ -69,7 +69,7 @@ public class CreateComponentCommand extends Command {
             }                      
             sc.setRotation(rotation, true);                             
             parentCircuit.addComponent(sc);
-            editor.setComponent(sc);                
+            editor.setOptionsPanelComponent(sc);                
         } catch (Exception ex){
             editor.clearComponentSelection();
             ErrorHandler.newError("Component Creation Error",

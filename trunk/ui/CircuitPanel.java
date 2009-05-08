@@ -668,7 +668,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                             CreateComponentCommand ccc = new CreateComponentCommand(
                                     CircuitPanel.this,
                                     currentTool,
-                                    editor.getComponentRotation(),
+                                    editor.getOptionsPanelComponentRotation(),
                                     SelectableComponent.getDefaultOrigin());
                             cmdHist.doCommand(ccc);
                             ((VisualComponent)ccc.getComponent()).addLogicalComponentToCircuit();
@@ -690,7 +690,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                         repaint(temporaryComponent.getBoundingBox());
 
                         // Update the current selection options panel
-                        editor.setComponent(temporaryComponent);
+                        editor.setOptionsPanelComponent(temporaryComponent);
                     // Double Click
                     } else if(e.getClickCount() == 2 
                             && temporaryComponent instanceof SubcircuitComponent){
@@ -733,7 +733,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
                     
                     // Update the current selection options panel
                     if (activeComponents.size() == 1) {
-                        editor.setComponent(activeComponents.get(0));
+                        editor.setOptionsPanelComponent(activeComponents.get(0));
                     }
                     multipleSelection = false;
                     
