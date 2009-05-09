@@ -208,43 +208,6 @@ public class Wire extends SelectableComponent {
             }        
         }     
     }
-
-    private void optimiseWireEnds() {
-        // Check overlap of middle point of first leg with other wires
-        if(!waypoints.isEmpty()){
-            Grid grid = parent.getGrid();
-            if (waypoints.size() > 0) {
-                createLeg(origin, waypoints.getFirst());
-            } else {
-                createLeg(origin, endPoint);
-            }
-            if (grid.isConnectionPoint(new Point(x2, y2))) {
-                for (Pin p: grid.getConnectionPoint(new Point(x2, y2)).getConnections()) {
-                    if (p.getParent() instanceof Wire) {
-                        origin = new Point(x2, y2);
-                        break;
-                    }
-                }
-            }
-
-            // Check overlap of middle point of last leg with other wires
-            if(fixed){
-                if (waypoints.size() > 0) {
-                    createLeg(waypoints.getLast(), endPoint);
-                } else {
-                    createLeg(origin, endPoint);
-                }
-                if (grid.isConnectionPoint(new Point(x2, y2))) {
-                    for (Pin p : grid.getConnectionPoint(new Point(x2, y2)).getConnections()) {
-                        if (p.getParent() instanceof Wire) {
-                            endPoint = new Point(x2, y2);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
         
     /** Similar to setLocalPins() except it only does so for the last leg. 
      * used when adding waypoints and moving the end point so that the whole wire
@@ -467,7 +430,7 @@ public class Wire extends SelectableComponent {
                     }
                     
                     removeCommonLineWaypoint(previous, current, next, true);
-                    len = waypoints.size(); // Bug fix: Index out of bounds after deleting waypoints                    
+                    len = waypoints.size();                
                     i++;
                 }
             }

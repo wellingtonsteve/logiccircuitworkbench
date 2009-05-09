@@ -119,7 +119,7 @@ public class CircuitPanel extends javax.swing.JPanel implements sim.SimulatorSta
         loggerWindow.clearPinLoggers();
         LinkedList<SelectableComponent> fixedComponents = new LinkedList<SelectableComponent>();
         for(SelectableComponent sc: drawnComponents){
-            if(sc.isFixed() && sc.getParent().equals(this)){
+            if(sc.isFixed() && sc.getParentCircuit().equals(this)){
                 if(sc instanceof PinLogger){
                     loggerWindow.addPinLogger((PinLogger)sc);
                 }                

@@ -193,7 +193,7 @@ public class SubcircuitOpenCommand extends Command {
         }
         
         public void openEditor(){
-            Editor editor = getParent().getParentFrame().getEditor();
+            Editor editor = getParentCircuit().getParentFrame().getEditor();
             FileLoader cfh = new FileLoader(editor);
             CircuitPanel subCircuit = editor.createBlankCircuit(true);    
             if(cfh.loadFile(filename)){
@@ -210,7 +210,7 @@ public class SubcircuitOpenCommand extends Command {
         }
         
         public void updateSource(CircuitPanel cp){
-            SelectableComponent sc = createSubcircuitComponent(getParent().getParentFrame().getEditor(), cp.getFilename(), parent);
+            SelectableComponent sc = createSubcircuitComponent(getParentCircuit().getParentFrame().getEditor(), cp.getFilename(), parent);
             setProperties(sc.getProperties());
             parent.getLogicalCircuit().removeSimItem(logicalComponent);
             this.logicalComponent = sc.getLogicalComponent();
