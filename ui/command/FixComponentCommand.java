@@ -38,7 +38,7 @@ public class FixComponentCommand extends Command {
     @Override
     protected void undoEffect(Editor editor) {
         canUndo = false;
-        sc.getParent().removeComponent(sc);
+        sc.getParentCircuit().removeComponent(sc);
     }
     
     @Override

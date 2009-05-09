@@ -79,8 +79,8 @@ public class Grid {
             Point temp = new Point(p.x + dx, p.y + dy);
             GridObject go = grid.get(temp);             
             if(go != null){
-                boolean b1 = sc.getParent().hasActiveSelection();
-                boolean b2 = go.hasParentInCollection(sc.getParent().getActiveComponents());
+                boolean b1 = sc.getParentCircuit().hasActiveSelection();
+                boolean b2 = go.hasParentInCollection(sc.getParentCircuit().getActiveComponents());
                 boolean b3 = go.hasParent(sc);                
                 if((b1 && !b2) || (!b1 && !b3)){
                     // Pins can overlap other pins but not invalid points
@@ -112,8 +112,8 @@ public class Grid {
                 if(bb.contains(p)){
                     go = grid.get(temp);
                     if(go != null){
-                        boolean b1 = sc.getParent().hasActiveSelection();
-                        boolean b2 = go.hasParentInCollection(sc.getParent().getActiveComponents());
+                        boolean b1 = sc.getParentCircuit().hasActiveSelection();
+                        boolean b2 = go.hasParentInCollection(sc.getParentCircuit().getActiveComponents());
                         boolean b3 = go.hasParent(sc);
                         if((b1 && !b2) || (!b1 && !b3)){
                             return false;

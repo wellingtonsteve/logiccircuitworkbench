@@ -98,7 +98,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
      * 
      * @return The Component's parent CircuitPanel
      */
-    public CircuitPanel getParent() {
+    public CircuitPanel getParentCircuit() {
         return parent;
     }
     
@@ -709,7 +709,7 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
                 } else {
                     cp.setLabel("0");
                 }
-                SelectableComponent.this.getParent().repaint(getBoundingBox());
+                SelectableComponent.this.getParentCircuit().repaint(getBoundingBox());
             }            
         }
 
