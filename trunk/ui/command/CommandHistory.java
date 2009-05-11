@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Stack;
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -13,10 +14,8 @@ import javax.swing.Timer;
 import ui.Editor;
 import ui.UIConstants;
 
-/**
- *
- * @author matt
- */
+/** A command history record all commands that have been done, and allows them 
+ * to be undone and redone if they allow. @author matt */
 public class CommandHistory {
 
     private Editor parentEditor;
@@ -45,7 +44,7 @@ public class CommandHistory {
             chb.setVisible(true);
         }        
         
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
+        ResourceBundle bundle = ResourceBundle.getBundle("ui/Bundle"); // NOI18N
         // status bar initialization - message timeout, idle icon and busy animation, etc
         int messageTimeout = Integer.parseInt(bundle.getString("StatusBar.messageTimeout"));
         messageTimer = new Timer(messageTimeout, new ActionListener() {
@@ -54,9 +53,11 @@ public class CommandHistory {
             }
         });
         messageTimer.setRepeats(false);
-        int busyAnimationRate = Integer.parseInt(bundle.getString("StatusBar.busyAnimationRate"));
+        int busyAnimationRate = Integer.parseInt(
+                bundle.getString("StatusBar.busyAnimationRate"));
         for (int i = 0; i < busyIcons.length; i++) {
-            busyIcons[i] = new javax.swing.ImageIcon(getClass().getResource(bundle.getString("StatusBar.busyIcons["+i+"]")));
+            busyIcons[i] = new javax.swing.ImageIcon(getClass().getResource(
+                    bundle.getString("StatusBar.busyIcons["+i+"]")));
         }
         busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -64,7 +65,8 @@ public class CommandHistory {
                 statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
             }
         });
-        idleIcon = new javax.swing.ImageIcon(getClass().getResource(bundle.getString("StatusBar.idleIcon")));
+        idleIcon = new javax.swing.ImageIcon(getClass().getResource(
+                bundle.getString("StatusBar.idleIcon")));
         statusAnimationLabel.setIcon(idleIcon);
         progressBar.setVisible(false);
     }
@@ -90,7 +92,8 @@ public class CommandHistory {
             }
         }
               
-        // The state changes when we do new actions, so redos are not guarenteed to be safe
+        // The state changes when we do new actions, so redos are not guarenteed
+        // to be safe
         redostack.clear();
         // Tell Listeners
         for(JComponent c: redolisteners){
@@ -243,4 +246,3 @@ public class CommandHistory {
         }
     }
 }
-

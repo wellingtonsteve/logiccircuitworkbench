@@ -16,16 +16,17 @@ import ui.components.ComponentEdge;
 import ui.components.SelectableComponent;
 import ui.error.ErrorHandler;
 
-/**
- *
- * @author Matt
- */
+/** @author Matt */
 public class Properties implements Cloneable{
     private String key;
-    private HashMap<String, Attribute> attributes = new LinkedHashMap<String, Attribute>();
-    private HashMap<String, PinPosition> inputPins = new HashMap<String, PinPosition>();
-    private HashMap<String, PinPosition> outputPins = new HashMap<String, PinPosition>();
-    private static HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();
+    private HashMap<String, Attribute> attributes = 
+            new LinkedHashMap<String, Attribute>();
+    private HashMap<String, PinPosition> inputPins = 
+            new HashMap<String, PinPosition>();
+    private HashMap<String, PinPosition> outputPins = 
+            new HashMap<String, PinPosition>();
+    private static HashMap<String, BufferedImage> images = 
+            new HashMap<String, BufferedImage>();
     private Class<? extends SimItem> simItem;
     private Class<? extends SelectableComponent> selectableComponent;
     private JPanel attrPanel = new JPanel();
@@ -83,7 +84,8 @@ public class Properties implements Cloneable{
     protected void addImage(String name, String imageFilename){
         try {
             if(!images.containsKey(key + "." + name)){
-                BufferedImage image = ImageIO.read(getClass().getResource(imageFilename));
+                BufferedImage image = ImageIO.read(
+                        getClass().getResource(imageFilename));
                 images.put(key + "." + name, image);
             }
         } catch (Exception e) {
@@ -92,7 +94,7 @@ public class Properties implements Cloneable{
                 images.put(name, image);
             } catch (Exception ex) {
                 ErrorHandler.newError(new ui.error.Error("Initialisation Error", 
-                        "Could not load image: \n" + imageFilename + ".\n\nComponent not loaded.", ex));    
+"Could not load image: \n" + imageFilename + ".\n\nComponent not loaded.", ex));    
             }                        
         }          
     }

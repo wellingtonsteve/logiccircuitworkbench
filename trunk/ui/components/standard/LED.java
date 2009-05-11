@@ -10,10 +10,9 @@ import java.awt.image.BufferedImage;
 import netlist.properties.AttributeListener;
 import netlist.properties.Properties;
 
-/**
- *
- * @author Matt
- */
+/** This component represents an LED (Light emitting diode). It has two states
+ * corresponding to on and off and is available in three colours (yellow, red
+ * and green). @author Matt */
 public class LED extends VisualComponent implements sim.joinable.ValueListener, 
                                                     sim.SimulatorStateListener{
     private boolean isOn = true;
@@ -52,7 +51,8 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
 
     @Override
     protected void setInvalidAreas(){
-        invalidArea = new Rectangle((int)getOrigin().getX()+18,(int)getOrigin().getY()+2,14,14);
+        invalidArea = new Rectangle((int)getOrigin().getX()+18,
+                (int)getOrigin().getY()+2,14,14);
         invalidArea = rotate(invalidArea);   
     }
     

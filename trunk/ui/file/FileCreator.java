@@ -11,27 +11,30 @@ import javax.xml.transform.sax.*;
 import ui.CircuitPanel;
 import ui.UIConstants;
 import ui.components.SelectableComponent;
-/**
- *
- * @author matt
- */
+
+/** Given a circuit panel and its list of components this object will create an
+ * xml file by initiating a visitor to visit each component @author matt */
 public class FileCreator {    
     private static PrintWriter out = null;
     private static TransformerHandler hd = null;
    
-    public static void write(CircuitPanel circuitPanel, LinkedList<SelectableComponent> drawnComponents) {
+    public static void write(CircuitPanel circuitPanel, 
+            LinkedList<SelectableComponent> drawnComponents) {
          try {            
-            FileOutputStream fos = new FileOutputStream(circuitPanel.getFilename());
+            FileOutputStream fos = new FileOutputStream(
+                    circuitPanel.getFilename());
             out = new PrintWriter(fos);
             StreamResult streamResult = new StreamResult(out);
-            SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
+            SAXTransformerFactory tf =
+                    (SAXTransformerFactory) SAXTransformerFactory.newInstance();
             tf.setAttribute("indent-number", 4);
             
             // SAX2.0 ContentHandler.
             hd = tf.newTransformerHandler();
             Transformer serializer = hd.getTransformer();
             serializer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
-            serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "circuit.dtd");
+            serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, 
+                    "circuit.dtd");
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
 
             hd.setResult(streamResult);
@@ -41,9 +44,12 @@ public class FileCreator {
             // "circuit" tag
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("dd MMMMM yyyy',' HH:mm");
-            atts.addAttribute("", "", "author", "CDATA",  System.getProperty("user.name"));
-            atts.addAttribute("", "", "modifiedOn", "CDATA",  sdf.format(cal.getTime()));
-            atts.addAttribute("", "", "version", "CDATA", UIConstants.FILE_FORMAT_VERSION);
+            atts.addAttribute("", "", "author", "CDATA",
+                    System.getProperty("user.name"));
+            atts.addAttribute("", "", "modifiedOn", "CDATA", 
+                    sdf.format(cal.getTime()));
+            atts.addAttribute("", "", "version", "CDATA", 
+                    UIConstants.FILE_FORMAT_VERSION);
             hd.startElement("", "", "circuit", atts);        
 
             // "components" tag
@@ -53,27 +59,37 @@ public class FileCreator {
             // Add description, title and image url from circuit Attributes
             atts.clear();
             atts.addAttribute("", "", "name", "CDATA", "Title");
-            atts.addAttribute("", "", "value", "CDATA", circuitPanel.getProperties().getAttribute("Title").getValue().toString());
+            atts.addAttribute("", "", "value", "CDATA", circuitPanel.
+                    getProperties().getAttribute("Title").
+                    getValue().toString());
             hd.startElement("", "", "attr", atts);
             hd.endElement("","","attr");
             atts.clear();
             atts.addAttribute("", "", "name", "CDATA", "Description");
-            atts.addAttribute("", "", "value", "CDATA", circuitPanel.getProperties().getAttribute("Description").getValue().toString());
+            atts.addAttribute("", "", "value", "CDATA", circuitPanel.
+                    getProperties().getAttribute("Description").
+                    getValue().toString());
             hd.startElement("", "", "attr", atts);
             hd.endElement("","","attr");
             atts.clear();
             atts.addAttribute("", "", "name", "CDATA", "Subcircuit Image");
-            atts.addAttribute("", "", "value", "CDATA", circuitPanel.getProperties().getAttribute("Subcircuit Image").getValue().toString());
+            atts.addAttribute("", "", "value", "CDATA", circuitPanel.
+                    getProperties().getAttribute("Subcircuit Image").
+                    getValue().toString());
             hd.startElement("", "", "attr", atts);
             hd.endElement("","","attr");
             atts.clear();
             atts.addAttribute("", "", "name", "CDATA", "Subcircuit Width");
-            atts.addAttribute("", "", "value", "CDATA", circuitPanel.getProperties().getAttribute("Subcircuit Width").getValue().toString());
+            atts.addAttribute("", "", "value", "CDATA", circuitPanel.
+                    getProperties().getAttribute("Subcircuit Width").
+                    getValue().toString());
             hd.startElement("", "", "attr", atts);
             hd.endElement("","","attr");
             atts.clear();
             atts.addAttribute("", "", "name", "CDATA", "Subcircuit Height");
-            atts.addAttribute("", "", "value", "CDATA", circuitPanel.getProperties().getAttribute("Subcircuit Height").getValue().toString());
+            atts.addAttribute("", "", "value", "CDATA", circuitPanel.
+                    getProperties().getAttribute("Subcircuit Height").
+                    getValue().toString());
             hd.startElement("", "", "attr", atts);
             hd.endElement("","","attr");
             
@@ -90,9 +106,11 @@ public class FileCreator {
             hd.endDocument();
             out.close();            
         } catch (FileNotFoundException ex) {
-            ui.error.ErrorHandler.newError("File Not Found","Please refer to the system output below.",ex);
+            ui.error.ErrorHandler.newError("File Not Found","Please refer" +
+                    " to the system output below.",ex);
         } catch (Exception ex) {
-            ui.error.ErrorHandler.newError("File Creation Error","Please refer to the system output below.",ex);
+            ui.error.ErrorHandler.newError("File Creation Error","Please" +
+                    " refer to the system output below.",ex);
         } 
     }
 }

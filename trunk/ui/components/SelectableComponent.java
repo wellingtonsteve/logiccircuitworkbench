@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JPanel;
@@ -31,56 +32,44 @@ import ui.grid.Grid;
  * @author Matt
  */
 public abstract class SelectableComponent implements Labeled, Cloneable, 
-        PropertiesOwner, netlist.properties.AttributeListener, SimulatorStateListener {    
+ PropertiesOwner, netlist.properties.AttributeListener, SimulatorStateListener {    
 
     /** Set the default selection state of this component */
-    protected SelectionState selectionState = SelectionState.DEFAULT;
-    
-    /** To store the Selection state of the component before it enters the hover state.*/
-    protected SelectionState preHoverState;
-    
+    protected SelectionState selectionState = SelectionState.DEFAULT;    
+    /** The Selection state of the component before it enters the hover state.*/
+    protected SelectionState preHoverState;    
     /** @see #getLogicalComponent() */
-    protected SimItem logicalComponent;
-    
+    protected SimItem logicalComponent;    
     /** @see #getBoundingBox() */
-    protected Rectangle boundingBox = null;
-    
+    protected Rectangle boundingBox = null;    
     /** @see #getInvalidArea() */
-    protected Rectangle invalidArea = null;
-    
+    protected Rectangle invalidArea = null;    
     /** Describes the current fixed state */
-    protected boolean fixed = false;    
-    
+    protected boolean fixed = false;        
     /** @see #getOrigin() */
-    protected Point origin;
-    
+    protected Point origin;    
     /** @see #getLocalPins() */
-    protected LinkedList<Pin> localPins = new LinkedList<Pin>();
-        
-    /** Rotation in radians, with 0 being with inputs on left, output on right of standard and-gate */
-    protected double rotation = 0; 
-    
+    protected LinkedList<Pin> localPins = new LinkedList<Pin>();        
+    /** Rotation in radians, with 0 being with inputs on left, output on right
+     * of a standard and-gate */
+    protected double rotation = 0;     
     /** Precompute the values of Math.cos(rotation) and Math.cos(rotation) */
-    protected double cosTheta, sinTheta;
-    
+    protected double cosTheta, sinTheta;    
     /** @see #getParent() */
-    protected CircuitPanel parent;
-    
+    protected CircuitPanel parent;    
     /** Store the point at which this component was unfixed */
-    protected Point unFixedPoint;
-    
+    protected Point unFixedPoint;    
     /** The properties collection for this component **/    
     protected Properties properties;
+    public static final Point getDefaultOrigin() { 
+        return new Point(0,0).getLocation(); 
+    }
     
-    public static final Point getDefaultOrigin() { return new Point(0,0).getLocation(); }
-    
-    /**
-     * Default constructor for a SelectableComponent. 
-     * 
+    /** Default constructor for a SelectableComponent. 
      * @param parent The parent circuit panel to which this component wll be drawn.
-     * @param origin The initial origin of this component.
-     */
-    public SelectableComponent(CircuitPanel parent, Point origin, SimItem logicalComponent, Properties properties){
+     * @param origin The initial origin of this component. */
+    public SelectableComponent(CircuitPanel parent, Point origin,
+            SimItem logicalComponent, Properties properties){
         this.parent = parent;
         this.logicalComponent = logicalComponent;
         setProperties(properties);
@@ -93,11 +82,9 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         addListeners(); 
     }
     
-    /**
-     * The parent of this component is the CircuitPanel to which the component is drawn.
-     * 
-     * @return The Component's parent CircuitPanel
-     */
+    /** The parent of this component is the CircuitPanel to which the component
+     * is drawn.
+     * @return The Component's parent CircuitPanel */
     public CircuitPanel getParentCircuit() {
         return parent;
     }
@@ -112,82 +99,64 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         try {
             this.logicalComponent = properties.getLogicalComponentClass().getConstructor().newInstance();
         } catch (Exception ex) {
-            ErrorHandler.newError("Component Error", "An error occured whilst trying " +
-                    "to change a component's parent circuit. \n A new logical component " +
-                    "could not be instantiated.", ex);
+            ErrorHandler.newError("Component Error", "An error occured whilst" +
+                    " trying to change a component's parent circuit. \n A new" +
+                    " logical component could not be instantiated.", ex);
         }
-        if(parent != null){  parent.getLogicalCircuit().addSimItem(logicalComponent); }
+        if(parent != null){ 
+            parent.getLogicalCircuit().addSimItem(logicalComponent); 
+        }
         this.parent = parent;
         refreshLocalPins();
         setLocalPins();    
     }
     
-    /**
-     * @see ui.components.SelectionState
-     * @return The state of this component.
-     */
+    /** @see ui.components.SelectionState
+     * @return The state of this component. */
     public SelectionState getSelectionState() {
         return selectionState;
     }
 
-    /**
-     * Set the selection state of this component.
-     * 
-     * @see ui.components.SelectionState
-     */
+    /** Set the selection state of this component.
+     * @see ui.components.SelectionState */
     public void setSelectionState(SelectionState selectiontype) {
         this.selectionState = selectiontype;
     }
     
-    /**
-     * Convenience method to return the state of this component to it's default setting
-     */
+    /** Convenience method to return the state of this component to it's
+     * default setting*/
     public void resetDefaultState(){
         setSelectionState(SelectionState.DEFAULT);
     }
 
-    /**
-     * Get the underlying logical component that is associated with a particular
+    /** Get the underlying logical component that is associated with a particular
      * instance of this object.
-     * 
-     * @return The corresponding logical Component.
-     */
+     * @return The corresponding logical Component. */
     public SimItem getLogicalComponent() {
         return logicalComponent;
     }
 
-    /**
-     * Get the local origin of this component in world co-ordinates.
-     * 
-     * @return The component's origin.
-     */
+    /** Get the local origin of this component in world co-ordinates.
+     * @return The component's origin. */
     public Point getOrigin(){
         return origin;
     }
     
-    /**
-     * Change the origin of this component. Use with caution, movements of the
+    /** Change the origin of this component. Use with caution, movements of the
      * component should be done using either the moveTo() or translate() methods.
-     * 
-     * @param origin The new origin.
-     */
+     * @param origin The new origin. */
     public void setOrigin(Point origin){
         this.origin = origin;
     }
     
-    /** 
-     * Get the point at which this component was unfixed 
-     */
+    /** Get the point at which this component was unfixed */
     public Point getUnfixedOrigin(){
         return (unFixedPoint==null)?origin:unFixedPoint;
     }
     
-    /**
-     * Centre points of components are use as the anchor for the mouse pointer.
-     * In local co-ordinates
-     * 
-     * @return The centre point of this component.
-     */
+    /** Centre points of components are use as the anchor for the mouse pointer.
+     * In local co-ordinates 
+     * @return The centre point of this component. */
     public Point getCentre(){
         return new Point(getWidth()/2, getHeight()/2);
     }
@@ -198,15 +167,13 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
     /** @return The height of the component. */
     public abstract int getHeight();
     
-    /**
-     * Translate this component on the Circuit Panel. The move is first checked 
+    /** Translate this component on the Circuit Panel. The move is first checked 
      * to be valid and after the translation the component is fixed/unfixed to
      * the workarea as specified
      * 
      * @param dx The displacement in the x-direction.
      * @param dy The displacement in the y-direction.
-     * @param fixed Should the component be fixed after the translation?
-     */
+     * @param fixed Should the component be fixed after the translation? */
     public void translate(int dx, int dy, boolean fixed) {     
         ui.grid.Grid grid = parent.getGrid();
         
@@ -234,52 +201,35 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         }
     }
     
-    /**
-     * Convienience method to move the origin of the component to a specified point
-     * 
+    /** Convienience method to move the origin of the component
      * @param newOrigin The new origin of the component
-     * @param fixed Should the component be fixed after the move?
-     */
+     * @param fixed Should the component be fixed after the move? */
     public void moveTo(Point newOrigin, boolean fixed){
         translate(newOrigin.x-origin.x, newOrigin.y-origin.y, fixed);
     }
     
-    /**
-     * Is the the component currently fixed to the parent circuit. Components are
-     * by default unfixed whilst they are being positioned/created.
-     * 
-     * @return Is this component fixed?
-     */
+    /** Is the the component currently fixed to the parent circuit. Components 
+     * are unfixed by default whilst they are being positioned/created. 
+     * @return Is this component fixed? */
     public boolean isFixed(){
         return fixed;
     }
     
-    /**
-     * @return Short description of the Component
-     */
+    /** @return Short description of the Component */
     public String getName(){
         return logicalComponent.getLongName();
     }    
-    /**
-     * Rotations of this component are specified in radians and are rotated clockwise about
-     * the centre point of the component. The zero radian position is the standard
-     * rotation with inputs on the left and outputs on the right (i.e. for an AND
-     * gate). 
-     * 
-     * @return The rotation of the component.
-     */
+    
+    /** Rotations of this component are specified in radians and are rotated
+     * clockwise about the centre point of the component. The zero radian
+     * rotation with inputs on the left and outputs on the right (i.e. for an
+     * AND gate).  
+     * @return The rotation of the component. */
     public double getRotation() {
        return rotation;
     }
      
-    /**
-     * Rotations of this component are specified in radians and are rotated clockwise about
-     * the centre point of the component. The zero radian position is the standard
-     * rotation with inputs on the left and outputs on the right (i.e. for an AND
-     * gate). 
-     * 
-     * @param rotation The new value of the rotation of this component
-     */
+    /** @see #getRotation() */
     public void setRotation(double rotation, boolean updateGrid) {
         unsetGlobalPins();
         parent.getGrid().unmarkInvalidAreas(this);
@@ -292,11 +242,8 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         }        
     }
         
-    /**
-     * Each component specifies an invalid area within which no other component, 
-     * pin or wire may be placed.
-     * 
-     * @return The Invalid Area rectangle for this component (World Co-ordinates).
+    /** @see #setInvalidAreas() 
+     * @return The Invalid Area rectangle for this component (World Coordinates)
      */
     public Rectangle getInvalidArea(){
         if(invalidArea == null){
@@ -313,20 +260,19 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
      * you have created your rectangle to ensure that the invalid area matches
      * the orientation of the component.
      * 
-     * The Invalid areas are set upon component initialisation and updated dynamically
-     * upon translation or rotation.
-     */    
+     * The Invalid areas are set upon component initialisation and updated
+     * dynamically upon translation or rotation.*/    
     protected void setInvalidAreas(){
-        invalidArea = new Rectangle(getOrigin().x,getOrigin().y,getWidth(),getHeight());   
+        invalidArea = new Rectangle(getOrigin().x,getOrigin().y,
+                getWidth(),getHeight());   
         invalidArea = rotate(invalidArea);
     }
     
     /**
      * The bounding box of a component that is redrawn if this component is to
-     * be repainted. The Bounding box is set upon component initialisation and updated dynamically
-     * upon translation or rotation.
-     * 
-     * @return The Bounding Box rectangle for this component (World Co-ordinates).
+     * be repainted. The Bounding box is set upon component initialisation and 
+     * updated dynamically upon translation or rotation.     * 
+     * @return The Bounding Box rectangle for this component (World Coordinates)
      */
     public Rectangle getBoundingBox(){
         if(boundingBox == null){
@@ -335,13 +281,10 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         return boundingBox;
     }
     
-    /**
-     * The bounding box of a component that is redrawn if this component is to
-     * be repainted. The Bounding box is set upon component initialisation and updated dynamically
-     * upon translation or rotation.
-     */
+    /** @see #getBoundingBox() */
     protected void setBoundingBox() {
-        boundingBox = new Rectangle(getOrigin().x,getOrigin().y,getWidth(),getHeight());
+        boundingBox = new Rectangle(getOrigin().x,getOrigin().y,
+                getWidth(),getHeight());
         boundingBox = rotate(boundingBox);        
     } 
 
@@ -371,10 +314,9 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         return !getLabel().equals("");
     }
  
-    /** The Component Tree Name is the value that is returned from the Component Tree
-     * in the toolbox when this type of component is selected. The name is also the
+    /** The Component Tree Name is the value that is returned from the Component
+     * Tree in the toolbox when this type of component is selected. The name is
      * key for all netlist mappings.
-     * 
      * @return The component tree name of this component */
     public String getKeyName() {
         return properties.getKeyName();
@@ -383,7 +325,8 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
     /** Convience method to record the current state of the object and then to change
      * the state to SelectionState.HOVER */
     public void setHoverState(){
-        if(selectionState != null && !this.selectionState.equals(SelectionState.ACTIVE)){
+        if(selectionState != null 
+                && !this.selectionState.equals(SelectionState.ACTIVE)){
             this.preHoverState = this.selectionState;
             setSelectionState(SelectionState.HOVER);
         }        
@@ -392,7 +335,8 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
     /** Undo the change made by the last setHoverState() action and change the state
      * back to its value immediately before that action. */
     public void revertHoverState() {
-        if(selectionState!= null && this.selectionState.equals(SelectionState.HOVER)){
+        if(selectionState!= null 
+                && this.selectionState.equals(SelectionState.HOVER)){
             if(this.preHoverState == null){
                 this.preHoverState = selectionState.DEFAULT;
             }
@@ -455,7 +399,6 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
     }
         
     /** Draw this component to the graphics object specified.
-     * 
      * @param g The graphics object to draw to.*/
     public void draw(Graphics2D g){            
         if(hasLabel()){
@@ -472,8 +415,10 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
     
     protected Point createPointFromPinPosition(PinPosition pp){
         int x=0, y=0;
-        Point topLeft = Grid.snapToGrid(new Point((int)getInvalidArea().getMinX(), (int)getInvalidArea().getMinY()));
-        Point bottomRight = Grid.snapToGrid(new Point((int)getInvalidArea().getMaxX(), (int)getInvalidArea().getMaxY()));
+        Point topLeft = Grid.snapToGrid(new Point(
+            (int)getInvalidArea().getMinX(), (int)getInvalidArea().getMinY()));
+        Point bottomRight = Grid.snapToGrid(new Point(
+            (int)getInvalidArea().getMaxX(), (int)getInvalidArea().getMaxY()));
         int minX = topLeft.x-getOrigin().x;
         int maxX = bottomRight.x-getOrigin().x;
         int minY = topLeft.y-getOrigin().y;
@@ -499,7 +444,8 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
                 y = minY+(space * (pos + 1));
                 break;
             default:
-                ErrorHandler.newError("Component Creation Error", "Invalid external pin edge location: " + pp.getEdge());
+                ErrorHandler.newError("Component Creation Error", "Invalid" +
+                        " external pin edge location: " + pp.getEdge());
         }       
         return Grid.snapToGrid(new Point(x,y));
     }
@@ -525,10 +471,11 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
      * @return The new rotated rectangle */
     protected Rectangle rotate(Rectangle src){
         Rectangle retval;
-        java.awt.geom.AffineTransform rotationTransformation = new java.awt.geom.AffineTransform();
-        rotationTransformation.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y+ getCentre().y);
-        retval = rotationTransformation.createTransformedShape(new Rectangle(src)).getBounds();
-        
+        AffineTransform rotationTransformation = new AffineTransform();
+        rotationTransformation.rotate(rotation, getOrigin().x + getCentre().x,
+                getOrigin().y+ getCentre().y);
+        retval = rotationTransformation.createTransformedShape(
+                new Rectangle(src)).getBounds();        
         return retval;
     }
     
@@ -558,8 +505,8 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         }
     }
     public void mousePressed(MouseEvent e) {
-        ui.error.ErrorHandler.newError("Mouse Press Error", 
-                "An action has not yet been defined to pressing the mouse on a \"" +
+        ui.error.ErrorHandler.newError("Mouse Press Error", "An action has not " +
+                "yet been defined to pressing the mouse on a \"" +
                 getKeyName() + "\".");
     }
     public void mouseReleased(MouseEvent e) {
@@ -578,10 +525,16 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
     
     /** Change the properties of this component */
     public void setProperties(Properties properties) {
-        if(this.properties != null) {this.properties.removeAttributesListener(this);}
+        if(this.properties != null) {
+            this.properties.removeAttributesListener(this);
+        }
         this.properties = properties;
-        if(logicalComponent != null){ this.logicalComponent.setProperties(properties); }
-        if(this.properties != null) {this.properties.addAttributesListener(this);}
+        if(logicalComponent != null){ 
+            this.logicalComponent.setProperties(properties);
+        }
+        if(this.properties != null){
+            this.properties.addAttributesListener(this);
+        }
     }
     
     /** @return the properties of this component */
@@ -591,7 +544,8 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
     
     @Override
     public void attributeValueChanged(Attribute attr, Object value) {
-        EditAttributeCommand eac = new EditAttributeCommand(attr, attr.getOldValue(), value);
+        EditAttributeCommand eac = new EditAttributeCommand(attr,
+                attr.getPreviousValue(), value);
         parent.doCommand(eac);
     }
 
@@ -677,14 +631,12 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
             this.edge = edge;
         }
 
-        /** Convience constuctor for Component pins.*/
+        /** Convenience constuctor for Component pins.*/
         public Pin(Point p, sim.joinable.Pin pinByName, ComponentEdge edge) {
             this(p.x, p.y, pinByName, edge);
         }
 
-        /**
-         * @return The component which owns this pin.
-         */
+        /**@return The component which owns this pin. */
         public SelectableComponent getParent(){
             return parent;     
         }

@@ -26,14 +26,12 @@ public class Grid {
         this.circuit = circuit;
     }
         
-    /**
-     * Add a new pin to the grid. Note: The method local.getLocation() returns the
-     * local co-ordinates of the pin, so the method local.getGlobalLocation() must
-     * be used to get the local in world (grid) co-ordinates.
-     * 
+    /** Add a new pin to the grid. Note: The method local.getLocation() returns
+     * the local co-ordinates of the pin, so the method 
+     * local.getGlobalLocation() must be used to get the local in world (grid)
+     * co-ordinates. 
      * @param local The pin to add.
-     * @return Was the addition successful?
-     */
+     * @return Was the addition successful? */
     public boolean addPin(Pin local){
         Point p = local.getGlobalLocation();
         GridObject go = grid.get(p);
@@ -50,10 +48,8 @@ public class Grid {
         }
     }
     
-    /**
-     * Remove the specified pin from the grid.
-     * @param local The pin to remove.
-     */
+    /** Remove the specified pin from the grid.
+     * @param local The pin to remove. */
     public void removePin(Pin local){
         Point p = local.getGlobalLocation();
         GridObject go = grid.get(p);
@@ -65,13 +61,11 @@ public class Grid {
         } 
     }
     
-    /**
-     * Check whether the specified translation of the component is valid.
+    /** Check whether the specified translation of the component is valid.
      * @param sc The component to test
      * @param dx The x-direction displacement
      * @param dy The y-direction displacement
-     * @return Is the move valid?
-     */
+     * @return Is the move valid? */
     public boolean canTranslateComponent(SelectableComponent sc, int dx, int dy){       
         // Check each pin
         for(Pin local: sc.getPins()){
@@ -80,7 +74,8 @@ public class Grid {
             GridObject go = grid.get(temp);             
             if(go != null){
                 boolean b1 = sc.getParentCircuit().hasActiveSelection();
-                boolean b2 = go.hasParentInCollection(sc.getParentCircuit().getActiveComponents());
+                boolean b2 = go.hasParentInCollection(sc.getParentCircuit()
+                        .getActiveComponents());
                 boolean b3 = go.hasParent(sc);                
                 if((b1 && !b2) || (!b1 && !b3)){
                     // Pins can overlap other pins but not invalid points
@@ -91,7 +86,8 @@ public class Grid {
                         Joinable thisPin = local.getJoinable();        
                         ConnectionPoint cp = (ConnectionPoint) go;
                         for(Pin otherPin : cp.getConnections()){
-                            if(!Joinable.canConnect(thisPin, otherPin.getJoinable())) {
+                            if(!Joinable.canConnect(thisPin, 
+                                    otherPin.getJoinable())) {
                                 return false;
                             }
                         }
@@ -105,15 +101,18 @@ public class Grid {
         Point origin = snapToGrid(bb.getLocation());
         Point p, temp;
         GridObject go;
-        for(int i = origin.x; i <= origin.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
-            for(int j = origin.y; j <= origin.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
+        for(int i = origin.x; i <= origin.x + bb.width;
+                                       i+=UIConstants.GRID_DOT_SPACING){
+            for(int j = origin.y; j <= origin.y + bb.height; 
+                                            j+=UIConstants.GRID_DOT_SPACING){
                 p = new Point(i, j);
                 temp = new Point(p.x + dx, p.y + dy);
                 if(bb.contains(p)){
                     go = grid.get(temp);
                     if(go != null){
                         boolean b1 = sc.getParentCircuit().hasActiveSelection();
-                        boolean b2 = go.hasParentInCollection(sc.getParentCircuit().getActiveComponents());
+                        boolean b2 = go.hasParentInCollection(
+                                sc.getParentCircuit().getActiveComponents());
                         boolean b3 = go.hasParent(sc);
                         if((b1 && !b2) || (!b1 && !b3)){
                             return false;
@@ -125,10 +124,8 @@ public class Grid {
         return true;
     }
     
-    /**
-     * Remove the connections and invalid area points from the grid.
-     * @param sc The component to remove from the grid.
-     */
+    /** Remove the connections and invalid area points from the grid.
+     * @param sc The component to remove from the grid. */
     public void removeComponent(SelectableComponent sc){
         for(Pin local: sc.getPins()){
             Point p = local.getGlobalLocation();
@@ -142,27 +139,22 @@ public class Grid {
         unmarkInvalidAreas(sc); 
     }   
     
-    /**
-     * Set invalid areas for a specified selectable component
-     * @param sc
-     */
+    /** Set invalid areas for a specified selectable component
+     * @param sc */
     public void markInvalidAreas(SelectableComponent sc){
-        Rectangle bb = sc.getInvalidArea();
-        for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
-            for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
+     Rectangle bb = sc.getInvalidArea();
+      for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
+       for(int j = bb.y; j <= bb.y + bb.height; j+=UIConstants.GRID_DOT_SPACING){
                 Point p = snapToGrid(new Point(i, j));
                 if(bb.contains(p)){
                     grid.put(p, new InvalidPoint(this, p, sc));
                 }
-            }
-        }  
+       }
+     }  
     }
     
-    /**
-     * Remove the invalid area grid objects that were set for the specified 
-     * selectable component.
-     * @param sc
-     */
+    /** Remove the invalid area grid objects that were set for the specified 
+     * selectable component. @param sc */
     public void unmarkInvalidAreas(SelectableComponent sc) {    
         Rectangle bb = sc.getInvalidArea();
         for(int i = bb.x; i <= bb.x + bb.width; i+=UIConstants.GRID_DOT_SPACING){
@@ -199,8 +191,8 @@ public class Grid {
     }
     
     /**
-     * Mark the GridPoint at p as active/unactive (draw a red box around it). Fails 
-     * silently if the point is not a connection point.
+     * Mark the GridPoint at p as active/unactive (draw a red box around it). 
+     * Fails silently if the point is not a connection point.
      * @param p The point to check
      * @param active Should we mark it as active or unactive?
      */
@@ -210,8 +202,7 @@ public class Grid {
         } 
     }
     
-    /**
-     * @param old The point to snap.
+    /** @param old The point to snap.
      * @return a new point that is the nearest point on the grid to the old point.
      */
     public static Point snapToGrid(Point old){
@@ -251,9 +242,7 @@ public class Grid {
        }               
     }   
     
-    /**
-     * Clear the grid and all cached information.
-     */
+    /** Clear the grid and all cached information. */
     public void clear(){
         grid.clear();
     }

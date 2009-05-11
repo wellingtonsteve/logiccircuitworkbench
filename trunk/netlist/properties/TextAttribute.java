@@ -7,10 +7,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.JTextField;
 
-/**
- *
- * @author Matt
- */
+/** @author Matt */
 public class TextAttribute extends Attribute{
     private String defaultValue;
     

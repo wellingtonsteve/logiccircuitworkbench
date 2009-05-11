@@ -10,8 +10,7 @@ import ui.Editor;
 public abstract class Command implements Cloneable{
     protected CircuitPanel activeCircuit;
     protected boolean canUndo = false;    
-    protected CommandHistory parentHistory;
-    
+    protected CommandHistory parentHistory;    
     
     /**
      * Carry out the command (if we are in the correct state to do so)
@@ -58,7 +57,9 @@ public abstract class Command implements Cloneable{
              return (Command) this.clone();
        }
        catch (CloneNotSupportedException e) {
-             ui.error.ErrorHandler.newError(new ui.error.Error("Cannot Clone Command",this.getClass().getSimpleName() +"\nThis command cannot be copied."));
+             ui.error.ErrorHandler.newError(new ui.error.Error(
+                     "Cannot Clone Command",this.getClass().getSimpleName() +
+                     "\nThis command cannot be copied."));
              return null;
        }
     }

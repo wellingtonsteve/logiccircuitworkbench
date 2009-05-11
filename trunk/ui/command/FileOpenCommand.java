@@ -7,35 +7,40 @@ import ui.Editor;
 import ui.file.FileLoader;
 import ui.file.CircuitFileFilter;
 
-/**
- *
- * @author matt
- */
+/** This command opens a File Open dialog for the user to choose a circuit to 
+ * open.  @author matt */
 public class FileOpenCommand extends Command {
 
     @Override
     protected void perform(Editor editor) {
-        String filename;                                    
+        String filename; 
+        // Set up the dialog
         JFileChooser c = new JFileChooser();
         FileFilter xmlFilter = new CircuitFileFilter();        
         c.setFileFilter(xmlFilter);
         c.setDialogType(JFileChooser.OPEN_DIALOG);
         int rVal = c.showOpenDialog(editor);
+        // Check that yes/ok was chosen
         if (rVal == JFileChooser.APPROVE_OPTION) {
             
+            // Get the path of the file which was chosen 
             filename = c.getSelectedFile().getAbsolutePath();
-            FileLoader cfh = new FileLoader(editor);
-            
+            // Create a file loader object
+            FileLoader cfh = new FileLoader(editor);            
             activeCircuit = editor.createBlankCircuit(false);    
+            
+            // Parse the file
             if(cfh.loadFile(filename)){
                 activeCircuit.setFilename(filename);
                 editor.refreshWindowsMenu();
                 activeCircuit.getParentFrame().setTitle(filename);
                 activeCircuit.getCommandHistory().clearHistory();
-                parentHistory.stageChange(CommandStage.Message, getName() + ": " + filename);
+                parentHistory.stageChange(CommandStage.Message, getName() +
+                        ": " + filename);
             } else {
                 // Close bad circuit
-                ((JDesktopPane) activeCircuit.getParentFrame().getParent()).remove(activeCircuit.getParentFrame());
+                ((JDesktopPane) activeCircuit.getParentFrame().getParent()).
+                        remove(activeCircuit.getParentFrame());
             }         
         }
     }
