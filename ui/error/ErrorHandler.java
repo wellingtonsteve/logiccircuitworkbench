@@ -11,7 +11,8 @@ import java.util.LinkedList;
  * @author matt
  */
 public class ErrorHandler {
-    private static LinkedList<ErrorListener> errorlisteners = new LinkedList<ErrorListener>();
+    private static LinkedList<ErrorListener> errorlisteners = 
+            new LinkedList<ErrorListener>();
     private static LinkedList<Error> unreportedErrors = new LinkedList<Error>();
     
     /** Register an error listener */

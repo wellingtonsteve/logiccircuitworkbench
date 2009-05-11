@@ -11,10 +11,7 @@ import ui.components.SelectableComponent;
 import ui.components.SelectableComponent.Pin;
 import ui.components.Wire;
 
-/**
- *
- * @author Matt
- */
+/** @author Matt */
 public class ConnectionPoint extends GridObject {
     private LinkedList<Pin> connections = new LinkedList<Pin>();
     private boolean isActive = false;
@@ -25,6 +22,7 @@ public class ConnectionPoint extends GridObject {
         super(grid, p);        
     }
     
+    /** Connect a pin to this connection point */
     public void addConnection(Pin p){         
         if(!hasConnection(p)){          
             p.setConnectionPoint(this);
@@ -40,6 +38,7 @@ public class ConnectionPoint extends GridObject {
         }        
     }
 
+    /** Would connecting this wire be valid in the simulator? */
     public boolean canConnect(sim.joinable.Wire logicalWire) {
         for(Pin pin: connections){
             if(!Joinable.canConnect(pin.getJoinable(), logicalWire)){
@@ -48,6 +47,7 @@ public class ConnectionPoint extends GridObject {
         } return true;
     }
     
+    /** Remove a pin from the connection point */
     public boolean removeConnection(Pin p){
         boolean retval = connections.remove(p);
         if(retval && isConnected() && p.getParent().isFixed()){
@@ -79,6 +79,7 @@ public class ConnectionPoint extends GridObject {
         return !connections.isEmpty();
     }
     
+    /** How many different components are connected here? */
     protected int noOfDifferentConnections() {
         LinkedList<SelectableComponent> found = new LinkedList<SelectableComponent>();
         for(Pin p: connections){
@@ -89,6 +90,7 @@ public class ConnectionPoint extends GridObject {
     }
     
     @Override
+    /** Is the component a parent of a pin which is connected here? */
     public boolean hasParent(SelectableComponent sc){
         for(Pin p: connections){
             if(p.getParent().equals(sc)){
@@ -97,6 +99,7 @@ public class ConnectionPoint extends GridObject {
         } return false;
     }
         
+    /** Activate this connection point */
     public void setActive(boolean isActive){
         if(!isCrossover){
             this.isActive = isActive;
@@ -145,12 +148,15 @@ public class ConnectionPoint extends GridObject {
         return label != null || !label.equals("");
     }
 
+    /** Determine whether two wire cross here but are not joined */
     private void setIsCrossover() {
        int noOfWireNonTerminus = 0;
        for(Pin p: connections){
-           if(p.getParent() instanceof Wire // The current pin belongs to a wire       
-               && !((Wire) p.getParent()).getEndPoint().equals(p.getGlobalLocation()) // Not the end point of a wire
-               && !((Wire) p.getParent()).getOrigin().equals(p.getGlobalLocation()) // Not the start point of a wire
+           if(p.getParent() instanceof Wire // The current pin belongs to a wire 
+           // Not the end point of a wire
+          && !((Wire) p.getParent()).getEndPoint().equals(p.getGlobalLocation()) 
+           // Not the start point of a wire
+          && !((Wire) p.getParent()).getOrigin().equals(p.getGlobalLocation()) 
                ){ 
                noOfWireNonTerminus++;
            }

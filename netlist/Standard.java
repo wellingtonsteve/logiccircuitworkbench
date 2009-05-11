@@ -3,7 +3,9 @@ package netlist;
 import netlist.properties.*;
 import ui.components.ComponentEdge;
 /**
- *
+ * This netlist contains many standard input and output components needed for the 
+ * constuction of a circuit. 
+ * 
  * @author Matt
  */
 public class Standard extends Netlist{
@@ -127,7 +129,14 @@ public class Standard extends Netlist{
             addImage("G", "/ui/images/components/default_7seg_G.png");
             addImage("DP", "/ui/images/components/default_7seg_DP.png");
 
-            addInputPin("Input", ComponentEdge.West, 1);
+            addInputPin("A", ComponentEdge.West, 1);
+            addInputPin("B", ComponentEdge.West, 2);
+            addInputPin("C", ComponentEdge.West, 3);
+            addInputPin("D", ComponentEdge.West, 4);
+            addInputPin("E", ComponentEdge.West, 5);
+            addInputPin("F", ComponentEdge.West, 6);
+            addInputPin("G", ComponentEdge.West, 7);
+            addInputPin("DP", ComponentEdge.West, 8);
         }
     }
     

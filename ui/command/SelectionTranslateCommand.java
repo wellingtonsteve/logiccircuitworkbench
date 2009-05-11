@@ -8,7 +8,8 @@ import ui.components.SelectableComponent;
 public class SelectionTranslateCommand extends Command {
     private LinkedList<Integer> dxs = new LinkedList<Integer>();
     private LinkedList<Integer> dys = new LinkedList<Integer>();
-    private LinkedList<SelectableComponent> selection = new LinkedList<SelectableComponent>();
+    private LinkedList<SelectableComponent> selection = 
+            new LinkedList<SelectableComponent>();
     private boolean first = true;
     
     /** Add a component to the selection with its relative translation */

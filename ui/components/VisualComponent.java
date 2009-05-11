@@ -14,14 +14,16 @@ import ui.UIConstants;
 import ui.command.SubcircuitOpenCommand.SubcircuitComponent;
 import ui.error.ErrorHandler;
 
-/** @author matt */
+/** All standard visual descriptions extend this class. In particular components
+ * of this type are represented by images. @author matt */
 public abstract class VisualComponent extends SelectableComponent {    
     protected BufferedImage defaultBi = null;
     protected BufferedImage selectedBi = null;
     protected BufferedImage activeBi = null;
     private int width = 0, height = 0;
       
-    public VisualComponent(CircuitPanel parent, Point point, sim.SimItem logicalComponent,netlist.properties.Properties properties){
+    public VisualComponent(CircuitPanel parent, Point point,
+         sim.SimItem logicalComponent,netlist.properties.Properties properties){
         super(parent, point, logicalComponent, properties);        
         setDefaultImage(); // Retrieve images from properties
         setSelectedImage();// Retrieve images from properties
@@ -83,12 +85,14 @@ public abstract class VisualComponent extends SelectableComponent {
         Map<String, PinPosition> inpins = properties.getInputPins();
         for(String k: inpins.keySet()){
             Point p = createPointFromPinPosition(inpins.get(k));
-            localPins.add(new Pin(p, logicalComponent.getPinByName(k), inpins.get(k).getEdge()));
+            localPins.add(new Pin(p, logicalComponent.getPinByName(k), 
+                    inpins.get(k).getEdge()));
         }        
         Map<String, PinPosition> outpins = properties.getOutputPins();
         for(String k: outpins.keySet()){
             Point p = createPointFromPinPosition(outpins.get(k));
-            localPins.add(new Pin(p, logicalComponent.getPinByName(k), outpins.get(k).getEdge()));
+            localPins.add(new Pin(p, logicalComponent.getPinByName(k),
+                    outpins.get(k).getEdge()));
         }        
     }
     
@@ -96,7 +100,8 @@ public abstract class VisualComponent extends SelectableComponent {
     public void draw(Graphics2D g) {
         super.draw(g); // Draw labels
         // Rotate the graphics context about the Centre Point
-        g.rotate(rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);      
+        g.rotate(rotation, getOrigin().x + getCentre().x, 
+                getOrigin().y + getCentre().y);      
         // Translate to allow for local co-ordinates of pins
         g.translate(getOrigin().x, getOrigin().y);               
         g.setColor(UIConstants.DEFAULT_COMPONENT_COLOUR);
@@ -104,24 +109,25 @@ public abstract class VisualComponent extends SelectableComponent {
         for(Pin p: localPins){
             switch(p.getEdge()){
                 case North:
-                    g.drawLine(p.x, p.y, p.x, p.y+(2*UIConstants.GRID_DOT_SPACING));
-                    break;
+                 g.drawLine(p.x, p.y, p.x, p.y+(2*UIConstants.GRID_DOT_SPACING));
+                 break;
                 case South:
-                    g.drawLine(p.x, p.y, p.x, p.y-(2*UIConstants.GRID_DOT_SPACING)); 
-                    break;
+                 g.drawLine(p.x, p.y, p.x, p.y-(2*UIConstants.GRID_DOT_SPACING)); 
+                 break;
                 case West:
-                    g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
-                    break;
+                 g.drawLine(p.x, p.y, p.x+(2*UIConstants.GRID_DOT_SPACING), p.y);
+                 break;
                 case East:
-                    g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);                  
-                    break;
+                 g.drawLine(p.x, p.y, p.x-(2*UIConstants.GRID_DOT_SPACING), p.y);                  
+                 break;
             }
         }        
         g.translate(-getOrigin().x, -getOrigin().y); // Undo pin translation
         // Draw the current image with its origin at the correct place
         g.drawImage(getCurrentImage(), getOrigin().x, getOrigin().y, null);
         // Undo the rotation
-        g.rotate(-rotation, getOrigin().x + getCentre().x, getOrigin().y + getCentre().y);
+        g.rotate(-rotation, getOrigin().x + getCentre().x, 
+                getOrigin().y + getCentre().y);
     }
             
     @Override
@@ -137,12 +143,14 @@ public abstract class VisualComponent extends SelectableComponent {
             atts.addAttribute("", "", "x", "CDATA", String.valueOf(getOrigin().x));
             atts.addAttribute("", "", "y", "CDATA", String.valueOf(getOrigin().y));
             atts.addAttribute("", "", "rotation", "CDATA", String.valueOf(rotation));
-            atts.addAttribute("", "", "subcircuit", "CDATA", (this instanceof SubcircuitComponent)+"");            
+            atts.addAttribute("", "", "subcircuit", "CDATA", 
+                    (this instanceof SubcircuitComponent)+"");            
             hd.startElement("", "", "component", atts);            
             properties.createXML(hd);            
             hd.endElement("", "", "component");
         } catch (SAXException ex) {
-            ErrorHandler.newError("XML Creation Error","Please refer to the system output below.",ex);
+            ErrorHandler.newError("XML Creation Error","Please refer to " +
+                    "the system output below.",ex);
         }
     }
 

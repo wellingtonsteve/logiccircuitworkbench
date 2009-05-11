@@ -8,15 +8,18 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-/**
- *
+/** An attribute is a mutable property of a component. Essentially the attribute
+ * class is data class with various get and set methods plus an JComponent for 
+ * use in the user interface. The final method creates xml data which is used
+ * when saving the circuit to disk.  *
  * @author Matt
  */
 public abstract class Attribute implements Cloneable {
     private String name;
     private Object value;
     protected JComponent jcomponent;
-    protected LinkedList<AttributeListener> attributeListeners = new LinkedList<AttributeListener>();
+    protected LinkedList<AttributeListener> attributeListeners = 
+            new LinkedList<AttributeListener>();
     private Object oldValue;
     
     public Attribute(String name, Object value){
@@ -34,7 +37,7 @@ public abstract class Attribute implements Cloneable {
         return value;
     }
     
-    public Object getOldValue(){
+    public Object getPreviousValue(){
         return oldValue;
     }
 
@@ -74,12 +77,12 @@ public abstract class Attribute implements Cloneable {
         try {
             AttributesImpl atts = new AttributesImpl();
             atts.addAttribute("", "", "name", "CDATA", getName());
-            atts.addAttribute("", "", "value", "CDATA", (value instanceof String)?(String) value:value.toString());
+            atts.addAttribute("", "", "value", "CDATA",
+                    (value instanceof String)?(String) value:value.toString());
             hd.startElement("", "", "attr", atts);
             hd.endElement("", "", "attr");
         } catch (SAXException ex) {
-            Logger.getLogger(Attribute.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Attribute.class.getName()).log(Level.SEVERE,null,ex);
         }
     }
-
 }

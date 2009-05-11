@@ -6,17 +6,17 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-/**
- *
- * @author Matt
- */
+/** This specific attribute allows any numeric value between minValue and 
+ * maxValue and is represented by a Spinner component in the user interface.
+ * @author Matt */
 public class SpinnerAttribute extends Attribute{
     private int defaultValue;
     private int stepValue;
     private int minValue;
     private int maxValue;
     
-    public SpinnerAttribute(String name, int defaultValue, int minValue, int maxValue, int stepValue){
+    public SpinnerAttribute(String name, int defaultValue, int minValue,
+            int maxValue, int stepValue){
         super(name, defaultValue);
         this.defaultValue = defaultValue;
         this.stepValue = stepValue;
@@ -27,7 +27,8 @@ public class SpinnerAttribute extends Attribute{
 
     @Override
     protected void setJComponent() {
-        final SpinnerNumberModel model = new SpinnerNumberModel(defaultValue, minValue, maxValue, stepValue);
+        final SpinnerNumberModel model = new SpinnerNumberModel(defaultValue,
+                minValue, maxValue, stepValue);
         final JSpinner js = new javax.swing.JSpinner();
         model.addChangeListener(new ChangeListener(){
             @Override

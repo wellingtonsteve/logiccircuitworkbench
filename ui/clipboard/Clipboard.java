@@ -6,51 +6,49 @@ import java.util.Stack;
 import javax.swing.JComponent;
 import ui.components.SelectableComponent;
 
-/**
- * A Selectable Component clipboard. Selections of components are stored on a stack. 
- * A second stack records whether each addition was the result of a copy/paste action.
- * 
- * @author matt
- */
+/** A Selectable Component clipboard. Selections of components are stored on a 
+ * stack. A second stack records whether each addition was the result of a 
+ * cut/copy action. @author matt */
 public class Clipboard {
 
-    private Stack<Collection<SelectableComponent>> clipboard = new Stack<Collection<SelectableComponent>>();
+    private Stack<Collection<SelectableComponent>> clipboard =
+            new Stack<Collection<SelectableComponent>>();
     private Stack<ClipboardType> lastAction = new Stack<ClipboardType>();
-    private LinkedList<JComponent> selectionlisteners = new LinkedList<JComponent>();
-    private LinkedList<JComponent> pastelisteners = new LinkedList<JComponent>();
+    private LinkedList<JComponent> selectionlisteners = 
+            new LinkedList<JComponent>();
+    private LinkedList<JComponent> pastelisteners =new LinkedList<JComponent>();
     
+    /** Cut a selection of components */
     public void cut(Collection<SelectableComponent> col){
         lastAction.push(ClipboardType.Cut);
         clipboard.push(col);
         updatePasteListeners();
     }
     
+    /** Copy a selection of components */
     public void copy(Collection<SelectableComponent> col){
         lastAction.push(ClipboardType.Copy);
         clipboard.push(col);
         updatePasteListeners();
     }
     
+    /** Paste the last cut/copied selection */
     public Collection<SelectableComponent> paste(){
-        LinkedList<SelectableComponent> retval = new LinkedList<SelectableComponent>();
+        LinkedList<SelectableComponent> retval =
+                new LinkedList<SelectableComponent>();
         for(SelectableComponent sc: clipboard.peek()){
             retval.add(sc.copy());
         }
         return retval;                
     }
-    
-    /** Add a selection of components to the clipboard for later use.
-     * @param col The components to be added
-     * @param ct The type of the clipboard action */
-    
+       
     /** @return The last selection of items that was added to the clipboard */
-
     public ClipboardType getNextAction(){
         return lastAction.peek();
     }
     
-    /** Remove the last selection of items that was added to the clipboard. Occurs
-     * when a cut/copy action is undone, or a cut item is pasted.*/
+    /** Remove the last selection of items that was added to the clipboard. 
+     * Occurs when a cut/copy action is undone, or a cut item is pasted.*/
     public void removeLastClipboardItem(){
         clipboard.pop();
         lastAction.pop();
@@ -87,7 +85,7 @@ public class Clipboard {
         pastelisteners.add(pastelistener);
     }
 
-    /** Re-enable any paste listeners after a collection has been added to the clipboard*/
+    /** Re-enable any paste listeners after a collection has been added */
     private void updatePasteListeners() {
         if (canPaste()) {
             for (JComponent c : pastelisteners) {
