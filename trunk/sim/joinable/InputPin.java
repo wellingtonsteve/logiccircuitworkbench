@@ -3,6 +3,9 @@ package sim.joinable;
 import java.util.ArrayList;
 import sim.*;
 
+/**
+ * InputPin is a subclass of Pin that represents an Input into a component.
+ */
 public class InputPin extends Pin implements ValueListener {
 
     private OutputPin connectedTo;
