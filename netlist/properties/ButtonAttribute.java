@@ -18,7 +18,6 @@ public abstract class ButtonAttribute extends Attribute{
     protected void setJComponent() {
         JButton button = new JButton("Open");
         button.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 buttonClickAction(e);
             }

@@ -30,7 +30,6 @@ public class LED extends VisualComponent implements sim.joinable.ValueListener,
         parent.getSimulator().addStateListener(this);
         properties.getAttribute("Colour").addAttributeListener(this);
         properties.getAttribute("Colour").addAttributeListener(new AttributeListener(){
-            @Override
             public void attributeValueChanged(Attribute attr, Object value) {
                 parent.getParentFrame().getEditor().repaintOptionsPanel();
             }            

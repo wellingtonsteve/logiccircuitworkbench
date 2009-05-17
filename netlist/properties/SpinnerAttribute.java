@@ -25,13 +25,11 @@ public class SpinnerAttribute extends Attribute{
         setJComponent();
     }
 
-    @Override
     protected void setJComponent() {
         final SpinnerNumberModel model = new SpinnerNumberModel(defaultValue,
                 minValue, maxValue, stepValue);
         final JSpinner js = new javax.swing.JSpinner();
         model.addChangeListener(new ChangeListener(){
-            @Override
             public void stateChanged(ChangeEvent e) {
                 js.setValue(model.getNumber().intValue());
                 SpinnerAttribute.this.changeValue(model.getNumber().intValue());

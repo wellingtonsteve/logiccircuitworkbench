@@ -20,7 +20,6 @@ public class SelectionAttribute extends Attribute{
     protected void setJComponent() {
         final JComboBox cb = new JComboBox((Object[])getValue());        
         cb.addActionListener(new ActionListener(){
-            @Override
             public void actionPerformed(ActionEvent e) {
                 changeValue(cb.getSelectedItem());
             }

@@ -22,7 +22,6 @@ public class TextAttribute extends Attribute{
         final JTextField tf = new JTextField(defaultValue);
         tf.setText((String) getValue());
         tf.addActionListener(new ActionListener(){
-            @Override
             public void actionPerformed(ActionEvent e) {
                 changeValue(tf.getText());
             }

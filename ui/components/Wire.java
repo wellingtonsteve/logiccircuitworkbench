@@ -509,10 +509,10 @@ public class Wire extends SelectableComponent {
                 current = endPoint;
                 next = null;
                 // Start from the end
-                Iterator<Point> waypointReverse = waypoints.descendingIterator();
-                while (waypointReverse.hasNext()) {
+                int i = waypoints.size()-1;
+                while (i>=0) {
 
-                    next = waypointReverse.next(); 
+                    next = waypoints.get(i); 
                     // Determine whether the crossover point is on this leg?
                     //      i.e. is the distance between it and the horizontal or
                     //      vertical sections zero?
@@ -524,6 +524,7 @@ public class Wire extends SelectableComponent {
                         break;
                     } 
                     current = next;
+                    i--;
                 }
 
                 if(end == null){

@@ -15,7 +15,7 @@ public class FileSaveCommand extends Command {
     protected void perform(Editor editor) {
         String filename = activeCircuit.getFilename();    
         // Has a save been performed yet?
-        if(filename.substring(0, 8).equals("Untitled") || filename == null || filename.isEmpty()){
+        if(filename.substring(0, 8).equals("Untitled") || filename == null || filename.equals("")){
                     
             JFileChooser c = new JFileChooser();
             FileFilter xmlFilter = new CircuitFileFilter();        

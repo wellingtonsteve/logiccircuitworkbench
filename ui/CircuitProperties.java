@@ -36,7 +36,6 @@ public class CircuitProperties extends javax.swing.JFrame implements AttributeLi
             FileChooser.setSelectedFile(new File((String) properties.getAttribute("Subcircuit Image").getValue()));
         }
         FileChooser.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 if(FileChooser.getSelectedFile()!=null){
                     ImageField.setText(FileChooser.getSelectedFile().getAbsolutePath());
@@ -340,7 +339,6 @@ private void ImageDialogButtonActionPerformed(java.awt.event.ActionEvent evt) {/
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 
-    @Override
     public void attributeValueChanged(Attribute attr, Object value) {
         if(attr.getName().equals("Title")){
             TitleField.setText((String)value);

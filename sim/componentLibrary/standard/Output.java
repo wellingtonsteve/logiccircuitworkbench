@@ -30,7 +30,6 @@ public class Output extends Component implements AttributeListener{
     public boolean isExternal() { return external; }
     public String getPinName() { return name; }
 
-    @Override
     public void attributeValueChanged(Attribute attr, Object value) {
         if(attr.getName().equals("Label")){
             name = (String) value;

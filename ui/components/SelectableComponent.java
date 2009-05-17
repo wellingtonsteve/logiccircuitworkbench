@@ -540,22 +540,18 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
     /** @return the properties of this component */
     public Properties getProperties(){
         return properties;
-    }
-    
-    @Override
+    }    
+
     public void attributeValueChanged(Attribute attr, Object value) {
         EditAttributeCommand eac = new EditAttributeCommand(attr,
                 attr.getPreviousValue(), value);
         parent.doCommand(eac);
     }
 
-    @Override
     public void SimulationRateChanged(int rate) {}
-
-    @Override
+    
     public void SimulationTimeChanged(long time) {}
 
-    @Override
     public void SimulatorStateChanged(SimulatorState state) {}    
     
     /** Similar to clone except that the exception is caught and the Cast to 

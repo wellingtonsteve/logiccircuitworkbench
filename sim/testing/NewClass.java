@@ -89,7 +89,6 @@ public static void main(String[] args){
                     in2copy.setValue(LogicState.OFF);
             }
            
-            @Override
             public void SimulationRateChanged(int rate){}  
     });
     

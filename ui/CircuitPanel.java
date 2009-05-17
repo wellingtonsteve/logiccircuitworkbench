@@ -130,7 +130,7 @@ public class CircuitPanel extends javax.swing.JPanel implements
                 if(sc instanceof PinLogger){
                     loggerWindow.addPinLogger((PinLogger)sc);
                 }                
-                fixedComponents.push(sc);
+                fixedComponents.addFirst(sc);
             } else {
                 grid.removeComponent(sc);
                 logicalCircuit.removeSimItem(sc.getLogicalComponent());
@@ -250,7 +250,7 @@ public class CircuitPanel extends javax.swing.JPanel implements
      
     /** Add a single component to this circuit */
     public void addComponent(SelectableComponent sc) {
-        drawnComponents.push(sc);
+        drawnComponents.addFirst(sc);
         previousCurrentPoint = SelectableComponent.getDefaultOrigin();
         setCurrentTool(sc.getKeyName());
         repaint(sc.getBoundingBox());
@@ -354,7 +354,6 @@ public class CircuitPanel extends javax.swing.JPanel implements
         return simulatorState;
     }
 
-    @Override
     public void SimulationTimeChanged(long time) {     
         // Don't change too quickly!
         if(time % Math.pow(10, simulationRate -2 ) == 0  || simulationRate < 2){
@@ -363,7 +362,6 @@ public class CircuitPanel extends javax.swing.JPanel implements
         }
     }
 
-    @Override
     public void SimulatorStateChanged(SimulatorState state) {
         this.simulatorState = state;
         if (getSimulatorState().equals(simulatorState.STOPPED)) {
@@ -377,7 +375,6 @@ public class CircuitPanel extends javax.swing.JPanel implements
         }
     }
     
-    @Override
     public void SimulationRateChanged(int rate){
        this.simulationRate = rate;
     }    
@@ -648,18 +645,15 @@ public class CircuitPanel extends javax.swing.JPanel implements
          };
          this.properties = newproperties;
     }
-        
-    @Override
+       
     public Properties getProperties(){
         return properties;
     }
     
-    @Override
     public void setProperties(Properties properties){
         this.properties = properties;
     }
-    
-    @Override
+
     public String getKeyName(){
         return "Circuit Panel";
     }
@@ -772,8 +766,8 @@ private class CircuitPanelMouseAdapter extends MouseAdapter {
                     w.setStartPoint(currentPoint);
                 // We have chosen the start point again, remove the wire
                 } else if (w.getOrigin().equals(currentPoint)) {
-                    drawnComponents.pop();
-                    drawnComponents.push(new Wire(CircuitPanel.this));
+                    drawnComponents.removeLast();
+                    drawnComponents.addFirst(new Wire(CircuitPanel.this));
                 } else if (!w.getOrigin().equals(Wire.getDefaultOrigin())) {
                     // Should we continue to draw the wire?
                     //      Only if we have not released on a connection point
@@ -786,11 +780,11 @@ private class CircuitPanelMouseAdapter extends MouseAdapter {
                         w.setEndPoint(currentPoint);
                         // Remove zero-length wires created by wire optimisation
                         if(w.getOrigin().equals(w.getEndPoint())){
-                            drawnComponents.pop();
+                            drawnComponents.removeLast();
                         } else {
                             w.translate(0, 0, true);
                         }
-                        drawnComponents.push(new Wire(CircuitPanel.this));
+                        drawnComponents.addFirst(new Wire(CircuitPanel.this));
                     }
                 }
                 // Highlight connection point?

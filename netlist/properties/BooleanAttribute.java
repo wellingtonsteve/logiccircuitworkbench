@@ -21,7 +21,6 @@ public class BooleanAttribute extends Attribute{
         final JCheckBox cb = new JCheckBox();
         cb.setSelected(defaultValue);
         cb.addActionListener(new ActionListener(){
-            @Override
             public void actionPerformed(ActionEvent e) {
                 changeValue(cb.isSelected());
             }

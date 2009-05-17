@@ -1192,7 +1192,6 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
      /** Display any reported errors to the user. Using a Message Dialog, the easily 
       * readable message is always shown and if and Exception is associated with 
       * the error, it is displayed in a scrollable text box below the message. */
-    @Override
     public void reportError(Error error) {
         Object[] dialogContent;        
         if(error.hasException()){
@@ -1234,8 +1233,7 @@ public class Editor extends javax.swing.JFrame implements ErrorListener {
     public javax.swing.JProgressBar getProgressBar(){
         return progressBar;
     }
-    
-    @Override
+
     public void statusChange(ui.command.CommandStage stage, Object value) {
         controller.getCommandHistory().stageChange(stage, value);
     }
