@@ -1,10 +1,7 @@
 package sim.joinable;
 
-
 /**
- * A wire joins two 'Joinable's
- * 
- * @author Stephen
+ * A Wire joins multiple other Joinables together. Doesn't actually do anything itself.
  */
 public class Wire extends Joinable {
 
