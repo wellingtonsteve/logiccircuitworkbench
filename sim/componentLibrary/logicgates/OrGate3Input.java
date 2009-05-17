@@ -1,18 +1,20 @@
 package sim.componentLibrary.logicgates;
 
+import netlist.properties.*;
 import sim.componentLibrary.Component;
 import sim.joinable.*;
 import sim.*;
-import netlist.properties.*;
 
-public class NotGate extends Component {
-    
+public class OrGate3Input extends Component {
+
     /**
      * Pin creation
      */
-    private InputPin input = createInputPin("Input");
+    private InputPin input1 = createInputPin("Input 1");
+    private InputPin input2 = createInputPin("Input 2");
+    private InputPin input3 = createInputPin("Input 3");
     private OutputPin output = createOutputPin("Output");
-    
+
     /**
      * The propagation delay off the component, as set by the property in the GUI
      */
@@ -39,8 +41,8 @@ public class NotGate extends Component {
     /**
      * Basic SimItem implementation for the component names
      */
-    public String getLongName() { return "Not Gate"; }
-    public String getShortName() { return "¬ input"; }
+    public String getLongName() { return "Or Gate with 3 Inputs"; }
+    public String getShortName() { return "|| 3 input"; }
 
     /**
      * ValueListener method implementation to update output when an input changes
@@ -50,11 +52,14 @@ public class NotGate extends Component {
         //Java type system makes us declare the new output value as final because we'll be using in
         //the anonymous SimItemEvent implementation below
         final LogicState newOutputValue;
-        if (input.getValue() == LogicState.ON){
+        if (input1.getValue() == LogicState.OFF && input2.getValue() == LogicState.OFF && input3.getValue() == LogicState.OFF){
+            //If all inputs are OFF, output OFF
             newOutputValue = LogicState.OFF;
-        } else if (input.getValue() == LogicState.OFF) {
+        } else if (input1.getValue() == LogicState.ON || input2.getValue() == LogicState.ON || input3.getValue() == LogicState.ON) {
+            //If any input is ON, ouput ON
             newOutputValue = LogicState.ON;
         } else {
+            //Otherwise standard XOR logic..
             newOutputValue = LogicState.FLOATING;
         }
         if(sim != null){

@@ -1,6 +1,7 @@
 package netlist;
 
 import netlist.properties.Properties;
+import netlist.properties.SpinnerAttribute;
 import netlist.properties.TextAttribute;
 import ui.components.ComponentEdge;
 
@@ -25,6 +26,7 @@ public class FlipFlops extends Netlist{
             setVisualComponentClass(ui.components.flipflops.DefaultFlipFlop.class);
 
             addAttribute(new TextAttribute("Label", ""));
+            addAttribute(new SpinnerAttribute("Propagation delay (ns)",5, 1, 1000, 1));
             
             addImage("default", "/ui/images/components/default_d_flipflop.png");
             addImage("selected", "/ui/images/components/selected_d_flipflop.png");

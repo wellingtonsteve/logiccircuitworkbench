@@ -1,6 +1,7 @@
 package netlist;
 
 import netlist.properties.Properties;
+import netlist.properties.SpinnerAttribute;
 import netlist.properties.TextAttribute;
 import ui.components.ComponentEdge;
 
@@ -29,6 +30,7 @@ public class LogicGates extends Netlist{
             setLogicalComponentClass(sim.componentLibrary.logicgates.AndGate2Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
             addAttribute(new TextAttribute("Label", ""));
+            addAttribute(new SpinnerAttribute("Propagation delay (ns)",5, 1, 1000, 1));
             addImage("default", "/ui/images/components/default_2in_and.png");
             addImage("selected", "/ui/images/components/selected_2in_and.png");
             addImage("active", "/ui/images/components/active_2in_and.png");
@@ -47,6 +49,7 @@ public class LogicGates extends Netlist{
             setLogicalComponentClass(sim.componentLibrary.logicgates.OrGate2Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
             addAttribute(new TextAttribute("Label", ""));
+            addAttribute(new SpinnerAttribute("Propagation delay (ns)",5, 1, 1000, 1));
             addImage("default", "/ui/images/components/default_2in_or.png");
             addImage("selected", "/ui/images/components/selected_2in_or.png");
             addImage("active", "/ui/images/components/active_2in_or.png");
@@ -65,6 +68,7 @@ public class LogicGates extends Netlist{
             setLogicalComponentClass(sim.componentLibrary.logicgates.NandGate2Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
             addAttribute(new TextAttribute("Label", ""));
+            addAttribute(new SpinnerAttribute("Propagation delay (ns)",5, 1, 1000, 1));
             addImage("default", "/ui/images/components/default_2in_nand.png");
             addImage("selected", "/ui/images/components/selected_2in_nand.png");
             addImage("active", "/ui/images/components/active_2in_nand.png");
@@ -83,6 +87,7 @@ public class LogicGates extends Netlist{
             setLogicalComponentClass(sim.componentLibrary.logicgates.NorGate2Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
             addAttribute(new TextAttribute("Label", ""));
+            addAttribute(new SpinnerAttribute("Propagation delay (ns)",5, 1, 1000, 1));
             addImage("default", "/ui/images/components/default_2in_nor.png");
             addImage("selected", "/ui/images/components/selected_2in_nor.png");
             addImage("active", "/ui/images/components/active_2in_nor.png");
@@ -101,6 +106,7 @@ public class LogicGates extends Netlist{
             setLogicalComponentClass(sim.componentLibrary.logicgates.AndGate3Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
             addAttribute(new TextAttribute("Label", ""));
+            addAttribute(new SpinnerAttribute("Propagation delay (ns)",5, 1, 1000, 1));
             addImage("default", "/ui/images/components/default_2in_and.png");
             addImage("selected", "/ui/images/components/selected_2in_and.png");
             addImage("active", "/ui/images/components/active_2in_and.png");
@@ -120,6 +126,7 @@ public class LogicGates extends Netlist{
             setLogicalComponentClass(sim.componentLibrary.logicgates.NotGate.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
             addAttribute(new TextAttribute("Label", ""));
+            addAttribute(new SpinnerAttribute("Propagation delay (ns)",5, 1, 1000, 1));
             addImage("default", "/ui/images/components/default_not.png");
             addImage("selected", "/ui/images/components/selected_not.png");
             addImage("active", "/ui/images/components/active_not.png");
@@ -138,6 +145,7 @@ public class LogicGates extends Netlist{
             setLogicalComponentClass(sim.componentLibrary.logicgates.XorGate2Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
             addAttribute(new TextAttribute("Label", ""));
+            addAttribute(new SpinnerAttribute("Propagation delay (ns)",5, 1, 1000, 1));
             addImage("default", "/ui/images/components/default_xor.png");
             addImage("selected", "/ui/images/components/selected_xor.png");
             addImage("active", "/ui/images/components/active_xor.png");
@@ -156,6 +164,7 @@ public class LogicGates extends Netlist{
             setLogicalComponentClass(sim.componentLibrary.logicgates.AndGate2Input.class);
             setVisualComponentClass(ui.components.logicgates.DefaultLogicGate.class);
             addAttribute(new TextAttribute("Label", ""));
+            addAttribute(new SpinnerAttribute("Propagation delay (ns)",5, 1, 1000, 1));
             addImage("default", "/ui/images/components/default_2in_or.png");
             addImage("selected", "/ui/images/components/selected_2in_or.png");
             addImage("active", "/ui/images/components/active_2in_or.png");
