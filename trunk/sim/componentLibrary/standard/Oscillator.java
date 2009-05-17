@@ -33,7 +33,6 @@ public class Oscillator extends Component {
         }
     };
     private SimItemEvent off = new SimItemEvent() {
-        @Override
         public void RunEvent() {
             //Set the output OFF...
             output.setValue(LogicState.OFF);
@@ -54,11 +53,10 @@ public class Oscillator extends Component {
     /**
      * Component names
      */
-    @Override
     public String getLongName() {
         return "Oscillator";
     }
-    @Override
+
     public String getShortName() {
         return "Oscillator";
     }
@@ -74,7 +72,6 @@ public class Oscillator extends Component {
         t1 = (Integer) t1Att.getValue();
         //Create a listener that updates the oscillator when the timing property is changed in the GUI
         t1Att.addAttributeListener(new AttributeListener() {
-            @Override
             public void attributeValueChanged(Attribute attr, Object value) {
                 t1 = (Integer) value;
             }
@@ -83,7 +80,6 @@ public class Oscillator extends Component {
         Attribute t2Att = properties.getAttribute("t2 (ns)");
         t2 = (Integer) t2Att.getValue();
         t2Att.addAttributeListener(new AttributeListener() {
-            @Override
             public void attributeValueChanged(Attribute attr, Object value) {
                 t2 = (Integer) value;
             }

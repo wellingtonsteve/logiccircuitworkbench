@@ -144,7 +144,6 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
         ((JScrollPane)getParent().getParent()).getViewport().setViewPosition(new Point(0,0));
     }
 
-    @Override
     public void SimulatorStateChanged(SimulatorState state) {
         if(state.equals(SimulatorState.PLAYING)){
             Dimension b = getPreferredSize();
@@ -153,24 +152,19 @@ public class ViewerPanel extends JPanel implements sim.SimulatorStateListener {
         }
     }
 
-    @Override
     public void SimulationTimeChanged(long time) {
-        //System.out.println(time);
-        //if(time % Math.pow(10, 11-simulationRate) == 0  || simulationRate < 2){// Don't update too quickly!!
-            Long startTime = parent.getStartTime();
-            Long endTime = parent.getEndTime();
-            // Auto-Scrolling policy
-            Dimension b = getPreferredSize();
-            if((endTime-startTime)*scaleFactor > b.width){
-                setPreferredSize(new Dimension((int)((endTime-startTime)*scaleFactor), b.height));
-                revalidate();
-            }
-            parent.setEndTime(time);
-            repaint(((JScrollPane)getParent().getParent()).getViewport().getViewRect());    
-        //}
+        Long startTime = parent.getStartTime();
+        Long endTime = parent.getEndTime();
+        // Auto-Scrolling policy
+        Dimension b = getPreferredSize();
+        if((endTime-startTime)*scaleFactor > b.width){
+            setPreferredSize(new Dimension((int)((endTime-startTime)*scaleFactor), b.height));
+            revalidate();
+        }
+        parent.setEndTime(time);
+        repaint(((JScrollPane)getParent().getParent()).getViewport().getViewRect());    
     }    
     
-    @Override
     public void SimulationRateChanged(int rate){
         simulationRate = rate;
         scaleFactor = Math.pow(10, -(rate - 2));

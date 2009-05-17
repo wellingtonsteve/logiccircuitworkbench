@@ -72,7 +72,6 @@ public static void main(String[] args){
                 }
             }
             
-            @Override
             public void SimulationRateChanged(int rate){}  
 
         });

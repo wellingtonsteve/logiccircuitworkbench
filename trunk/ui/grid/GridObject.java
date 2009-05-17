@@ -53,6 +53,6 @@ public abstract class GridObject extends Point implements Labeled, Cloneable {
     }
     
     public boolean hasLabel(){
-        return !label.isEmpty() || !label.equals("");
+        return !label.equals("");
     }
 }
