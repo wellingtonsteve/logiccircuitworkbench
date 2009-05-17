@@ -39,9 +39,13 @@ public class Main {
             editor.addNetlist(new netlist.LogicGates());
             loadingBar.setValue(50);
 
-            loadingBar.setString("Loading Latches and Flip-Flops Netlist...");
+            loadingBar.setString("Loading Flip-Flops Netlist...");
             editor.addNetlist(new netlist.FlipFlops());
             loadingBar.setValue(60);
+
+            loadingBar.setString("Loading Latches Netlist...");
+            editor.addNetlist(new netlist.Latches());
+            loadingBar.setValue(70);
             
             loadingBar.setString("Creating Blank Circuit...");
             editor.createBlankCircuit(false);
