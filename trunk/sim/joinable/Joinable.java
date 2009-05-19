@@ -1,4 +1,3 @@
-
 package sim.joinable;
 
 import java.util.*;
