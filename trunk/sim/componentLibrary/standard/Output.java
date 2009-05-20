@@ -56,13 +56,14 @@ public class Output extends Component{
                 name = (String) value;
             }
         });
-
-        external = (Boolean) properties.getAttribute("External?").getValue();
-        properties.getAttribute("External?").addAttributeListener(new AttributeListener() {
-            @Override
-            public void attributeValueChanged(Attribute attr, Object value) {
-                external = (Boolean) value;
-            }
-        });
+        if(properties.hasAttribute("External?")){
+            external = (Boolean) properties.getAttribute("External?").getValue();
+            properties.getAttribute("External?").addAttributeListener(new AttributeListener() {
+                @Override
+                public void attributeValueChanged(Attribute attr, Object value) {
+                    external = (Boolean) value;
+                }
+            });
+        }
     }
 }

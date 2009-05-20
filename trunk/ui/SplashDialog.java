@@ -57,7 +57,7 @@ public class SplashDialog extends javax.swing.JFrame {
         jPanel2.setMaximumSize(new java.awt.Dimension(471, 233));
         jPanel2.setMinimumSize(new java.awt.Dimension(471, 233));
 
-        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 24));
         jLabel1.setText(bundle.getString("Main.ApplicationTitle")); // NOI18N
 
         jLabel2.setText(bundle.getString("Main.Authors")); // NOI18N

@@ -534,11 +534,11 @@ public abstract class SelectableComponent implements Labeled, Cloneable,
         }
         if(this.properties != null){
             this.properties.addAttributesListener(this);
-        }
+        } 
     }
     
     /** @return the properties of this component */
-    public Properties getProperties(){
+    public final Properties getProperties(){
         return properties;
     }    
 
