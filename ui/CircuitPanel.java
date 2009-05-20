@@ -605,41 +605,45 @@ public class CircuitPanel extends javax.swing.JPanel implements
                 
                 // Create external pins
                 int i = 0, o = 0;
-                for(SelectableComponent sc: drawnComponents){                    
-                    // Input Pins
-                    if(sc.isFixed() 
-                            && (sc.getLogicalComponent() instanceof 
-                            sim.componentLibrary.standard.Input)){
-                        int pos = (Integer) sc.getProperties().
-                                getAttribute("External Position").getValue();
-                        String edge = (String) sc.getProperties().
-                                getAttribute("External Edge").getValue();
-                        String label;
-                        if(sc.hasLabel()){
-                            label = sc.getLabel();
-                        } else {
-                            label = "Input " + i;
-                            sc.setLabel(label);
-                            i++;
-                        }
-                        addInputPin(label, ComponentEdge.convertStringToEdge(edge), pos);                        
-                    // Output Pins    
-                    } else if(sc.isFixed() 
-                            && sc.getLogicalComponent() instanceof 
-                            sim.componentLibrary.standard.Output){
-                        int pos = (Integer) sc.getProperties().
-                                getAttribute("External Position").getValue();
-                        String edge = (String) sc.getProperties().getAttribute("External Edge").getValue();
-                        String label;
-                        if(sc.hasLabel()){
-                            label = sc.getLabel();
-                        } else {
-                            label = "Output " + o;
-                            sc.setLabel(label);
-                            o++;
-                        }
-                        addOutputPin(label, ComponentEdge.convertStringToEdge(edge), pos);       
-                    }              
+                for(SelectableComponent sc: drawnComponents){  
+                    Properties props = sc.getProperties();
+                    if(props != null && props.hasAttribute("External?")){
+                        // Input Pins
+                        if(sc.isFixed() 
+                                && (sc.getLogicalComponent() instanceof 
+                                sim.componentLibrary.standard.Input)){
+                            int pos = (Integer) props.
+                                    getAttribute("External Position").getValue();
+                            String edge = (String) props.
+                                    getAttribute("External Edge").getValue();
+                            String label;
+                            if(sc.hasLabel()){
+                                label = sc.getLabel();
+                            } else {
+                                label = "Input " + i;
+                                sc.setLabel(label);
+                                i++;
+                            }
+                            addInputPin(label, ComponentEdge.convertStringToEdge(edge), pos);                        
+                        // Output Pins    
+                        } else if(sc.isFixed() 
+                                && sc.getLogicalComponent() instanceof 
+                                sim.componentLibrary.standard.Output){
+
+                            int pos = (Integer) props.
+                                    getAttribute("External Position").getValue();
+                            String edge = (String) props.getAttribute("External Edge").getValue();
+                            String label;
+                            if(sc.hasLabel()){
+                                label = sc.getLabel();
+                            } else {
+                                label = "Output " + o;
+                                sc.setLabel(label);
+                                o++;
+                            }
+                            addOutputPin(label, ComponentEdge.convertStringToEdge(edge), pos);       
+                        }              
+                    }
                 }
              }
          };
@@ -766,7 +770,7 @@ private class CircuitPanelMouseAdapter extends MouseAdapter {
                     w.setStartPoint(currentPoint);
                 // We have chosen the start point again, remove the wire
                 } else if (w.getOrigin().equals(currentPoint)) {
-                    drawnComponents.removeLast();
+                    drawnComponents.removeFirst();
                     drawnComponents.addFirst(new Wire(CircuitPanel.this));
                 } else if (!w.getOrigin().equals(Wire.getDefaultOrigin())) {
                     // Should we continue to draw the wire?
@@ -780,7 +784,7 @@ private class CircuitPanelMouseAdapter extends MouseAdapter {
                         w.setEndPoint(currentPoint);
                         // Remove zero-length wires created by wire optimisation
                         if(w.getOrigin().equals(w.getEndPoint())){
-                            drawnComponents.removeLast();
+                            drawnComponents.removeFirst();
                         } else {
                             w.translate(0, 0, true);
                         }

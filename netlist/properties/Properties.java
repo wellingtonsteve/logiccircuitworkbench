@@ -36,22 +36,26 @@ public class Properties implements Cloneable{
         createAttributesPanel();
     }
 
+    /** Register a listener to be notified of changes to attributes here*/
     public void addAttributesListener(AttributeListener al) {
         for(Attribute a: attributes.values()){
             a.addAttributeListener(al);
         }
     }
 
+    /** Remove a listener */
     public void removeAttributesListener(AttributeListener al) {
         for(Attribute a: attributes.values()){
             a.removeAttributeListener(al);
         }
     }
     
+    /** Specify the class which is used to create a visual component */
     protected void setVisualComponentClass(Class<? extends SelectableComponent> sc){
         this.selectableComponent = sc;
     }
     
+    /** Specify the class which is used to create a logical component */
     protected void setLogicalComponentClass(Class<? extends SimItem> simItem){
         this.simItem = simItem;
     }
@@ -64,23 +68,28 @@ public class Properties implements Cloneable{
         return simItem;
     }
     
+    /** Specify the class which is used to create a visual component */
     protected void addAttribute(Attribute attr){
         attributes.put(attr.getName(), attr);
         createAttributesPanel();
     }
     
+    /** Return the panel for use in the editor to change attributes */
     public JPanel getAttributesPanel(){
         return attrPanel;        
     }    
     
+    /** Return an attribute by it's key */
     public Attribute getAttribute(String name){
         return attributes.get(name);        
     }
     
+    /** Is there an attribute with a key here? */
     public boolean hasAttribute(String key) {
         return attributes.containsKey(key);
     }
     
+    /** Add an image for use in a visual component */
     protected void addImage(String name, String imageFilename){
         try {
             if(!images.containsKey(key + "." + name)){
@@ -109,6 +118,7 @@ public class Properties implements Cloneable{
         }
     }
     
+    /** Link a pin name with its location */
     protected void addInputPin(String name, ComponentEdge edge, int n){
         inputPins.put(name, new PinPosition(edge, n));
     }
@@ -117,6 +127,7 @@ public class Properties implements Cloneable{
         return inputPins;
     }
     
+    /** Link a pin name with its location */
     protected void addOutputPin(String name, ComponentEdge edge, int n){
         outputPins.put(name, new PinPosition(edge, n));
     }
@@ -147,10 +158,12 @@ public class Properties implements Cloneable{
         }
     }
     
+    /** Return the unique name of this properties object */
     public String getKeyName(){
         return key;
     }
     
+    /** Visitor method for writing a circuit to disk. */
     public void createXML(TransformerHandler hd){
         for(Attribute attr: attributes.values()){
             attr.createXML(hd);
