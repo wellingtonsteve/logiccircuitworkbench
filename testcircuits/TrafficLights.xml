@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE circuit SYSTEM "circuit.dtd">
+<circuit author="matt" modifiedOn="07 May 2009, 12:46" version="LCW v3.1">
+    <components>
+        <attr name="Title" value=""/>
+        <attr name="Description" value=""/>
+        <attr name="Subcircuit Image" value=""/>
+        <attr name="Subcircuit Width" value="40"/>
+        <attr name="Subcircuit Height" value="40"/>
+        <wire startx="465" starty="145" endx="445" endy="200"/>
+        <wire startx="410" starty="100" endx="465" endy="100"/>
+        <wire startx="515" starty="100" endx="575" endy="125">
+            <waypoint x="540" y="125"/>
+        </wire>
+        <wire startx="515" starty="145" endx="575" endy="145"/>
+        <wire startx="155" starty="150" endx="360" endy="150"/>
+        <wire startx="110" starty="60" endx="155" endy="150">
+            <waypoint x="110" y="150"/>
+        </wire>
+        <wire startx="95" starty="135" endx="335" endy="130">
+            <waypoint x="95" y="175"/>
+            <waypoint x="310" y="130"/>
+        </wire>
+        <wire startx="285" starty="100" endx="335" endy="100"/>
+        <wire startx="385" starty="130" endx="235" endy="90">
+            <waypoint x="410" y="75"/>
+            <waypoint x="225" y="90"/>
+        </wire>
+        <wire startx="210" starty="110" endx="235" endy="110"/>
+        <wire startx="180" starty="130" endx="130" endy="100">
+            <waypoint x="210" y="75"/>
+            <waypoint x="120" y="100"/>
+        </wire>
+        <wire startx="65" starty="135" endx="130" endy="130"/>
+        <wire startx="155" starty="60" endx="155" endy="80"/>
+        <component type="Standard.LED" x="565" y="115" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Red"/>
+        </component>
+        <component type="Logic Gates.2 Input.AND" x="465" y="160" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="Propagation delay (ns)" value="5"/>
+        </component>
+        <component type="Logic Gates.1 Input.NOT" x="455" y="70" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="Propagation delay (ns)" value="5"/>
+        </component>
+        <component type="Flip Flops.D Type" x="330" y="80" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="Propagation delay (ns)" value="5"/>
+        </component>
+        <component type="Standard.Oscillator" x="35" y="125" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="t1 (ns)" value="500000000"/>
+            <attr name="t2 (ns)" value="500000000"/>
+        </component>
+        <component type="Standard.Button Source" x="35" y="50" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="West"/>
+        </component>
+        <component type="Flip Flops.D Type" x="125" y="80" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="Propagation delay (ns)" value="5"/>
+        </component>
+        <component type="Logic Gates.2 Input.XOR" x="225" y="70" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="Propagation delay (ns)" value="5"/>
+        </component>
+        <component type="Logic Gates.1 Input.NOT" x="455" y="115" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="Propagation delay (ns)" value="5"/>
+        </component>
+        <component type="Standard.LED" x="565" y="135" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Yellow"/>
+        </component>
+        <component type="Standard.LED" x="565" y="155" rotation="0.0" subcircuit="false">
+            <attr name="Label" value=""/>
+            <attr name="External?" value="false"/>
+            <attr name="External Position" value="1"/>
+            <attr name="External Edge" value="East"/>
+            <attr name="Colour" value="Green"/>
+        </component>
+        <wire startx="65" starty="60" endx="360" endy="80"/>
+        <wire startx="525" starty="190" endx="575" endy="165">
+            <waypoint x="540" y="165"/>
+        </wire>
+        <wire startx="450" starty="100" endx="475" endy="180">
+            <waypoint x="450" y="180"/>
+        </wire>
+        <wire startx="210" starty="130" endx="475" endy="200">
+            <waypoint x="210" y="200"/>
+        </wire>
+    </components>
+</circuit>
