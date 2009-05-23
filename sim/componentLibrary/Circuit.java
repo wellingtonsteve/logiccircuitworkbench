@@ -8,7 +8,7 @@ import sim.componentLibrary.standard.Output;
 import sim.joinable.*;
 
 /**
- * A Circit is an implementation of sim.SimItem, and acts a collection of other SimItems that are
+ * A Circuit is an implementation of sim.SimItem, and acts a collection of other SimItems that are
  * connected to each other.
  */
 public class Circuit implements SimItem {
