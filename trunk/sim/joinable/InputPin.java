@@ -53,8 +53,10 @@ public class InputPin extends Pin implements ValueListener {
             connectedTo.addValueListener(this);
             setValue(connectedTo.getValue());
         } else{
-            connectedTo.removeValueListener(this);
-            connectedTo = null;
+            if(connectedTo != null){
+                connectedTo.removeValueListener(this);
+                connectedTo = null;
+            } 
             setValue(LogicState.FLOATING);
         }
         
