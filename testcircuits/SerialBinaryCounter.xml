@@ -73,9 +73,6 @@
         </component>
         <component type="Standard.Oscillator" x="70" y="435" rotation="0.0" subcircuit="false">
             <attr name="Label" value="CLK"/>
-            <attr name="External?" value="true"/>
-            <attr name="External Position" value="5"/>
-            <attr name="External Edge" value="West"/>
             <attr name="t1 (ns)" value="10000000"/>
             <attr name="t2 (ns)" value="10000000"/>
         </component>

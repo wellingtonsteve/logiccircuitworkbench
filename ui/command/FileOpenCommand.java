@@ -30,8 +30,8 @@ public class FileOpenCommand extends Command {
             activeCircuit = editor.createBlankCircuit(false);    
             
             // Parse the file
-            if(cfh.loadFile(filename)){
-                activeCircuit.setFilename(filename);
+            activeCircuit.setFilename(filename);
+            if(cfh.loadFile(filename)){                
                 editor.refreshWindowsMenu();
                 activeCircuit.getParentFrame().setTitle(filename);
                 activeCircuit.getCommandHistory().clearHistory();

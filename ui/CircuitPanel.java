@@ -331,7 +331,11 @@ public class CircuitPanel extends javax.swing.JPanel implements
     public void setSubcircuitParent(CircuitPanel parent) {
         this.subcircuitParent = parent;
     }
-    
+
+    public CircuitPanel getSubCircuitParent(){
+        return this.subcircuitParent;
+    }
+
     /** Update any subcircuit to reflect changes made to the source
      * @param subpanel The filename of this panel is that of the sub-circuit*/
     private void updateSubcircuits(CircuitPanel subpanel) {

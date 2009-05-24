@@ -59,6 +59,5 @@ public class InputPin extends Pin implements ValueListener {
             } 
             setValue(LogicState.FLOATING);
         }
-        
     }
 }

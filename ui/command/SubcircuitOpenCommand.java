@@ -62,8 +62,9 @@ public class SubcircuitOpenCommand extends Command {
     public SelectableComponent createSubcircuitComponent(Editor editor, String filename, CircuitPanel loadingCircuit) {
         FileLoader cfh = new FileLoader(editor);
         activeCircuit = editor.createBlankCircuit(true);
+        activeCircuit.setFilename(filename);
+        activeCircuit.setSubcircuitParent(loadingCircuit);
         if (cfh.loadFile(filename)) {
-            activeCircuit.setFilename(filename);
 
             // Get the things we need from the circuit panel
             activeCircuit.updateProperties();
@@ -196,9 +197,9 @@ public class SubcircuitOpenCommand extends Command {
             Editor editor = getParentCircuit().getParentFrame().getEditor();
             FileLoader cfh = new FileLoader(editor);
             CircuitPanel subCircuit = editor.createBlankCircuit(true);    
+            subCircuit.setFilename(filename);
+            subCircuit.setSubcircuitParent(getParentCircuit());
             if(cfh.loadFile(filename)){
-                subCircuit.setFilename(filename);
-                subCircuit.setSubcircuitParent(parent);
                 editor.refreshWindowsMenu();
                 subCircuit.getParentFrame().setTitle(filename);
                 subCircuit.getCommandHistory().clearHistory();

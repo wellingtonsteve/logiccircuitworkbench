@@ -58,7 +58,8 @@ public abstract class Joinable {
                 a.setOutputSource(b.outputSource);
             }
         } else {
-            ErrorHandler.newError("Simulation Error", "Cannot connect two outputs together.");
+            //ErrorHandler.newError("Simulation Error", "Cannot connect two outputs together.");
+            throw new Error("Cannot connect two outputs together");
         }
     }
 

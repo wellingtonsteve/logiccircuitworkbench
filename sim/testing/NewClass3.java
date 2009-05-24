@@ -12,77 +12,47 @@ import sim.joinable.*;
  * @author Stephen
  */
 public class NewClass3 {
-    public static void main(String[] args){
-        Joinable a = new OutputPin(null,"") {public String toString(){return "a";}};
-        Joinable b = new Joinable() {public String toString(){return "b";}};
-        Joinable c = new Joinable() {public String toString(){return "c";}};
-        Joinable d = new Joinable() {public String toString(){return "d";}};
 
-        a.outputSource = (OutputPin) a;
-        System.out.println("");
+    static Joinable a = new OutputPin(null,"") {public String toString(){return "a";}};
+    static Joinable b = new Joinable() {public String toString(){return "b";}};
+    static Joinable c = new Joinable() {public String toString(){return "c";}};
+    static Joinable d = new Joinable() {public String toString(){return "d";}};
+    static Joinable e = new OutputPin(null,"") {public String toString(){return "e";}};
 
+    public static void printOutputSource(){
         System.out.println(a.outputSource);
         System.out.println(b.outputSource);
         System.out.println(c.outputSource);
         System.out.println(d.outputSource);
+        System.out.println(e.outputSource);
         System.out.println("");
+    }
+
+    public static void main(String[] args){
+
+        a.outputSource = (OutputPin) a;
+        printOutputSource();
 
         Joinable.connect(a, b);
         Joinable.connect(c, b);
-        Joinable.connect(c, a);
-
-        System.out.println(a.outputSource);
-        System.out.println(b.outputSource);
-        System.out.println(c.outputSource);
-        System.out.println(d.outputSource);
-        System.out.println("");
+        printOutputSource();
 
         Joinable.connect(c, d);
-
-        System.out.println(a.outputSource);
-        System.out.println(b.outputSource);
-        System.out.println(c.outputSource);
-        System.out.println(d.outputSource);
-        System.out.println("");
+        printOutputSource();
 
         Joinable.disconnect(a, b);
-
-        System.out.println(a.outputSource);
-        System.out.println(b.outputSource);
-        System.out.println(c.outputSource);
-        System.out.println(d.outputSource);
-        System.out.println("");
-
-        Joinable.disconnect(a, c);
-
-        System.out.println(a.outputSource);
-        System.out.println(b.outputSource);
-        System.out.println(c.outputSource);
-        System.out.println(d.outputSource);
-        System.out.println("");
+        printOutputSource();
 
         Joinable.disconnect(b, c);
-
-        System.out.println(a.outputSource);
-        System.out.println(b.outputSource);
-        System.out.println(c.outputSource);
-        System.out.println(d.outputSource);
-        System.out.println("");
+        printOutputSource();
 
         Joinable.connect(a, b);
+        printOutputSource();
 
-        System.out.println(a.outputSource);
-        System.out.println(b.outputSource);
-        System.out.println(c.outputSource);
-        System.out.println(d.outputSource);
-        System.out.println("");
+        Joinable.connect(d, e);
+        printOutputSource();
 
-        Joinable.connect(b, c);
-
-        System.out.println(a.outputSource);
-        System.out.println(b.outputSource);
-        System.out.println(c.outputSource);
-        System.out.println(d.outputSource);
-        System.out.println("");
+        Joinable.connect(b, e);
+        printOutputSource();
     }
 }
