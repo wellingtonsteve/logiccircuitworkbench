@@ -37,12 +37,18 @@ public class FileLoader extends DefaultHandler{
     public boolean loadFile(String filename){
         stack.clear();
         try {
+            File test = new File(filename);
+            if(!test.exists() && editor.getActiveCircuit().isSubcircuit()){
+                String dir = editor.getActiveCircuit().getSubCircuitParent().getFilename();
+                dir = dir.substring(0, dir.lastIndexOf(File.separator));
+                filename = dir + File.separator + filename;
+            }
+
             File file = new File(filename);
             InputSource src = new InputSource( new FileInputStream( file ) );
-
-                XMLReader rdr = XMLReaderFactory.createXMLReader();
-                rdr.setContentHandler( this );
-                rdr.parse( src );
+            XMLReader rdr = XMLReaderFactory.createXMLReader();
+            rdr.setContentHandler( this );
+            rdr.parse( src );
 
         }catch( Exception ex ) {
             ErrorHandler.newError("File Load Error","Please see the system" +
