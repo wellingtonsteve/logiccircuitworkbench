@@ -14,9 +14,9 @@ import sim.joinable.*;
 public class NewClass3 {
 
     static Joinable a = new OutputPin(null,"") {public String toString(){return "a";}};
-    static Joinable b = new Joinable() {public String toString(){return "b";}};
-    static Joinable c = new Joinable() {public String toString(){return "c";}};
-    static Joinable d = new Joinable() {public String toString(){return "d";}};
+    static Joinable b = new InputPin(null,"") {public String toString(){return "b";}};
+    static Joinable c = new InputPin(null,"") {public String toString(){return "c";}};
+    static Joinable d = new InputPin(null,"") {public String toString(){return "d";}};
     static Joinable e = new OutputPin(null,"") {public String toString(){return "e";}};
 
     public static void printOutputSource(){
@@ -30,7 +30,6 @@ public class NewClass3 {
 
     public static void main(String[] args){
 
-        a.outputSource = (OutputPin) a;
         printOutputSource();
 
         Joinable.connect(a, b);
